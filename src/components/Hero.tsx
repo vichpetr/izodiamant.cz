@@ -6,7 +6,6 @@ import { ArrowRight, PlayCircle } from 'lucide-react';
 
 export default function Hero() {
   const content = {
-    badge: "Technologie 'Technical Trust' 2026",
     h1: "Váš dům si zaslouží suché základy. Navždy.",
     desc: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě s doživotní zárukou.",
     cta_calc: "Spočítat cenu online",
@@ -27,13 +26,6 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-neutral-dark text-xs font-black uppercase tracking-[0.2em] mb-8 border border-primary/20">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-            </span>
-            {content.badge}
-          </div>
           
           <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black text-neutral-dark tracking-tighter mb-8 text-balance uppercase italic leading-[0.9]">
             {content.h1.split('. ')[0]}. <br className="hidden sm:block" />
