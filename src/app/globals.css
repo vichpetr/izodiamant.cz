@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f8f9fa;
+  --foreground: #1a1a1a;
+  --primary: #c4d600;
+  --primary-foreground: #1a1a1a;
+  --accent: #a3b200;
+  --accent-foreground: #ffffff;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-[#1a1a1a];
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[#c4d600] text-[#1a1a1a] px-6 py-3 rounded-lg font-bold hover:brightness-105 transition-all shadow-md active:scale-95 inline-flex items-center justify-center;
+  }
+
+  .btn-secondary {
+    @apply bg-[#1a1a1a] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#1a1a1a]/90 transition-all shadow-md active:scale-95 inline-flex items-center justify-center;
+  }
+
+  .btn-outline {
+    @apply border-2 border-[#c4d600] text-[#1a1a1a] px-6 py-3 rounded-lg font-bold hover:bg-[#c4d600]/10 transition-all active:scale-95 inline-flex items-center justify-center;
+  }
+
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+  }
+}
