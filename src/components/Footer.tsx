@@ -54,11 +54,27 @@ export default function Footer() {
 
           <div>
             <h3 className="text-primary font-bold uppercase tracking-widest text-sm mb-8">{content.services}</h3>
-            <ul className="space-y-4 text-sm font-bold text-white/70">
-              <li className="uppercase tracking-wider">Podřezání diamantovým lanem</li>
-              <li className="uppercase tracking-wider">Podřezání řetězovou pilou</li>
-              <li className="uppercase tracking-wider">Izolace základů</li>
-              <li className="uppercase tracking-wider">Chemická injektáž</li>
+            <ul className="space-y-4 text-sm font-bold">
+              <li>
+                <Link href="/sluzby/diamantove-lano" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">
+                  Podřezání diamantovým lanem
+                </Link>
+              </li>
+              <li>
+                <Link href="/sluzby/retezova-pila" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">
+                  Podřezání řetězovou pilou
+                </Link>
+              </li>
+              <li>
+                <Link href="/sluzby/izolace-zakladu" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">
+                  Izolace základů
+                </Link>
+              </li>
+              <li>
+                <Link href="/sluzby/chemicka-injektaz" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">
+                  Chemická injektáž
+                </Link>
+              </li>
             </ul>
           </div>
 
