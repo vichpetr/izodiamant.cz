@@ -20,13 +20,23 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="space-y-6">
-            <Link href="/" className="relative h-16 w-full block group transition-transform hover:scale-105">
-              <Image 
-                src="/logo.png"
-                alt="IZODIAMANT"
-                fill
-                className="object-contain object-left brightness-0 invert"
-              />
+            <Link href="/" className="flex items-center gap-3 group transition-transform hover:scale-105">
+              <div className="relative w-10 h-10 shrink-0">
+                <Image 
+                  src="/logo.png"
+                  alt="IZODIAMANT"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <div className="flex flex-col leading-none">
+                <span className="font-black text-xl text-white tracking-tighter uppercase">
+                  IZO<span className="text-primary">DIAMANT</span>
+                </span>
+                <span className="text-[10px] font-bold text-white/60 tracking-[0.2em] uppercase pl-1">
+                  Sanace zdiva
+                </span>
+              </div>
             </Link>
             <p className="text-sm text-white/50 leading-relaxed pt-2">
               {content.desc}
