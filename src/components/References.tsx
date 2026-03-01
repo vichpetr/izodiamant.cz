@@ -3,35 +3,12 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { MapPin, ArrowUpRight, Diamond } from 'lucide-react';
-
-const projects = [
-  {
-    id: 'zamek-zleby',
-    title: 'Sanace kamenného zdiva zámku Žleby',
-    location: 'Žleby, okr. Kutná Hora',
-    technology: 'Diamantové lano',
-    image: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: 'bytovy-dum-praha',
-    title: 'Izolace základů bytového domu',
-    location: 'Praha 10 - Hostivař',
-    technology: 'Řetězová pila',
-    image: 'https://images.unsplash.com/photo-1541976590-713941681591?q=80&w=800&auto=format&fit=crop',
-  },
-  {
-    id: 'chalupa-krkonose',
-    title: 'Podřezání vlhké chalupy',
-    location: 'Vrchlabí',
-    technology: 'Diamantové lano',
-    image: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=800&auto=format&fit=crop',
-  },
-];
+import referencesData from '@/data/references.json';
 
 export default function References() {
   const content = {
     h2: "Naše reference.",
-    h3: "Desítky suchých domů",
+    h3: "500+ suchých domů",
     sub: "Podívejte se na detaily našich realizací. Od historických sklepů po moderní rodinné domy.",
   };
 
@@ -51,7 +28,7 @@ export default function References() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-          {projects.map((project, index) => (
+          {referencesData.map((project, index) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 20 }}

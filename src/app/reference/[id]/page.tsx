@@ -3,8 +3,10 @@ import Footer from "@/components/Footer";
 import ReferenceSlider from "@/components/ReferenceSlider";
 import { MapPin, ArrowLeft, Gem, Zap, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import referencesData from '@/data/references.json';
 
 interface Project {
+  id: string;
   title: string;
   location: string;
   technology: string;
@@ -16,63 +18,10 @@ interface Project {
   after: string;
 }
 
-const projects: Record<string, Project> = {
-  'zamek-zleby': {
-    title: 'Sanace kamenného zdiva zámku Žleby',
-    location: 'Žleby, okr. Kutná Hora',
-    technology: 'Diamantové lano',
-    scope: '320 m² řezné plochy',
-    duration: '14 pracovních dnů',
-    description: 'Komplexní sanace historického kamenného zdiva v suterénních prostorách zámku. Vzhledem k extrémní tloušťce zdiva (až 180 cm) a požadavku na nulové otřesy byla zvolena technologie diamantového lana.',
-    features: [
-      'Řezání kamene o tloušťce 180 cm',
-      'Vložení nerezové izolace',
-      'Tlaková injektáž cementovou směsí',
-      'Nulové narušení statiky objektu'
-    ],
-    before: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1200&auto=format&fit=crop',
-    after: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1200&auto=format&fit=crop&grayscale',
-  },
-  'bytovy-dum-praha': {
-    title: 'Izolace základů bytového domu',
-    location: 'Praha 10 - Hostivař',
-    technology: 'Řetězová pila',
-    scope: '85 běžných metrů',
-    duration: '4 pracovní dny',
-    description: 'Dodatečná hydroizolace cihlového bytového domu z 50. let. Práce probíhaly za plného provozu domu bez nutnosti vystěhování nájemníků.',
-    features: [
-      'Rychlý postup řetězovou pilou',
-      'Vložení PE folie 2mm',
-      'Statické zajištění klíny',
-      'Finální zapravení spáry'
-    ],
-    before: 'https://images.unsplash.com/photo-1541976590-713941681591?q=80&w=1200&auto=format&fit=crop',
-    after: 'https://images.unsplash.com/photo-1541976590-713941681591?q=80&w=1200&auto=format&fit=crop&grayscale',
-  },
-  'chalupa-krkonose': {
-    title: 'Podřezání vlhké chalupy',
-    location: 'Vrchlabí',
-    technology: 'Diamantové lano',
-    scope: '42 běžných metrů',
-    duration: '3 pracovní dny',
-    description: 'Sanace smíšeného zdiva (kámen/cihla) u rekreačního objektu. Technologie diamantového lana umožnila čistý řez i v místech s nerovným terénem.',
-    features: [
-      'Řezání smíšeného zdiva',
-      'Aplikace sklolaminátové desky',
-      'Sanace vnitřních omítek',
-      'Záruka 30 let na izolaci'
-    ],
-    before: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=1200&auto=format&fit=crop',
-    after: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=1200&auto=format&fit=crop&grayscale',
-  }
-};
-
 export async function generateStaticParams() {
-  return [
-    { id: 'zamek-zleby' },
-    { id: 'bytovy-dum-praha' },
-    { id: 'chalupa-krkonose' },
-  ];
+  return referencesData.map((project) => ({
+    id: project.id,
+  }));
 }
 
 export default async function ProjectPage({
@@ -81,7 +30,7 @@ export default async function ProjectPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const project = projects[id];
+  const project = (referencesData as Project[]).find(p => p.id === id);
 
   if (!project) return <div>Projekt nenalezen</div>;
 
@@ -103,7 +52,7 @@ export default async function ProjectPage({
             <div className="space-y-12">
               <div>
                 <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary font-black text-xs uppercase tracking-widest mb-6">
-                  {project.technology === 'Diamantové lano' ? <Gem className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
+                  {project.technology.includes('lano') ? <Gem className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
                   {project.technology}
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.9] mb-8">
