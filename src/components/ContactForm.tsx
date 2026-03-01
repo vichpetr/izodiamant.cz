@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, CheckCircle2, Phone, Mail } from 'lucide-react';
+import { Send, CheckCircle2, Phone, Mail, MapPin } from 'lucide-react';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -76,7 +76,10 @@ export default function ContactForm() {
                 </div>
                 <div>
                   <div className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">Zavolejte nám</div>
-                  <a href="tel:+420123456789" className="text-xl font-black text-neutral-dark hover:text-primary transition-colors">+420 123 456 789</a>
+                  <div className="flex flex-col">
+                    <a href="tel:+420737017012" className="text-xl font-black text-neutral-dark hover:text-primary transition-colors">+420 737 017 012</a>
+                    <a href="tel:+420732902754" className="text-xl font-black text-neutral-dark hover:text-primary transition-colors">+420 732 902 754</a>
+                  </div>
                 </div>
               </div>
 
@@ -89,6 +92,25 @@ export default function ContactForm() {
                   <a href="mailto:info@izodiamant.cz" className="text-xl font-black text-neutral-dark hover:text-primary transition-colors">info@izodiamant.cz</a>
                 </div>
               </div>
+
+              <div className="flex items-center gap-6 group">
+                <div className="w-14 h-14 bg-primary flex items-center justify-center rounded-xl shadow-lg shadow-primary/20 transform transition-transform group-hover:scale-110">
+                  <MapPin className="w-6 h-6 text-neutral-dark" />
+                </div>
+                <div>
+                  <div className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">Sídlo firmy</div>
+                  <address className="text-xl font-black text-neutral-dark not-italic uppercase tracking-tight">
+                    Mokrá Lhota 26, 539 44 Nové Hrady
+                  </address>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-8 bg-neutral-light rounded-3xl border-2 border-neutral-dark/5">
+              <h3 className="font-black uppercase tracking-tight mb-4 italic">Konzultace zdarma</h3>
+              <p className="text-neutral-dark/60 text-sm font-medium leading-relaxed">
+                Pan Václav Ropek vás navštíví, provede přesné měření vlhkosti a navrhne nejvhodnější technologický postup. Vše zcela zdarma a nezávazně.
+              </p>
             </div>
           </div>
 

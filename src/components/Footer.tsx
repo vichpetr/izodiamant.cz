@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin, User, FileText } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -30,6 +30,16 @@ export default function Footer() {
             <p className="text-sm text-white/50 leading-relaxed">
               {content.desc}
             </p>
+            <div className="pt-4 space-y-3 border-t border-white/5">
+              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/40">
+                <User className="w-3 h-3 text-primary" />
+                Václav Ropek
+              </div>
+              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/40">
+                <FileText className="w-3 h-3 text-primary" />
+                IČO: 74650726
+              </div>
+            </div>
           </div>
 
           <div>
@@ -57,7 +67,10 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3 group">
                 <Phone className="w-5 h-5 text-primary shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                <a href="tel:+420123456789" className="text-white/70 hover:text-white transition-colors font-bold">+420 123 456 789</a>
+                <div className="flex flex-col gap-1">
+                  <a href="tel:+420737017012" className="text-white/70 hover:text-white transition-colors font-bold">+420 737 017 012</a>
+                  <a href="tel:+420732902754" className="text-white/70 hover:text-white transition-colors font-bold">+420 732 902 754</a>
+                </div>
               </li>
               <li className="flex items-start gap-3 group">
                 <Mail className="w-5 h-5 text-primary shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
@@ -65,10 +78,9 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span className="text-white/50 text-sm leading-relaxed">
-                  Technická ulice 1<br />
-                  100 00 Praha 10<br />
-                  Česká republika
+                <span className="text-white/50 text-sm leading-relaxed font-bold uppercase tracking-tight">
+                  Mokrá Lhota 26<br />
+                  539 44 Nové Hrady
                 </span>
               </li>
             </ul>

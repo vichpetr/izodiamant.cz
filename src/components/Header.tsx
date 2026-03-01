@@ -58,9 +58,9 @@ export default function Header() {
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
-            <a href="tel:+420123456789" className="flex items-center gap-2 text-neutral-dark font-bold hover:text-primary transition-colors">
+            <a href="tel:+420737017012" className="flex items-center gap-2 text-neutral-dark font-bold hover:text-primary transition-colors">
               <Phone className="w-4 h-4 text-primary" />
-              <span>+420 123 456 789</span>
+              <span>+420 737 017 012</span>
             </a>
             <Link
               href="/#calculator"
@@ -98,9 +98,9 @@ export default function Header() {
               FAQ
             </Link>
             <div className="pt-4 flex flex-col gap-3">
-              <a href="tel:+420123456789" className="flex items-center justify-center gap-2 px-3 py-4 text-neutral-dark font-bold border-2 border-primary rounded-lg">
+              <a href="tel:+420737017012" className="flex items-center justify-center gap-2 px-3 py-4 text-neutral-dark font-bold border-2 border-primary rounded-lg">
                 <Phone className="w-5 h-5 text-primary" />
-                <span>+420 123 456 789</span>
+                <span>+420 737 017 012</span>
               </a>
               <Link href="/#calculator" onClick={() => setIsMobileMenuOpen(false)} className="text-center btn-primary py-4">
                 Spočítat cenu
