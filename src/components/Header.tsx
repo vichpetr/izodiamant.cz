@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Phone } from 'lucide-react';
+import { Menu, X, Phone, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +17,12 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const services = [
+    { name: 'Diamantové lano', href: '/sluzby/diamantove-lano' },
+    { name: 'Řetězová pila', href: '/sluzby/retezova-pila' },
+    { name: 'Chemická injektáž', href: '/sluzby/chemicka-injektaz' },
+  ];
 
   return (
     <header
@@ -43,9 +50,32 @@ export default function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="/#technologie" className="text-neutral-dark/80 hover:text-primary text-sm font-bold uppercase tracking-widest transition-colors">
-              Technologie
-            </Link>
+            <div 
+              className="relative group py-8"
+              onMouseEnter={() => setIsServicesOpen(true)}
+              onMouseLeave={() => setIsServicesOpen(false)}
+            >
+              <button className="flex items-center gap-1 text-neutral-dark/80 hover:text-primary text-sm font-bold uppercase tracking-widest transition-colors">
+                Služby
+                <ChevronDown className={cn("w-4 h-4 transition-transform", isServicesOpen && "rotate-180")} />
+              </button>
+              
+              <div className={cn(
+                "absolute top-full left-0 w-64 bg-white shadow-xl rounded-2xl border border-neutral-light overflow-hidden transition-all duration-200 origin-top-left",
+                isServicesOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
+              )}>
+                {services.map((service) => (
+                  <Link 
+                    key={service.href} 
+                    href={service.href}
+                    className="block px-6 py-4 text-sm font-bold uppercase tracking-wider text-neutral-dark/70 hover:bg-primary/10 hover:text-primary transition-colors"
+                  >
+                    {service.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
             <Link href="/#calculator" className="text-neutral-dark/80 hover:text-primary text-sm font-bold uppercase tracking-widest transition-colors">
               Ceník & Kalkulačka
             </Link>
@@ -62,10 +92,7 @@ export default function Header() {
               <Phone className="w-4 h-4 text-primary" />
               <span>+420 737 017 012</span>
             </a>
-            <Link
-              href="/#calculator"
-              className="btn-primary py-2 px-6"
-            >
+            <Link href="/#calculator" className="btn-primary py-2 px-6">
               Spočítat cenu
             </Link>
           </div>
@@ -83,11 +110,24 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-neutral-light absolute w-full left-0 shadow-lg">
+        <div className="md:hidden bg-white border-t border-neutral-light absolute w-full left-0 shadow-lg max-h-[calc(100vh-5rem)] overflow-y-auto">
           <div className="px-4 pt-2 pb-6 space-y-1">
-            <Link href="/#technologie" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-4 text-base font-bold text-neutral-dark uppercase tracking-widest hover:bg-neutral-light rounded-md">
-              Technologie
-            </Link>
+            <div className="py-2">
+              <div className="px-3 py-2 text-[10px] font-black text-primary uppercase tracking-[0.2em]">Naše služby</div>
+              {services.map((service) => (
+                <Link 
+                  key={service.href} 
+                  href={service.href} 
+                  onClick={() => setIsMobileMenuOpen(false)} 
+                  className="block px-3 py-3 text-base font-bold text-neutral-dark uppercase tracking-widest hover:bg-neutral-light rounded-md"
+                >
+                  {service.name}
+                </Link>
+              ))}
+            </div>
+            
+            <div className="border-t border-neutral-light my-2" />
+
             <Link href="/#calculator" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-4 text-base font-bold text-neutral-dark uppercase tracking-widest hover:bg-neutral-light rounded-md">
               Ceník & Kalkulačka
             </Link>
