@@ -109,7 +109,7 @@ export default function ContactForm() {
             <div className="p-8 bg-neutral-light rounded-3xl border-2 border-neutral-dark/5">
               <h3 className="font-black uppercase tracking-tight mb-4 italic">Konzultace zdarma</h3>
               <p className="text-neutral-dark/60 text-sm font-medium leading-relaxed">
-                Pan Václav Ropek vás navštíví, provede přesné měření vlhkosti a navrhne nejvhodnější technologický postup. Vše zcela zdarma a nezávazně.
+                Náš odborný technik vás navštíví, provede přesné měření vlhkosti a navrhne nejvhodnější technologický postup přímo na míru vaší stavbě. Vše zcela zdarma a nezávazně.
               </p>
             </div>
           </div>
