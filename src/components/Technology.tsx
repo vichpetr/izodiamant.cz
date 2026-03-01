@@ -3,35 +3,8 @@
 import { motion } from 'framer-motion';
 import { Gem, Zap, ShieldCheck } from 'lucide-react';
 
-export default function Technology({ lang }: { lang: string }) {
+export default function Technology() {
   const content = {
-    cs: {
-      h2: "Sanace pro 21. století: Žádné kompromisy, jen čistý řez.",
-      sub: "Využíváme špičkové vybavení, abychom zaručili precizní výsledek bez ohrožení statiky vaší nemovitosti.",
-      tech1_title: "Diamantové lano – Král mezi technologiemi",
-      tech1_desc: "Tam, kde ostatní končí, my začínáme. Technologie diamantového lana umožňuje řezat i ty nejnáročnější materiály bez otřesů, které by ohrozily statiku vašeho domu.",
-      tech1_features: ['Pro kámen, beton i smíšené zdivo', 'Milimetrová přesnost', 'Bez limitu tloušťky zdi'],
-      tech2_title: "Řetězová pila – Rychlost a efektivita",
-      tech2_desc: "Ideální řešení pro cihelné zdivo. Rychlý postup a okamžité vložení hydroizolace zajišťují suchý domov v řádu dnů, nikoliv týdnů.",
-      tech2_features: ['Ideální pro cihlové zdivo', 'Extrémně rychlý postup', 'Minimální zásah do provozu'],
-      tech3_title: "Chemická injektáž – Bezhlučná clona",
-      tech3_desc: "Moderní metoda vytvoření dodatečné hydroizolační clony pomocí speciálních gelů a pryskyřic. Vhodné tam, kde nelze fyzicky řezat.",
-      tech3_features: ['Bezhlučný proces', 'Vysoce účinné gely', 'Šetrné ke zdivu'],
-    },
-    en: {
-      h2: "Remediation for the 21st Century: No compromises, just a clean cut.",
-      sub: "We use top-of-the-line equipment to guarantee a precise result without compromising the stability of your property.",
-      tech1_title: "Diamond Wire – The King of Technologies",
-      tech1_desc: "Where others end, we begin. Diamond wire technology allows cutting even the most demanding materials without vibrations that would threaten your home's stability.",
-      tech1_features: ['For stone, concrete, and mixed masonry', 'Millimeter precision', 'No limit on wall thickness'],
-      tech2_title: "Chain Saw – Speed and Efficiency",
-      tech2_desc: "An ideal solution for brick masonry. Fast progress and immediate insertion of hydro-insulation ensure a dry home in days, not weeks.",
-      tech2_features: ['Ideal for brick masonry', 'Extremely fast progress', 'Minimal interference with operations'],
-      tech3_title: "Chemical Injection – Silent Barrier",
-      tech3_desc: "A modern method of creating an additional hydro-insulation barrier using special gels and resins. Suitable where physical cutting is not possible.",
-      tech3_features: ['Noiseless process', 'Highly effective gels', 'Gentle on masonry'],
-    },
-  }[lang as "cs" | "en"] || {
     h2: "Sanace pro 21. století: Žádné kompromisy, jen čistý řez.",
     sub: "Využíváme špičkové vybavení, abychom zaručili precizní výsledek bez ohrožení statiky vaší nemovitosti.",
     tech1_title: "Diamantové lano – Král mezi technologiemi",

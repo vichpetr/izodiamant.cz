@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, CheckCircle2, Phone, Mail } from 'lucide-react';
 
-export default function ContactForm({ lang }: { lang: string }) {
+export default function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,29 +15,6 @@ export default function ContactForm({ lang }: { lang: string }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const content = {
-    cs: {
-      h2: "Nezávazná poptávka",
-      sub: "Máte dotaz nebo chcete domluvit obhlídku? Napište nám.",
-      name: "Jméno a příjmení",
-      email: "E-mail",
-      phone: "Telefon",
-      message: "Zpráva / Popis projektu",
-      send: "Odeslat zprávu",
-      success_h3: "Zpráva odeslána!",
-      success_p: "Děkujeme. Budeme vás kontaktovat co nejdříve.",
-    },
-    en: {
-      h2: "Non-binding Inquiry",
-      sub: "Do you have a question or want to arrange a site visit? Write to us.",
-      name: "Full Name",
-      email: "E-mail",
-      phone: "Phone",
-      message: "Message / Project Description",
-      send: "Send Message",
-      success_h3: "Message sent!",
-      success_p: "Thank you. We will contact you as soon as possible.",
-    },
-  }[lang as "cs" | "en"] || {
     h2: "Nezávazná poptávka",
     sub: "Máte dotaz nebo chcete domluvit obhlídku? Napište nám.",
     name: "Jméno a příjmení",

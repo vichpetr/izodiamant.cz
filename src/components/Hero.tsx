@@ -4,23 +4,8 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight, PlayCircle } from 'lucide-react';
 
-export default function Hero({ lang }: { lang: string }) {
+export default function Hero() {
   const content = {
-    cs: {
-      badge: "Technologie 'Technical Trust' 2026",
-      h1: "Váš dům si zaslouží suché základy. Navždy.",
-      desc: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě s doživotní zárukou.",
-      cta_calc: "Spočítat cenu online",
-      cta_ref: "Naše reference",
-    },
-    en: {
-      badge: "Technical Trust Technology 2026",
-      h1: "Your house deserves dry foundations. Forever.",
-      desc: "Professional remediation and masonry cutting with cutting-edge technology. From bricks to hard stone – we restore your building's health with a lifetime guarantee.",
-      cta_calc: "Calculate price online",
-      cta_ref: "Our references",
-    },
-  }[lang as "cs" | "en"] || {
     badge: "Technologie 'Technical Trust' 2026",
     h1: "Váš dům si zaslouží suché základy. Navždy.",
     desc: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě s doživotní zárukou.",
@@ -61,14 +46,14 @@ export default function Hero({ lang }: { lang: string }) {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href={`/${lang}#calculator`}
+              href="/#calculator"
               className="w-full sm:w-auto btn-primary py-4 px-10 text-lg uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center justify-center gap-3 group"
             >
               {content.cta_calc}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
-              href={`/${lang}#reference`}
+              href="/#reference"
               className="w-full sm:w-auto btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center justify-center gap-3 group border-neutral-dark/20 text-neutral-dark hover:bg-neutral-dark hover:text-white"
             >
               <PlayCircle className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />

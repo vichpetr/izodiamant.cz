@@ -28,19 +28,10 @@ const projects = [
   },
 ];
 
-export default function References({ lang }: { lang: string }) {
+export default function References() {
   const content = {
-    cs: {
-      h2: "500+ suchých domů. Naše reference.",
-      sub: "Podívejte se na detaily našich realizací. Od historických sklepů po moderní rodinné domy.",
-    },
-    en: {
-      h2: "500+ dry houses. Our references.",
-      sub: "Look at the details of our projects. From historical cellars to modern family houses.",
-    },
-  }[lang as "cs" | "en"] || {
     h2: "500+ suchých domů. Naše reference.",
-    sub: "Podívejte se na detaily našich realizací.",
+    sub: "Podívejte se na detaily našich realizací. Od historických sklepů po moderní rodinné domy.",
   };
 
   return (
@@ -65,7 +56,7 @@ export default function References({ lang }: { lang: string }) {
               transition={{ delay: index * 0.1 }}
               className="group"
             >
-              <Link href={`/${lang}/reference/${project.id}`} className="block relative aspect-[4/5] overflow-hidden rounded-3xl bg-neutral-dark">
+              <Link href={`/reference/${project.id}`} className="block relative aspect-[4/5] overflow-hidden rounded-3xl bg-neutral-dark">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
                   style={{ backgroundImage: `url(${project.image})` }}

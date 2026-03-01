@@ -69,33 +69,30 @@ const projects: Record<string, Project> = {
 
 export async function generateStaticParams() {
   return [
-    { id: 'zamek-zleby', lang: 'cs' },
-    { id: 'bytovy-dum-praha', lang: 'cs' },
-    { id: 'chalupa-krkonose', lang: 'cs' },
-    { id: 'zamek-zleby', lang: 'en' },
-    { id: 'bytovy-dum-praha', lang: 'en' },
-    { id: 'chalupa-krkonose', lang: 'en' },
+    { id: 'zamek-zleby' },
+    { id: 'bytovy-dum-praha' },
+    { id: 'chalupa-krkonose' },
   ];
 }
 
 export default async function ProjectPage({
   params,
 }: {
-  params: Promise<{ id: string, lang: string }>;
+  params: Promise<{ id: string }>;
 }) {
-  const { id, lang } = await params;
+  const { id } = await params;
   const project = projects[id];
 
   if (!project) return <div>Projekt nenalezen</div>;
 
   return (
     <main className="min-h-screen bg-neutral-light text-foreground">
-      <Header lang={lang} />
+      <Header />
       
       <section className="pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
-            href={`/${lang}#reference`} 
+            href="/#reference" 
             className="inline-flex items-center gap-2 text-neutral-dark/60 hover:text-primary font-bold uppercase tracking-widest text-xs mb-12 transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -159,7 +156,7 @@ export default async function ProjectPage({
                   <p className="text-white/60 font-medium mb-8">
                     Rádi pro vás připravíme detailní technický návrh a nezávaznou cenovou nabídku.
                   </p>
-                  <Link href={`/${lang}#calculator`} className="btn-primary inline-flex py-4 px-8 uppercase tracking-widest">
+                  <Link href="/#calculator" className="btn-primary inline-flex py-4 px-8 uppercase tracking-widest">
                     Poptat realizaci
                   </Link>
                 </div>
@@ -169,7 +166,7 @@ export default async function ProjectPage({
         </div>
       </section>
 
-      <Footer lang={lang} />
+      <Footer />
     </main>
   );
 }

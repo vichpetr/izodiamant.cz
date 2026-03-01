@@ -7,20 +7,7 @@ import { cn } from '@/lib/utils';
 
 type Material = 'Cihla' | 'Kámen' | 'Smíšené' | 'Beton';
 
-interface Content {
-  h2: string;
-  sub: string;
-  material_label: string;
-  thickness_label: string;
-  length_label: string;
-  price_est: string;
-  cta: string;
-  success_h3: string;
-  success_p: string;
-  materials: Record<Material, string>;
-}
-
-export default function PricingCalculator({ lang }: { lang: string }) {
+export default function PricingCalculator() {
   const [material, setMaterial] = useState<Material>('Cihla');
   const [thickness, setThickness] = useState<number>(45);
   const [length, setLength] = useState<number>(10);
@@ -28,42 +15,7 @@ export default function PricingCalculator({ lang }: { lang: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const content: Content = {
-    cs: {
-      h2: "Spočítejte si cenu sanace",
-      sub: "Získejte okamžitý odhad nákladů pro váš projekt v jednom kroku.",
-      material_label: "1. Typ zdiva",
-      thickness_label: "2. Tloušťka zdiva",
-      length_label: "3. Rozsah prací (délka)",
-      price_est: "Orientační cena bez DPH",
-      cta: "Odeslat nezávaznou poptávku",
-      success_h3: "Poptávka odeslána!",
-      success_p: "Děkujeme. Brzy se vám ozveme s detailním rozpisem.",
-      materials: {
-        'Cihla': 'Nejčastější, rychlý postup.',
-        'Kámen': 'Vyžaduje diamantové lano.',
-        'Smíšené': 'Kombinace materiálů.',
-        'Beton': 'Extrémně tvrdý materiál.',
-      }
-    },
-    en: {
-      h2: "Calculate remediation price",
-      sub: "Get an instant cost estimate for your project in one step.",
-      material_label: "1. Masonry type",
-      thickness_label: "2. Wall thickness",
-      length_label: "3. Scope of work (length)",
-      price_est: "Estimated price (excl. VAT)",
-      cta: "Send non-binding inquiry",
-      success_h3: "Inquiry sent!",
-      success_p: "Thank you. We will contact you soon with a detailed breakdown.",
-      materials: {
-        'Cihla': 'Most common, fast process.',
-        'Kámen': 'Requires diamond wire.',
-        'Smíšené': 'Combination of materials.',
-        'Beton': 'Extremely hard material.',
-      }
-    },
-  }[lang as "cs" | "en"] || {
+  const content = {
     h2: "Spočítejte si cenu sanace",
     sub: "Získejte okamžitý odhad nákladů pro váš projekt v jednom kroku.",
     material_label: "1. Typ zdiva",
