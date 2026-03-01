@@ -66,11 +66,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/sluzby/izolace-zakladu" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">
-                  Izolace základů
-                </Link>
-              </li>
-              <li>
                 <Link href="/sluzby/chemicka-injektaz" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">
                   Chemická injektáž
                 </Link>
