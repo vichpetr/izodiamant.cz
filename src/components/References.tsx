@@ -30,23 +30,27 @@ const projects = [
 
 export default function References() {
   const content = {
-    h2: "Desítky suchých domů. Naše reference.",
+    h2: "Naše reference.",
+    h3: "Desítky suchých domů",
     sub: "Podívejte se na detaily našich realizací. Od historických sklepů po moderní rodinné domy.",
   };
 
   return (
     <section id="reference" className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <h2 className="text-4xl md:text-5xl font-black text-neutral-dark mb-6 uppercase tracking-tighter italic">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-3xl mx-auto mb-20">
+          <h2 className="text-4xl md:text-6xl font-black text-neutral-dark mb-2 uppercase tracking-tighter italic">
             {content.h2}
           </h2>
+          <h3 className="text-2xl md:text-3xl font-black text-primary uppercase tracking-tight italic mb-6">
+            {content.h3}
+          </h3>
           <p className="text-lg text-neutral-dark/60 font-medium">
             {content.sub}
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
           {projects.map((project, index) => (
             <motion.div
               key={project.id}

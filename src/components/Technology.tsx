@@ -6,7 +6,8 @@ import Link from 'next/link';
 
 export default function Technology() {
   const content = {
-    h2: "Sanace pro 21. století: Žádné kompromisy, jen čistý řez.",
+    h2: "Žádné kompromisy, jen čistý řez.",
+    h3: "Sanace pro 21. století",
     sub: "Využíváme špičkové vybavení, abychom zaručili precizní výsledek bez ohrožení statiky vaší nemovitosti.",
     tech1_title: "Diamantové lano – Král mezi technologiemi",
     tech1_desc: "Tam, kde ostatní končí, my začínáme. Technologie diamantového lana umožňuje řezat i ty nejnáročnější materiály bez otřesů, které by ohrozily statiku vašeho domu.",
@@ -50,17 +51,20 @@ export default function Technology() {
 
   return (
     <section id="technologie" className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <h2 className="text-4xl md:text-5xl font-black text-neutral-dark mb-6 uppercase tracking-tighter italic">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-3xl mx-auto mb-20">
+          <h2 className="text-4xl md:text-6xl font-black text-neutral-dark uppercase tracking-tighter italic mb-2">
             {content.h2}
           </h2>
+          <h3 className="text-2xl md:text-3xl font-black text-primary uppercase tracking-tight italic mb-6">
+            {content.h3}
+          </h3>
           <p className="text-lg text-neutral-dark/60 font-medium">
             {content.sub}
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 text-left">
           {technologies.map((tech, index) => (
             <motion.div
               key={index}
