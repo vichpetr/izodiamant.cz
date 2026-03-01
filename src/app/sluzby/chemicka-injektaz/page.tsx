@@ -38,7 +38,7 @@ export default function ChemicalInjectionPage() {
               </div>
             </div>
             <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581094288338-2314dddb7ecc?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center" />
+              <div className="absolute inset-0 bg-[url('https://i0.wp.com/izodiamant.cz/wp-content/uploads/2023/07/CIMG_20230324_102308-e1689373319154.jpg')] bg-cover bg-center" />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-dark/80 via-transparent to-transparent" />
             </div>
           </div>
