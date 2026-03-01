@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Phone, Mail, MapPin, User, FileText } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -19,15 +20,15 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="space-y-6">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-sm bg-primary flex items-center justify-center text-neutral-dark font-black text-lg">
-                IZ
-              </div>
-              <span className="font-black text-xl text-white tracking-tighter uppercase">
-                IZO<span className="text-primary">DIAMANT</span>
-              </span>
+            <Link href="/" className="relative h-16 w-full block group transition-transform hover:scale-105">
+              <Image 
+                src="https://i0.wp.com/izodiamant.cz/wp-content/uploads/2023/08/cropped-base_logo_transparent_background_200.png"
+                alt="IZODIAMANT"
+                fill
+                className="object-contain object-left brightness-0 invert"
+              />
             </Link>
-            <p className="text-sm text-white/50 leading-relaxed">
+            <p className="text-sm text-white/50 leading-relaxed pt-2">
               {content.desc}
             </p>
             <div className="pt-4 space-y-3 border-t border-white/5">
@@ -99,7 +100,7 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
-          <p>&copy; {currentYear} IZO<span className="text-primary/50">DIAMANT</span>. {content.rights}</p>
+          <p>&copy; {currentYear} IZODIAMANT. {content.rights}</p>
           <div className="flex gap-8">
             <Link href="/ochrana-udaju" className="hover:text-primary transition-colors">{content.privacy}</Link>
             <Link href="/cookies" className="hover:text-primary transition-colors">{content.cookies}</Link>

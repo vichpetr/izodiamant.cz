@@ -5,13 +5,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // On homepage, we want transparent header at top. On subpages, we want it always solid.
   const isHomepage = pathname === '/';
 
   useEffect(() => {
@@ -19,7 +19,6 @@ export default function Header() {
       setIsScrolled(window.scrollY > 20);
     };
 
-    // Check immediately on mount
     handleScroll();
 
     window.addEventListener('scroll', handleScroll);
@@ -31,25 +30,21 @@ export default function Header() {
       className={cn(
         'fixed top-0 w-full z-40 transition-all duration-300 border-b',
         (isScrolled || !isHomepage)
-          ? 'bg-white/95 backdrop-blur-md shadow-sm border-neutral-light/50 py-3'
-          : 'bg-transparent border-transparent py-5'
+          ? 'bg-white/95 backdrop-blur-md shadow-sm border-neutral-light/50 py-2'
+          : 'bg-transparent border-transparent py-4'
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-neutral-dark font-black text-xl group-hover:scale-105 transition-transform shadow-sm">
-              IZ
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="font-black text-xl text-neutral-dark tracking-tighter uppercase">
-                IZO<span className="text-primary">DIAMANT</span>
-              </span>
-              <span className="text-[10px] font-bold text-neutral-dark/60 tracking-[0.2em] uppercase pl-1">
-                Sanace zdiva
-              </span>
-            </div>
+          <Link href="/" className="relative h-12 w-48 group transition-transform hover:scale-105">
+            <Image 
+              src="https://i0.wp.com/izodiamant.cz/wp-content/uploads/2023/08/cropped-base_logo_transparent_background_200.png"
+              alt="IZODIAMANT"
+              fill
+              className="object-contain object-left"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}
