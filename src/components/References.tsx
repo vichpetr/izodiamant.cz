@@ -30,7 +30,7 @@ const projects = [
 
 export default function References() {
   const content = {
-    h2: "500+ suchých domů. Naše reference.",
+    h2: "Desítky suchých domů. Naše reference.",
     sub: "Podívejte se na detaily našich realizací. Od historických sklepů po moderní rodinné domy.",
   };
 

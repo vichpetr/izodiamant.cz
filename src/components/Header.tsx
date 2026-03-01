@@ -2,17 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Menu, X, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // On homepage, we want transparent header at top. On subpages, we want it always solid.
+  const isHomepage = pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
+
+    // Check immediately on mount
+    handleScroll();
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -20,14 +29,14 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'fixed top-0 w-full z-40 transition-all duration-300 border-b border-transparent',
-        isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-sm border-neutral-light/50'
-          : 'bg-transparent'
+        'fixed top-0 w-full z-40 transition-all duration-300 border-b',
+        (isScrolled || !isHomepage)
+          ? 'bg-white/95 backdrop-blur-md shadow-sm border-neutral-light/50 py-3'
+          : 'bg-transparent border-transparent py-5'
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-neutral-dark font-black text-xl group-hover:scale-105 transition-transform shadow-sm">
