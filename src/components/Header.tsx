@@ -39,7 +39,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="relative h-12 w-48 group transition-transform hover:scale-105">
             <Image 
-              src="https://i0.wp.com/izodiamant.cz/wp-content/uploads/2023/08/cropped-base_logo_transparent_background_200.png"
+              src="/logo.png"
               alt="IZODIAMANT"
               fill
               className="object-contain object-left"

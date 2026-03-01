@@ -38,7 +38,7 @@ export default function ChainSawPage() {
               </div>
             </div>
             <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 bg-[url('https://i0.wp.com/izodiamant.cz/wp-content/uploads/2023/07/IMG_20230522_153306-e1689370669906.jpg')] bg-cover bg-center" />
+              <div className="absolute inset-0 bg-[url('/images/sluzby/retezova-pila.jpg')] bg-cover bg-center" />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-dark/80 via-transparent to-transparent" />
             </div>
           </div>

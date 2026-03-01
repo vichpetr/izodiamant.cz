@@ -38,7 +38,7 @@ export default function DiamondWirePage() {
               </div>
             </div>
             <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 bg-[url('https://izodiamant.cz/wp-content/uploads/2023/07/IMG_20230501_085129-e1689370824575.jpg')] bg-cover bg-center" />
+              <div className="absolute inset-0 bg-[url('/images/sluzby/diamantove-lano.jpg')] bg-cover bg-center" />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-dark/80 via-transparent to-transparent" />
             </div>
           </div>

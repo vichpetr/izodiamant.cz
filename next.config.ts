@@ -5,18 +5,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'i0.wp.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'izodiamant.cz',
-      },
-      {
-        protocol: 'http',
-        hostname: 'izodiamant.cz',
-      },
-      {
-        protocol: 'https',
         hostname: 'images.unsplash.com',
       }
     ],
