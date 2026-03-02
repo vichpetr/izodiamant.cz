@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,8 +9,36 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "IZODIAMANT | Sanace a podřezávání zdiva",
-  description: "Profesionální řešení vlhkého zdiva diamantovým lanem.",
+  title: {
+    default: "IZODIAMANT | Sanace a podřezávání vlhkého zdiva",
+    template: "%s | IZODIAMANT"
+  },
+  description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě s doživotní zárukou. Celá ČR.",
+  keywords: ["sanace zdiva", "podřezávání zdiva", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "hydroizolace", "Nové Hrady"],
+  authors: [{ name: "IZODIAMANT" }],
+  creator: "IZODIAMANT",
+  openGraph: {
+    type: "website",
+    locale: "cs_CZ",
+    url: "https://izodiamant.cz",
+    siteName: "IZODIAMANT",
+    title: "IZODIAMANT | Sanace a podřezávání vlhkého zdiva",
+    description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií s doživotní zárukou.",
+    images: [
+      {
+        url: "/logo.png",
+        width: 800,
+        height: 600,
+        alt: "IZODIAMANT Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "IZODIAMANT | Sanace a podřezávání vlhkého zdiva",
+    description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií s doživotní zárukou.",
+    images: ["/logo.png"],
+  },
 };
 
 export default function RootLayout({
@@ -17,9 +46,39 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "IZODIAMANT",
+    "image": "https://izodiamant.cz/logo.png",
+    "description": "Profesionální sanace a podřezávání vlhkého zdiva nejmodernější technologií (diamantové lano, řetězová pila, chemická injektáž).",
+    "url": "https://izodiamant.cz",
+    "telephone": "+420737017012",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Mokrá Lhota 26",
+      "addressLocality": "Nové Hrady",
+      "postalCode": "53944",
+      "addressCountry": "CZ"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "49.8517231",
+      "longitude": "16.1432100"
+    },
+    "areaServed": "CZ",
+    "priceRange": "$$",
+    "sameAs": [
+      "https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html"
+    ]
+  };
+
   return (
-    <html lang="cs">
-      <body className={`${inter.variable} antialiased`}>
+    <html lang="cs" className="scroll-smooth">
+      <head>
+        <Script id="json-ld-local-business" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} strategy="beforeInteractive" />
+      </head>
+      <body className={`${inter.variable} antialiased font-sans`}>
         {children}
       </body>
     </html>

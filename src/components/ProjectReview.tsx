@@ -67,8 +67,29 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
     );
   };
 
+  const reviewSchema = {
+    "@context": "https://schema.org/",
+    "@type": "Review",
+    "itemReviewed": {
+      "@type": "LocalBusiness",
+      "name": "IZODIAMANT"
+    },
+    "author": {
+      "@type": "Person",
+      "name": review.author
+    },
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": review.rating,
+      "bestRating": "5"
+    },
+    "reviewBody": review.text,
+    "datePublished": review.date
+  };
+
   return (
     <div className="bg-white rounded-3xl p-8 border-2 border-primary/10 relative overflow-hidden group shadow-sm mt-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
       <Quote className="absolute top-6 right-8 w-12 h-12 text-primary/5 group-hover:text-primary/10 transition-colors" />
       
       <div className="mb-6">

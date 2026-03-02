@@ -1,11 +1,37 @@
+import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ShieldCheck, CheckCircle2, Clock, Coins, Construction } from "lucide-react";
 import Link from "next/link";
+import Script from "next/script";
 import servicesData from "@/data/services.json";
+
+export const metadata: Metadata = {
+  title: "Chemická injektáž vlhkého zdiva | IZODIAMANT",
+  description: "Moderní a šetrná metoda vytvoření dodatečné hydroizolace pomocí chemické injektáže. Certifikované gely, rychlá aplikace bez narušení statiky.",
+  keywords: ["chemická injektáž", "injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "odvlhčení", "Nové Hrady", "ČR"],
+};
 
 export default function ChemicalInjectionPage() {
   const data = servicesData["chemicka-injektaz"];
+
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Chemická injektáž zdiva",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "IZODIAMANT"
+    },
+    "description": "Moderní a vysoce účinná metoda vytvoření dodatečné hydroizolační clony. Ideální pro objekty, kde nelze mechanicky řezat.",
+    "offers": {
+      "@type": "Offer",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "description": data.priceRange
+      }
+    }
+  };
 
   const features = [
     "Vhodné tam, kde nelze mechanicky řezat",
@@ -18,6 +44,7 @@ export default function ChemicalInjectionPage() {
 
   return (
     <main className="min-h-screen bg-neutral-light">
+      <Script id="service-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} strategy="beforeInteractive" />
       <Header />
       
       <section className="pt-32 pb-20">

@@ -1,11 +1,37 @@
+import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Gem, CheckCircle2, ShieldCheck, Clock, Coins, Construction } from "lucide-react";
 import Link from "next/link";
+import Script from "next/script";
 import servicesData from "@/data/services.json";
+
+export const metadata: Metadata = {
+  title: "Podřezávání zdiva diamantovým lanem | IZODIAMANT",
+  description: "Sanace vlhkého zdiva diamantovým lanem pro extrémně tvrdé materiály jako kámen a beton. Rychlá realizace, doživotní záruka, nulové otřesy.",
+  keywords: ["diamantové lano", "podřezání zdiva lanem", "sanace kamenného zdiva", "izolace betonu", "Nové Hrady", "ČR"],
+};
 
 export default function DiamondWirePage() {
   const data = servicesData["diamantove-lano"];
+
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Podřezávání zdiva diamantovým lanem",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "IZODIAMANT"
+    },
+    "description": "Nejmodernější a nejuniverzálnější metoda sanace vlhkého zdiva. Poradí si s jakýmkoliv materiálem od smíšeného zdiva až po tvrdý kámen či železobeton.",
+    "offers": {
+      "@type": "Offer",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "description": data.priceRange
+      }
+    }
+  };
   
   const features = [
     "Vhodné pro extrémně tvrdé materiály (kámen, beton)",
@@ -18,6 +44,7 @@ export default function DiamondWirePage() {
 
   return (
     <main className="min-h-screen bg-neutral-light">
+      <Script id="service-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} strategy="beforeInteractive" />
       <Header />
       
       <section className="pt-32 pb-20">

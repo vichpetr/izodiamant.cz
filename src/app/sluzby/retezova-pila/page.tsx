@@ -1,11 +1,37 @@
+import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Zap, CheckCircle2, ShieldCheck, Clock, Coins, Construction } from "lucide-react";
 import Link from "next/link";
+import Script from "next/script";
 import servicesData from "@/data/services.json";
+
+export const metadata: Metadata = {
+  title: "Podřezávání zdiva řetězovou pilou | IZODIAMANT",
+  description: "Rychlé a efektivní podřezávání cihelného zdiva řetězovou pilou. Trvalé odstranění vzlínající vlhkosti s dlouholetou zárukou.",
+  keywords: ["řetězová pila", "podřezávání cihelného zdiva", "sanace vlhkého zdiva", "izolace proti vlhkosti", "Nové Hrady", "ČR"],
+};
 
 export default function ChainSawPage() {
   const data = servicesData["retezova-pila"];
+
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Podřezávání zdiva řetězovou pilou",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "IZODIAMANT"
+    },
+    "description": "Osvědčená mechanická metoda izolace vlhkého zdiva, určená primárně pro cihlové stavby s průběžnou spárou.",
+    "offers": {
+      "@type": "Offer",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "description": data.priceRange
+      }
+    }
+  };
 
   const features = [
     "Nejrychlejší metoda pro cihelné zdivo",
@@ -18,6 +44,7 @@ export default function ChainSawPage() {
 
   return (
     <main className="min-h-screen bg-neutral-light">
+      <Script id="service-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} strategy="beforeInteractive" />
       <Header />
       
       <section className="pt-32 pb-20">
