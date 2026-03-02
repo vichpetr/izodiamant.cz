@@ -2,8 +2,9 @@
 
 import { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calculator, ChevronRight, CheckCircle2, ArrowLeft, Send, Info } from 'lucide-react';
+import { Calculator, ChevronRight, CheckCircle2, ArrowLeft, Send, Info, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 import calculatorData from '@/data/calculator.json';
 import servicesData from '@/data/services.json';
 
@@ -129,9 +130,9 @@ export default function PricingCalculator() {
   };
 
   const priceListTooltip = [
-    { name: "Diamantové lano", price: servicesData["diamantove-lano"].priceRange.replace('m²', 'bm*') },
-    { name: "Řetězová pila", price: servicesData["retezova-pila"].priceRange.replace('m²', 'bm*') },
-    { name: "Chemická injektáž", price: servicesData["chemicka-injektaz"].priceRange }
+    { name: "Diamantové lano", price: servicesData["diamantove-lano"].priceRange.replace('m²', 'bm*'), href: "/sluzby/diamantove-lano" },
+    { name: "Řetězová pila", price: servicesData["retezova-pila"].priceRange.replace('m²', 'bm*'), href: "/sluzby/retezova-pila" },
+    { name: "Chemická injektáž", price: servicesData["chemicka-injektaz"].priceRange, href: "/sluzby/chemicka-injektaz" }
   ];
 
   return (
@@ -155,13 +156,16 @@ export default function PricingCalculator() {
               <Info className="w-4 h-4" />
             </div>
             
-            <div className="absolute top-0 right-10 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 transform translate-x-2 group-hover:translate-x-0 w-64">
+            <div className="absolute top-0 right-0 pt-10 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 w-72">
               <div className="bg-neutral-dark border-2 border-primary/30 p-5 rounded-2xl shadow-2xl backdrop-blur-xl">
-                <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic border-b border-white/10 pb-2">Stručný ceník</h4>
-                <div className="space-y-3">
+                <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic border-b border-white/10 pb-2">Ceník</h4>
+                <div className="space-y-4">
                   {priceListTooltip.map((item, i) => (
-                    <div key={i} className="flex justify-between items-start gap-4">
-                      <span className="text-[10px] font-bold text-white/80 uppercase leading-tight">{item.name}</span>
+                    <div key={i} className="flex justify-between items-center gap-4 group/item">
+                      <Link href={item.href} className="flex items-center gap-1.5 text-[10px] font-bold text-white/80 hover:text-primary uppercase leading-tight transition-colors">
+                        {item.name}
+                        <ExternalLink className="w-2.5 h-2.5" />
+                      </Link>
                       <span className="text-[10px] font-black text-primary uppercase whitespace-nowrap">{item.price}</span>
                     </div>
                   ))}
