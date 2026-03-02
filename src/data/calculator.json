@@ -2,25 +2,57 @@
   {
     "id": "cihla",
     "label": "Cihla",
-    "description": "Nejčastější, rychlý postup.",
-    "basePrice": 1500
+    "description": "Standardní zdivo s průběžnou spárou.",
+    "availableServices": [
+      {
+        "id": "retezova-pila",
+        "label": "Řetězová pila",
+        "minPrice": 2500,
+        "maxPrice": 3500,
+        "unit": "m2"
+      },
+      {
+        "id": "chemicka-injektaz",
+        "label": "Chemická injektáž",
+        "minPrice": 2500,
+        "maxPrice": 3900,
+        "unit": "bm"
+      }
+    ]
   },
   {
     "id": "kamen",
-    "label": "Kámen",
-    "description": "Vyžaduje diamantové lano.",
-    "basePrice": 2500
-  },
-  {
-    "id": "smisene",
-    "label": "Smíšené",
-    "description": "Kombinace materiálů.",
-    "basePrice": 2000
+    "label": "Kámen / Smíšené",
+    "description": "Tvrdé materiály bez pravidelné spáry.",
+    "availableServices": [
+      {
+        "id": "diamantove-lano",
+        "label": "Diamantové lano",
+        "minPrice": 4500,
+        "maxPrice": 6500,
+        "unit": "m2"
+      },
+      {
+        "id": "chemicka-injektaz",
+        "label": "Chemická injektáž",
+        "minPrice": 2500,
+        "maxPrice": 3900,
+        "unit": "bm"
+      }
+    ]
   },
   {
     "id": "beton",
-    "label": "Beton",
-    "description": "Extrémně tvrdý materiál.",
-    "basePrice": 3000
+    "label": "Beton / Železobeton",
+    "description": "Extrémně pevné konstrukce a základy.",
+    "availableServices": [
+      {
+        "id": "diamantove-lano",
+        "label": "Diamantové lano",
+        "minPrice": 5500,
+        "maxPrice": 8500,
+        "unit": "m2"
+      }
+    ]
   }
 ]
