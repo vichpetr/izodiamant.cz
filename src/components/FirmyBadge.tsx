@@ -27,9 +27,11 @@ export default function FirmyBadge() {
     fetchLiveSummary();
   }, []);
 
+  const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || 'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html';
+
   return (
     <a 
-      href="https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html" 
+      href={profileUrl} 
       target="_blank"
       rel="noopener noreferrer"
       className="inline-flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-neutral-dark/5 hover:border-primary transition-all group"

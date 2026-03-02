@@ -50,6 +50,8 @@ export default function HomeReviews() {
     }
   };
 
+  const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || 'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html';
+
   return (
     <section id="reviews" ref={sectionRef} className="py-24 bg-neutral-dark text-white overflow-hidden relative scroll-mt-20">
       <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
@@ -65,7 +67,7 @@ export default function HomeReviews() {
             </p>
           </div>
           <a 
-            href="https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html" 
+            href={profileUrl} 
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-white transition-colors shrink-0 mb-2"

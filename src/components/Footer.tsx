@@ -5,6 +5,7 @@ import FirmyBadge from './FirmyBadge';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || 'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html';
 
   const content = {
     desc: "Specialisté na sanaci vlhkého zdiva a podřezávání diamantovým lanem. Vracíme zdraví vaší stavbě.",
@@ -21,7 +22,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="space-y-6">
-            <Link href="/" className="flex items-center gap-3 group transition-transform hover:scale-105">
+            <Link href="/" className="relative h-16 w-full block group transition-transform hover:scale-105">
               <div className="relative w-10 h-10 shrink-0">
                 <Image 
                   src="/logo.png"
@@ -63,7 +64,7 @@ export default function Footer() {
               <li><Link href="/#technologie" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Technologie</Link></li>
               <li><Link href="/#calculator" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Kalkulátor</Link></li>
               <li><Link href="/reference" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Reference</Link></li>
-              <li><a href="https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Hodnocení</a></li>
+              <li><a href={profileUrl} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Hodnocení</a></li>
               <li><Link href="/#faq" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Časté dotazy</Link></li>
             </ul>
           </div>
