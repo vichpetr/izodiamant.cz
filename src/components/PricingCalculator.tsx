@@ -221,7 +221,7 @@ export default function PricingCalculator() {
                             </div>
                           </div>
 
-                          <div className="space-y-3 border-l md:border-white/5 md:pl-6">
+                          <div className="space-y-3 lg:border-l lg:border-white/5 lg:pl-6">
                             <h3 className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-2 italic">4. Technologie</h3>
                             <div className="flex flex-col gap-2">
                               {!materialId ? (
@@ -249,7 +249,7 @@ export default function PricingCalculator() {
                       </div>
 
                       {/* Right Side: Result (40%) */}
-                      <div className="lg:col-span-2 flex flex-col justify-center border-l lg:border-white/5 lg:pl-10">
+                      <div className="lg:col-span-2 flex flex-col justify-center lg:border-l lg:border-white/5 lg:pl-10">
                         <div className="bg-primary/10 rounded-2xl p-8 border-2 border-primary/20 text-center relative overflow-hidden h-fit">
                           <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-3 italic leading-none">
                             {!materialId ? "Rozpětí všech technologií" : !serviceId ? "Rozpětí pro dané zdivo" : "Odhad ceny pro vaši volbu"}
