@@ -63,7 +63,7 @@ export default function Footer() {
               <li><Link href="/#technologie" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Technologie</Link></li>
               <li><Link href="/#calculator" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Kalkulátor</Link></li>
               <li><Link href="/reference" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Reference</Link></li>
-              <li><Link href="/hodnoceni" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Hodnocení</Link></li>
+              <li><a href="https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Hodnocení</a></li>
               <li><Link href="/#faq" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Časté dotazy</Link></li>
             </ul>
           </div>
