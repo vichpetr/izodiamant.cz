@@ -3,29 +3,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus } from 'lucide-react';
+import faqData from '@/data/faq.json';
 
 export default function FAQ() {
   const content = {
     h2: "Máte otázky? My máme řešení.",
     sub: "Vše, co potřebujete vědět před zahájením sanace.",
-    faqs: [
-      {
-        question: 'Práší se při podřezávání v interiéru?',
-        answer: 'Díky modernímu odsávání a technologii vodního chlazení diamantového lana minimalizujeme prašnost na minimum. Většina prací probíhá bez nutnosti opustit nemovitost. Prostor vždy pečlivě zakrýváme.'
-      },
-      {
-        question: 'Jak dlouho trvá sanace průměrného rodinného domu?',
-        answer: 'Standardní rodinný dům podřežeme a izolujeme během 2–4 pracovních dnů v závislosti na zvolené technologii, přístupnosti a celkové tloušťce zdiva.'
-      },
-      {
-        question: 'Může dojít k narušení statiky domu?',
-        answer: 'Ne. Postupujeme po malých úsecích (tzv. "na střídačku") a do vzniklé spáry okamžitě vkládáme hydroizolaci a speciální statické klíny. Následně se spára tlakově vyplní cementovou směsí. Statika domu je 100% zajištěna.'
-      },
-      {
-        question: 'Poskytujete záruku na provedené práce?',
-        answer: 'Ano, na vloženou hydroizolaci a funkčnost podřezání poskytujeme prodlouženou záruku. Díky použití vysoce kvalitních PE folií a sklolaminátových desek je životnost izolace prakticky doživotní.'
-      }
-    ]
   };
 
   return (
@@ -41,7 +24,7 @@ export default function FAQ() {
         </div>
 
         <div className="space-y-4">
-          {content.faqs.map((faq, index) => (
+          {faqData.map((faq, index) => (
             <FAQItem key={index} question={faq.question} answer={faq.answer} />
           ))}
         </div>
