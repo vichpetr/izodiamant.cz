@@ -4,7 +4,18 @@ import { Star, MessageSquare, Quote, ExternalLink } from "lucide-react";
 import reviewsData from "@/data/reviews.json";
 import Link from "next/link";
 
+interface Review {
+  id: string;
+  author: string;
+  rating: number;
+  text: string;
+  date: string;
+  referenceId?: string;
+}
+
 export default function ReviewsPage() {
+  const reviews = reviewsData as Review[];
+
   return (
     <main className="min-h-screen bg-neutral-light">
       <Header />
@@ -29,7 +40,7 @@ export default function ReviewsPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {reviewsData.map((review) => (
+            {reviews.map((review) => (
               <div key={review.id} className="bg-white p-10 rounded-[2rem] shadow-sm border border-neutral-dark/5 flex flex-col h-full relative overflow-hidden group">
                 <Quote className="absolute top-8 right-8 w-12 h-12 text-primary/5 group-hover:text-primary/10 transition-colors" />
                 
