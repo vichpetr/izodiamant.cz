@@ -5,7 +5,11 @@ import FirmyBadge from './FirmyBadge';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || 'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html';
+  const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
+
+  if (!profileUrl) {
+    throw new Error("Kritická chyba: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
+  }
 
   const content = {
     desc: "Specialisté na sanaci vlhkého zdiva a podřezávání diamantovým lanem. Vracíme zdraví vaší stavbě.",

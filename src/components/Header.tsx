@@ -13,6 +13,11 @@ export default function Header() {
   const pathname = usePathname();
 
   const isHomepage = pathname === '/';
+  const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
+
+  if (!profileUrl) {
+    throw new Error("Kritická chyba: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
+  }
 
   useEffect(() => {
     const handleScroll = () => {

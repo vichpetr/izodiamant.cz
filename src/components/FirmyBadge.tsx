@@ -5,29 +5,35 @@ import Image from 'next/image';
 import { Star } from 'lucide-react';
 
 export default function FirmyBadge() {
-  const [data, setData] = useState({ rating: 5.0, count: 12 }); // Fallback data
+  const [data, setData] = useState<{ rating: number, count: number } | null>(null);
+  const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
+  const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
+
+  if (!profileUrl) {
+    throw new Error("Kritická chyba: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
+  }
 
   useEffect(() => {
-    const WORKER_URL = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
-    
-    async function fetchLiveSummary() {
-      if (!WORKER_URL || WORKER_URL.includes('vás-účet')) return;
+    if (!workerUrl || workerUrl.includes('vás-účet')) return;
 
+    async function fetchLiveSummary() {
       try {
-        const res = await fetch(WORKER_URL);
+        const res = await fetch(workerUrl!); // Using non-null assertion since we check it above
         const json = await res.json();
         if (json.rating) {
           setData({ rating: json.rating, count: json.count });
         }
       } catch (err) {
-        // Fallback to static
+        console.error('Chyba při načítání živých dat hodnocení');
       }
     }
 
     fetchLiveSummary();
-  }, []);
+  }, [workerUrl]);
 
-  const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || 'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html';
+  // If no live data yet, show default based on known good state, but only if we have the profile URL
+  const rating = data?.rating || 5.0;
+  const count = data?.count || 12;
 
   return (
     <a 
@@ -49,13 +55,13 @@ export default function FirmyBadge() {
           {[...Array(5)].map((_, i) => (
             <Star 
               key={i} 
-              className={`w-3 h-3 ${i < Math.floor(data.rating) ? 'fill-current' : 'text-neutral-200'}`} 
+              className={`w-3 h-3 ${i < Math.floor(rating) ? 'fill-current' : 'text-neutral-200'}`} 
             />
           ))}
-          <span className="ml-1 text-neutral-dark font-black text-sm italic">{data.rating.toFixed(1)}</span>
+          <span className="ml-1 text-neutral-dark font-black text-sm italic">{rating.toFixed(1)}</span>
         </div>
         <div className="text-[10px] font-black text-neutral-dark/40 uppercase tracking-widest group-hover:text-neutral-dark transition-colors">
-          {data.count} hodnocení na Firmy.cz
+          {count} hodnocení na Firmy.cz
         </div>
       </div>
     </a>

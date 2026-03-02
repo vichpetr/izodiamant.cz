@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Quote, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
-import staticReviews from '@/data/reviews.json';
 
 interface Review {
   id: string;
@@ -15,28 +14,41 @@ interface Review {
 
 export default function HomeReviews() {
   const [showAll, setShowAll] = useState(false);
-  const [reviews, setReviews] = useState<Review[]>(staticReviews);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const WORKER_URL = process.env.NEXT_PUBLIC_REVIEWS_API_URL; 
-    
-    async function fetchLiveReviews() {
-      if (!WORKER_URL || WORKER_URL.includes('vás-účet')) return;
+  const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
+  const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
 
+  if (!profileUrl) {
+    throw new Error("Kritická chyba: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
+  }
+
+  if (!workerUrl) {
+    throw new Error("Kritická chyba: NEXT_PUBLIC_REVIEWS_API_URL není definována v .env");
+  }
+
+  useEffect(() => {
+    async function fetchLiveReviews() {
       try {
-        const res = await fetch(WORKER_URL);
+        const res = await fetch(workerUrl!);
         const data = await res.json();
-        if (data.reviews && data.reviews.length > 0) {
+        if (data.reviews) {
           setReviews(data.reviews);
         }
       } catch (err) {
-        console.log('Using static fallback for reviews');
+        console.error('Kritická chyba: Nelze načíst živá data recenzí a fallback je zakázán.');
+      } finally {
+        setIsLoading(false);
       }
     }
 
     fetchLiveReviews();
-  }, []);
+  }, [workerUrl]);
+
+  if (isLoading) return null; // Or a loading skeleton
+  if (reviews.length === 0) return null; // Don't show the section if no reviews could be loaded
 
   const sortedReviews = [...reviews].sort((a, b) => b.date.localeCompare(a.date));
   const visibleReviews = showAll ? sortedReviews : sortedReviews.slice(0, 3);
@@ -49,8 +61,6 @@ export default function HomeReviews() {
       setShowAll(true);
     }
   };
-
-  const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || 'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html';
 
   return (
     <section id="reviews" ref={sectionRef} className="py-24 bg-neutral-dark text-white overflow-hidden relative scroll-mt-20">
