@@ -63,32 +63,32 @@ export default function PricingCalculator() {
   };
 
   const calculateRange = () => {
-    let minP = 0;
-    let maxP = 0;
-    let unit = 'm2';
+    let candidates: Service[] = [];
 
+    // 1. Collect potential services based on current selection level
     if (selectedService) {
-      minP = selectedService.minPrice;
-      maxP = selectedService.maxPrice;
-      unit = selectedService.unit;
+      candidates = [selectedService];
+    } else if (selectedMaterial) {
+      candidates = selectedMaterial.availableServices;
     } else {
-      calculatorData.forEach((m: any) => {
-        m.availableServices.forEach((s: any) => {
-          if (s.maxPrice > maxP) {
-            minP = s.minPrice;
-            maxP = s.maxPrice;
-            unit = s.unit;
-          }
-        });
+      // Global fallback: all services from all materials
+      (calculatorData as Material[]).forEach(m => {
+        candidates.push(...m.availableServices);
       });
     }
 
-    const isM2 = unit === 'm2';
-    const factor = isM2 ? (thickness / 100) * length : length;
-    
+    // 2. Calculate absolute min/max from all candidates
+    const prices: number[] = [];
+    candidates.forEach(s => {
+      const isM2 = s.unit === 'm2';
+      const factor = isM2 ? (thickness / 100) * length : length;
+      prices.push(s.minPrice * factor);
+      prices.push(s.maxPrice * factor);
+    });
+
     return {
-      min: Math.round(minP * factor),
-      max: Math.round(maxP * factor),
+      min: Math.round(Math.min(...prices)),
+      max: Math.round(Math.max(...prices)),
       isFallback: !selectedService
     };
   };
@@ -115,7 +115,7 @@ export default function PricingCalculator() {
         body: JSON.stringify({
           ...formData,
           material: selectedMaterial?.label || 'Nevybráno',
-          service: selectedService?.label || 'Nevybráno (odhad dle max)',
+          service: selectedService?.label || 'Nevybráno (rozpětí všech variant)',
           thickness,
           length,
           price: `${range.min.toLocaleString()} - ${range.max.toLocaleString()} Kč`,
@@ -255,13 +255,13 @@ export default function PricingCalculator() {
                       <div className="lg:col-span-2 flex flex-col justify-center border-l lg:border-white/5 lg:pl-10">
                         <div className="bg-primary/10 rounded-2xl p-8 border-2 border-primary/20 text-center relative overflow-hidden h-fit">
                           <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-3 italic leading-none">
-                            {range.isFallback ? "Maximální odhad ceny" : "Předběžné cenové rozpětí"}
+                            {!materialId ? "Rozpětí všech technologií" : !serviceId ? "Rozpětí pro dané zdivo" : "Odhad ceny pro vaši volbu"}
                           </div>
                           <div className="text-4xl md:text-5xl font-black text-white italic tracking-tighter mb-3 leading-none">
                             {range.min.toLocaleString()} – {range.max.toLocaleString()} <span className="text-lg not-italic font-bold text-white/40 uppercase">Kč</span>
                           </div>
                           <div className="inline-block px-3 py-1 bg-white/5 rounded-full text-[9px] text-white/40 font-black uppercase tracking-widest leading-none">
-                            Bez DPH | {selectedService?.label || "Nejdražší varianta"}
+                            Bez DPH | {selectedService?.label || (selectedMaterial ? "Všechny dostupné metody" : "Všechny varianty")}
                           </div>
                         </div>
                       </div>
