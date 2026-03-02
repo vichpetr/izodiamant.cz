@@ -5,6 +5,7 @@ export const runtime = 'edge';
 
 export async function POST(request: Request) {
   const apiKey = process.env.RESEND_API_KEY;
+  const fromEmail = process.env.FROM_EMAIL || 'IZODIAMANT <onboarding@resend.dev>';
   const contactEmail = process.env.CONTACT_EMAIL || 'info@izodiamant.cz';
 
   if (!apiKey) {
@@ -95,7 +96,7 @@ export async function POST(request: Request) {
 
     // Send email to admin
     await resend.emails.send({
-      from: 'IZODIAMANT <onboarding@resend.dev>',
+      from: fromEmail,
       to: [contactEmail],
       replyTo: email || undefined,
       subject: adminSubject,
@@ -135,7 +136,7 @@ export async function POST(request: Request) {
       `;
 
       await resend.emails.send({
-        from: 'IZODIAMANT <onboarding@resend.dev>',
+        from: fromEmail,
         to: [email],
         subject: customerSubject,
         html: customerHtml,
