@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Quote, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import staticReviews from '@/data/reviews.json';
 
 interface Review {
   id: string;
@@ -14,7 +15,7 @@ interface Review {
 
 export default function HomeReviews() {
   const [showAll, setShowAll] = useState(false);
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<Review[]>(staticReviews);
   const [isLoading, setIsLoading] = useState(true);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -22,23 +23,25 @@ export default function HomeReviews() {
   const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
 
   if (!profileUrl) {
-    throw new Error("Kritická chyba: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
-  }
-
-  if (!workerUrl) {
-    throw new Error("Kritická chyba: NEXT_PUBLIC_REVIEWS_API_URL není definována v .env");
+    throw new Error("Kritická chybi: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
   }
 
   useEffect(() => {
     async function fetchLiveReviews() {
+      // If workerUrl is not configured or is the placeholder, we stick with static reviews
+      if (!workerUrl || workerUrl.includes('vás-účet')) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        const res = await fetch(workerUrl!);
+        const res = await fetch(workerUrl);
         const data = await res.json();
-        if (data.reviews) {
+        if (data.reviews && data.reviews.length > 0) {
           setReviews(data.reviews);
         }
       } catch (err) {
-        console.error('Kritická chyba: Nelze načíst živá data recenzí a fallback je zakázán.');
+        console.warn('Nepodařilo se načíst živé recenze, používám statická data.');
       } finally {
         setIsLoading(false);
       }
@@ -47,8 +50,8 @@ export default function HomeReviews() {
     fetchLiveReviews();
   }, [workerUrl]);
 
-  if (isLoading) return null; // Or a loading skeleton
-  if (reviews.length === 0) return null; // Don't show the section if no reviews could be loaded
+  // We show the section even if loading, because we have static fallback
+  if (reviews.length === 0) return null;
 
   const sortedReviews = [...reviews].sort((a, b) => b.date.localeCompare(a.date));
   const visibleReviews = showAll ? sortedReviews : sortedReviews.slice(0, 3);
