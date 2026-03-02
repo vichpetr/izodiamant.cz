@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Quote, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
-import reviewsData from '@/data/reviews.json';
+import staticReviews from '@/data/reviews.json';
 
 interface Review {
   id: string;
@@ -11,14 +11,34 @@ interface Review {
   rating: number;
   text: string;
   date: string;
-  referenceId?: string;
 }
 
 export default function HomeReviews() {
   const [showAll, setShowAll] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>(staticReviews);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  const sortedReviews = [...(reviewsData as Review[])].sort((a, b) => b.date.localeCompare(a.date));
+  useEffect(() => {
+    // Tady pak vložíš URL svého Cloudflare Workeru
+    const WORKER_URL = 'https://tvuj-worker.workers.dev'; 
+    
+    async function fetchLiveReviews() {
+      try {
+        const res = await fetch(WORKER_URL);
+        const data = await res.json();
+        if (data.reviews && data.reviews.length > 0) {
+          setReviews(data.reviews);
+        }
+      } catch (err) {
+        console.log('Using static fallback for reviews');
+      }
+    }
+
+    // Odkomentuj řádek níže, až budeš mít Worker nasazený
+    // fetchLiveReviews();
+  }, []);
+
+  const sortedReviews = [...reviews].sort((a, b) => b.date.localeCompare(a.date));
   const visibleReviews = showAll ? sortedReviews : sortedReviews.slice(0, 3);
 
   const handleToggle = () => {
