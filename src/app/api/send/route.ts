@@ -5,6 +5,7 @@ export const runtime = 'edge';
 
 export async function POST(request: Request) {
   const apiKey = process.env.RESEND_API_KEY;
+  const contactEmail = process.env.CONTACT_EMAIL || 'info@izodiamant.cz';
 
   if (!apiKey) {
     console.error("Kritická chyba: RESEND_API_KEY není definována v .env");
@@ -17,9 +18,9 @@ export async function POST(request: Request) {
     const { name, phone, email, message, material, service, thickness, length, price } = await request.json();
 
     const isContactForm = material === 'Obecný dotaz';
-    const subject = isContactForm ? `Nová zpráva: ${name}` : `Poptávka z kalkulačky: ${name}`;
+    const adminSubject = isContactForm ? `Nová zpráva: ${name}` : `Poptávka z kalkulačky: ${name}`;
 
-    const html = `
+    const adminHtml = `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a1a; border: 1px solid #eee; border-radius: 12px; overflow: hidden;">
         <div style="background-color: #1a1a1a; padding: 30px; text-align: center;">
           <h1 style="color: #c4d600; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">IZODIAMANT</h1>
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
           ` : ''}
 
           ${message ? `
-            <div style="border-top: 1px solid #eee; pt: 25px;">
+            <div style="border-top: 1px solid #eee; padding-top: 25px;">
               <h3 style="font-size: 14px; text-transform: uppercase; color: #666;">Zpráva od zákazníka:</h3>
               <p style="font-size: 16px; line-height: 1.6; white-space: pre-wrap; color: #333; background: #fff8e1; padding: 15px; border-radius: 8px; border-left: 4px solid #c4d600;">${message}</p>
             </div>
@@ -92,19 +93,58 @@ export async function POST(request: Request) {
       </div>
     `;
 
-    const { data, error } = await resend.emails.send({
+    // Send email to admin
+    const { data: adminData, error: adminError } = await resend.emails.send({
       from: 'IZODIAMANT Web <onboarding@resend.dev>',
-      to: ['info@izodiamant.cz'],
+      to: [contactEmail],
       replyTo: email || undefined,
-      subject: subject,
-      html: html,
+      subject: adminSubject,
+      html: adminHtml,
     });
 
-    if (error) {
-      return NextResponse.json({ error }, { status: 500 });
+    if (adminError) return NextResponse.json({ adminError }, { status: 500 });
+
+    // Send confirmation to customer if email is provided
+    if (email) {
+      const customerSubject = 'Děkujeme za vaši poptávku – IZODIAMANT.cz';
+      const customerHtml = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a1a; border: 1px solid #eee; border-radius: 12px; overflow: hidden;">
+          <div style="background-color: #1a1a1a; padding: 30px; text-align: center;">
+            <h1 style="color: #c4d600; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">IZODIAMANT</h1>
+          </div>
+          <div style="padding: 40px; text-align: center;">
+            <h2 style="font-size: 22px; margin-bottom: 20px;">Dobrý den, ${name},</h2>
+            <p style="font-size: 16px; line-height: 1.6; color: #444; margin-bottom: 30px;">
+              Děkujeme za váš zájem o naše služby. Vaši zprávu jsme úspěšně přijali a náš technik ji již začal zpracovávat.
+            </p>
+            <div style="background-color: #f9f9f9; padding: 25px; border-radius: 8px; text-align: left; margin-bottom: 30px;">
+              <p style="margin: 0 0 10px; font-size: 14px; color: #666; text-transform: uppercase;">Co se bude dít dál?</p>
+              <ul style="margin: 0; padding-left: 20px; font-size: 15px; line-height: 1.8;">
+                <li>Prověříme technické možnosti realizace.</li>
+                <li>Budeme vás kontaktovat pro upřesnění detailů nebo domluvení bezplatné obhlídky.</li>
+                <li>V případě kalkulačky pro vás připravíme přesný rozpis prací.</li>
+              </ul>
+            </div>
+            <p style="font-size: 14px; color: #888;">
+              Tento e-mail je potvrzením o doručení zprávy. <br />
+              V případě potřeby nás můžete kontaktovat přímo na <a href="tel:+420737017012" style="color: #1a1a1a; font-weight: bold; text-decoration: none;">+420 737 017 012</a>.
+            </p>
+          </div>
+          <div style="background-color: #f4f4f4; padding: 20px; text-align: center; color: #999; font-size: 11px;">
+            &copy; ${new Date().getFullYear()} IZODIAMANT - Sanace a izolace zdiva
+          </div>
+        </div>
+      `;
+
+      await resend.emails.send({
+        from: 'Václav Ropek | IZODIAMANT <onboarding@resend.dev>',
+        to: [email],
+        subject: customerSubject,
+        html: customerHtml,
+      });
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(adminData);
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
