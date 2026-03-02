@@ -27,7 +27,7 @@ export default function Hero() {
           transition={{ duration: 0.8, ease: 'easeOut' }}
         >
           
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black text-neutral-dark tracking-tighter mb-8 text-balance uppercase italic leading-[0.9]">
+          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black text-neutral-dark tracking-tighter mb-8 text-balance uppercase italic leading-[1.1] sm:leading-[0.95]">
             {content.h1.split('. ')[0]}. <br className="hidden sm:block" />
             <span className="text-primary">{content.h1.split('. ')[1]}</span>
           </h1>
