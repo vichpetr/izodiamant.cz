@@ -94,15 +94,13 @@ export async function POST(request: Request) {
     `;
 
     // Send email to admin
-    const { data: adminData, error: adminError } = await resend.emails.send({
-      from: 'IZODIAMANT Web <onboarding@resend.dev>',
+    await resend.emails.send({
+      from: 'IZODIAMANT <onboarding@resend.dev>',
       to: [contactEmail],
       replyTo: email || undefined,
       subject: adminSubject,
       html: adminHtml,
     });
-
-    if (adminError) return NextResponse.json({ adminError }, { status: 500 });
 
     // Send confirmation to customer if email is provided
     if (email) {
@@ -137,15 +135,16 @@ export async function POST(request: Request) {
       `;
 
       await resend.emails.send({
-        from: 'Václav Ropek | IZODIAMANT <onboarding@resend.dev>',
+        from: 'IZODIAMANT <onboarding@resend.dev>',
         to: [email],
         subject: customerSubject,
         html: customerHtml,
       });
     }
 
-    return NextResponse.json(adminData);
+    return NextResponse.json({ success: true });
   } catch (error) {
+    console.error("Chyba při odesílání e-mailu:", error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
