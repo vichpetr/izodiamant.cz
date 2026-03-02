@@ -3,9 +3,7 @@
 Tento dokument popisuje proces nasazení aplikace IZODIAMANT.cz a nastavení pomocného Workeru pro živé recenze.
 
 ## 1. Cloudflare Pages (Frontend)
-... (beze změny) ...
-
----
+...
 
 ## 2. Cloudflare Worker (Recenze API)
 Tento skript parsuje data z Firmy.cz a poskytuje je webu jako JSON.
@@ -45,39 +43,29 @@ export default {
       });
       const html = await response.text();
 
+      const blocks = html.split('<div class="item">').slice(1);
       const reviews = [];
-      const itemRegex = /<div class="item">([\s\S]*?)<\/div>\s*(?=<div class="item">|<\/div>\s*<\/div>\s*<div class="btns">)/g;
-      
-      const authorRegex = /<div class="authorName">\s*<span>([^<]+)<\/span>/;
-      const dateRegex = /<span class="date">([^<]+)<\/span>/;
-      const textRegex = /<div class="text">([\s\S]*?)<\/div>/;
-      // Přesný regex pro extrakci procent z title
-      const ratingRegex = /class="reviewRating[^"]*" title="(\d+) %"/;
 
-      let itemMatch;
-      while ((itemMatch = itemRegex.exec(html)) !== null) {
-        const itemHtml = itemMatch[1];
-        
-        const author = itemHtml.match(authorRegex);
-        const dateRaw = itemHtml.match(dateRegex);
-        const text = itemHtml.match(textRegex);
-        const ratingMatch = itemHtml.match(ratingRegex);
+      blocks.forEach(block => {
+        const authorMatch = block.match(/<div class="authorName">\s*<span>([^<]+)<\/span>/);
+        const dateMatch = block.match(/<span class="date">([^<]+)<\/span>/);
+        const textMatch = block.match(/<div class="text">([\s\S]*?)<\/div>/);
+        const ratingMatch = block.match(/title="(\d+) %"/);
 
-        if (author && text) {
-          const authorName = author[1].trim();
-          const cleanDate = dateRaw ? normalizeDate(dateRaw[1].trim()) : "2024-01-01";
-          // Přepočet procent na hvězdy (100% = 5, 90% = 4.5, atd.)
+        if (authorMatch && textMatch) {
+          const authorName = authorMatch[1].trim();
+          const cleanDate = dateMatch ? normalizeDate(dateMatch[1].trim()) : "2024-01-01";
           const stars = ratingMatch ? (parseInt(ratingMatch[1]) / 20) : 5;
           
           reviews.push({
             id: `${cleanDate}-${createSlug(authorName)}`,
             author: authorName,
-            text: text[1].trim().replace(/<[^>]*>?/gm, ''),
+            text: textMatch[1].trim().replace(/<[^>]*>?/gm, ''),
             date: cleanDate,
             rating: stars
           });
         }
-      }
+      });
 
       const statsMatch = html.match(/<div class="badge green">\s*([\d,]+)\s*<\/div>/);
       const countMatch = html.match(/<span class="ratingCount">(\d+)\s*hodnocení<\/span>/);
@@ -105,3 +93,4 @@ export default {
 ```
 
 4. Klikněte na **Save and Deploy**.
+5. Adresu Workeru vložte do `NEXT_PUBLIC_REVIEWS_API_URL` v nastavení Pages.
