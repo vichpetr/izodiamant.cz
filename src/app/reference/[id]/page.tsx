@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ReferenceSlider from "@/components/ReferenceSlider";
-import { MapPin, ArrowLeft, Gem, Zap, CheckCircle2 } from "lucide-react";
+import { MapPin, ArrowLeft, Gem, Zap, CheckCircle2, Calendar } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import referencesData from '@/data/references.json';
@@ -10,6 +10,7 @@ interface Project {
   id: string;
   title: string;
   location: string;
+  date: string;
   technology: string;
   scope: string;
   duration: string;
@@ -36,8 +37,16 @@ export default async function ProjectPage({
 
   if (!project) return <div>Projekt nenalezen</div>;
 
-  // Logic to determine if we should show the slider
   const showSlider = project.before && project.after && project.before !== project.after;
+
+  const formatDate = (dateStr: string) => {
+    const [year, month] = dateStr.split('-');
+    const months = [
+      'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
+      'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'
+    ];
+    return `${months[parseInt(month) - 1]} ${year}`;
+  };
 
   return (
     <main className="min-h-screen bg-neutral-light text-foreground">
@@ -56,9 +65,15 @@ export default async function ProjectPage({
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <div className="space-y-12">
               <div>
-                <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary font-black text-xs uppercase tracking-widest mb-6">
-                  {project.technology.includes('lano') ? <Gem className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
-                  {project.technology}
+                <div className="flex flex-wrap gap-3 mb-6">
+                  <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary font-black text-xs uppercase tracking-widest">
+                    {project.technology.includes('lano') ? <Gem className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
+                    {project.technology}
+                  </div>
+                  <div className="inline-flex items-center gap-3 bg-neutral-dark/5 px-4 py-2 rounded-lg text-neutral-dark/60 font-black text-xs uppercase tracking-widest">
+                    <Calendar className="w-4 h-4" />
+                    {formatDate(project.date)}
+                  </div>
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.9] mb-8">
                   {project.title}

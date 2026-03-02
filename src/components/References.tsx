@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { MapPin, ArrowUpRight, Diamond } from 'lucide-react';
+import { MapPin, ArrowUpRight, Diamond, Calendar } from 'lucide-react';
 import referencesData from '@/data/references.json';
 
 export default function References() {
@@ -10,6 +10,18 @@ export default function References() {
     h2: "Naše reference.",
     h3: "500+ suchých domů",
     sub: "Podívejte se na detaily našich realizací. Od historických sklepů po moderní rodinné domy.",
+  };
+
+  // Sort references by date (newest first)
+  const sortedReferences = [...referencesData].sort((a, b) => b.date.localeCompare(a.date));
+
+  const formatDate = (dateStr: string) => {
+    const [year, month] = dateStr.split('-');
+    const months = [
+      'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
+      'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'
+    ];
+    return `${months[parseInt(month) - 1]} ${year}`;
   };
 
   return (
@@ -28,7 +40,7 @@ export default function References() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-          {referencesData.map((project, index) => (
+          {sortedReferences.map((project, index) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 20 }}
@@ -37,13 +49,20 @@ export default function References() {
               transition={{ delay: index * 0.1 }}
               className="group"
             >
-              <Link href={`/reference/${project.id}`} className="block relative aspect-[4/5] overflow-hidden rounded-3xl bg-neutral-dark">
+              <Link href={`/reference/${project.id}`} className="block relative aspect-[4/5] overflow-hidden rounded-3xl bg-neutral-dark text-foreground">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
                   style={{ backgroundImage: `url(${project.image})` }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-neutral-dark via-transparent to-transparent opacity-80" />
                 
+                <div className="absolute top-6 left-6 flex flex-col gap-2">
+                  <div className="bg-primary/90 backdrop-blur-md text-neutral-dark px-3 py-1 rounded-lg font-black text-[10px] uppercase tracking-widest flex items-center gap-2 w-fit">
+                    <Calendar className="w-3 h-3" />
+                    {formatDate(project.date)}
+                  </div>
+                </div>
+
                 <div className="absolute bottom-0 left-0 right-0 p-8">
                   <div className="flex items-center gap-2 text-primary font-black text-[10px] uppercase tracking-[0.2em] mb-4">
                     <Diamond className="w-3 h-3" />
