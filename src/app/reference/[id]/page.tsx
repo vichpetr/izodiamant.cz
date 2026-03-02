@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ReferenceSlider from "@/components/ReferenceSlider";
+import ProjectReview from "@/components/ProjectReview";
 import { MapPin, ArrowLeft, Gem, Zap, CheckCircle2, Calendar } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -19,6 +20,7 @@ interface Project {
   image: string;
   before?: string;
   after?: string;
+  reviewId?: string;
 }
 
 export async function generateStaticParams() {
@@ -40,12 +42,11 @@ export default async function ProjectPage({
   const showSlider = project.before && project.after && project.before !== project.after;
 
   const formatDate = (dateStr: string) => {
-    const [year, month] = dateStr.split('-');
-    const months = [
-      'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
-      'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'
-    ];
-    return `${months[parseInt(month) - 1]} ${year}`;
+    const parts = dateStr.split('-');
+    if (parts.length < 2) return dateStr;
+    const months = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
+    const monthIndex = parseInt(parts[1]) - 1;
+    return `${months[monthIndex]} ${parts[0]}`;
   };
 
   return (
@@ -55,11 +56,11 @@ export default async function ProjectPage({
       <section className="pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
-            href="/#reference" 
+            href="/reference" 
             className="inline-flex items-center gap-2 text-neutral-dark/60 hover:text-primary font-bold uppercase tracking-widest text-xs mb-12 transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Zpět na reference
+            Zpět na přehled
           </Link>
 
           <div className="grid lg:grid-cols-2 gap-16 items-start">
@@ -113,6 +114,11 @@ export default async function ProjectPage({
                   ))}
                 </ul>
               </div>
+
+              {/* Linked Review Section */}
+              {project.reviewId && (
+                <ProjectReview reviewId={project.reviewId} />
+              )}
             </div>
 
             <div className="sticky top-32 space-y-8">
