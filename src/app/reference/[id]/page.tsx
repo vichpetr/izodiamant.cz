@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import ReferenceSlider from "@/components/ReferenceSlider";
 import { MapPin, ArrowLeft, Gem, Zap, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import referencesData from '@/data/references.json';
 
 interface Project {
@@ -14,8 +15,9 @@ interface Project {
   duration: string;
   description: string;
   features: string[];
-  before: string;
-  after: string;
+  image: string;
+  before?: string;
+  after?: string;
 }
 
 export async function generateStaticParams() {
@@ -33,6 +35,9 @@ export default async function ProjectPage({
   const project = (referencesData as Project[]).find(p => p.id === id);
 
   if (!project) return <div>Projekt nenalezen</div>;
+
+  // Logic to determine if we should show the slider
+  const showSlider = project.before && project.after && project.before !== project.after;
 
   return (
     <main className="min-h-screen bg-neutral-light text-foreground">
@@ -96,7 +101,18 @@ export default async function ProjectPage({
             </div>
 
             <div className="sticky top-32 space-y-8">
-              <ReferenceSlider before={project.before} after={project.after} />
+              {showSlider ? (
+                <ReferenceSlider before={project.before!} after={project.after!} />
+              ) : (
+                <div className="relative aspect-[16/9] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/10">
+                  <Image 
+                    src={project.image} 
+                    alt={project.title} 
+                    fill 
+                    className="object-cover"
+                  />
+                </div>
+              )}
               
               <div className="bg-neutral-dark rounded-3xl p-10 text-white shadow-2xl relative overflow-hidden group">
                 <div className="absolute inset-0 bg-primary opacity-5 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
