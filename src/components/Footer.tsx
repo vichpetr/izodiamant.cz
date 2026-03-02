@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Phone, Mail, MapPin, User, FileText } from 'lucide-react';
 import Image from 'next/image';
+import FirmyBadge from './FirmyBadge';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -41,6 +42,9 @@ export default function Footer() {
             <p className="text-sm text-white/50 leading-relaxed pt-2">
               {content.desc}
             </p>
+            <div className="pt-2">
+              <FirmyBadge />
+            </div>
             <div className="pt-4 space-y-3 border-t border-white/5">
               <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/40">
                 <User className="w-3 h-3 text-primary" />
@@ -58,7 +62,8 @@ export default function Footer() {
             <ul className="space-y-4 font-bold text-sm">
               <li><Link href="/#technologie" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Technologie</Link></li>
               <li><Link href="/#calculator" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Kalkulátor</Link></li>
-              <li><Link href="/#reference" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Reference</Link></li>
+              <li><Link href="/reference" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Reference</Link></li>
+              <li><Link href="/hodnoceni" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Hodnocení</Link></li>
               <li><Link href="/#faq" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Časté dotazy</Link></li>
             </ul>
           </div>
