@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calculator, ChevronRight, CheckCircle2, ArrowLeft, Send, Diamond } from 'lucide-react';
+import { Calculator, ChevronRight, CheckCircle2, ArrowLeft, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import calculatorData from '@/data/calculator.json';
 
@@ -57,7 +57,7 @@ export default function PricingCalculator() {
 
   const handleMaterialChange = (id: string) => {
     setMaterialId(id);
-    setServiceId(null); // Reset service when material changes
+    setServiceId(null);
   };
 
   const calculateRange = () => {
@@ -70,7 +70,6 @@ export default function PricingCalculator() {
       maxP = selectedService.maxPrice;
       unit = selectedService.unit;
     } else {
-      // Find the most expensive variant across ALL data if nothing is selected
       calculatorData.forEach((m: any) => {
         m.availableServices.forEach((s: any) => {
           if (s.maxPrice > maxP) {
@@ -132,7 +131,7 @@ export default function PricingCalculator() {
     <section id="calculator" ref={sectionRef} className="py-24 bg-neutral-dark relative overflow-hidden scroll-mt-20">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
       
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-6">
             <Calculator className="w-10 h-10 text-primary" />
@@ -148,75 +147,71 @@ export default function PricingCalculator() {
               <motion.div key={step === 1 ? 'step1' : 'step2'} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 {step === 1 ? (
                   <div className="space-y-10">
-                    <div className="grid lg:grid-cols-2 gap-10">
-                      {/* Column 1: Selections */}
-                      <div className="space-y-8">
-                        <div>
-                          <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em] mb-4 italic">1. Typ zdiva</h3>
-                          <div className="grid grid-cols-2 gap-3">
-                            {calculatorData.map((m) => (
-                              <button
-                                key={m.id}
-                                type="button"
-                                onClick={() => handleMaterialChange(m.id)}
-                                className={cn(
-                                  "p-4 rounded-2xl border-2 text-left transition-all",
-                                  materialId === m.id ? "border-primary bg-primary/10 shadow-[0_0_20px_rgba(196,214,0,0.1)]" : "border-white/10 hover:border-white/30"
-                                )}
-                              >
-                                <div className={cn("font-black text-base uppercase tracking-tight mb-1 leading-none", materialId === m.id ? "text-primary" : "text-white")}>{m.label}</div>
-                                <div className="text-[9px] text-white/40 uppercase font-bold tracking-widest leading-tight">{m.description}</div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em] mb-4 italic">2. Technologie</h3>
-                          <div className="flex flex-wrap gap-3">
-                            {!materialId ? (
-                              <div className="px-6 py-3 rounded-full border-2 border-dashed border-white/10 text-white/20 text-xs font-bold uppercase tracking-widest">
-                                Nejdříve vyberte typ zdiva
-                              </div>
-                            ) : (
-                              selectedMaterial?.availableServices.map((s) => (
-                                <button
-                                  key={s.id}
-                                  type="button"
-                                  onClick={() => setServiceId(s.id)}
-                                  className={cn(
-                                    "px-6 py-3 rounded-full border-2 text-sm font-black uppercase tracking-widest transition-all",
-                                    serviceId === s.id ? "border-primary bg-primary text-neutral-dark" : "border-white/10 text-white/60 hover:border-white/30"
-                                  )}
-                                >
-                                  {s.label}
-                                </button>
-                              ))
-                            )}
-                          </div>
+                    <div className="grid lg:grid-cols-4 gap-8">
+                      {/* Col 1: Material (25%) */}
+                      <div className="lg:col-span-1 space-y-4">
+                        <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic">1. Typ zdiva</h3>
+                        <div className="flex flex-col gap-2">
+                          {calculatorData.map((m) => (
+                            <button
+                              key={m.id}
+                              type="button"
+                              onClick={() => handleMaterialChange(m.id)}
+                              className={cn(
+                                "p-3 rounded-xl border-2 text-left transition-all",
+                                materialId === m.id ? "border-primary bg-primary/10 shadow-[0_0_15px_rgba(196,214,0,0.1)]" : "border-white/10 hover:border-white/30"
+                              )}
+                            >
+                              <div className={cn("font-black text-sm uppercase tracking-tight leading-none", materialId === m.id ? "text-primary" : "text-white")}>{m.label}</div>
+                            </button>
+                          ))}
                         </div>
                       </div>
 
-                      {/* Column 2: Price Box */}
-                      <div className="flex flex-col justify-center">
-                        <div className="bg-primary/10 rounded-[2rem] p-8 md:p-12 border-2 border-primary/20 text-center relative overflow-hidden group">
-                          <div className="relative z-10">
-                            <div className="text-xs font-black text-primary uppercase tracking-[0.3em] mb-4 italic">
-                              {range.isFallback ? "Maximální odhad ceny" : "Předběžné cenové rozpětí"}
+                      {/* Col 2: Technology (25%) */}
+                      <div className="lg:col-span-1 space-y-4 border-l lg:border-white/5 lg:pl-8">
+                        <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic">2. Technologie</h3>
+                        <div className="flex flex-col gap-2">
+                          {!materialId ? (
+                            <div className="p-3 rounded-xl border-2 border-dashed border-white/5 text-white/20 text-[10px] font-bold uppercase tracking-widest leading-tight">
+                              Vyberte zdivo
                             </div>
-                            <div className="text-5xl md:text-6xl font-black text-white italic tracking-tighter mb-4">
-                              {range.min.toLocaleString()} – {range.max.toLocaleString()} <span className="text-xl not-italic font-bold text-white/40 uppercase">Kč</span>
-                            </div>
-                            <div className="inline-block px-4 py-1 bg-white/5 rounded-full text-[10px] text-white/40 font-black uppercase tracking-widest leading-none">
-                              Bez DPH | {selectedService?.label || "Nejdražší varianta"} | {thickness}cm
-                            </div>
+                          ) : (
+                            selectedMaterial?.availableServices.map((s) => (
+                              <button
+                                key={s.id}
+                                type="button"
+                                onClick={() => setServiceId(s.id)}
+                                className={cn(
+                                  "p-3 rounded-xl border-2 text-left transition-all text-sm font-black uppercase tracking-widest",
+                                  serviceId === s.id ? "border-primary bg-primary text-neutral-dark" : "border-white/10 text-white/60 hover:border-white/30"
+                                )}
+                              >
+                                {s.label}
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Col 3: Price Box (50%) */}
+                      <div className="lg:col-span-2 flex flex-col justify-center border-l lg:border-white/5 lg:pl-8">
+                        <div className="bg-primary/10 rounded-2xl p-8 border-2 border-primary/20 text-center relative overflow-hidden">
+                          <div className="text-xs font-black text-primary uppercase tracking-[0.3em] mb-4 italic">
+                            {range.isFallback ? "Maximální odhad ceny" : "Předběžné cenové rozpětí"}
+                          </div>
+                          <div className="text-5xl font-black text-white italic tracking-tighter mb-4 leading-none">
+                            {range.min.toLocaleString()} – {range.max.toLocaleString()} <span className="text-xl not-italic font-bold text-white/40 uppercase">Kč</span>
+                          </div>
+                          <div className="inline-block px-4 py-1 bg-white/5 rounded-full text-[10px] text-white/40 font-black uppercase tracking-widest leading-none">
+                            Bez DPH | {selectedService?.label || "Nejdražší varianta"}
                           </div>
                         </div>
                       </div>
                     </div>
 
                     {/* Dimensions Row */}
-                    <div className="grid lg:grid-cols-2 gap-10 pt-6 border-t border-white/5">
+                    <div className="grid lg:grid-cols-2 gap-10 pt-8 border-t border-white/5">
                       <div>
                         <div className="flex justify-between items-end mb-4">
                           <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em] italic">3. Tloušťka zdiva</h3>
@@ -225,7 +220,7 @@ export default function PricingCalculator() {
                         <input type="range" min="15" max="150" step="5" value={thickness} onChange={(e) => setThickness(parseInt(e.target.value))} className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
                       </div>
 
-                      <div className="flex flex-col justify-end">
+                      <div>
                         <div className="flex justify-between items-end mb-4">
                           <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em] italic">4. Délka zdi</h3>
                           <span className="text-3xl font-black text-white italic leading-none">{length} <span className="text-sm font-bold text-white/40 not-italic uppercase tracking-widest ml-1">m</span></span>
@@ -235,19 +230,19 @@ export default function PricingCalculator() {
                     </div>
 
                     <div className="pt-4">
-                      <button onClick={() => setStep(2)} className="w-full btn-primary py-6 text-xl uppercase tracking-[0.2em] flex items-center justify-center gap-3">
+                      <button onClick={() => setStep(2)} className="w-full btn-primary py-6 text-xl uppercase tracking-[0.2em] flex items-center justify-center gap-3 shadow-xl shadow-primary/10">
                         Pokračovat k odeslání <ChevronRight className="w-6 h-6" />
                       </button>
                     </div>
                   </div>
                 ) : (
                   /* Step 2: Contact Form */
-                  <form onSubmit={handleSubmit} noValidate className="max-w-2xl mx-auto space-y-8">
+                  <form onSubmit={handleSubmit} noValidate className="max-w-2xl mx-auto space-y-8 py-4">
                     <div className="flex items-center gap-4 mb-8">
                       <button type="button" onClick={() => setStep(1)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-primary hover:text-neutral-dark transition-all">
                         <ArrowLeft className="w-5 h-5" />
                       </button>
-                      <h3 className="text-2xl font-black text-white uppercase italic tracking-tight">Kontaktní údaje</h3>
+                      <h3 className="text-2xl font-black text-white uppercase italic tracking-tight leading-none">Kontaktní údaje</h3>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
@@ -297,13 +292,13 @@ export default function PricingCalculator() {
                 )}
               </motion.div>
             ) : (
-              <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center text-center py-20">
+              <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center text-center py-20 text-white">
                 <div className="w-24 h-24 bg-primary text-neutral-dark rounded-full flex items-center justify-center mb-10 shadow-xl shadow-primary/20">
                   <CheckCircle2 className="w-12 h-12" />
                 </div>
-                <h3 className="text-4xl font-black text-white uppercase tracking-tighter italic mb-6">Poptávka odeslána!</h3>
-                <p className="text-xl text-white/60 font-medium max-w-md mx-auto mb-12 leading-relaxed">Děkujeme. Brzy se vám ozveme s detailním rozpisem práce a přesnou cenou.</p>
-                <button onClick={() => {setIsSubmitted(false); setStep(1); setMaterialId(null); setServiceId(null);}} className="btn-outline text-white border-white/20 hover:bg-white/10 py-4 px-10">Nová kalkulace</button>
+                <h3 className="text-4xl font-black uppercase tracking-tighter italic mb-6 leading-none">Poptávka <br /> úspěšně odeslána!</h3>
+                <p className="text-xl text-white/60 font-medium max-w-md mx-auto mb-12">Děkujeme. Brzy se vám ozveme s detailním rozpisem práce a přesnou cenou.</p>
+                <button onClick={() => {setIsSubmitted(false); setStep(1); setMaterialId(null); setServiceId(null);}} className="btn-outline border-white/20 hover:bg-white/10 py-4 px-10">Nová kalkulace</button>
               </motion.div>
             )}
           </AnimatePresence>
