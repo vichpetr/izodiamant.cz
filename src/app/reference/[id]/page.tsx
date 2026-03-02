@@ -6,8 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import referencesData from '@/data/references.json';
 
-export const runtime = 'edge';
-
 interface Project {
   id: string;
   title: string;
