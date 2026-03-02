@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Quote, ChevronDown, ChevronUp, ExternalLink, StarHalf } from 'lucide-react';
+import { Star, Quote, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import staticReviews from '@/data/reviews.json';
 
 interface Review {
@@ -29,7 +29,7 @@ export default function HomeReviews() {
   useEffect(() => {
     async function fetchLiveReviews() {
       if (!workerUrl || workerUrl.includes('vás-účet')) {
-        setReviews(staticReviews);
+        setReviews(staticReviews as Review[]);
         setStatus('fallback');
         return;
       }
@@ -38,7 +38,6 @@ export default function HomeReviews() {
         const res = await fetch(workerUrl);
         const data = await res.json();
         if (data.reviews && data.reviews.length > 0) {
-          // Explicitly ensure rating is a number
           const mappedReviews = data.reviews.map((r: any) => ({
             ...r,
             rating: Number(r.rating)
@@ -49,8 +48,7 @@ export default function HomeReviews() {
           throw new Error('No reviews in data');
         }
       } catch (err) {
-        console.warn('Nepodařilo se načíst živé recenze, používám statická data.');
-        setReviews(staticReviews);
+        setReviews(staticReviews as Review[]);
         setStatus('fallback');
       }
     }
@@ -81,20 +79,28 @@ export default function HomeReviews() {
   };
 
   const renderStars = (rating: number) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.1; // More robust check for half star
-
-    for (let i = 0; i < 5; i++) {
-      if (i < fullStars) {
-        stars.push(<Star key={`full-${i}`} className="w-4 h-4 fill-current" />);
-      } else if (i === fullStars && hasHalfStar) {
-        stars.push(<StarHalf key="half" className="w-4 h-4 fill-current" />);
-      } else {
-        stars.push(<Star key={`empty-${i}`} className="w-4 h-4 text-white/10" />);
-      }
-    }
-    return stars;
+    return (
+      <div className="flex items-center gap-1 text-primary">
+        {[...Array(5)].map((_, i) => {
+          const fillAmount = Math.max(0, Math.min(1, rating - i));
+          
+          if (fillAmount >= 1) {
+            return <Star key={i} className="w-4 h-4 fill-current" />;
+          } else if (fillAmount > 0) {
+            return (
+              <div key={i} className="relative w-4 h-4">
+                <Star className="absolute inset-0 w-4 h-4 text-white/10" />
+                <div className="absolute inset-0 overflow-hidden" style={{ width: `${fillAmount * 100}%` }}>
+                  <Star className="w-4 h-4 fill-current" />
+                </div>
+              </div>
+            );
+          } else {
+            return <Star key={i} className="w-4 h-4 text-white/10" />;
+          }
+        })}
+      </div>
+    );
   };
 
   return (
@@ -152,7 +158,7 @@ export default function HomeReviews() {
                   >
                     <Quote className="absolute top-6 right-8 w-10 h-10 text-primary/10 group-hover:text-primary/20 transition-colors" />
                     
-                    <div className="flex items-center gap-1 text-primary mb-6">
+                    <div className="mb-6">
                       {renderStars(review.rating)}
                     </div>
 

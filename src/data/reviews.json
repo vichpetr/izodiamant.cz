@@ -1,58 +1,30 @@
 [
   {
-    "id": "rev-1",
+    "id": "2025-03-02-tomas-bludicka",
     "author": "Tomáš Bludička",
     "rating": 5,
     "text": "Férové jednání, výborná domluva, všechno předem domluvené platí včetně ceny bez jakéhokoliv navýšení, skvělá rychlost provedeni. Už mám hochy zamluvené na další akci. Moc díky!",
-    "date": "2025-03"
+    "date": "2025-03-02"
   },
   {
-    "id": "rev-2",
+    "id": "2025-01-15-zdenek-pecina",
     "author": "Zdenek Pecina",
     "rating": 5,
     "text": "Po telefonátu, kde jsem popsal co potřebuji, přijel pán na osobní schůzku, kde jsme vše domluvili. Cena byla předem jasná za m2. Na práci nastoupili necelé dva týdny po tom. Celý dům podřezali za týden diamantovou pilou (většinou kamenné zdivo). Skvělá domluva a férový přístup.",
-    "date": "2025-01"
+    "date": "2025-01-15"
   },
   {
-    "id": "rev-3",
+    "id": "2023-10-27-frantisek-marek",
+    "author": "František Marek",
+    "rating": 4.5,
+    "text": "Rychlá dohoda, flexibilní nástup. Odvedená práce odpovídala dohodě. Dohodnutá cena dodržena. Doporučuji.",
+    "date": "2023-10-27"
+  },
+  {
+    "id": "2025-01-10-ivana-svobodova",
     "author": "Ivana Svobodová",
     "rating": 5,
     "text": "Nechali jsme podřezat naši nemovitost - veterinární nemocnici. Vše proběhlo bez komplikací, práce byla hotova asi do 5 dní - jednalo se o velký objekt - cca asi 200m2 staré budovy. S majiteli firmy výborná komunikace a domluva. Cena za odvedenou práci byla taky dobrá. Za mě vřele doporučuji.",
-    "date": "2025-01"
-  },
-  {
-    "id": "rev-4",
-    "author": "Rehounek Petr",
-    "rating": 5,
-    "text": "Dodrženo vše na čem jsme se dohodli. Práce hotová v termínu a dle dohody, celkově jsem s prací spokojený.",
-    "date": "2025-02"
-  },
-  {
-    "id": "rev-5",
-    "author": "Nelca Blazkova",
-    "rating": 5,
-    "text": "Super domluva a ještě lépe odvedená práce. Jsme max spokojeni a s čistým svědomím doporučuji 😉",
-    "date": "2025-03"
-  },
-  {
-    "id": "rev-6",
-    "author": "Jiří Kukla",
-    "rating": 5,
-    "text": "Perfektní práce i nad rámec smluveného. Spoleh a super domluva.",
-    "date": "2025-09"
-  },
-  {
-    "id": "rev-7",
-    "author": "Ondřej Herčík",
-    "rating": 5,
-    "text": "Vše v pořádku. Práce začaly dle domluvy, vše co potřebovali k podřezání si sami připravili a pracovali samostatně. Na konci jsme společně vše přeměřili a cena odpovídala odhadu. Za mě určitě doporučuji.",
-    "date": "2024-11"
-  },
-  {
-    "id": "rev-8",
-    "author": "Petr Teplý",
-    "rating": 5,
-    "text": "Naprostá spokojenost s jednáním, dohodou i prací.",
-    "date": "2023-10"
+    "date": "2025-01-10"
   }
 ]
