@@ -38,7 +38,12 @@ export default function HomeReviews() {
         const res = await fetch(workerUrl);
         const data = await res.json();
         if (data.reviews && data.reviews.length > 0) {
-          setReviews(data.reviews);
+          // Explicitly ensure rating is a number
+          const mappedReviews = data.reviews.map((r: any) => ({
+            ...r,
+            rating: Number(r.rating)
+          }));
+          setReviews(mappedReviews);
           setStatus('live');
         } else {
           throw new Error('No reviews in data');
@@ -78,13 +83,16 @@ export default function HomeReviews() {
   const renderStars = (rating: number) => {
     const stars = [];
     const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
+    const hasHalfStar = rating % 1 >= 0.1; // More robust check for half star
 
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(<Star key={`full-${i}`} className="w-4 h-4 fill-current" />);
-    }
-    if (hasHalfStar) {
-      stars.push(<StarHalf key="half" className="w-4 h-4 fill-current" />);
+    for (let i = 0; i < 5; i++) {
+      if (i < fullStars) {
+        stars.push(<Star key={`full-${i}`} className="w-4 h-4 fill-current" />);
+      } else if (i === fullStars && hasHalfStar) {
+        stars.push(<StarHalf key="half" className="w-4 h-4 fill-current" />);
+      } else {
+        stars.push(<Star key={`empty-${i}`} className="w-4 h-4 text-white/10" />);
+      }
     }
     return stars;
   };
