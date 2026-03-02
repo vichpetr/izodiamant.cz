@@ -9,6 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://izodiamant.cz"),
   title: {
     default: "IZODIAMANT | Sanace a podřezávání vlhkého zdiva",
     template: "%s | IZODIAMANT"
