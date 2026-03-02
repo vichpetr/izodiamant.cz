@@ -1,56 +1,53 @@
-# IZODIAMANT.cz (2026 Modern Version)
+# IZODIAMANT.cz – Moderní Web 2026
 
-Moderní webová aplikace pro specialisty na sanace a podřezávání vlhkého zdiva. Postaveno na Next.js s důrazem na konverzi, interaktivitu a precizní design.
+Tento projekt představuje kompletní modernizaci webu IZODIAMANT.cz. Aplikace je postavena na frameworku Next.js s důrazem na vysoký konverzní poměr, rychlost a snadnou správu obsahu skrze datové soubory.
 
-## 🚀 Technologie
+## 🛠️ Technologický Stack
 
-- **Framework:** [Next.js 15+](https://nextjs.org/) (App Router)
-- **Styling:** [Tailwind CSS 3](https://tailwindcss.com/)
-- **Animace:** [Framer Motion](https://www.framer.com/motion/)
-- **E-maily:** [Resend.io](https://resend.com/)
-- **Ikony:** [Lucide React](https://lucide.dev/)
-- **Jazyk:** [TypeScript](https://www.typescriptlang.org/)
+- **Framework:** Next.js 15+ (App Router)
+- **Jazyk:** TypeScript
+- **Styling:** Tailwind CSS 3.4
+- **Animace:** Framer Motion
+- **E-mailové služby:** Resend.io
+- **Datové zdroje:** JSON soubory (pro snadnou úpravu obsahu)
+- **Externí integrace:** Cloudflare Worker (pro živé recenze z Firmy.cz)
 
-## ✨ Klíčové funkce
+## ⚙️ Konfigurace (.env)
 
-- **Hybridní kalkulačka:** Jednokrokový výpočet ceny s interaktivními posuvníky pro typ zdiva, tloušťku a délku.
-- **Case Studies (Reference):** Dlaždicový systém realizací s interaktivním "Před/Po" posuvníkem pro vizuální srovnání výsledků.
-- **Multi-language:** Podpora pro českou a anglickou mutaci.
-- **Resend Integration:** Automatizované odesílání poptávek z kalkulačky i kontaktního formuláře.
-- **Moderní UI:** Brandové barvy (Lime `#c4d600`) a plná responzivita.
+Aplikace vyžaduje pro svůj běh následující environmentální proměnné. Bez jejich definice aplikace vyhodí chybu (striktní mód).
 
-## 🛠️ Instalace a spuštění
+```env
+# API klíč ze služby resend.com pro odesílání formulářů
+RESEND_API_KEY=re_123456789
 
-1. **Klonování projektu:**
-   ```bash
-   git clone [url-repozitáře]
-   cd izodiamant.cz
-   ```
+# URL vašeho Cloudflare Workeru, který vrací JSON s recenzemi
+NEXT_PUBLIC_REVIEWS_API_URL=https://izodiamant-reviews-api.vas-ucet.workers.dev
 
-2. **Instalace závislostí:**
-   ```bash
-   npm install
-   ```
-
-3. **Nastavení prostředí:**
-   Vytvoř soubor `.env.local` a přidej svůj klíč pro odesílání e-mailů:
-   ```env
-   RESEND_API_KEY=re_vás_klíč
-   ```
-
-4. **Spuštění vývojového serveru:**
-   ```bash
-   npm run dev
-   ```
-   Aplikace bude dostupná na `http://localhost:3000`.
-
-## 📦 Build
-
-Pro vytvoření produkční verze:
-```bash
-npm run build
+# Celá URL adresa vašeho profilu na Firmy.cz
+NEXT_PUBLIC_FIRMY_PROFILE_URL=https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html
 ```
 
-## 📝 Licence
+## 📂 Správa obsahu (Data Files)
 
-Všechna práva vyhrazena pro IZODIAMANT.cz
+Většina obsahu webu je oddělena od kódu a nachází se v adresáři `src/data/`. To umožňuje úpravy bez nutnosti programování:
+
+- `calculator.json`: Definice materiálů pro kalkulačku, jejich popisy a základní ceny (`basePrice`) za m².
+- `services.json`: Textové ceníky a doby realizace zobrazené na podstránkách služeb.
+- `references.json`: Seznam realizací. Obsahuje ID, titul, lokalitu, datum (YYYY-MM), technologii a cesty k obrázkům. Podporuje interaktivní "Před/Po" posuvník (pokud jsou `before` a `after` rozdílné).
+- `faq.json`: Seznam otázek a odpovědí pro sekci Časté dotazy.
+- `reviews.json`: Statický fallback recenzí, který se použije, pokud selže živé API.
+
+## 🔄 Integrace Firmy.cz (Živé recenze)
+
+Web využívá architekturu "Proxy API" skrze Cloudflare Worker:
+1. **Worker:** Na straně Cloudflare běží skript, který parsuje HTML widget Seznamu.
+2. **Endpoint:** Worker vrací čistá data (počet hvězd, texty recenzí) ve formátu JSON.
+3. **Frontend:** Komponenty `FirmyBadge` a `HomeReviews` si tato data stahují a vykreslují je v brandovém designu webu.
+
+## 🚀 Vývoj a spuštění
+
+1. **Instalace:** `npm install`
+2. **Spuštění:** `npm run dev`
+3. **Build:** `npm run build`
+
+Pro podrobný návod k nasazení viz [deployment.MD](./deployment.MD).
