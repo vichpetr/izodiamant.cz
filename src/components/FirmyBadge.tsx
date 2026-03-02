@@ -8,11 +8,23 @@ export default function FirmyBadge() {
   const [data, setData] = useState({ rating: 5.0, count: 12 }); // Fallback data
 
   useEffect(() => {
-    // Replace with your actual Cloudflare Worker URL later
-    // fetch('https://api.izodiamant.cz/reviews')
-    //   .then(res => res.json())
-    //   .then(json => setData({ rating: json.rating, count: json.reviewCount }))
-    //   .catch(() => {});
+    const WORKER_URL = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
+    
+    async function fetchLiveSummary() {
+      if (!WORKER_URL || WORKER_URL.includes('vás-účet')) return;
+
+      try {
+        const res = await fetch(WORKER_URL);
+        const json = await res.json();
+        if (json.rating) {
+          setData({ rating: json.rating, count: json.count });
+        }
+      } catch (err) {
+        // Fallback to static
+      }
+    }
+
+    fetchLiveSummary();
   }, []);
 
   return (

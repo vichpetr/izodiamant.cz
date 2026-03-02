@@ -19,10 +19,11 @@ export default function HomeReviews() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Tady pak vložíš URL svého Cloudflare Workeru
-    const WORKER_URL = 'https://tvuj-worker.workers.dev'; 
+    const WORKER_URL = process.env.NEXT_PUBLIC_REVIEWS_API_URL; 
     
     async function fetchLiveReviews() {
+      if (!WORKER_URL || WORKER_URL.includes('vás-účet')) return;
+
       try {
         const res = await fetch(WORKER_URL);
         const data = await res.json();
@@ -34,8 +35,7 @@ export default function HomeReviews() {
       }
     }
 
-    // Odkomentuj řádek níže, až budeš mít Worker nasazený
-    // fetchLiveReviews();
+    fetchLiveReviews();
   }, []);
 
   const sortedReviews = [...reviews].sort((a, b) => b.date.localeCompare(a.date));
