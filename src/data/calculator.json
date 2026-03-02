@@ -49,8 +49,8 @@
       {
         "id": "diamantove-lano",
         "label": "Diamantové lano",
-        "minPrice": 5500,
-        "maxPrice": 8500,
+        "minPrice": 4500,
+        "maxPrice": 6500,
         "unit": "m2"
       }
     ]
