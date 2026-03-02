@@ -3,19 +3,7 @@
 Tento dokument popisuje proces nasazení aplikace IZODIAMANT.cz a nastavení pomocného Workeru pro živé recenze.
 
 ## 1. Cloudflare Pages (Frontend)
-1. V Cloudflare dashboardu: **Workers & Pages** -> **Create application** -> **Pages** -> **Connect to Git**.
-2. **Build settings:**
-   - **Framework preset:** `None`
-   - **Build command:** `npx @cloudflare/next-on-pages`
-   - **Build output directory:** `.vercel/output/static`
-3. **Environment variables (Settings -> Environment variables):**
-   - `RESEND_API_KEY`: Váš klíč z resend.com
-   - `CONTACT_EMAIL`: info@izodiamant.cz
-   - `NEXT_PUBLIC_FIRMY_PROFILE_URL`: https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html
-   - `NEXT_PUBLIC_REVIEWS_API_URL`: URL adresa vašeho Workeru
-   - `NODE_VERSION`: `20`
-4. **Compatibility flags (Settings -> Functions):**
-   - Přidejte `nodejs_compat` pro Production i Preview.
+... (beze změny) ...
 
 ---
 
@@ -31,6 +19,28 @@ export default {
   async fetch(request, env) {
     const profileUrl = 'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html?widget&limit=150';
     
+    // Funkce pro odstranění diakritiky a vytvoření ID
+    const createSlug = (text) => {
+      return text.toString().toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]+/g, '')
+        .replace(/--+/g, '-')
+        .trim();
+    };
+
+    // Funkce pro převod data z "DD. MM. YYYY" na "YYYY-MM-DD"
+    const normalizeDate = (dateStr) => {
+      const parts = dateStr.split('.').map(p => p.trim());
+      if (parts.length === 3) {
+        const d = parts[0].padStart(2, '0');
+        const m = parts[1].padStart(2, '0');
+        const y = parts[2];
+        return `${y}-${m}-${d}`;
+      }
+      return dateStr;
+    };
+
     try {
       const response = await fetch(profileUrl, {
         headers: { 
@@ -41,24 +51,30 @@ export default {
       const html = await response.text();
 
       const reviews = [];
-      const itemRegex = /<div class="item">([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/g;
+      // Vylepšený regex pro zachycení celého bloku recenze (včetně vnořených divů)
+      const itemRegex = /<div class="item">([\s\S]*?)<\/div>\s*(?=<div class="item">|<\/div>\s*<\/div>\s*<div class="btns">)/g;
+      
       const authorRegex = /<div class="authorName">\s*<span>([^<]+)<\/span>/;
       const dateRegex = /<span class="date">([^<]+)<\/span>/;
-      const textRegex = /<div class="text">([^<]+)<\/div>/;
+      const textRegex = /<div class="text">([\s\S]*?)<\/div>/;
 
       let itemMatch;
       while ((itemMatch = itemRegex.exec(html)) !== null) {
         const itemHtml = itemMatch[1];
+        
         const author = itemHtml.match(authorRegex);
-        const date = itemHtml.match(dateRegex);
+        const dateRaw = itemHtml.match(dateRegex);
         const text = itemHtml.match(textRegex);
 
         if (author && text) {
+          const authorName = author[1].trim();
+          const cleanDate = dateRaw ? normalizeDate(dateRaw[1].trim()) : "2024-01-01";
+          
           reviews.push({
-            id: `live-${reviews.length}`,
-            author: author[1].trim(),
-            text: text[1].trim(),
-            date: date ? date[1].trim() : "2024",
+            id: `${cleanDate}-${createSlug(authorName)}`,
+            author: authorName,
+            text: text[1].trim().replace(/<[^>]*>?/gm, ''), // Odstraní případné HTML tagy uvnitř textu
+            date: cleanDate,
             rating: 5
           });
         }
@@ -90,4 +106,3 @@ export default {
 ```
 
 4. Klikněte na **Save and Deploy**.
-5. Adresu Workeru vložte do `NEXT_PUBLIC_REVIEWS_API_URL` v nastavení Pages.

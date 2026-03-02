@@ -23,12 +23,11 @@ export default function HomeReviews() {
   const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
 
   if (!profileUrl) {
-    throw new Error("Kritická chybi: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
+    throw new Error("Kritická chyba: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
   }
 
   useEffect(() => {
     async function fetchLiveReviews() {
-      // If workerUrl is not configured or is the placeholder, we stick with static reviews
       if (!workerUrl || workerUrl.includes('vás-účet')) {
         setIsLoading(false);
         return;
@@ -50,10 +49,12 @@ export default function HomeReviews() {
     fetchLiveReviews();
   }, [workerUrl]);
 
-  // We show the section even if loading, because we have static fallback
   if (reviews.length === 0) return null;
 
+  // Sorting: newest first (works for both YYYY-MM-DD and YYYY-MM)
   const sortedReviews = [...reviews].sort((a, b) => b.date.localeCompare(a.date));
+  
+  // Show only 3 initially, or ALL if showAll is true
   const visibleReviews = showAll ? sortedReviews : sortedReviews.slice(0, 3);
 
   const handleToggle = () => {
@@ -63,6 +64,22 @@ export default function HomeReviews() {
     } else {
       setShowAll(true);
     }
+  };
+
+  const formatDate = (dateStr: string) => {
+    // Handle both YYYY-MM-DD and YYYY-MM
+    const parts = dateStr.split('-');
+    if (parts.length < 2) return dateStr;
+    
+    const months = [
+      'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
+      'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'
+    ];
+    
+    const monthIndex = parseInt(parts[1]) - 1;
+    const year = parts[0];
+    
+    return `${months[monthIndex]} ${year}`;
   };
 
   return (
@@ -105,7 +122,7 @@ export default function HomeReviews() {
                 <Quote className="absolute top-6 right-8 w-10 h-10 text-primary/10 group-hover:text-primary/20 transition-colors" />
                 
                 <div className="flex items-center gap-1 text-primary mb-6">
-                  {[...Array(review.rating)].map((_, i) => (
+                  {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-current" />
                   ))}
                 </div>
@@ -116,14 +133,16 @@ export default function HomeReviews() {
 
                 <div className="pt-6 border-t border-white/10">
                   <div className="font-black uppercase tracking-tight italic text-white">{review.author}</div>
-                  <div className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mt-1">{review.date}</div>
+                  <div className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mt-1">
+                    {formatDate(review.date)}
+                  </div>
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
         </div>
 
-        {sortedReviews.length > 3 && (
+        {reviews.length > 3 && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
