@@ -65,19 +65,16 @@ export default function PricingCalculator() {
   const calculateRange = () => {
     let candidates: Service[] = [];
 
-    // 1. Collect potential services based on current selection level
     if (selectedService) {
       candidates = [selectedService];
     } else if (selectedMaterial) {
       candidates = selectedMaterial.availableServices;
     } else {
-      // Global fallback: all services from all materials
       (calculatorData as Material[]).forEach(m => {
         candidates.push(...m.availableServices);
       });
     }
 
-    // 2. Calculate absolute min/max from all candidates
     const prices: number[] = [];
     candidates.forEach(s => {
       const isM2 = s.unit === 'm2';
@@ -140,43 +137,43 @@ export default function PricingCalculator() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
       
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 mb-4">
+        <div className="text-center mb-10 flex flex-col items-center">
+          <div className="inline-flex items-center gap-2 mb-4 relative group">
             <Calculator className="w-6 h-6 text-primary" />
             <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic leading-none">
               Kalkulačka <span className="text-primary">ceny sanace</span>
             </h2>
-          </div>
-        </div>
-
-        <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] border-2 border-white/10 p-6 md:p-8 shadow-2xl relative">
-          {/* Info Tooltip Icon */}
-          <div className="absolute top-6 right-6 z-20 group">
-            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:bg-primary hover:text-neutral-dark transition-all cursor-help border border-white/10">
-              <Info className="w-4 h-4" />
-            </div>
             
-            <div className="absolute top-0 right-0 pt-10 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 w-72">
-              <div className="bg-neutral-dark border-2 border-primary/30 p-5 rounded-2xl shadow-2xl backdrop-blur-xl">
-                <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic border-b border-white/10 pb-2">Ceník</h4>
-                <div className="space-y-4">
-                  {priceListTooltip.map((item, i) => (
-                    <div key={i} className="flex justify-between items-center gap-4 group/item">
-                      <Link href={item.href} className="flex items-center gap-1.5 text-[10px] font-bold text-white/80 hover:text-primary uppercase leading-tight transition-colors">
-                        {item.name}
-                        <ExternalLink className="w-2.5 h-2.5" />
-                      </Link>
-                      <span className="text-[10px] font-black text-primary uppercase whitespace-nowrap">{item.price}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-4 pt-2 border-t border-white/10 text-[8px] text-white/30 font-bold uppercase tracking-widest leading-relaxed">
-                  * bm kalkulován při standardní tloušťce zdiva 45cm.
+            {/* New Tooltip Position */}
+            <div className="ml-2 relative">
+              <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:bg-primary hover:text-neutral-dark transition-all cursor-help border border-white/10 shrink-0">
+                <Info className="w-3 h-3" />
+              </div>
+              
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 w-72 z-50">
+                <div className="bg-neutral-dark border-2 border-primary/30 p-5 rounded-2xl shadow-2xl backdrop-blur-xl text-left">
+                  <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic border-b border-white/10 pb-2">Ceník</h4>
+                  <div className="space-y-4">
+                    {priceListTooltip.map((item, i) => (
+                      <div key={i} className="flex justify-between items-center gap-4">
+                        <Link href={item.href} className="flex items-center gap-1.5 text-[10px] font-bold text-white/80 hover:text-primary uppercase leading-tight transition-colors">
+                          {item.name}
+                          <ExternalLink className="w-2.5 h-2.5" />
+                        </Link>
+                        <span className="text-[10px] font-black text-primary uppercase whitespace-nowrap">{item.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 pt-2 border-t border-white/10 text-[8px] text-white/30 font-bold uppercase tracking-widest leading-relaxed">
+                    * bm kalkulován při standardní tloušťce zdiva 45cm.
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
+        <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] border-2 border-white/10 p-6 md:p-8 shadow-2xl relative">
           <AnimatePresence mode="wait">
             {!isSubmitted ? (
               <motion.div key={step === 1 ? 'step1' : 'step2'} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
@@ -334,7 +331,7 @@ export default function PricingCalculator() {
                 <div className="w-20 h-20 bg-primary text-neutral-dark rounded-full flex items-center justify-center mb-8 shadow-xl shadow-primary/20">
                   <CheckCircle2 className="w-10 h-10" />
                 </div>
-                <h3 className="text-3xl font-black uppercase tracking-tighter italic mb-4 leading-none">Poptávka <br /> úspěšně odeslána!</h3>
+                <h3 className="text-4xl font-black uppercase tracking-tighter italic mb-4 leading-none">Poptávka <br /> úspěšně odeslána!</h3>
                 <p className="text-lg text-white/60 font-medium max-w-sm mx-auto mb-10 leading-relaxed">Děkujeme. Brzy se vám ozveme s detailním rozpisem práce a přesnou cenou.</p>
                 <button onClick={() => {setIsSubmitted(false); setStep(1); setMaterialId(null); setServiceId(null);}} className="btn-outline border-white/20 hover:bg-white/10 py-3.5 px-10 text-sm">Nová kalkulace</button>
               </motion.div>
