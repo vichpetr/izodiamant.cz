@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { MapPin, ArrowUpRight, Diamond, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
+import { MapPin, ArrowUpRight, Diamond, Calendar, ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react';
 import referencesData from '@/data/references.json';
 
 export default function References() {
@@ -36,7 +36,6 @@ export default function References() {
   const handleToggle = () => {
     if (showAll) {
       setShowAll(false);
-      // Optional: Scroll back to section top when closing
       sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
     } else {
       setShowAll(true);
@@ -78,10 +77,16 @@ export default function References() {
                   <div className="absolute inset-0 bg-gradient-to-t from-neutral-dark via-transparent to-transparent opacity-80" />
                   
                   <div className="absolute top-6 left-6 flex flex-col gap-2">
-                    <div className="bg-primary/90 backdrop-blur-md text-neutral-dark px-3 py-1 rounded-lg font-black text-[10px] uppercase tracking-widest flex items-center gap-2 w-fit">
+                    <div className="bg-primary/90 backdrop-blur-md text-neutral-dark px-3 py-1 rounded-lg font-black text-[10px] uppercase tracking-widest flex items-center gap-2 w-fit shadow-lg">
                       <Calendar className="w-3 h-3" />
                       {formatDate(project.date)}
                     </div>
+                    {(project as any).reviewId && (
+                      <div className="bg-white/90 backdrop-blur-md text-neutral-dark px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest flex items-center gap-2 w-fit shadow-lg border border-primary/20">
+                        <CheckCircle2 className="w-3 h-3 text-primary" />
+                        Ověřená reference
+                      </div>
+                    )}
                   </div>
 
                   <div className="absolute bottom-0 left-0 right-0 p-8">
@@ -107,7 +112,7 @@ export default function References() {
           </AnimatePresence>
         </div>
 
-        {sortedReferences.length > 3 && (
+        {referencesData.length > 3 && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
