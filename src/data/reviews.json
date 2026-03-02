@@ -1,6 +1,27 @@
 [
   {
     "id": "rev-1",
+    "author": "T.B.",
+    "rating": 5,
+    "text": "Férové jednání, výborná domluva, všechno předem domluvené platí včetně ceny bez jakéhokoliv navýšení, skvělá rychlost provedeni. Už mám hochy zamluvené na další akci. Moc díky!",
+    "date": "2024-07"
+  },
+  {
+    "id": "rev-2",
+    "author": "Zákazník Seznam.cz",
+    "rating": 5,
+    "text": "Celý dům podřezali za týden diamantovou pilou (většinou kamenné zdivo). Předem se ptali, kde mají řezat a kde ne. Dokonce sami nabízeli nejvhodnější řešení, tak aby to stálo co nejméně peněz. Skvělá domluva a férový přístup.",
+    "date": "2024-06"
+  },
+  {
+    "id": "rev-3",
+    "author": "Veterinární nemocnice",
+    "rating": 5,
+    "text": "Práce byla hotova asi do 5 dní - jednalo se o velký objekt - cca asi 200m2 staré budovy. S majiteli firmy výborná komunikace a domluva. Cena za odvedenou práci byla taky dobrá. Za mě vřele doporučuji.",
+    "date": "2024-05"
+  },
+  {
+    "id": "rev-4",
     "author": "Jiří M.",
     "rating": 5,
     "text": "Velká spokojenost s provedením sanace na našem domě. Profesionální přístup, dodržení termínů a čistota práce. Doporučuji.",
@@ -8,7 +29,7 @@
     "referenceId": "skorkov"
   },
   {
-    "id": "rev-2",
+    "id": "rev-5",
     "author": "Hana Svobodová",
     "rating": 5,
     "text": "Podřezání diamantovým lanem proběhlo bez problémů i u našeho velmi silného kamenného zdiva. Technik vše vysvětlil a cena odpovídala nabídce.",
@@ -16,7 +37,7 @@
     "referenceId": "zamek-zleby"
   },
   {
-    "id": "rev-3",
+    "id": "rev-6",
     "author": "Petr K.",
     "rating": 5,
     "text": "Rychlá domluva i realizace. Injektáž pomohla tam, kde jsme se báli řezat do zdi. Děkujeme za suchý sklep!",
