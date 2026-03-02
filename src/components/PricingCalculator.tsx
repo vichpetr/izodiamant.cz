@@ -138,19 +138,18 @@ export default function PricingCalculator() {
       
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10 flex flex-col items-center">
-          <div className="inline-flex items-center gap-2 mb-4 relative group">
+          <div className="inline-flex items-center gap-2 mb-6 relative group">
             <Calculator className="w-6 h-6 text-primary" />
             <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic leading-none">
               Kalkulačka <span className="text-primary">ceny sanace</span>
             </h2>
             
-            {/* New Tooltip Position */}
             <div className="ml-2 relative">
               <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:bg-primary hover:text-neutral-dark transition-all cursor-help border border-white/10 shrink-0">
                 <Info className="w-3 h-3" />
               </div>
               
-              <div className="absolute top-full right-[-40px] sm:right-auto sm:left-1/2 sm:-translate-x-1/2 pt-4 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 w-72 max-w-[85vw] z-50">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 w-72 z-50">
                 <div className="bg-neutral-dark border-2 border-primary/30 p-5 rounded-2xl shadow-2xl backdrop-blur-xl text-left">
                   <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic border-b border-white/10 pb-2">Ceník</h4>
                   <div className="space-y-4">
@@ -171,6 +170,27 @@ export default function PricingCalculator() {
               </div>
             </div>
           </div>
+
+          {/* Step Indicator */}
+          {!isSubmitted && (
+            <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center gap-2">
+                <div className={cn(
+                  "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-all",
+                  step === 1 ? "bg-primary text-neutral-dark" : "bg-primary/20 text-primary"
+                )}>1</div>
+                <span className={cn("text-[10px] font-black uppercase tracking-widest", step === 1 ? "text-white" : "text-white/40")}>Konfigurace</span>
+              </div>
+              <div className="w-8 h-px bg-white/10" />
+              <div className="flex items-center gap-2">
+                <div className={cn(
+                  "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-all",
+                  step === 2 ? "bg-primary text-neutral-dark" : "bg-white/5 text-white/20"
+                )}>2</div>
+                <span className={cn("text-[10px] font-black uppercase tracking-widest", step === 2 ? "text-white" : "text-white/40")}>Odeslání</span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] border-2 border-white/10 p-6 md:p-8 shadow-2xl relative">
