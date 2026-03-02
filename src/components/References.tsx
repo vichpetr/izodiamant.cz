@@ -1,19 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { MapPin, ArrowUpRight, Diamond, Calendar, ChevronDown } from 'lucide-react';
+import { MapPin, ArrowUpRight, Diamond, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 import referencesData from '@/data/references.json';
 
 export default function References() {
   const [showAll, setShowAll] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   const content = {
     h2: "Naše reference.",
     h3: "500+ suchých domů",
     sub: "Podívejte se na detaily našich realizací. Od historických sklepů po moderní rodinné domy.",
     cta_more: "Zobrazit další reference",
+    cta_less: "Zobrazit méně",
   };
 
   // Sort references by date (newest first)
@@ -31,8 +33,18 @@ export default function References() {
     return `${months[parseInt(month) - 1]} ${year}`;
   };
 
+  const handleToggle = () => {
+    if (showAll) {
+      setShowAll(false);
+      // Optional: Scroll back to section top when closing
+      sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      setShowAll(true);
+    }
+  };
+
   return (
-    <section id="reference" className="py-24 bg-white">
+    <section id="reference" ref={sectionRef} className="py-24 bg-white scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-3xl mx-auto mb-20">
           <h2 className="text-4xl md:text-6xl font-black text-neutral-dark mb-2 uppercase tracking-tighter italic">
@@ -95,18 +107,22 @@ export default function References() {
           </AnimatePresence>
         </div>
 
-        {!showAll && sortedReferences.length > 3 && (
+        {sortedReferences.length > 3 && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mt-16"
           >
             <button
-              onClick={() => setShowAll(true)}
+              onClick={handleToggle}
               className="btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center gap-3 mx-auto group border-neutral-dark/10 text-neutral-dark/60 hover:border-primary hover:text-primary transition-all"
             >
-              {content.cta_more}
-              <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+              {showAll ? content.cta_less : content.cta_more}
+              {showAll ? (
+                <ChevronUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
+              ) : (
+                <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+              )}
             </button>
           </motion.div>
         )}
