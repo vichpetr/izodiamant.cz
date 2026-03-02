@@ -12,7 +12,7 @@ export default function References() {
 
   const content = {
     h2: "Naše reference.",
-    h3: "500+ suchých domů",
+    h3: "Desítky suchých domů",
     sub: "Podívejte se na detaily našich realizací. Od historických sklepů po moderní rodinné domy.",
     cta_more: "Zobrazit další reference",
     cta_less: "Zobrazit méně",
