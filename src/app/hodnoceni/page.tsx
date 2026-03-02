@@ -19,7 +19,7 @@ export default function ReviewsPage() {
               Vaše spokojenost je pro nás nejlepší vizitkou. Zakládáme si na poctivém řemesle a férovém přístupu.
             </p>
             <Link 
-              href="https://www.firmy.cz/detail/12911303-izodiamant-nove-hrady-mokra-lhota.html" 
+              href="https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html" 
               target="_blank"
               className="btn-outline py-3 px-8 text-sm uppercase tracking-widest flex items-center gap-3 mx-auto w-fit"
             >

@@ -17,7 +17,7 @@ export default function FirmyBadge() {
 
   return (
     <a 
-      href="https://www.firmy.cz/detail/12911303-izodiamant-nove-hrady-mokra-lhota.html" 
+      href="https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html" 
       target="_blank"
       rel="noopener noreferrer"
       className="inline-flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-neutral-dark/5 hover:border-primary transition-all group"
