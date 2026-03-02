@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calculator, ChevronRight, CheckCircle2, ArrowLeft, Send } from 'lucide-react';
+import { Calculator, ChevronRight, CheckCircle2, ArrowLeft, Send, Diamond } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import calculatorData from '@/data/calculator.json';
 
@@ -28,8 +28,8 @@ interface FormErrors {
 
 export default function PricingCalculator() {
   const [step, setStep] = useState(1);
-  const [materialId, setMaterialId] = useState<string>(calculatorData[0].id);
-  const [serviceId, setServiceId] = useState<string>(calculatorData[0].availableServices[0].id);
+  const [materialId, setMaterialId] = useState<string | null>(null);
+  const [serviceId, setServiceId] = useState<string | null>(null);
   const [thickness, setThickness] = useState<number>(45);
   const [length, setLength] = useState<number>(10);
   
@@ -48,25 +48,47 @@ export default function PricingCalculator() {
 
   // Selection logic
   const selectedMaterial = useMemo(() => 
-    (calculatorData as Material[]).find(m => m.id === materialId)!, 
-  [materialId]);
+    materialId ? (calculatorData as Material[]).find(m => m.id === materialId) : null
+  , [materialId]);
 
   const selectedService = useMemo(() => 
-    selectedMaterial.availableServices.find(s => s.id === serviceId) || selectedMaterial.availableServices[0],
-  [selectedMaterial, serviceId]);
+    selectedMaterial ? selectedMaterial.availableServices.find(s => s.id === serviceId) : null
+  , [selectedMaterial, serviceId]);
 
   const handleMaterialChange = (id: string) => {
     setMaterialId(id);
-    const newMaterial = (calculatorData as Material[]).find(m => m.id === id)!;
-    setServiceId(newMaterial.availableServices[0].id);
+    setServiceId(null); // Reset service when material changes
   };
 
   const calculateRange = () => {
-    const isM2 = selectedService.unit === 'm2';
+    let minP = 0;
+    let maxP = 0;
+    let unit = 'm2';
+
+    if (selectedService) {
+      minP = selectedService.minPrice;
+      maxP = selectedService.maxPrice;
+      unit = selectedService.unit;
+    } else {
+      // Find the most expensive variant across ALL data if nothing is selected
+      calculatorData.forEach((m: any) => {
+        m.availableServices.forEach((s: any) => {
+          if (s.maxPrice > maxP) {
+            minP = s.minPrice;
+            maxP = s.maxPrice;
+            unit = s.unit;
+          }
+        });
+      });
+    }
+
+    const isM2 = unit === 'm2';
     const factor = isM2 ? (thickness / 100) * length : length;
+    
     return {
-      min: Math.round(selectedService.minPrice * factor),
-      max: Math.round(selectedService.maxPrice * factor)
+      min: Math.round(minP * factor),
+      max: Math.round(maxP * factor),
+      isFallback: !selectedService
     };
   };
 
@@ -91,8 +113,8 @@ export default function PricingCalculator() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          material: selectedMaterial.label,
-          service: selectedService.label,
+          material: selectedMaterial?.label || 'Nevybráno',
+          service: selectedService?.label || 'Nevybráno (odhad dle max)',
           thickness,
           length,
           price: `${range.min.toLocaleString()} - ${range.max.toLocaleString()} Kč`,
@@ -111,7 +133,7 @@ export default function PricingCalculator() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
       
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-6">
             <Calculator className="w-10 h-10 text-primary" />
             <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter italic leading-none">
@@ -120,64 +142,99 @@ export default function PricingCalculator() {
           </div>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-xl rounded-3xl border-2 border-white/10 p-8 md:p-12 shadow-2xl">
+        <div className="bg-white/5 backdrop-blur-xl rounded-3xl border-2 border-white/10 p-6 md:p-10 shadow-2xl">
           <AnimatePresence mode="wait">
             {!isSubmitted ? (
-              <motion.div key={step === 1 ? 'step1' : 'step2'} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}>
+              <motion.div key={step === 1 ? 'step1' : 'step2'} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 {step === 1 ? (
-                  <div className="grid lg:grid-cols-2 gap-16">
-                    {/* Column 1: Config */}
-                    <div className="space-y-10">
-                      <div className="grid grid-cols-2 gap-8">
+                  <div className="space-y-10">
+                    <div className="grid lg:grid-cols-2 gap-10">
+                      {/* Column 1: Selections */}
+                      <div className="space-y-8">
                         <div>
                           <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em] mb-4 italic">1. Typ zdiva</h3>
-                          <select 
-                            value={materialId} 
-                            onChange={(e) => handleMaterialChange(e.target.value)}
-                            className="w-full bg-white/5 border-2 border-white/10 rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
-                          >
-                            {calculatorData.map(m => <option key={m.id} value={m.id} className="bg-neutral-dark">{m.label}</option>)}
-                          </select>
+                          <div className="grid grid-cols-2 gap-3">
+                            {calculatorData.map((m) => (
+                              <button
+                                key={m.id}
+                                type="button"
+                                onClick={() => handleMaterialChange(m.id)}
+                                className={cn(
+                                  "p-4 rounded-2xl border-2 text-left transition-all",
+                                  materialId === m.id ? "border-primary bg-primary/10 shadow-[0_0_20px_rgba(196,214,0,0.1)]" : "border-white/10 hover:border-white/30"
+                                )}
+                              >
+                                <div className={cn("font-black text-base uppercase tracking-tight mb-1 leading-none", materialId === m.id ? "text-primary" : "text-white")}>{m.label}</div>
+                                <div className="text-[9px] text-white/40 uppercase font-bold tracking-widest leading-tight">{m.description}</div>
+                              </button>
+                            ))}
+                          </div>
                         </div>
+
                         <div>
                           <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em] mb-4 italic">2. Technologie</h3>
-                          <select 
-                            value={serviceId} 
-                            onChange={(e) => setServiceId(e.target.value)}
-                            className="w-full bg-white/5 border-2 border-white/10 rounded-xl px-4 py-3 text-white font-bold outline-none focus:border-primary transition-colors appearance-none cursor-pointer"
-                          >
-                            {selectedMaterial.availableServices.map(s => <option key={s.id} value={s.id} className="bg-neutral-dark">{s.label}</option>)}
-                          </select>
+                          <div className="flex flex-wrap gap-3">
+                            {!materialId ? (
+                              <div className="px-6 py-3 rounded-full border-2 border-dashed border-white/10 text-white/20 text-xs font-bold uppercase tracking-widest">
+                                Nejdříve vyberte typ zdiva
+                              </div>
+                            ) : (
+                              selectedMaterial?.availableServices.map((s) => (
+                                <button
+                                  key={s.id}
+                                  type="button"
+                                  onClick={() => setServiceId(s.id)}
+                                  className={cn(
+                                    "px-6 py-3 rounded-full border-2 text-sm font-black uppercase tracking-widest transition-all",
+                                    serviceId === s.id ? "border-primary bg-primary text-neutral-dark" : "border-white/10 text-white/60 hover:border-white/30"
+                                  )}
+                                >
+                                  {s.label}
+                                </button>
+                              ))
+                            )}
+                          </div>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-8 pt-4">
-                        <div>
-                          <div className="flex justify-between items-end mb-3">
-                            <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic">3. Tloušťka</h3>
-                            <span className="text-xl font-black text-white italic">{thickness} cm</span>
+                      {/* Column 2: Price Box */}
+                      <div className="flex flex-col justify-center">
+                        <div className="bg-primary/10 rounded-[2rem] p-8 md:p-12 border-2 border-primary/20 text-center relative overflow-hidden group">
+                          <div className="relative z-10">
+                            <div className="text-xs font-black text-primary uppercase tracking-[0.3em] mb-4 italic">
+                              {range.isFallback ? "Maximální odhad ceny" : "Předběžné cenové rozpětí"}
+                            </div>
+                            <div className="text-5xl md:text-6xl font-black text-white italic tracking-tighter mb-4">
+                              {range.min.toLocaleString()} – {range.max.toLocaleString()} <span className="text-xl not-italic font-bold text-white/40 uppercase">Kč</span>
+                            </div>
+                            <div className="inline-block px-4 py-1 bg-white/5 rounded-full text-[10px] text-white/40 font-black uppercase tracking-widest leading-none">
+                              Bez DPH | {selectedService?.label || "Nejdražší varianta"} | {thickness}cm
+                            </div>
                           </div>
-                          <input type="range" min="15" max="150" step="5" value={thickness} onChange={(e) => setThickness(parseInt(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
-                        </div>
-                        <div>
-                          <div className="flex justify-between items-end mb-3">
-                            <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic">4. Délka</h3>
-                            <span className="text-xl font-black text-white italic">{length} m</span>
-                          </div>
-                          <input type="range" min="1" max="100" step="1" value={length} onChange={(e) => setLength(parseInt(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
                         </div>
                       </div>
                     </div>
 
-                    {/* Column 2: Result & CTA */}
-                    <div className="flex flex-col justify-center">
-                      <div className="bg-primary/10 rounded-2xl p-10 border-2 border-primary/20 text-center mb-8 relative overflow-hidden group">
-                        <div className="text-xs font-black text-primary uppercase tracking-[0.3em] mb-4 italic">Předběžné cenové rozpětí</div>
-                        <div className="text-5xl font-black text-white italic tracking-tighter mb-4">
-                          {range.min.toLocaleString()} – {range.max.toLocaleString()} <span className="text-xl not-italic font-bold text-white/40 uppercase">Kč</span>
+                    {/* Dimensions Row */}
+                    <div className="grid lg:grid-cols-2 gap-10 pt-6 border-t border-white/5">
+                      <div>
+                        <div className="flex justify-between items-end mb-4">
+                          <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em] italic">3. Tloušťka zdiva</h3>
+                          <span className="text-3xl font-black text-white italic leading-none">{thickness} <span className="text-sm font-bold text-white/40 not-italic uppercase tracking-widest ml-1">cm</span></span>
                         </div>
-                        <div className="text-[10px] text-white/40 font-black uppercase tracking-widest">Bez DPH | {selectedService.label}</div>
+                        <input type="range" min="15" max="150" step="5" value={thickness} onChange={(e) => setThickness(parseInt(e.target.value))} className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
                       </div>
+
+                      <div className="flex flex-col justify-end">
+                        <div className="flex justify-between items-end mb-4">
+                          <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em] italic">4. Délka zdi</h3>
+                          <span className="text-3xl font-black text-white italic leading-none">{length} <span className="text-sm font-bold text-white/40 not-italic uppercase tracking-widest ml-1">m</span></span>
+                        </div>
+                        <input type="range" min="1" max="100" step="1" value={length} onChange={(e) => setLength(parseInt(e.target.value))} className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
+                      </div>
+                    </div>
+
+                    <div className="pt-4">
                       <button onClick={() => setStep(2)} className="w-full btn-primary py-6 text-xl uppercase tracking-[0.2em] flex items-center justify-center gap-3">
                         Pokračovat k odeslání <ChevronRight className="w-6 h-6" />
                       </button>
@@ -232,7 +289,7 @@ export default function PricingCalculator() {
                       />
                     </div>
 
-                    <button type="submit" disabled={isSubmitting} className="w-full btn-primary py-6 text-xl uppercase tracking-[0.2em] flex items-center justify-center gap-3 disabled:opacity-50">
+                    <button type="submit" disabled={isSubmitting} className="w-full btn-primary py-6 text-xl uppercase tracking-[0.2em] flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl shadow-primary/10">
                       {isSubmitting ? 'Odesílám...' : 'Odeslat nezávaznou poptávku'}
                       <Send className="w-6 h-6" />
                     </button>
@@ -245,8 +302,8 @@ export default function PricingCalculator() {
                   <CheckCircle2 className="w-12 h-12" />
                 </div>
                 <h3 className="text-4xl font-black text-white uppercase tracking-tighter italic mb-6">Poptávka odeslána!</h3>
-                <p className="text-xl text-white/60 font-medium max-w-md mx-auto mb-12">Děkujeme. Brzy se vám ozveme s detailním rozpisem.</p>
-                <button onClick={() => {setIsSubmitted(false); setStep(1);}} className="btn-outline text-white border-white/20 hover:bg-white/10 py-4 px-10">Nová kalkulace</button>
+                <p className="text-xl text-white/60 font-medium max-w-md mx-auto mb-12 leading-relaxed">Děkujeme. Brzy se vám ozveme s detailním rozpisem práce a přesnou cenou.</p>
+                <button onClick={() => {setIsSubmitted(false); setStep(1); setMaterialId(null); setServiceId(null);}} className="btn-outline text-white border-white/20 hover:bg-white/10 py-4 px-10">Nová kalkulace</button>
               </motion.div>
             )}
           </AnimatePresence>
