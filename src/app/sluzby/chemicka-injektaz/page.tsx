@@ -2,8 +2,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ShieldCheck, CheckCircle2, Clock, Coins, Construction } from "lucide-react";
 import Link from "next/link";
+import servicesData from "@/data/services.json";
 
 export default function ChemicalInjectionPage() {
+  const data = servicesData["chemicka-injektaz"];
+
   const features = [
     "Vhodné tam, kde nelze mechanicky řezat",
     "Minimální zásah do konstrukce zdiva",
@@ -47,12 +50,12 @@ export default function ChemicalInjectionPage() {
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <Coins className="w-10 h-10 text-primary mb-6" />
               <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Cena</h3>
-              <p className="text-neutral-dark/60 font-medium">Od 2 500 do 3 900 Kč za běžný metr podle tloušťky a nasákavosti.</p>
+              <p className="text-neutral-dark/60 font-medium">{data.priceRange}</p>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <Clock className="w-10 h-10 text-primary mb-6" />
               <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Rychlost</h3>
-              <p className="text-neutral-dark/60 font-medium">Velmi rychlá realizace, běžně hotovo během 1–2 pracovních dnů.</p>
+              <p className="text-neutral-dark/60 font-medium">{data.duration}</p>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <ShieldCheck className="w-10 h-10 text-primary mb-6" />

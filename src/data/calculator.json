@@ -1,0 +1,26 @@
+[
+  {
+    "id": "cihla",
+    "label": "Cihla",
+    "description": "Nejčastější, rychlý postup.",
+    "basePrice": 1500
+  },
+  {
+    "id": "kamen",
+    "label": "Kámen",
+    "description": "Vyžaduje diamantové lano.",
+    "basePrice": 2500
+  },
+  {
+    "id": "smisene",
+    "label": "Smíšené",
+    "description": "Kombinace materiálů.",
+    "basePrice": 2000
+  },
+  {
+    "id": "beton",
+    "label": "Beton",
+    "description": "Extrémně tvrdý materiál.",
+    "basePrice": 3000
+  }
+]
