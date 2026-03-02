@@ -12,7 +12,7 @@ Tento dokument popisuje proces nasazení aplikace IZODIAMANT.cz a nastavení pom
    - `RESEND_API_KEY`: Váš klíč z resend.com
    - `CONTACT_EMAIL`: info@izodiamant.cz
    - `NEXT_PUBLIC_FIRMY_PROFILE_URL`: https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html
-   - `NEXT_PUBLIC_REVIEWS_API_URL`: (Doplníte po kroku 2 níže)
+   - `NEXT_PUBLIC_REVIEWS_API_URL`: URL adresa vašeho Workeru
    - `NODE_VERSION`: `20`
 4. **Compatibility flags (Settings -> Functions):**
    - Přidejte `nodejs_compat` pro Production i Preview.
@@ -29,7 +29,6 @@ Tento skript parsuje data z Firmy.cz a poskytuje je webu jako JSON.
 ```javascript
 export default {
   async fetch(request, env) {
-    // 1. Konfigurace URL (používáme widget verzi pro snadný parsing)
     const profileUrl = 'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html?widget&limit=150';
     
     try {
@@ -42,52 +41,48 @@ export default {
       const html = await response.text();
 
       const reviews = [];
-      // Extrakce dat pomocí Regexu
-      const authorRegex = /<span class="author">([^<]+)<\/span>/g;
-      const textRegex = /<div class="text">([^<]+)<\/div>/g;
-      const dateRegex = /<span class="date">([^<]+)<\/span>/g;
+      const itemRegex = /<div class="item">([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/g;
+      const authorRegex = /<div class="authorName">\s*<span>([^<]+)<\/span>/;
+      const dateRegex = /<span class="date">([^<]+)<\/span>/;
+      const textRegex = /<div class="text">([^<]+)<\/div>/;
 
-      let authorMatch;
-      while ((authorMatch = authorRegex.exec(html)) !== null) {
-        const textMatch = textRegex.exec(html);
-        const dateMatch = dateRegex.exec(html);
-        
-        if (textMatch) {
-          // Vyčištění textu (Seznam občas lepí iniciály autora na konec textu)
-          let cleanText = textMatch[1].trim();
-          
+      let itemMatch;
+      while ((itemMatch = itemRegex.exec(html)) !== null) {
+        const itemHtml = itemMatch[1];
+        const author = itemHtml.match(authorRegex);
+        const date = itemHtml.match(dateRegex);
+        const text = itemHtml.match(textRegex);
+
+        if (author && text) {
           reviews.push({
             id: `live-${reviews.length}`,
-            author: authorMatch[1].trim(),
-            text: cleanText,
-            date: dateMatch ? dateMatch[1].trim() : "2024",
+            author: author[1].trim(),
+            text: text[1].trim(),
+            date: date ? date[1].trim() : "2024",
             rating: 5
           });
         }
       }
 
-      // Extrakce celkových statistik z JSON metadat widgetu
-      const ratingMatch = html.match(/"average_review_percentage":(\d+)/);
-      const countMatch = html.match(/"review_count":(\d+)/);
+      const countMatch = html.match(/<span class="ratingCount">(\d+)\s*hodnocení<\/span>/);
+      const totalCount = countMatch ? parseInt(countMatch[1]) : reviews.length;
 
-      const responseData = {
-        rating: ratingMatch ? (parseInt(ratingMatch[1]) / 20) : 5.0,
-        count: countMatch ? parseInt(countMatch[1]) : reviews.length,
+      return new Response(JSON.stringify({
+        rating: 5.0,
+        count: totalCount,
         reviews: reviews,
         lastUpdate: new Date().toISOString()
-      };
-
-      return new Response(JSON.stringify(responseData), {
+      }), {
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*', // Povolí volání z webu
-          'Cache-Control': 'public, max-age=3600' // Kešování na 1 hodinu
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'public, max-age=3600'
         }
       });
     } catch (e) {
       return new Response(JSON.stringify({ error: e.message }), { 
-        status: 500,
-        headers: { 'Access-Control-Allow-Origin': '*' }
+        status: 500, 
+        headers: { 'Access-Control-Allow-Origin': '*' } 
       });
     }
   }
@@ -95,6 +90,4 @@ export default {
 ```
 
 4. Klikněte na **Save and Deploy**.
-5. Zkopírujte URL adresu tohoto Workeru (např. `https://izodiamant-reviews-api.vaše-jméno.workers.dev`).
-6. Tuto adresu vložte do environmentální proměnné `NEXT_PUBLIC_REVIEWS_API_URL` v nastavení **Cloudflare Pages** (viz krok 1.3).
-7. **Znovu nasaďte (Redeploy)** frontendovou aplikaci, aby se změna proměnné projevila.
+5. Adresu Workeru vložte do `NEXT_PUBLIC_REVIEWS_API_URL` v nastavení Pages.
