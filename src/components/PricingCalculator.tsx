@@ -2,9 +2,10 @@
 
 import { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calculator, ChevronRight, CheckCircle2, ArrowLeft, Send } from 'lucide-react';
+import { Calculator, ChevronRight, CheckCircle2, ArrowLeft, Send, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import calculatorData from '@/data/calculator.json';
+import servicesData from '@/data/services.json';
 
 interface Service {
   id: string;
@@ -127,6 +128,12 @@ export default function PricingCalculator() {
     }
   };
 
+  const priceListTooltip = [
+    { name: "Diamantové lano", price: servicesData["diamantove-lano"].priceRange.replace('m²', 'bm*') },
+    { name: "Řetězová pila", price: servicesData["retezova-pila"].priceRange.replace('m²', 'bm*') },
+    { name: "Chemická injektáž", price: servicesData["chemicka-injektaz"].priceRange }
+  ];
+
   return (
     <section id="calculator" ref={sectionRef} className="py-16 bg-neutral-dark relative overflow-hidden scroll-mt-20">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
@@ -141,7 +148,31 @@ export default function PricingCalculator() {
           </div>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] border-2 border-white/10 p-6 md:p-8 shadow-2xl">
+        <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] border-2 border-white/10 p-6 md:p-8 shadow-2xl relative">
+          {/* Info Tooltip Icon */}
+          <div className="absolute top-6 right-6 z-20 group">
+            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:bg-primary hover:text-neutral-dark transition-all cursor-help border border-white/10">
+              <Info className="w-4 h-4" />
+            </div>
+            
+            <div className="absolute top-0 right-10 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 transform translate-x-2 group-hover:translate-x-0 w-64">
+              <div className="bg-neutral-dark border-2 border-primary/30 p-5 rounded-2xl shadow-2xl backdrop-blur-xl">
+                <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic border-b border-white/10 pb-2">Stručný ceník</h4>
+                <div className="space-y-3">
+                  {priceListTooltip.map((item, i) => (
+                    <div key={i} className="flex justify-between items-start gap-4">
+                      <span className="text-[10px] font-bold text-white/80 uppercase leading-tight">{item.name}</span>
+                      <span className="text-[10px] font-black text-primary uppercase whitespace-nowrap">{item.price}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-2 border-t border-white/10 text-[8px] text-white/30 font-bold uppercase tracking-widest leading-relaxed">
+                  * bm kalkulován při standardní tloušťce zdiva 45cm.
+                </div>
+              </div>
+            </div>
+          </div>
+
           <AnimatePresence mode="wait">
             {!isSubmitted ? (
               <motion.div key={step === 1 ? 'step1' : 'step2'} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
