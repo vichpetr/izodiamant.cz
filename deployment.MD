@@ -19,7 +19,6 @@ export default {
   async fetch(request, env) {
     const profileUrl = 'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html?widget&limit=150';
     
-    // Funkce pro odstranění diakritiky a vytvoření ID
     const createSlug = (text) => {
       return text.toString().toLowerCase()
         .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -29,14 +28,10 @@ export default {
         .trim();
     };
 
-    // Funkce pro převod data z "DD. MM. YYYY" na "YYYY-MM-DD"
     const normalizeDate = (dateStr) => {
       const parts = dateStr.split('.').map(p => p.trim());
       if (parts.length === 3) {
-        const d = parts[0].padStart(2, '0');
-        const m = parts[1].padStart(2, '0');
-        const y = parts[2];
-        return `${y}-${m}-${d}`;
+        return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
       }
       return dateStr;
     };
@@ -51,12 +46,13 @@ export default {
       const html = await response.text();
 
       const reviews = [];
-      // Vylepšený regex pro zachycení celého bloku recenze (včetně vnořených divů)
       const itemRegex = /<div class="item">([\s\S]*?)<\/div>\s*(?=<div class="item">|<\/div>\s*<\/div>\s*<div class="btns">)/g;
       
       const authorRegex = /<div class="authorName">\s*<span>([^<]+)<\/span>/;
       const dateRegex = /<span class="date">([^<]+)<\/span>/;
       const textRegex = /<div class="text">([\s\S]*?)<\/div>/;
+      // Přesný regex pro extrakci procent z title
+      const ratingRegex = /class="reviewRating[^"]*" title="(\d+) %"/;
 
       let itemMatch;
       while ((itemMatch = itemRegex.exec(html)) !== null) {
@@ -65,27 +61,30 @@ export default {
         const author = itemHtml.match(authorRegex);
         const dateRaw = itemHtml.match(dateRegex);
         const text = itemHtml.match(textRegex);
+        const ratingMatch = itemHtml.match(ratingRegex);
 
         if (author && text) {
           const authorName = author[1].trim();
           const cleanDate = dateRaw ? normalizeDate(dateRaw[1].trim()) : "2024-01-01";
+          // Přepočet procent na hvězdy (100% = 5, 90% = 4.5, atd.)
+          const stars = ratingMatch ? (parseInt(ratingMatch[1]) / 20) : 5;
           
           reviews.push({
             id: `${cleanDate}-${createSlug(authorName)}`,
             author: authorName,
-            text: text[1].trim().replace(/<[^>]*>?/gm, ''), // Odstraní případné HTML tagy uvnitř textu
+            text: text[1].trim().replace(/<[^>]*>?/gm, ''),
             date: cleanDate,
-            rating: 5
+            rating: stars
           });
         }
       }
 
+      const statsMatch = html.match(/<div class="badge green">\s*([\d,]+)\s*<\/div>/);
       const countMatch = html.match(/<span class="ratingCount">(\d+)\s*hodnocení<\/span>/);
-      const totalCount = countMatch ? parseInt(countMatch[1]) : reviews.length;
 
       return new Response(JSON.stringify({
-        rating: 5.0,
-        count: totalCount,
+        rating: statsMatch ? parseFloat(statsMatch[1].replace(',', '.')) : 5.0,
+        count: countMatch ? parseInt(countMatch[1]) : reviews.length,
         reviews: reviews,
         lastUpdate: new Date().toISOString()
       }), {

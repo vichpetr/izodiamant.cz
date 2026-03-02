@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Quote, ChevronDown, ChevronUp, ExternalLink, Loader2 } from 'lucide-react';
+import { Star, Quote, ChevronDown, ChevronUp, ExternalLink, StarHalf } from 'lucide-react';
 import staticReviews from '@/data/reviews.json';
 
 interface Review {
@@ -53,7 +53,8 @@ export default function HomeReviews() {
     fetchLiveReviews();
   }, [workerUrl]);
 
-  // Sorting: newest first
+  if (reviews.length === 0 && status !== 'loading') return null;
+
   const sortedReviews = [...reviews].sort((a, b) => b.date.localeCompare(a.date));
   const visibleReviews = showAll ? sortedReviews : sortedReviews.slice(0, 3);
 
@@ -72,6 +73,20 @@ export default function HomeReviews() {
     const months = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
     const monthIndex = parseInt(parts[1]) - 1;
     return `${months[monthIndex]} ${parts[0]}`;
+  };
+
+  const renderStars = (rating: number) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<Star key={`full-${i}`} className="w-4 h-4 fill-current" />);
+    }
+    if (hasHalfStar) {
+      stars.push(<StarHalf key="half" className="w-4 h-4 fill-current" />);
+    }
+    return stars;
   };
 
   return (
@@ -130,9 +145,7 @@ export default function HomeReviews() {
                     <Quote className="absolute top-6 right-8 w-10 h-10 text-primary/10 group-hover:text-primary/20 transition-colors" />
                     
                     <div className="flex items-center gap-1 text-primary mb-6">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-current" />
-                      ))}
+                      {renderStars(review.rating)}
                     </div>
 
                     <p className="text-white/80 font-medium italic leading-relaxed mb-10 flex-grow">
