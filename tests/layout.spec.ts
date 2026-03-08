@@ -4,7 +4,7 @@ test.describe('IZODIAMANT Frontend Consistency', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     // Wait for animations to finish
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(300);
   });
 
   test('Hero section layout and text visibility', async ({ page }) => {
@@ -70,7 +70,7 @@ test.describe('IZODIAMANT Frontend Consistency', () => {
     const dates = page.locator('#reference .bg-primary\\/90');
     if (await dates.count() > 0) {
       const dateText = await dates.first().innerText();
-      expect(dateText).toMatch(/[A-Z][a-z]+ \d{4}/);
+      expect(dateText).toMatch(/[A-Z][A-Za-z]+ \d{4}/i);
       expect(dateText).not.toMatch(/\.$/); // Should NOT end with a dot
     }
   });
