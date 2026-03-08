@@ -46,7 +46,7 @@ export default async function ProjectPage({
     if (parts.length < 2) return dateStr;
     const months = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
     const monthIndex = parseInt(parts[1]) - 1;
-    return `${months[monthIndex]} ${parts[0]}`;
+    return `${months[monthIndex]} ${parts[0]}.`;
   };
 
   return (

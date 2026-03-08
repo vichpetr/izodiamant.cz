@@ -115,7 +115,7 @@ export default function PricingCalculator() {
           service: selectedService?.label || 'Nevybráno (rozpětí všech variant)',
           thickness,
           length,
-          price: `${range.min.toLocaleString()} - ${range.max.toLocaleString()} Kč`,
+          price: `${range.min.toLocaleString('cs-CZ')} - ${range.max.toLocaleString('cs-CZ')} Kč`,
         }),
       });
       setIsSubmitted(true);
@@ -275,7 +275,7 @@ export default function PricingCalculator() {
                             {!materialId ? "Rozpětí všech technologií" : !serviceId ? "Rozpětí pro dané zdivo" : "Odhad ceny pro vaši volbu"}
                           </div>
                           <div className="text-4xl md:text-5xl font-black text-white italic tracking-tighter mb-3 leading-none">
-                            {range.min.toLocaleString()} – {range.max.toLocaleString()} <span className="text-lg not-italic font-bold text-white/40 uppercase">Kč</span>
+                            {range.min.toLocaleString('cs-CZ')} – {range.max.toLocaleString('cs-CZ')} <span className="text-lg not-italic font-bold text-white/40 uppercase">Kč</span>
                           </div>
                           <div className="inline-block px-3 py-1 bg-white/5 rounded-full text-[9px] text-white/40 font-black uppercase tracking-widest leading-none">
                             Bez DPH | {selectedService?.label || (selectedMaterial ? "Všechny dostupné metody" : "Všechny varianty")}

@@ -13,7 +13,7 @@ export default function AllReferencesPage() {
       'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
       'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'
     ];
-    return `${months[parseInt(month) - 1]} ${year}`;
+    return `${months[parseInt(month) - 1]} ${year}.`;
   };
 
   return (

@@ -58,7 +58,7 @@ export default function FirmyBadge() {
               className={`w-3 h-3 ${i < Math.floor(rating) ? 'fill-current' : 'text-neutral-200'}`} 
             />
           ))}
-          <span className="ml-1 text-neutral-dark font-black text-sm italic">{rating.toFixed(1)}</span>
+          <span className="ml-1 text-neutral-dark font-black text-sm italic">{rating.toFixed(1).replace('.', ',')}</span>
         </div>
         <div className="text-[10px] font-black text-neutral-dark/40 uppercase tracking-widest group-hover:text-neutral-dark transition-colors">
           {count} hodnocení na Firmy.cz
