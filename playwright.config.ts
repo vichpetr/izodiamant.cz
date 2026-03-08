@@ -19,20 +19,21 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
     {
-      name: 'tablet-safari',
-      use: { ...devices['iPad Air'] },
+      name: 'tablet-chrome',
+      use: { ...devices['Galaxy Tab S4'] },
     },
     {
-      name: 'mobile-iphone',
-      use: { ...devices['iPhone 14'] },
+      name: 'mobile-chrome',
+      use: { ...devices['Pixel 7'] },
     },
   ],
 
   webServer: {
-    command: 'npm run dev',
+    command: 'npm run build && npm run start',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     stdout: 'ignore',
     stderr: 'pipe',
+    timeout: 120000,
   },
 });
