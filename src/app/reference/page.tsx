@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { MapPin, ArrowUpRight, Diamond, Calendar } from 'lucide-react';
 import referencesData from '@/data/references.json';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AllReferencesPage() {
   const sortedReferences = [...referencesData].sort((a, b) => b.date.localeCompare(a.date));
@@ -34,9 +35,12 @@ export default function AllReferencesPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
             {sortedReferences.map((project) => (
               <Link key={project.id} href={`/reference/${project.id}`} className="group block relative aspect-[4/5] overflow-hidden rounded-3xl bg-neutral-dark text-foreground">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
-                  style={{ backgroundImage: `url(${project.image})` }}
+                <Image 
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-neutral-dark via-transparent to-transparent opacity-80" />
                 

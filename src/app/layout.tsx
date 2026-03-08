@@ -79,6 +79,9 @@ export default function RootLayout({
   return (
     <html lang="cs" className="scroll-smooth">
       <head>
+        <link rel="preconnect" href="https://izodiamant-reviews-api.petr-c3c.workers.dev" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <Script id="json-ld-local-business" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} strategy="beforeInteractive" />
       </head>
       <body className={`${inter.variable} antialiased font-sans`}>

@@ -43,11 +43,12 @@ export default function HeroBadges() {
           {firmyData.rating.toFixed(1)}
         </span>
         <div className="flex flex-col items-center">
-          <div className="relative w-24 h-6">
+          <div className="relative">
             <Image 
               src="/images/mapy-com.png" 
               alt="Mapy.com" 
-              fill
+              width={96}
+              height={24}
               priority
               className="object-contain grayscale group-hover:grayscale-0 transition-all opacity-80 group-hover:opacity-100"
             />
