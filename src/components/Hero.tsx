@@ -7,7 +7,7 @@ import { ArrowRight, PlayCircle } from 'lucide-react';
 export default function Hero() {
   const content = {
     h1: "Váš dům si zaslouží suché základy. Navždy.",
-    desc: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě s doživotní zárukou.",
+    desc: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě.",
     cta_calc: "Spočítat cenu online",
     cta_ref: "Naše reference",
   };

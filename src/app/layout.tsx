@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     default: "IZODIAMANT | Sanace a podřezávání vlhkého zdiva",
     template: "%s | IZODIAMANT"
   },
-  description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě s doživotní zárukou. Celá ČR.",
+  description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě. Celá ČR.",
   keywords: ["sanace zdiva", "podřezávání zdiva", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "hydroizolace", "Nové Hrady"],
   authors: [{ name: "IZODIAMANT" }],
   creator: "IZODIAMANT",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     url: "https://izodiamant.cz",
     siteName: "IZODIAMANT",
     title: "IZODIAMANT | Sanace a podřezávání vlhkého zdiva",
-    description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií s doživotní zárukou.",
+    description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě.",
     images: [
       {
         url: "/logo.png",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "IZODIAMANT | Sanace a podřezávání vlhkého zdiva",
-    description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií s doživotní zárukou.",
+    description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě.",
     images: ["/logo.png"],
   },
 };
