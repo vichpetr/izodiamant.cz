@@ -1,23 +1,45 @@
 [
   {
-    "id": "zamek-zleby",
-    "title": "Sanace kamenného zdiva zámku Žleby",
+    "id": "2025-sloupnice",
+    "title": "Rekonstrukce domu Sloupnice",
+    "location": "Sloupnice",
+    "date": "2025-04",
+    "technology": "Řetězová pila na zdivo",
+    "scope": "Podřezání cihelného zdiva o šířce 50 cm",
+    "duration": "Dle rozsahu zakázky",
+    "description": "Komplexní sanace vlhkého zdiva rodinného domu. Provedení dodatečné vodorovné hydroizolace pomocí technologie podřezání cihelného zdiva řetězovou pilou. Tento postup efektivně řeší vzlínající vlhkost v konstrukcích o šířce 50 cm a zajišťuje dlouhodobou ochranu objektu.",
+    "features": [
+      "Dodatečné vložení hydroizolační fólie",
+      "Podřezání zdiva řetězovou pilou",
+      "Zajištění statické stability klínováním",
+      "Sanace vzlínající vlhkosti"
+    ],
+    "image": "/images/references/2025-sloupnice/1.jpg",
+    "gallery": [
+      "/images/references/2025-sloupnice/1.jpg",
+      "/images/references/2025-sloupnice/2.jpg",
+      "/images/references/2025-sloupnice/3.jpg"
+    ]
+  },
+  {
+    "id": "zleby",
+    "title": "Sanace kamenného zdiva Žleby",
     "location": "Žleby",
     "date": "2024-07",
     "technology": "Diamantové lano",
-    "scope": "320 m² řezné plochy",
-    "duration": "14 pracovních dnů",
+    "scope": "32 m² řezné plochy",
+    "duration": "5 pracovních dnů",
     "reviewId": "2025-03-02-tomas-bludicka",
-    "description": "Komplexní sanace historického kamenného zdiva v suterénních prostorách zámku. Vzhledem k extrémní tloušťce zdiva (až 180 cm) a požadavku na nulové otřesy byla zvolena technologie diamantového lana.",
+    "description": "Komplexní sanace historického kamenného zdiva v suterénních prostorách. Vzhledem k extrémní tloušťce zdiva a požadavku na nulové otřesy byla zvolena technologie diamantového lana.",
     "features": [
       "Řezání kamene o tloušťce 180 cm",
       "Vložení nerezové izolace",
       "Tlaková injektáž cementovou směsí",
       "Nulové narušení statiky objektu"
     ],
-    "image": "/images/references/zamek-zleby/1.jpg",
+    "image": "/images/references/zleby/1.jpg",
     "gallery": [
-      "/images/references/zamek-zleby/1.jpg"
+      "/images/references/zleby/1.jpg"
     ]
   },
   {
