@@ -96,6 +96,7 @@ export default function Technology() {
                 <Link 
                   href={tech.href}
                   className="inline-flex items-center gap-2 text-neutral-dark font-black uppercase tracking-widest text-xs hover:text-primary transition-colors group/link"
+                  aria-label={`Více o technologii ${tech.title.split(' – ')[0].toLowerCase()}`}
                 >
                   Více o technologii
                   <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
