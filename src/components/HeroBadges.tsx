@@ -40,16 +40,16 @@ export default function HeroBadges() {
         className="group flex flex-col items-center justify-center w-32 h-32 rounded-full border border-neutral-dark/10 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-xl hover:border-primary/30 transition-all duration-500"
       >
         <span className="text-4xl font-black text-neutral-dark tracking-tighter mb-1 group-hover:scale-110 transition-transform duration-500">
-          {firmyData.rating.toFixed(1)}
+          {firmyData.rating.toFixed(1).replace('.', ',')}
         </span>
         <div className="flex flex-col items-center">
           <div className="relative w-16 h-4">
             <Image 
-              src="/logo.png" 
-              alt="IZODIAMANT" 
+              src="https://mapy.cz/firm-badge.svg" 
+              alt="Mapy.cz" 
               fill
               priority
-              className="object-contain grayscale group-hover:grayscale-0 transition-all opacity-50 group-hover:opacity-100"
+              className="object-contain grayscale group-hover:grayscale-0 transition-all"
             />
           </div>
         </div>
@@ -64,7 +64,7 @@ export default function HeroBadges() {
         transition={{ delay: 0.8 }}
         className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-dark/40 italic hover:text-primary transition-colors group"
       >
-        Ohodnoťte nás na <span className="text-neutral-dark/60 group-hover:text-primary">Mapy.com</span>
+        Ohodnoťte nás na <span className="text-neutral-dark/60 group-hover:text-primary">Mapy.cz</span>
         <span className="ml-2 opacity-50">({firmyData.count} hodnocení)</span>
       </motion.a>
     </div>
