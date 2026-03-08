@@ -31,13 +31,13 @@ test.describe('IZODIAMANT Frontend Consistency', () => {
 
   test('Navigation menu availability', async ({ page, isMobile }) => {
     if (isMobile) {
-      // Mobile hamburger should be visible - using a more robust selector
+      // Mobile hamburger should be visible
       const menuButton = page.locator('header button[aria-label*="menu"]');
       await expect(menuButton).toBeVisible();
       
-      // Desktop links should be hidden
-      const desktopCalcLink = page.locator('header nav').filter({ hasText: 'Technologie' });
-      await expect(desktopCalcLink).not.toBeVisible();
+      // Desktop nav should be hidden on mobile
+      const desktopNav = page.locator('header nav');
+      await expect(desktopNav).toBeHidden();
     } else {
       // Desktop links should be visible
       const desktopCalcLink = page.locator('header .btn-primary').filter({ hasText: 'Nezávazná kalkulace' });
@@ -64,15 +64,14 @@ test.describe('IZODIAMANT Frontend Consistency', () => {
     await expect(references).toBeVisible();
     
     const referenceCards = page.locator('#reference .group');
-    // Fix: count() returns a promise that needs to be awaited or use Playwright assertions
     await expect(referenceCards).not.toHaveCount(0);
     
-    // Check dates format (trailing dot)
+    // Check dates format (Month Year - e.g. "Červenec 2024")
     const dates = page.locator('#reference .bg-primary\\/90');
     if (await dates.count() > 0) {
       const dateText = await dates.first().innerText();
-      // Should match "Month Year." (e.g., "Březen 2024.")
-      expect(dateText).toMatch(/\.|\d\./);
+      expect(dateText).toMatch(/[A-Z][a-z]+ \d{4}/);
+      expect(dateText).not.toMatch(/\.$/); // Should NOT end with a dot
     }
   });
 
@@ -80,7 +79,7 @@ test.describe('IZODIAMANT Frontend Consistency', () => {
     const footer = page.locator('footer');
     await expect(footer).toBeVisible();
     
-    // Check localized rating in footer - updated to use dot as requested
+    // Check localized rating in footer
     const footerRating = footer.locator('span').filter({ hasText: /5\.0|4\.9/ });
     await expect(footerRating).toBeVisible();
   });
