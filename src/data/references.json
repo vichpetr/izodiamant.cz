@@ -18,9 +18,7 @@
     "image": "/images/references/zamek-zleby/after.jpg",
     "gallery": [
       "/images/references/zamek-zleby/after.jpg"
-    ],
-    "before": "/images/references/zamek-zleby/after.jpg",
-    "after": "/images/references/zamek-zleby/after.jpg"
+    ]
   },
   {
     "id": "skorkov",
@@ -40,9 +38,7 @@
     "image": "/images/references/skorkov/after.jpg",
     "gallery": [
       "/images/references/skorkov/after.jpg"
-    ],
-    "before": "/images/references/skorkov/after.jpg",
-    "after": "/images/references/skorkov/after.jpg"
+    ]
   },
   {
     "id": "stare-zdanice",
@@ -60,11 +56,8 @@
     ],
     "image": "/images/references/stare-zdanice/after.jpg",
     "gallery": [
-      "/images/references/stare-zdanice/after.jpg",
-      "/images/references/zamek-zleby/after.jpg"
-    ],
-    "before": "/images/references/stare-zdanice/after.jpg",
-    "after": "/images/references/stare-zdanice/after.jpg"
+      "/images/references/stare-zdanice/after.jpg"
+    ]
   },
   {
     "id": "bernartice",
@@ -83,9 +76,7 @@
     "image": "/images/references/bernartice/after.jpg",
     "gallery": [
       "/images/references/bernartice/after.jpg"
-    ],
-    "before": "/images/references/bernartice/after.jpg",
-    "after": "/images/references/bernartice/after.jpg"
+    ]
   },
   {
     "id": "pardubice-diamant",
@@ -104,9 +95,7 @@
     "image": "/images/references/pardubice-diamant/after.jpg",
     "gallery": [
       "/images/references/pardubice-diamant/after.jpg"
-    ],
-    "before": "/images/references/pardubice-diamant/after.jpg",
-    "after": "/images/references/pardubice-diamant/after.jpg"
+    ]
   },
   {
     "id": "policka",
@@ -126,8 +115,6 @@
     "image": "/images/references/policka/after.jpg",
     "gallery": [
       "/images/references/policka/after.jpg"
-    ],
-    "before": "/images/references/policka/after.jpg",
-    "after": "/images/references/policka/after.jpg"
+    ]
   }
 ]

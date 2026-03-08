@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ReferenceSlider from "@/components/ReferenceSlider";
 import ProjectReview from "@/components/ProjectReview";
 import ProjectGallery from "@/components/ProjectGallery";
 import { MapPin, ArrowLeft, Gem, Zap, CheckCircle2, Calendar } from "lucide-react";
@@ -20,8 +19,6 @@ interface Project {
   features: string[];
   image: string;
   gallery?: string[];
-  before?: string;
-  after?: string;
   reviewId?: string;
 }
 

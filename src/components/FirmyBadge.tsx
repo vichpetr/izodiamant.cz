@@ -44,7 +44,7 @@ export default function FirmyBadge() {
     >
       <div className="relative w-10 h-10 shrink-0">
         <Image 
-          src="https://mapy.cz/firm-badge.svg" 
+          src="/images/mapy-com.jpeg"
           alt="Mapy.cz" 
           fill
           className="object-contain"
