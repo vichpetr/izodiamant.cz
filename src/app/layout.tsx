@@ -82,6 +82,24 @@ export default function RootLayout({
         <link rel="preconnect" href="https://izodiamant-reviews-api.petr-c3c.workers.dev" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* Google Analytics Consent Mode Initialization */}
+        <Script id="ga-consent" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            
+            // Check if we already have consent stored
+            const storedConsent = typeof window !== 'undefined' ? localStorage.getItem('cookie-consent') : null;
+            
+            gtag('consent', 'default', {
+              'analytics_storage': storedConsent === 'true' ? 'granted' : 'denied',
+              'ad_storage': storedConsent === 'true' ? 'granted' : 'denied',
+              'wait_for_update': 500
+            });
+          `}
+        </Script>
+
         <Script id="json-ld-local-business" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} strategy="beforeInteractive" />
       </head>
       <body className={`${inter.variable} antialiased font-sans`}>

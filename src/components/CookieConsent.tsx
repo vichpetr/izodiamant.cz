@@ -13,29 +13,41 @@ export default function CookieConsent() {
     }
   }, []);
 
-  const accept = () => {
-    localStorage.setItem("cookie-consent", "true");
+  const updateConsent = (isAccepted: boolean) => {
+    localStorage.setItem("cookie-consent", isAccepted ? "true" : "false");
+    
+    // Odeslání informace do Google Analytics (Consent Mode)
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('consent', 'update', {
+        'analytics_storage': isAccepted ? 'granted' : 'denied',
+        'ad_storage': isAccepted ? 'granted' : 'denied'
+      });
+    }
+    
     setShow(false);
   };
 
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-6 bg-white border-t border-neutral-light shadow-2xl">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        <p className="text-sm text-neutral-dark/70 font-medium">
-          Tento web používá soubory cookies pro analýzu návštěvnosti a vylepšování uživatelského zážitku. Pokračováním v prohlížení souhlasíte s jejich použitím.
-        </p>
-        <div className="flex gap-4 shrink-0">
+    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-4xl">
+      <div className="bg-neutral-dark/95 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-[2rem] shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="space-y-2 text-center md:text-left">
+          <h4 className="text-white font-black uppercase tracking-widest text-xs italic">Soukromí a cookies</h4>
+          <p className="text-sm text-white/60 font-medium leading-relaxed max-w-xl">
+            Tento web používá soubory cookies pro analýzu návštěvnosti. Pomozte nám vylepšovat naše služby udělením souhlasu.
+          </p>
+        </div>
+        <div className="flex gap-3 shrink-0">
           <button
-            onClick={() => setShow(false)}
-            className="text-sm font-bold uppercase tracking-widest text-neutral-dark/50 hover:text-neutral-dark px-4 py-2 transition-colors"
+            onClick={() => updateConsent(false)}
+            className="text-xs font-black uppercase tracking-widest text-white/40 hover:text-white px-6 py-3 transition-colors"
           >
-            Nezbytné
+            Odmítnout
           </button>
           <button
-            onClick={accept}
-            className="btn-primary text-xs uppercase tracking-[0.2em] py-3 px-8"
+            onClick={() => updateConsent(true)}
+            className="btn-primary text-xs uppercase tracking-[0.2em] py-4 px-10 shadow-xl shadow-primary/20"
           >
             Povolit vše
           </button>
