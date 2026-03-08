@@ -8,7 +8,7 @@ import servicesData from "@/data/services.json";
 
 export const metadata: Metadata = {
   title: "Podřezávání zdiva diamantovým lanem | IZODIAMANT",
-  description: "Sanace vlhkého zdiva diamantovým lanem pro extrémně tvrdé materiály jako kámen a beton. Rychlá realizace, doživotní záruka, nulové otřesy.",
+  description: "Sanace vlhkého zdiva diamantovým lanem pro extrémně tvrdé materiály jako kámen a beton. Rychlá realizace, nulové otřesy – vracíme zdraví vaší stavbě.",
   keywords: ["diamantové lano", "podřezání zdiva lanem", "sanace kamenného zdiva", "izolace betonu", "Nové Hrady", "ČR"],
 };
 
@@ -38,13 +38,13 @@ export default function DiamondWirePage() {
     "Bez omezení tloušťky zdiva",
     "Nulové otřesy chránící statiku objektu",
     "Milimetrová přesnost řezu",
-    "Doživotní záruka na vloženou izolaci",
+    "Vracíme zdraví vaší stavbě.",
     "Ideální pro historické a památkové objekty"
   ];
 
   return (
     <main className="min-h-screen bg-neutral-light">
-      <Script id="service-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} strategy="beforeInteractive" />
+      <Script id="service-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} strategy="afterInteractive" />
       <Header />
       
       <section className="pt-32 pb-20">
@@ -87,7 +87,7 @@ export default function DiamondWirePage() {
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <ShieldCheck className="w-10 h-10 text-primary mb-6" />
               <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Záruka</h3>
-              <p className="text-neutral-dark/60 font-medium">Při použití sklolaminátových desek garantujeme doživotní funkčnost.</p>
+              <p className="text-neutral-dark/60 font-medium">Při použití sklolaminátových desek vracíme zdraví vaší stavbě.</p>
             </div>
           </div>
 

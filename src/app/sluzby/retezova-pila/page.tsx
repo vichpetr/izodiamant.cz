@@ -44,7 +44,7 @@ export default function ChainSawPage() {
 
   return (
     <main className="min-h-screen bg-neutral-light">
-      <Script id="service-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} strategy="beforeInteractive" />
+      <Script id="service-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} strategy="afterInteractive" />
       <Header />
       
       <section className="pt-32 pb-20">
