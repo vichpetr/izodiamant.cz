@@ -79,8 +79,6 @@ export default function RootLayout({
   return (
     <html lang="cs" className="scroll-smooth">
       <head>
-        <link rel="preconnect" href="https://izodiamant-reviews-api.petr-c3c.workers.dev" />
-        
         {/* Google Analytics Consent Mode Initialization */}
         <Script id="ga-consent" strategy="afterInteractive">
           {`
