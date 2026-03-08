@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.16",
+    "@playwright/test": "^1.58.2",
     "@types/node": "^20.19.35",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

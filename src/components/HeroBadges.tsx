@@ -46,7 +46,7 @@ export default function HeroBadges() {
         <div className="flex flex-col items-center">
           <div className="relative">
             <Image 
-              src="/images/mapy-com.png" 
+              src="/images/mapy-com.jpeg"
               alt="Mapy.com" 
               width={96}
               height={24}
