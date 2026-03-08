@@ -88,7 +88,7 @@ export default function Header() {
               href="/#calculator"
               className="btn-primary py-2 px-6"
             >
-              Spočítat cenu
+              Nezávazná kalkulace
             </Link>
           </div>
 
@@ -126,7 +126,7 @@ export default function Header() {
                 <span>+420 737 017 012</span>
               </a>
               <Link href="/#calculator" onClick={() => setIsMobileMenuOpen(false)} className="text-center btn-primary py-4">
-                Spočítat cenu
+                Nezávazná kalkulace
               </Link>
             </div>
           </div>

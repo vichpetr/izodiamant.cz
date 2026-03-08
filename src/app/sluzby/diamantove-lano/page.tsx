@@ -63,7 +63,7 @@ export default function DiamondWirePage() {
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
-                  Spočítat orientační cenu
+                  Nezávazná kalkulace
                 </Link>
               </div>
             </div>
