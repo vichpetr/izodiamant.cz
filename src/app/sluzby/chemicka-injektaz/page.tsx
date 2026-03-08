@@ -130,10 +130,10 @@ export default function ChemicalInjectionPage() {
                   ))}
                 </ul>
                 <div className="mt-12 p-8 bg-white/5 rounded-2xl border border-white/10">
-                  <h4 className="flex items-center gap-2 font-black uppercase text-xs mb-4 text-primary italic">
+                  <h3 className="flex items-center gap-2 font-black uppercase text-xs mb-4 text-primary italic">
                     <Construction className="w-4 h-4" />
                     Kdy zvolit injektáž
-                  </h4>
+                  </h3>
                   <p className="text-sm text-white/50 leading-relaxed font-medium">
                     Ideální pro případy, kdy je zdivo špatně přístupné, má nepravidelnou spáru nebo by mechanický zásah mohl ohrozit statiku historického objektu.
                   </p>

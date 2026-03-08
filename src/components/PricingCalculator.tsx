@@ -151,7 +151,7 @@ export default function PricingCalculator() {
               
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 w-72 z-50">
                 <div className="bg-neutral-dark border-2 border-primary/30 p-5 rounded-2xl shadow-2xl backdrop-blur-xl text-left">
-                  <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic border-b border-white/10 pb-2">Ceník</h4>
+                  <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic border-b border-white/10 pb-2">Ceník</h3>
                   <div className="space-y-4">
                     {priceListTooltip.map((item, i) => (
                       <div key={i} className="flex justify-between items-center gap-4">

@@ -130,10 +130,10 @@ export default function ChainSawPage() {
                   ))}
                 </ul>
                 <div className="mt-12 p-8 bg-white/5 rounded-2xl border border-white/10">
-                  <h4 className="flex items-center gap-2 font-black uppercase text-xs mb-4 text-primary italic">
+                  <h3 className="flex items-center gap-2 font-black uppercase text-xs mb-4 text-primary italic">
                     <Construction className="w-4 h-4" />
                     Vhodné materiály
-                  </h4>
+                  </h3>
                   <p className="text-sm text-white/50 leading-relaxed font-medium">
                     Tato metoda je optimalizována pro cihlové zdivo s průběžnou vodorovnou spárou. U kamenného zdiva doporučujeme technologii diamantového lana.
                   </p>
