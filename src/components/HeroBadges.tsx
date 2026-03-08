@@ -45,7 +45,7 @@ export default function HeroBadges() {
         <div className="flex flex-col items-center">
           <div className="relative w-16 h-4">
             <Image 
-              src="https://mapy.cz/firm-badge.svg" 
+              src="/images/mapy-com.png"
               alt="Firmy.cz" 
               fill
               className="object-contain grayscale group-hover:grayscale-0 transition-all"
@@ -63,7 +63,7 @@ export default function HeroBadges() {
         transition={{ delay: 0.8 }}
         className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-dark/40 italic hover:text-primary transition-colors group"
       >
-        Ohodnoťte nás na <span className="text-neutral-dark/60 group-hover:text-primary">Mapy.cz</span>
+        Ohodnoťte nás na <span className="text-neutral-dark/60 group-hover:text-primary">Mapy.com</span>
         <span className="ml-2 opacity-50">({firmyData.count} hodnocení)</span>
       </motion.a>
     </div>
