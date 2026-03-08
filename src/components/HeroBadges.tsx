@@ -40,7 +40,7 @@ export default function HeroBadges() {
         className="group flex flex-col items-center justify-center w-32 h-32 rounded-full border border-neutral-dark/10 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-xl hover:border-primary/30 transition-all duration-500"
       >
         <span className="text-4xl font-black text-neutral-dark tracking-tighter mb-1 group-hover:scale-110 transition-transform duration-500">
-          {firmyData.rating.toFixed(1).replace('.', ',')}
+          {firmyData.rating.toFixed(1)}
         </span>
         <div className="flex flex-col items-center">
           <div className="relative w-16 h-4">
