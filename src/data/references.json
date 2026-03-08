@@ -16,6 +16,9 @@
       "Nulové narušení statiky objektu"
     ],
     "image": "/images/references/zamek-zleby/after.jpg",
+    "gallery": [
+      "/images/references/zamek-zleby/after.jpg"
+    ],
     "before": "/images/references/zamek-zleby/after.jpg",
     "after": "/images/references/zamek-zleby/after.jpg"
   },
@@ -35,6 +38,9 @@
       "Statické zajištění klíny"
     ],
     "image": "/images/references/skorkov/after.jpg",
+    "gallery": [
+      "/images/references/skorkov/after.jpg"
+    ],
     "before": "/images/references/skorkov/after.jpg",
     "after": "/images/references/skorkov/after.jpg"
   },
@@ -53,6 +59,10 @@
       "Tlaková injektáž"
     ],
     "image": "/images/references/stare-zdanice/after.jpg",
+    "gallery": [
+      "/images/references/stare-zdanice/after.jpg",
+      "/images/references/zamek-zleby/after.jpg"
+    ],
     "before": "/images/references/stare-zdanice/after.jpg",
     "after": "/images/references/stare-zdanice/after.jpg"
   },
@@ -71,6 +81,9 @@
       "Sanace vnitřních omítek"
     ],
     "image": "/images/references/bernartice/after.jpg",
+    "gallery": [
+      "/images/references/bernartice/after.jpg"
+    ],
     "before": "/images/references/bernartice/after.jpg",
     "after": "/images/references/bernartice/after.jpg"
   },
@@ -89,6 +102,9 @@
       "Čisté provedení v interiéru"
     ],
     "image": "/images/references/pardubice-diamant/after.jpg",
+    "gallery": [
+      "/images/references/pardubice-diamant/after.jpg"
+    ],
     "before": "/images/references/pardubice-diamant/after.jpg",
     "after": "/images/references/pardubice-diamant/after.jpg"
   },
@@ -108,6 +124,9 @@
       "Záruka na komplexní sucho"
     ],
     "image": "/images/references/policka/after.jpg",
+    "gallery": [
+      "/images/references/policka/after.jpg"
+    ],
     "before": "/images/references/policka/after.jpg",
     "after": "/images/references/policka/after.jpg"
   }

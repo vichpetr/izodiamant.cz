@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ReferenceSlider from "@/components/ReferenceSlider";
 import ProjectReview from "@/components/ProjectReview";
+import ProjectGallery from "@/components/ProjectGallery";
 import { MapPin, ArrowLeft, Gem, Zap, CheckCircle2, Calendar } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -18,6 +19,7 @@ interface Project {
   description: string;
   features: string[];
   image: string;
+  gallery?: string[];
   before?: string;
   after?: string;
   reviewId?: string;
@@ -38,8 +40,6 @@ export default async function ProjectPage({
   const project = (referencesData as Project[]).find(p => p.id === id);
 
   if (!project) return <div>Projekt nenalezen</div>;
-
-  const showSlider = project.before && project.after && project.before !== project.after;
 
   const formatDate = (dateStr: string) => {
     const parts = dateStr.split('-');
@@ -128,18 +128,10 @@ export default async function ProjectPage({
             </div>
 
             <div className="sticky top-32 space-y-8">
-              {showSlider ? (
-                <ReferenceSlider before={project.before!} after={project.after!} />
-              ) : (
-                <div className="relative aspect-[16/9] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/10">
-                  <Image 
-                    src={project.image} 
-                    alt={project.title} 
-                    fill 
-                    className="object-cover"
-                  />
-                </div>
-              )}
+              <ProjectGallery 
+                images={project.gallery && project.gallery.length > 0 ? project.gallery : [project.image]} 
+                title={project.title} 
+              />
               
               <div className="bg-neutral-dark rounded-3xl p-10 text-white shadow-2xl relative overflow-hidden group">
                 <div className="absolute inset-0 bg-primary opacity-5 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
