@@ -1,11 +1,13 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ProjectReview from "@/components/ProjectReview";
-import ProjectGallery from "@/components/ProjectGallery";
+import dynamic from 'next/dynamic';
 import { MapPin, ArrowLeft, Gem, Zap, CheckCircle2, Calendar } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import referencesData from '@/data/references.json';
+
+const ProjectReview = dynamic(() => import("@/components/ProjectReview"), { ssr: true });
+const ProjectGallery = dynamic(() => import("@/components/ProjectGallery"), { ssr: true });
 
 interface Project {
   id: string;

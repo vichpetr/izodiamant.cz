@@ -21,9 +21,10 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
       // 1. Try Live API if configured
       if (workerUrl && !workerUrl.includes('vás-účet')) {
         try {
-          const res = await fetch(workerUrl);
+          const res = await fetch(workerUrl, { next: { revalidate: 3600 } });
+          if (!res.ok) throw new Error(`API returned ${res.status}`);
           const data = await res.json();
-          if (data.reviews) {
+          if (data && data.reviews) {
             const found = data.reviews.find((r: any) => r.id === reviewId);
             if (found) {
               setReview({ ...found, rating: Number(found.rating) });
@@ -31,14 +32,18 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
             }
           }
         } catch (err) {
-          console.warn('Review API fetch failed on project page');
+          console.warn('Review API fetch failed on project page:', err instanceof Error ? err.message : String(err));
         }
       }
 
       // 2. Fallback to static
-      const fallback = (staticReviews as any[]).find(r => r.id === reviewId);
-      if (fallback) {
-        setReview({ ...fallback, rating: Number(fallback.rating) });
+      try {
+        const fallback = (staticReviews as any[]).find(r => r.id === reviewId);
+        if (fallback) {
+          setReview({ ...fallback, rating: Number(fallback.rating) });
+        }
+      } catch (err) {
+        console.error('Static review lookup failed');
       }
     }
 
