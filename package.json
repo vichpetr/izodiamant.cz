@@ -2,6 +2,11 @@
   "name": "izodiamant-2026",
   "version": "1.0.0",
   "private": true,
+  "browserslist": [
+    "last 2 years",
+    "not dead",
+    "fully supports es6-module"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
