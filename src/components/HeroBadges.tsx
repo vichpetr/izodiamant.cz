@@ -43,7 +43,7 @@ export default function HeroBadges() {
           {firmyData.rating.toFixed(1)}
         </span>
         <div className="flex flex-col items-center">
-          <div className="relative w-16 h-4">
+          <div className="relative w-20 h-5">
             <Image 
               src="https://mapy.cz/firm-badge.svg" 
               alt="Mapy.cz" 
