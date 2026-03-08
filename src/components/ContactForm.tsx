@@ -128,8 +128,9 @@ export default function ContactForm() {
                 <motion.form key="contact-form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleSubmit} noValidate className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="block text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic">Jméno a příjmení *</label>
+                      <label htmlFor="contact-name" className="block text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic cursor-pointer">Jméno a příjmení *</label>
                       <input
+                        id="contact-name"
                         type="text" value={formData.name} 
                         onChange={(e) => { setFormData({ ...formData, name: e.target.value }); if(errors.name) setErrors({...errors, name: undefined}); }}
                         className={cn("w-full bg-white/5 border-2 rounded-xl px-6 py-4 outline-none transition-colors text-white font-bold", errors.name ? "border-red-500/50" : "border-white/10 focus:border-primary")}
@@ -137,8 +138,9 @@ export default function ContactForm() {
                       {errors.name && <span className="text-[10px] text-red-500 font-bold uppercase tracking-widest ml-2">{errors.name}</span>}
                     </div>
                     <div className="space-y-2">
-                      <label className="block text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic">Telefon *</label>
+                      <label htmlFor="contact-phone" className="block text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic cursor-pointer">Telefon *</label>
                       <input
+                        id="contact-phone"
                         type="tel" value={formData.phone} 
                         onChange={(e) => { setFormData({ ...formData, phone: e.target.value }); if(errors.phone) setErrors({...errors, phone: undefined}); }}
                         className={cn("w-full bg-white/5 border-2 rounded-xl px-6 py-4 outline-none transition-colors text-white font-bold", errors.phone ? "border-red-500/50" : "border-white/10 focus:border-primary")}
@@ -147,15 +149,17 @@ export default function ContactForm() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic">E-mail (volitelně)</label>
+                    <label htmlFor="contact-email" className="block text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic cursor-pointer">E-mail (volitelně)</label>
                     <input
+                      id="contact-email"
                       type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full bg-white/5 border-2 border-white/10 rounded-xl px-6 py-4 outline-none focus:border-primary transition-colors text-white font-bold"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic">Zpráva / Popis projektu *</label>
+                    <label htmlFor="contact-message" className="block text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic cursor-pointer">Zpráva / Popis projektu *</label>
                     <textarea
+                      id="contact-message"
                       rows={4} value={formData.message} 
                       onChange={(e) => { setFormData({ ...formData, message: e.target.value }); if(errors.message) setErrors({...errors, message: undefined}); }}
                       className={cn("w-full bg-white/5 border-2 rounded-xl px-6 py-4 outline-none transition-colors text-white font-bold resize-none", errors.message ? "border-red-500/50" : "border-white/10 focus:border-primary")}

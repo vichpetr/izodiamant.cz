@@ -206,17 +206,17 @@ export default function PricingCalculator() {
                         <div className="space-y-6">
                           <div>
                             <div className="flex justify-between items-end mb-3">
-                              <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic">1. Tloušťka zdiva</h3>
+                              <label htmlFor="thickness-range" className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic cursor-pointer">1. Tloušťka zdiva</label>
                               <span className="text-2xl font-black text-white italic leading-none">{thickness} <span className="text-xs font-bold text-white/40 not-italic uppercase tracking-widest ml-1">cm</span></span>
                             </div>
-                            <input type="range" min="15" max="150" step="5" value={thickness} onChange={(e) => setThickness(parseInt(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
+                            <input id="thickness-range" type="range" min="15" max="150" step="5" value={thickness} onChange={(e) => setThickness(parseInt(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
                           </div>
                           <div>
                             <div className="flex justify-between items-end mb-3">
-                              <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic">2. Délka zdi</h3>
+                              <label htmlFor="length-range" className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic cursor-pointer">2. Délka zdi</label>
                               <span className="text-2xl font-black text-white italic leading-none">{length} <span className="text-xs font-bold text-white/40 not-italic uppercase tracking-widest ml-1">m</span></span>
                             </div>
-                            <input type="range" min="1" max="100" step="1" value={length} onChange={(e) => setLength(parseInt(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
+                            <input id="length-range" type="range" min="1" max="100" step="1" value={length} onChange={(e) => setLength(parseInt(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
                           </div>
                         </div>
 
@@ -302,8 +302,9 @@ export default function PricingCalculator() {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="block text-[9px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic">Jméno a příjmení *</label>
+                        <label htmlFor="calc-name" className="block text-[9px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic cursor-pointer">Jméno a příjmení *</label>
                         <input 
+                          id="calc-name"
                           type="text" value={formData.name} onChange={(e) => { setFormData({ ...formData, name: e.target.value }); if(errors.name) setErrors({...errors, name: undefined}); }}
                           className={cn("w-full bg-white/5 border-2 rounded-xl px-5 py-3.5 outline-none transition-colors text-white font-bold text-sm", errors.name ? "border-red-500/50" : "border-white/10 focus:border-primary")}
                           placeholder="Jan Novák"
@@ -311,8 +312,9 @@ export default function PricingCalculator() {
                         {errors.name && <span className="text-[9px] text-red-500 font-bold uppercase tracking-widest ml-2">{errors.name}</span>}
                       </div>
                       <div className="space-y-1.5">
-                        <label className="block text-[9px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic">Telefon *</label>
+                        <label htmlFor="calc-phone" className="block text-[9px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic cursor-pointer">Telefon *</label>
                         <input 
+                          id="calc-phone"
                           type="tel" value={formData.phone} onChange={(e) => { setFormData({ ...formData, phone: e.target.value }); if(errors.phone) setErrors({...errors, phone: undefined}); }}
                           className={cn("w-full bg-white/5 border-2 rounded-xl px-5 py-3.5 outline-none transition-colors text-white font-bold text-sm", errors.phone ? "border-red-500/50" : "border-white/10 focus:border-primary")}
                           placeholder="+420 777 888 999"
@@ -322,8 +324,9 @@ export default function PricingCalculator() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-[9px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic">E-mail (volitelně)</label>
+                      <label htmlFor="calc-email" className="block text-[9px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic cursor-pointer">E-mail (volitelně)</label>
                       <input 
+                        id="calc-email"
                         type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="w-full bg-white/5 border-2 border-white/10 rounded-xl px-5 py-3.5 outline-none focus:border-primary transition-colors text-white font-bold text-sm"
                         placeholder="vas@email.cz"
@@ -331,8 +334,9 @@ export default function PricingCalculator() {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-[9px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic">Doplňující zpráva (volitelně)</label>
+                      <label htmlFor="calc-message" className="block text-[9px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic cursor-pointer">Doplňující zpráva (volitelně)</label>
                       <textarea 
+                        id="calc-message"
                         rows={2} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         className="w-full bg-white/5 border-2 border-white/10 rounded-xl px-5 py-3.5 outline-none focus:border-primary transition-colors text-white font-bold resize-none text-sm"
                         placeholder="Místo realizace, termín..."
