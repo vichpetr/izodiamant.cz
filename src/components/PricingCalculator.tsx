@@ -274,8 +274,14 @@ export default function PricingCalculator() {
                           <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-3 italic leading-none">
                             {!materialId ? "Rozpětí všech technologií" : !serviceId ? "Rozpětí pro dané zdivo" : "Odhad ceny pro vaši volbu"}
                           </div>
-                          <div className="text-4xl md:text-5xl font-black text-white italic tracking-tighter mb-3 leading-none">
-                            {range.min.toLocaleString('cs-CZ')} – {range.max.toLocaleString('cs-CZ')} <span className="text-lg not-italic font-bold text-white/40 uppercase">Kč</span>
+                          <div className="flex flex-col items-center mb-4">
+                            <div className="text-4xl md:text-5xl font-black text-white italic tracking-tighter leading-none">
+                              {range.min.toLocaleString('cs-CZ')} <span className="text-lg not-italic font-bold text-white/40 uppercase">Kč</span>
+                            </div>
+                            <div className="text-primary font-black text-2xl my-1">–</div>
+                            <div className="text-4xl md:text-5xl font-black text-white italic tracking-tighter leading-none">
+                              {range.max.toLocaleString('cs-CZ')} <span className="text-lg not-italic font-bold text-white/40 uppercase">Kč</span>
+                            </div>
                           </div>
                           <div className="inline-block px-3 py-1 bg-white/5 rounded-full text-[9px] text-white/40 font-black uppercase tracking-widest leading-none">
                             Bez DPH | {selectedService?.label || (selectedMaterial ? "Všechny dostupné metody" : "Všechny varianty")}
