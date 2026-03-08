@@ -45,10 +45,11 @@ export default function HeroBadges() {
         <div className="flex flex-col items-center">
           <div className="relative w-16 h-4">
             <Image 
-              src="/images/mapy-com.png"
-              alt="Firmy.cz" 
+              src="/logo.png" 
+              alt="IZODIAMANT" 
               fill
-              className="object-contain grayscale group-hover:grayscale-0 transition-all"
+              priority
+              className="object-contain grayscale group-hover:grayscale-0 transition-all opacity-50 group-hover:opacity-100"
             />
           </div>
         </div>
