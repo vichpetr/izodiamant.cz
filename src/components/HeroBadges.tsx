@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import firmyFallback from '@/data/firmy.json';
 
 export default function HeroBadges() {
-  const [firmyData, setFirmyData] = useState<{ rating: number, count: number }>({ rating: 5.0, count: 12 });
+  const [firmyData, setFirmyData] = useState<{ rating: number, count: number }>(firmyFallback);
+  const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || '#';
   const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
 
   useEffect(() => {
@@ -29,7 +31,7 @@ export default function HeroBadges() {
   return (
     <div className="flex flex-col items-center justify-center mt-16 gap-4">
       <motion.a
-        href={process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || '#'}
+        href={profileUrl}
         target="_blank"
         rel="noopener noreferrer"
         initial={{ opacity: 0, y: 10 }}
@@ -41,7 +43,7 @@ export default function HeroBadges() {
           {firmyData.rating.toFixed(1).replace('.', ',')}
         </span>
         <div className="flex flex-col items-center">
-          <div className="relative w-16 h-4 mb-1">
+          <div className="relative w-16 h-4">
             <Image 
               src="https://mapy.cz/firm-badge.svg" 
               alt="Firmy.cz" 
@@ -49,20 +51,21 @@ export default function HeroBadges() {
               className="object-contain grayscale group-hover:grayscale-0 transition-all"
             />
           </div>
-          <span className="text-[9px] font-bold text-neutral-dark/40 uppercase tracking-tight group-hover:text-neutral-dark transition-colors">
-            {firmyData.count} hodnocení
-          </span>
         </div>
       </motion.a>
       
-      <motion.span 
+      <motion.a
+        href={profileUrl}
+        target="_blank"
+        rel="noopener noreferrer"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
-        className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-dark/40 italic"
+        className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-dark/40 italic hover:text-primary transition-colors group"
       >
-        Ohodnoťte nás na <span className="text-neutral-dark/60">Mapy.cz</span>
-      </motion.span>
+        Ohodnoťte nás na <span className="text-neutral-dark/60 group-hover:text-primary">Mapy.cz</span>
+        <span className="ml-2 opacity-50">({firmyData.count} hodnocení)</span>
+      </motion.a>
     </div>
   );
 }
