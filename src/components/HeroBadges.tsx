@@ -27,7 +27,7 @@ export default function HeroBadges() {
   }, [workerUrl]);
 
   return (
-    <div className="flex items-center justify-center mt-16">
+    <div className="flex flex-col items-center justify-center mt-16 gap-4">
       <motion.a
         href={process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || '#'}
         target="_blank"
@@ -54,6 +54,15 @@ export default function HeroBadges() {
           </span>
         </div>
       </motion.a>
+      
+      <motion.span 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+        className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-dark/40 italic"
+      >
+        Ohodnoťte nás na <span className="text-neutral-dark/60">Mapy.cz</span>
+      </motion.span>
     </div>
   );
 }
