@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight, PlayCircle } from 'lucide-react';
+import HeroBadges from './HeroBadges';
 
 export default function Hero() {
   const content = {
@@ -52,6 +53,8 @@ export default function Hero() {
               {content.cta_ref}
             </Link>
           </div>
+
+          <HeroBadges />
         </motion.div>
       </div>
     </section>
