@@ -46,7 +46,7 @@ export default async function ProjectPage({
     if (parts.length < 2) return dateStr;
     const months = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
     const monthIndex = parseInt(parts[1]) - 1;
-    return `${months[monthIndex]} ${parts[0]}.`;
+    return `${months[monthIndex]} ${parts[0]}`;
   };
 
   return (
@@ -56,7 +56,7 @@ export default async function ProjectPage({
       <section className="pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
-            href="/reference" 
+            href="/#reference" 
             className="inline-flex items-center gap-2 text-neutral-dark/60 hover:text-primary font-bold uppercase tracking-widest text-xs mb-12 transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -75,6 +75,12 @@ export default async function ProjectPage({
                     <Calendar className="w-4 h-4" />
                     {formatDate(project.date)}
                   </div>
+                  {project.reviewId && (
+                    <div className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-lg text-neutral-dark/60 font-black text-xs uppercase tracking-widest border border-neutral-dark/5 shadow-sm">
+                      <CheckCircle2 className="w-4 h-4 text-primary" />
+                      Ověřená reference
+                    </div>
+                  )}
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.9] mb-8">
                   {project.title}
