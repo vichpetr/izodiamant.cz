@@ -31,6 +31,7 @@ export default function HeroBadges() {
   return (
     <div className="flex flex-col items-center justify-center mt-16 gap-4">
       <motion.a
+        id="hero-badge"
         href={profileUrl}
         target="_blank"
         rel="noopener noreferrer"
