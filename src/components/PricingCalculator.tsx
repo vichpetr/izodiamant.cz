@@ -137,8 +137,8 @@ export default function PricingCalculator() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
       
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10 flex flex-col items-center">
-          <div className="inline-flex items-center gap-2 mb-6 relative group">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center gap-2 mb-6 relative group w-full">
             <Calculator className="w-6 h-6 text-primary" />
             <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic leading-none">
               Kalkulačka <span className="text-primary">ceny sanace</span>
@@ -149,7 +149,7 @@ export default function PricingCalculator() {
                 <Info className="w-3 h-3" />
               </div>
               
-              <div className="absolute top-full left-1/2 -translate-x-1/2 md:left-1/2 md:-translate-x-1/2 pt-4 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 w-[calc(100vw-2rem)] max-w-72 sm:w-72 z-50">
+              <div data-testid="price-tooltip" className="fixed md:absolute top-1/2 left-1/2 md:top-full -translate-x-1/2 md:translate-x-[-50%] -translate-y-1/2 md:translate-y-0 pt-4 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform w-[calc(100vw-2rem)] max-w-72 sm:w-72 z-50">
                 <div className="bg-neutral-dark border-2 border-primary/30 p-5 rounded-2xl shadow-2xl backdrop-blur-xl text-left mx-auto">
                   <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic border-b border-white/10 pb-2">Ceník</h3>
                   <div className="space-y-4">
