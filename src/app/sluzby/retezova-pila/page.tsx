@@ -9,7 +9,7 @@ import servicesData from "@/data/services.json";
 
 export const metadata: Metadata = {
   title: "Podřezávání zdiva řetězovou pilou | IZODIAMANT",
-  description: "Rychlé a efektivní podřezávání cihelného zdiva řetězovou pilou. Trvalé odstranění vzlínající vlhkosti s dlouholetou zárukou.",
+  description: "Rychlá a efektivní metoda sanace vlhkého zdiva řetězovou pilou. Ideální pro cihelné stavby. Okamžité vložení izolace a doživotní klid od vlhkosti. Vracíme zdraví vaší stavbě.",
   keywords: ["řetězová pila", "podřezávání cihelného zdiva", "sanace vlhkého zdiva", "izolace proti vlhkosti", "Nové Hrady", "ČR"],
   alternates: {
     canonical: 'https://izodiamant.cz/sluzby/retezova-pila',
@@ -149,6 +149,38 @@ export default function ChainSawPage() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="prose prose-lg max-w-none text-neutral-dark/80">
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-8">Nejrychlejší cesta k suchému domu: Řetězová pila</h2>
+            <p className="mb-6 leading-relaxed">
+              Podřezávání zdiva řetězovou pilou je jednou z <strong>nejpoužívanějších a nejefektivnějších metod</strong> mechanické sanace vlhkého zdiva. Je určena především pro cihelné stavby, které mají průběžnou vodorovnou spáru. Pokud se potýkáte s opadávající omítkou, solnými výkvěty nebo plísní v interiéru, tato technologie nabízí definitivní řešení vašeho problému.
+            </p>
+            <p className="mb-6 leading-relaxed">
+              Práce probíhají za pomoci speciálních elektrických nebo motorových pil s řeznou lištou osazenou řetězy s tvrdokovovými zuby. Celý proces je velmi rychlý – u běžného rodinného domu jsme schopni kompletně vložit novou hydroizolaci do celého obvodu <strong>v řádu několika málo dnů</strong>.
+            </p>
+            
+            <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Trvalá izolace zdiva bez kompromisů</h3>
+            <p className="mb-6 leading-relaxed">
+              Klíčem k úspěchu je vložení vysoce kvalitní polyethylenové (PE) fólie o tloušťce 2 mm přímo do proříznuté spáry. Tato fólie má <strong>životnost přesahující 50 let</strong> a je zcela imunní vůči agresivním látkám obsaženým ve vlhkém zdivu. Spára je následně staticky zajištěna speciálními plastovými klíny, které přebírají zatížení stavby, a nakonec tlakově vyplněna cementovou suspenzí.
+            </p>
+            <p className="mb-10 leading-relaxed">
+              Sanace zdiva řetězovou pilou nejen zastaví vzlínající vlhkost, ale také výrazně zvýší hodnotu vaší nemovitosti. Suchý dům je zdravý dům – eliminací vlhkosti chráníte zdraví své rodiny i samotnou konstrukci stavby před postupnou degradací.
+            </p>
+
+            <div className="bg-neutral-light p-10 rounded-3xl border-2 border-primary/20">
+              <h4 className="text-xl font-black uppercase italic text-neutral-dark mb-4">Proč zvolit řetězovou pilu u nás?</h4>
+              <ul className="space-y-3 font-medium">
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Bezkonkurenční rychlost realizace u cihelných objektů.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Okamžitý efekt zastavení vzlínající vlhkosti hned po vložení izolace.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Minimální zásah do statiky díky postupnému postupu a klínování.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Vracíme zdraví vaší stavbě s garancí profesionálního přístupu.</li>
+              </ul>
             </div>
           </div>
         </div>

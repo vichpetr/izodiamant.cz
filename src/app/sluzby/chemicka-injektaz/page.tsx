@@ -9,7 +9,7 @@ import servicesData from "@/data/services.json";
 
 export const metadata: Metadata = {
   title: "Chemická injektáž vlhkého zdiva | IZODIAMANT",
-  description: "Moderní a šetrná metoda vytvoření dodatečné hydroizolace pomocí chemické injektáže. Certifikované gely, rychlá aplikace bez narušení statiky.",
+  description: "Moderní a šetrná metoda vytvoření dodatečné hydroizolace pomocí chemické injektáže. Certifikované gely pro trvalé sucho bez narušení statiky. Vracíme zdraví vaší stavbě.",
   keywords: ["chemická injektáž", "injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "odvlhčení", "Nové Hrady", "ČR"],
   alternates: {
     canonical: 'https://izodiamant.cz/sluzby/chemicka-injektaz',
@@ -149,6 +149,38 @@ export default function ChemicalInjectionPage() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="prose prose-lg max-w-none text-neutral-dark/80">
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-8">Moderní a šetrná metoda: Chemická injektáž zdiva</h2>
+            <p className="mb-6 leading-relaxed">
+              Chemická injektáž představuje vysoce efektivní a minimálně invazivní způsob, jak vytvořit dodatečnou hydroizolaci v místech, kde <strong>nelze použít mechanické podřezání</strong>. Tato technologie je ideální pro objekty se špatně přístupným zdivem, nepravidelnou spárou nebo pro historické stavby, kde je prioritou maximální ochrana statiky bez jakýchkoliv vibrací.
+            </p>
+            <p className="mb-6 leading-relaxed">
+              Principem metody je nasycení struktury zdiva speciální hydrofobní látkou (krémem nebo gelem) na bázi silanů a siloxanů. Tato látka proniká i do těch nejmenších pórů a kapilár, kde po vytvrdnutí vytvoří <strong>neprostupnou vodoodpudivou clonu</strong>. Voda tak ztrácí schopnost vzlínat vzhůru a zdivo nad injektážní linií začíná postupně vysychat.
+            </p>
+            
+            <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Proč zvolit injektáž jako řešení vlhkosti?</h3>
+            <p className="mb-6 leading-relaxed">
+              Jednou z největších výhod chemické injektáže je její <strong>univerzálnost a čistota provedení</strong>. Realizace může probíhat jak z exteriéru, tak z interiéru, což oceníte zejména u řadových domů nebo sklepních prostor. Injektáž nevyžaduje žádné těžké stroje a zásah do konstrukce domu se omezuje pouze na sérii malých navrtaných otvorů, které se po skončení prací odborně zapraví.
+            </p>
+            <p className="mb-10 leading-relaxed">
+              V IZODIAMANT používáme výhradně certifikované materiály s garantovanou účinností. Správně provedená injektáž zajistí vašemu domu <strong>suché zdi na desítky let</strong>, zlepší tepelný odpor zdiva a navrátí do vašich prostor zdravé bydlení bez plísní.
+            </p>
+
+            <div className="bg-neutral-light p-10 rounded-3xl border-2 border-primary/20">
+              <h4 className="text-xl font-black uppercase italic text-neutral-dark mb-4">Hlavní přednosti chemické injektáže:</h4>
+              <ul className="space-y-3 font-medium">
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Možnost aplikace u smíšeného, kamenného i velmi silného zdiva.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Absolutně bez otřesů – nejšetrnější metoda k statice budovy.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Rychlá realizace bez nutnosti vyklízení celého patra.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Vysoce efektivní i u zdiva s vysokým stupněm vlhkosti.</li>
+              </ul>
             </div>
           </div>
         </div>

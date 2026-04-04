@@ -9,7 +9,7 @@ import servicesData from "@/data/services.json";
 
 export const metadata: Metadata = {
   title: "Podřezávání zdiva diamantovým lanem | IZODIAMANT",
-  description: "Sanace vlhkého zdiva diamantovým lanem pro extrémně tvrdé materiály jako kámen a beton. Rychlá realizace, nulové otřesy – vracíme zdraví vaší stavbě.",
+  description: "Sanace vlhkého zdiva diamantovým lanem pro extrémně tvrdé materiály jako kámen a beton. Nejmodernější technologie pro suché zdivo bez otřesů. Vracíme zdraví vaší stavbě.",
   keywords: ["diamantové lano", "podřezání zdiva lanem", "sanace kamenného zdiva", "izolace betonu", "Nové Hrady", "ČR"],
   alternates: {
     canonical: 'https://izodiamant.cz/sluzby/diamantove-lano',
@@ -149,6 +149,38 @@ export default function DiamondWirePage() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="prose prose-lg max-w-none text-neutral-dark/80">
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-8">Kdy zvolit podřezávání diamantovým lanem?</h2>
+            <p className="mb-6 leading-relaxed">
+              Podřezávání zdiva diamantovým lanem představuje absolutní špičku v oboru sanace vlhkého zdiva. Tato technologie byla vyvinuta pro situace, kde standardní řetězové pily narážejí na své limity. Pokud váš objekt stojí na základech z <strong>tvrdého kamene, opracovaných kvádrů nebo železobetonu</strong>, je diamantové lano jedinou spolehlivou cestou k suchému domu.
+            </p>
+            <p className="mb-6 leading-relaxed">
+              Hlavní výhodou této metody je její <strong>univerzálnost</strong>. Lano osazené diamantovými segmenty prochází materiálem čistým řezem, aniž by do konstrukce vnášelo nebezpečné vibrace nebo otřesy. To je klíčové zejména u historických budov a památkově chráněných objektů, kde by hrubý mechanický zásah mohl nenávratně poškodit statiku nebo dekorativní prvky fasády.
+            </p>
+            
+            <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Technologie, která vrací zdraví vaší stavbě</h3>
+            <p className="mb-6 leading-relaxed">
+              Proces sanace začíná detailním technickým průzkumem. Náš tým navrhne optimální trasu řezu tak, aby byla nová hydroizolace vložena v nejvhodnějším místě nad úrovní terénu. Po proříznutí části zdiva vkládáme vysoce odolné izolační desky (sklolaminátové nebo PE), které vytvoří <strong>nepřekonatelnou bariéru proti vzlínající vlhkosti</strong>.
+            </p>
+            <p className="mb-10 leading-relaxed">
+              Investice do podřezání diamantovým lanem se dlouhodobě vyplatí. Odstraněním vlhkosti nejen zlepšíte vnitřní mikroklima a zbavíte se plísní, ale také výrazně snížíte náklady na vytápění objektu. Suché zdivo má mnohem lepší tepelně-izolační vlastnosti než zdivo nasycené vodou.
+            </p>
+
+            <div className="bg-neutral-light p-10 rounded-3xl border-2 border-primary/20">
+              <h4 className="text-xl font-black uppercase italic text-neutral-dark mb-4">Shrnutí výhod diamantového lana:</h4>
+              <ul className="space-y-3 font-medium">
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Schopnost řezat jakýkoliv stavební materiál včetně armovaného betonu.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Práce bez omezení tloušťky stěn – od běžných příček po metrové hradní zdi.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Čistý a přesný řez s minimální prašností díky vodnímu chlazení.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Garantovaná doživotní funkčnost vložené izolace.</li>
+              </ul>
             </div>
           </div>
         </div>

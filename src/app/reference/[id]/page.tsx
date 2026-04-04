@@ -35,12 +35,15 @@ export async function generateMetadata({
 
   if (!project) return { title: 'Projekt nenalezen' };
 
+  const title = `${project.title} (${project.location}) | Reference IZODIAMANT`;
+  const description = `Realizace ${project.technology} v lokalitě ${project.location}. ${project.description.substring(0, 120)}... Prohlédněte si naše reference sanace zdiva.`;
+
   return {
-    title: `${project.title} | IZODIAMANT`,
-    description: project.description.substring(0, 160),
+    title,
+    description,
     openGraph: {
-      title: `${project.title} | IZODIAMANT`,
-      description: project.description.substring(0, 160),
+      title,
+      description,
       images: [project.image],
     },
     alternates: {
