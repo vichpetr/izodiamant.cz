@@ -120,6 +120,31 @@ export async function POST(request: Request) {
               Děkujeme za váš zájem o naše služby. Vaši zprávu jsme úspěšně přijali a náš technik ji již začal zpracovávat.
             </p>
             
+            ${!isContactForm ? `
+              <div style="background-color: #f8f9fa; padding: 30px; border-radius: 15px; text-align: left; margin-bottom: 35px; border: 1px solid #f0f1f2;">
+                <p style="margin: 0 0 15px; font-size: 12px; font-weight: 900; color: #c4d600; text-transform: uppercase; letter-spacing: 1px;">Shrnutí vaší kalkulace</p>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding: 8px 0; font-size: 14px; color: #666;">Zdivo:</td>
+                    <td style="padding: 8px 0; font-weight: bold; text-align: right; font-size: 14px;">${material}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; font-size: 14px; color: #666;">Technologie:</td>
+                    <td style="padding: 8px 0; font-weight: bold; text-align: right; font-size: 14px; color: #8a9600;">${service}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; font-size: 14px; color: #666;">Rozměry:</td>
+                    <td style="padding: 8px 0; font-weight: bold; text-align: right; font-size: 14px;">${thickness} cm / ${length} m</td>
+                  </tr>
+                  <tr style="border-top: 1px solid #dee2e6;">
+                    <td style="padding: 15px 0 0; font-size: 15px; font-weight: bold;">Odhad ceny:</td>
+                    <td style="padding: 15px 0 0; font-size: 18px; font-weight: 900; text-align: right; color: #1a1a1a;">${price}</td>
+                  </tr>
+                </table>
+                <p style="margin: 15px 0 0; font-size: 11px; color: #999; font-style: italic;">* Přesná cena bude stanovena na základě obhlídky a zaměření.</p>
+              </div>
+            ` : ''}
+            
             <div style="background-color: #f8f9fa; padding: 30px; border-radius: 15px; text-align: left; margin-bottom: 35px; border: 1px solid #f0f1f2;">
               <p style="margin: 0 0 15px; font-size: 12px; font-weight: 900; color: #c4d600; text-transform: uppercase; letter-spacing: 1px;">Co se bude dít dál?</p>
               <div style="display: flex; margin-bottom: 12px;">
