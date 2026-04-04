@@ -20,6 +20,10 @@ export const metadata: Metadata = {
   description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě. Celá ČR.",
   keywords: ["sanace zdiva", "podřezávání zdiva", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "hydroizolace", "Nové Hrady"],
   authors: [{ name: "IZODIAMANT" }],
+  robots: {
+    index: true,
+    follow: true,
+  },
   creator: "IZODIAMANT",
   openGraph: {
     type: "website",
