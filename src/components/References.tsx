@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Icons } from './Icons';
@@ -61,7 +61,7 @@ export default function References() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
           <AnimatePresence mode="popLayout">
             {visibleReferences.map((project, index) => (
-              <motion.div
+              <m.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -111,13 +111,13 @@ export default function References() {
                     <Icons.ArrowUpRight className="w-6 h-6" />
                   </div>
                 </Link>
-              </motion.div>
+              </m.div>
             ))}
           </AnimatePresence>
         </div>
 
         {referencesData.length > 3 && (
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mt-16"
@@ -133,7 +133,7 @@ export default function References() {
                 <Icons.ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
               )}
             </button>
-          </motion.div>
+          </m.div>
         )}
       </div>
     </section>

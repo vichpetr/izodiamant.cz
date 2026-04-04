@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
 import { Icons } from './Icons';
 import HeroBadges from './HeroBadges';
@@ -28,7 +28,7 @@ export default function Hero() {
             <span className="text-primary">{content.h1.split('. ')[1]}</span>
           </h1>
           
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
@@ -53,7 +53,7 @@ export default function Hero() {
                 {content.cta_ref}
               </Link>
             </div>
-          </motion.div>
+          </m.div>
 
           <HeroBadges />
         </div>

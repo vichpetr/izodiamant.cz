@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { Icons } from './Icons';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -196,7 +196,7 @@ export default function PricingCalculator() {
         <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] border-2 border-white/10 p-6 md:p-8 shadow-2xl relative">
           <AnimatePresence mode="wait">
             {!isSubmitted ? (
-              <motion.div key={step === 1 ? 'step1' : 'step2'} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+              <m.div key={step === 1 ? 'step1' : 'step2'} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 {step === 1 ? (
                   <div className="space-y-8">
                     <div className="grid lg:grid-cols-5 gap-10">
@@ -355,16 +355,16 @@ export default function PricingCalculator() {
                     </button>
                   </form>
                 )}
-              </motion.div>
+              </m.div>
             ) : (
-              <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center text-center py-16 text-white">
+              <m.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center text-center py-16 text-white">
                 <div className="w-20 h-20 bg-primary text-neutral-dark rounded-full flex items-center justify-center mb-8 shadow-xl shadow-primary/20">
                   <Icons.CheckCircle2 className="w-10 h-10" />
                 </div>
                 <h3 className="text-4xl font-black uppercase tracking-tighter italic mb-4 leading-none">Poptávka <br /> úspěšně odeslána!</h3>
                 <p className="text-lg text-white/60 font-medium max-w-sm mx-auto mb-10 leading-relaxed">Děkujeme. Brzy se vám ozveme s detailním rozpisem práce a přesnou cenou.</p>
                 <button onClick={() => {setIsSubmitted(false); setStep(1); setMaterialId(null); setServiceId(null);}} className="btn-outline border-white/20 hover:bg-white/10 text-white py-3.5 px-10 text-sm">Nová kalkulace</button>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { Icons } from './Icons';
 import staticReviews from '@/data/reviews.json';
 
@@ -147,7 +147,7 @@ export default function HomeReviews() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <AnimatePresence mode="popLayout">
                 {visibleReviews.map((review, index) => (
-                  <motion.div
+                  <m.div
                     key={review.id}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -172,13 +172,13 @@ export default function HomeReviews() {
                         {formatDate(review.date)}
                       </div>
                     </div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </AnimatePresence>
             </div>
 
             {reviews.length > 3 && (
-              <motion.div 
+              <m.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="mt-16"
@@ -194,7 +194,7 @@ export default function HomeReviews() {
                     <Icons.ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
                   )}
                 </button>
-              </motion.div>
+              </m.div>
             )}
           </>
         )}

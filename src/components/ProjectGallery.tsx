@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { Icons } from './Icons';
 
 interface ProjectGalleryProps {
@@ -26,7 +26,7 @@ export default function ProjectGallery({ images, title }: ProjectGalleryProps) {
   return (
     <div className="relative group aspect-[16/9] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/10 bg-neutral-dark">
       <AnimatePresence mode="wait">
-        <motion.div
+        <m.div
           key={currentIndex}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -41,7 +41,7 @@ export default function ProjectGallery({ images, title }: ProjectGalleryProps) {
             className="object-cover"
             priority
           />
-        </motion.div>
+        </m.div>
       </AnimatePresence>
 
       {/* Navigation Controls (Only if multiple images) */}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { Icons } from './Icons';
 import faqData from '@/data/faq.json';
 
@@ -66,7 +66,7 @@ function FAQItem({ question, answer }: { question: string, answer: string }) {
       </button>
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <m.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -75,7 +75,7 @@ function FAQItem({ question, answer }: { question: string, answer: string }) {
             <div className="px-8 pb-8 text-neutral-dark/70 font-medium leading-relaxed border-t border-neutral-light pt-6">
               {answer}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

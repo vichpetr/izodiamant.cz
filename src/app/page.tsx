@@ -1,33 +1,23 @@
-'use client';
-
 import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import Technology from "@/components/Technology";
 import { SectionSkeleton } from "@/components/Skeleton";
 
-const Technology = dynamic(() => import("@/components/Technology"), { ssr: true });
+// Components that are SSR by default for SEO
+const References = dynamic(() => import("@/components/References"));
+const HomeReviews = dynamic(() => import("@/components/HomeReviews"));
+const FAQ = dynamic(() => import("@/components/FAQ"));
+
+// Interactive components with loading states
 const PricingCalculator = dynamic(() => import("@/components/PricingCalculator"), { 
-  ssr: false,
-  loading: () => <SectionSkeleton />
-});
-const References = dynamic(() => import("@/components/References"), { 
-  ssr: false,
-  loading: () => <SectionSkeleton />
-});
-const HomeReviews = dynamic(() => import("@/components/HomeReviews"), { 
-  ssr: false,
-  loading: () => <SectionSkeleton />
-});
-const FAQ = dynamic(() => import("@/components/FAQ"), { 
-  ssr: false,
   loading: () => <SectionSkeleton />
 });
 const ContactForm = dynamic(() => import("@/components/ContactForm"), { 
-  ssr: false,
   loading: () => <SectionSkeleton />
 });
-const Footer = dynamic(() => import("@/components/Footer"), { ssr: false });
-const CookieConsent = dynamic(() => import("@/components/CookieConsent"), { ssr: false });
+
+const Footer = dynamic(() => import("@/components/Footer"));
 
 export default function Page() {
   return (
@@ -41,7 +31,6 @@ export default function Page() {
       <FAQ />
       <ContactForm />
       <Footer />
-      <CookieConsent />
     </main>
   );
 }

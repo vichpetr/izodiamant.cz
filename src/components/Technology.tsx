@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Icons } from './Icons';
 import Link from 'next/link';
 
@@ -66,7 +66,7 @@ export default function Technology() {
 
         <div className="grid md:grid-cols-3 gap-8 text-left">
           {technologies.map((tech, index) => (
-            <motion.div
+            <m.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -102,7 +102,7 @@ export default function Technology() {
                   <Icons.ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                 </Link>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>
