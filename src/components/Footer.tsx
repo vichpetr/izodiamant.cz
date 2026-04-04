@@ -32,6 +32,7 @@ export default function Footer() {
                   src="/logo.png"
                   alt="IZODIAMANT"
                   fill
+                  sizes="40px"
                   className="object-contain"
                 />
               </div>

@@ -48,6 +48,7 @@ export default function Header() {
                 src="/logo.png"
                 alt="IZODIAMANT"
                 fill
+                sizes="40px"
                 className="object-contain"
                 priority
               />

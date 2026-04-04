@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Icons } from "@/components/Icons";
 import Link from "next/link";
+import Image from "next/image";
 import Script from "next/script";
 import servicesData from "@/data/services.json";
 
@@ -68,7 +69,13 @@ export default function ChainSawPage() {
               </div>
             </div>
             <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 bg-[url('/images/sluzby/retezova-pila.jpg')] bg-cover bg-center" />
+              <Image 
+                src="/images/sluzby/retezova-pila.jpg"
+                alt="Podřezávání zdiva řetězovou pilou"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-dark/80 via-transparent to-transparent" />
             </div>
           </div>
