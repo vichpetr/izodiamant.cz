@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Star } from 'lucide-react';
+import { Icons } from './Icons';
 
 export default function FirmyBadge() {
   const [data, setData] = useState<{ rating: number, count: number } | null>(null);
@@ -47,13 +47,14 @@ export default function FirmyBadge() {
           src="/images/mapy-com.jpeg"
           alt="Mapy.cz" 
           fill
+          sizes="40px"
           className="object-contain"
         />
       </div>
       <div>
         <div className="flex items-center gap-1 text-primary mb-0.5">
           {[...Array(5)].map((_, i) => (
-            <Star 
+            <Icons.Star 
               key={i} 
               className={`w-3 h-3 ${i < Math.floor(rating) ? 'fill-current' : 'text-neutral-200'}`} 
             />

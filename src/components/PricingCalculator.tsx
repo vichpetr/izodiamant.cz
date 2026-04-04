@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useMemo, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Calculator, ChevronRight, CheckCircle2, ArrowLeft, Send, Info, ExternalLink } from 'lucide-react';
+import { m, AnimatePresence } from 'framer-motion';
+import { Icons } from './Icons';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import calculatorData from '@/data/calculator.json';
@@ -139,14 +139,14 @@ export default function PricingCalculator() {
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center gap-2 mb-6 relative group w-full">
-            <Calculator className="w-6 h-6 text-primary" />
+            <Icons.Calculator className="w-6 h-6 text-primary" />
             <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic leading-none">
               Kalkulačka <span className="text-primary">ceny sanace</span>
             </h2>
             
             <div className="ml-2 relative">
               <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:bg-primary hover:text-neutral-dark transition-all cursor-help border border-white/10 shrink-0">
-                <Info className="w-3 h-3" />
+                <Icons.Info className="w-3 h-3" />
               </div>
               
               <div data-testid="price-tooltip" className="fixed md:absolute top-1/2 left-1/2 md:top-full -translate-x-1/2 md:translate-x-[-50%] -translate-y-1/2 md:translate-y-0 pt-4 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform w-[calc(100vw-2rem)] max-w-72 sm:w-72 z-50">
@@ -157,7 +157,7 @@ export default function PricingCalculator() {
                       <div key={i} className="flex justify-between items-center gap-4">
                         <Link href={item.href} className="flex items-center gap-1.5 text-[10px] font-bold text-white/80 hover:text-primary uppercase leading-tight transition-colors">
                           {item.name}
-                          <ExternalLink className="w-2.5 h-2.5" />
+                          <Icons.ExternalLink className="w-2.5 h-2.5" />
                         </Link>
                         <span className="text-[10px] font-black text-primary uppercase whitespace-nowrap">{item.price}</span>
                       </div>
@@ -196,7 +196,7 @@ export default function PricingCalculator() {
         <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] border-2 border-white/10 p-6 md:p-8 shadow-2xl relative">
           <AnimatePresence mode="wait">
             {!isSubmitted ? (
-              <motion.div key={step === 1 ? 'step1' : 'step2'} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+              <m.div key={step === 1 ? 'step1' : 'step2'} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 {step === 1 ? (
                   <div className="space-y-8">
                     <div className="grid lg:grid-cols-5 gap-10">
@@ -292,7 +292,7 @@ export default function PricingCalculator() {
 
                     <div className="pt-4">
                       <button onClick={() => setStep(2)} className="w-full btn-primary py-6 text-xl uppercase tracking-[0.2em] flex items-center justify-center gap-3 shadow-xl shadow-primary/10 transition-transform active:scale-[0.98]">
-                        Pokračovat k odeslání <ChevronRight className="w-6 h-6" />
+                        Pokračovat k odeslání <Icons.ChevronRight className="w-6 h-6" />
                       </button>
                     </div>
                   </div>
@@ -301,7 +301,7 @@ export default function PricingCalculator() {
                   <form onSubmit={handleSubmit} noValidate className="max-w-xl mx-auto space-y-6 py-2">
                     <div className="flex items-center gap-4 mb-6">
                       <button type="button" onClick={() => setStep(1)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-primary hover:text-neutral-dark transition-all">
-                        <ArrowLeft className="w-4 h-4" />
+                        <Icons.ArrowLeft className="w-4 h-4" />
                       </button>
                       <h3 className="text-xl font-black text-white uppercase italic tracking-tight leading-none">Kontaktní údaje</h3>
                     </div>
@@ -351,20 +351,20 @@ export default function PricingCalculator() {
 
                     <button type="submit" disabled={isSubmitting} className="w-full btn-primary py-5 text-lg uppercase tracking-[0.2em] flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl shadow-primary/10">
                       {isSubmitting ? 'Odesílám...' : 'Odeslat nezávaznou poptávku'}
-                      <Send className="w-5 h-5" />
+                      <Icons.Send className="w-5 h-5" />
                     </button>
                   </form>
                 )}
-              </motion.div>
+              </m.div>
             ) : (
-              <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center text-center py-16 text-white">
+              <m.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center text-center py-16 text-white">
                 <div className="w-20 h-20 bg-primary text-neutral-dark rounded-full flex items-center justify-center mb-8 shadow-xl shadow-primary/20">
-                  <CheckCircle2 className="w-10 h-10" />
+                  <Icons.CheckCircle2 className="w-10 h-10" />
                 </div>
                 <h3 className="text-4xl font-black uppercase tracking-tighter italic mb-4 leading-none">Poptávka <br /> úspěšně odeslána!</h3>
                 <p className="text-lg text-white/60 font-medium max-w-sm mx-auto mb-10 leading-relaxed">Děkujeme. Brzy se vám ozveme s detailním rozpisem práce a přesnou cenou.</p>
                 <button onClick={() => {setIsSubmitted(false); setStep(1); setMaterialId(null); setServiceId(null);}} className="btn-outline border-white/20 hover:bg-white/10 text-white py-3.5 px-10 text-sm">Nová kalkulace</button>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>

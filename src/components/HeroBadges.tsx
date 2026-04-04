@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Image from 'next/image';
 import firmyFallback from '@/data/firmy.json';
 
@@ -30,7 +30,7 @@ export default function HeroBadges() {
 
   return (
     <div className="flex flex-col items-center justify-center mt-16 gap-4">
-      <motion.a
+      <m.a
         id="hero-badge"
         href={profileUrl}
         target="_blank"
@@ -56,9 +56,9 @@ export default function HeroBadges() {
             />
           </div>
         </div>
-      </motion.a>
+      </m.a>
       
-      <motion.a
+      <m.a
         href={profileUrl}
         target="_blank"
         rel="noopener noreferrer"
@@ -69,7 +69,7 @@ export default function HeroBadges() {
       >
         Ohodnoťte nás na <span className="text-neutral-dark/60 group-hover:text-primary">Mapy.com</span>
         <span className="ml-2 opacity-50">({firmyData.count} hodnocení)</span>
-      </motion.a>
+      </m.a>
     </div>
   );
 }

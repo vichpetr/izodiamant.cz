@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, ArrowUpRight, Diamond, Calendar, ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react';
+import { Icons } from './Icons';
 import referencesData from '@/data/references.json';
 
 export default function References() {
@@ -61,7 +61,7 @@ export default function References() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
           <AnimatePresence mode="popLayout">
             {visibleReferences.map((project, index) => (
-              <motion.div
+              <m.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -82,12 +82,12 @@ export default function References() {
                   
                   <div className="absolute top-6 left-6 flex flex-col gap-2">
                     <div className="bg-primary/90 backdrop-blur-md text-neutral-dark px-3 py-1 rounded-lg font-black text-[10px] uppercase tracking-widest flex items-center gap-2 w-fit shadow-lg">
-                      <Calendar className="w-3 h-3" />
+                      <Icons.Calendar className="w-3 h-3" />
                       {formatDate(project.date)}
                     </div>
                     {(project as any).reviewId && (
                       <div className="bg-white/90 backdrop-blur-md text-neutral-dark px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest flex items-center gap-2 w-fit shadow-lg border border-primary/20">
-                        <CheckCircle2 className="w-3 h-3 text-primary" />
+                        <Icons.CheckCircle2 className="w-3 h-3 text-primary" />
                         Ověřená reference
                       </div>
                     )}
@@ -95,29 +95,29 @@ export default function References() {
 
                   <div className="absolute bottom-0 left-0 right-0 p-8">
                     <div className="flex items-center gap-2 text-primary font-black text-[10px] uppercase tracking-[0.2em] mb-4">
-                      <Diamond className="w-3 h-3" />
+                      <Icons.Diamond className="w-3 h-3" />
                       {project.technology}
                     </div>
                     <h3 className="text-2xl font-black text-white uppercase tracking-tight leading-tight mb-4 group-hover:text-primary transition-colors">
                       {project.title}
                     </h3>
                     <div className="flex items-center gap-2 text-white/60 text-xs font-bold uppercase tracking-widest">
-                      <MapPin className="w-3 h-3 text-primary" />
+                      <Icons.MapPin className="w-3 h-3 text-primary" />
                       {project.location}
                     </div>
                   </div>
 
                   <div className="absolute top-8 right-8 w-12 h-12 bg-primary rounded-full flex items-center justify-center text-neutral-dark transform scale-0 group-hover:scale-100 transition-transform duration-300 shadow-xl">
-                    <ArrowUpRight className="w-6 h-6" />
+                    <Icons.ArrowUpRight className="w-6 h-6" />
                   </div>
                 </Link>
-              </motion.div>
+              </m.div>
             ))}
           </AnimatePresence>
         </div>
 
         {referencesData.length > 3 && (
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mt-16"
@@ -128,12 +128,12 @@ export default function References() {
             >
               {showAll ? content.cta_less : content.cta_more}
               {showAll ? (
-                <ChevronUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
+                <Icons.ChevronUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
               ) : (
-                <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                <Icons.ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
               )}
             </button>
-          </motion.div>
+          </m.div>
         )}
       </div>
     </section>

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Quote, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { m, AnimatePresence } from 'framer-motion';
+import { Icons } from './Icons';
 import staticReviews from '@/data/reviews.json';
 
 interface Review {
@@ -85,18 +85,18 @@ export default function HomeReviews() {
           const fillAmount = Math.max(0, Math.min(1, rating - i));
           
           if (fillAmount >= 1) {
-            return <Star key={i} className="w-4 h-4 fill-current" />;
+            return <Icons.Star key={i} className="w-4 h-4 fill-current" />;
           } else if (fillAmount > 0) {
             return (
               <div key={i} className="relative w-4 h-4">
-                <Star className="absolute inset-0 w-4 h-4 text-white/10" />
+                <Icons.Star className="absolute inset-0 w-4 h-4 text-white/10" />
                 <div className="absolute inset-0 overflow-hidden" style={{ width: `${fillAmount * 100}%` }}>
-                  <Star className="w-4 h-4 fill-current" />
+                  <Icons.Star className="w-4 h-4 fill-current" />
                 </div>
               </div>
             );
           } else {
-            return <Star key={i} className="w-4 h-4 text-white/10" />;
+            return <Icons.Star key={i} className="w-4 h-4 text-white/10" />;
           }
         })}
       </div>
@@ -124,7 +124,7 @@ export default function HomeReviews() {
             className="group inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-white transition-colors shrink-0 mb-2"
           >
             Všechny recenze na Seznamu
-            <ExternalLink className="w-4 h-4" />
+            <Icons.ExternalLink className="w-4 h-4" />
           </a>
         </div>
 
@@ -147,7 +147,7 @@ export default function HomeReviews() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <AnimatePresence mode="popLayout">
                 {visibleReviews.map((review, index) => (
-                  <motion.div
+                  <m.div
                     key={review.id}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -156,7 +156,7 @@ export default function HomeReviews() {
                     layout
                     className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-white/10 flex flex-col h-full relative group hover:bg-white/10 transition-all"
                   >
-                    <Quote className="absolute top-6 right-8 w-10 h-10 text-primary/10 group-hover:text-primary/20 transition-colors" />
+                    <Icons.Quote className="absolute top-6 right-8 w-10 h-10 text-primary/10 group-hover:text-primary/20 transition-colors" />
                     
                     <div className="mb-6">
                       {renderStars(review.rating)}
@@ -172,13 +172,13 @@ export default function HomeReviews() {
                         {formatDate(review.date)}
                       </div>
                     </div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </AnimatePresence>
             </div>
 
             {reviews.length > 3 && (
-              <motion.div 
+              <m.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="mt-16"
@@ -189,12 +189,12 @@ export default function HomeReviews() {
                 >
                   {showAll ? "Zobrazit méně" : "Zobrazit další hodnocení"}
                   {showAll ? (
-                    <ChevronUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
+                    <Icons.ChevronUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                    <Icons.ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
                   )}
                 </button>
-              </motion.div>
+              </m.div>
             )}
           </>
         )}

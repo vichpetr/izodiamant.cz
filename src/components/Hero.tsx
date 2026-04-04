@@ -1,14 +1,14 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, PlayCircle } from 'lucide-react';
+import { Icons } from './Icons';
 import HeroBadges from './HeroBadges';
 
 export default function Hero() {
   const content = {
     h1: "Váš dům si zaslouží suché základy. Navždy.",
-    desc: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě.",
+    desc: "Zajistíme pro váš dům suché základy a trvalou ochranu proti vlhkosti. Profesionální sanace a podřezávání zdiva nejmodernější technologií – vracíme zdraví vaší stavbě.",
     cta_calc: "Nezávazná kalkulace",
     cta_ref: "Naše reference",
   };
@@ -28,7 +28,7 @@ export default function Hero() {
             <span className="text-primary">{content.h1.split('. ')[1]}</span>
           </h1>
           
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
@@ -43,17 +43,17 @@ export default function Hero() {
                 className="w-full sm:w-auto btn-primary py-4 px-10 text-lg uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center justify-center gap-3 group"
               >
                 {content.cta_calc}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <Icons.ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/#reference"
                 className="w-full sm:w-auto btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center justify-center gap-3 group border-neutral-dark/20 text-neutral-dark hover:bg-neutral-dark hover:text-white"
               >
-                <PlayCircle className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                <Icons.PlayCircle className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
                 {content.cta_ref}
               </Link>
             </div>
-          </motion.div>
+          </m.div>
 
           <HeroBadges />
         </div>

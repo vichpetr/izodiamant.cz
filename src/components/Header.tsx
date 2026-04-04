@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Phone } from 'lucide-react';
+import { Icons } from './Icons';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
@@ -48,6 +48,7 @@ export default function Header() {
                 src="/logo.png"
                 alt="IZODIAMANT"
                 fill
+                sizes="40px"
                 className="object-contain"
                 priority
               />
@@ -81,7 +82,7 @@ export default function Header() {
           {/* CTA */}
           <div className="hidden md:flex items-center gap-4">
             <a href="tel:+420737017012" className="flex items-center gap-2 text-neutral-dark font-bold hover:text-primary transition-colors">
-              <Phone className="w-4 h-4 text-primary" />
+              <Icons.Phone className="w-4 h-4 text-primary" />
               <span>+420 737 017 012</span>
             </a>
             <Link
@@ -99,7 +100,7 @@ export default function Header() {
               className="text-neutral-dark hover:text-primary transition-colors"
               aria-label={isMobileMenuOpen ? "Zavřít menu" : "Otevřít menu"}
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? <Icons.X className="w-6 h-6" /> : <Icons.Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
@@ -123,7 +124,7 @@ export default function Header() {
             </Link>
             <div className="pt-4 flex flex-col gap-3">
               <a href="tel:+420737017012" className="flex items-center justify-center gap-2 px-3 py-4 text-neutral-dark font-bold border-2 border-primary rounded-lg">
-                <Phone className="w-5 h-5 text-primary" />
+                <Icons.Phone className="w-5 h-5 text-primary" />
                 <span>+420 737 017 012</span>
               </a>
               <Link href="/#calculator" onClick={() => setIsMobileMenuOpen(false)} className="text-center btn-primary py-4">

@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { m, AnimatePresence } from 'framer-motion';
+import { Icons } from './Icons';
 
 interface ProjectGalleryProps {
   images: string[];
@@ -26,7 +26,7 @@ export default function ProjectGallery({ images, title }: ProjectGalleryProps) {
   return (
     <div className="relative group aspect-[16/9] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/10 bg-neutral-dark">
       <AnimatePresence mode="wait">
-        <motion.div
+        <m.div
           key={currentIndex}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -38,10 +38,11 @@ export default function ProjectGallery({ images, title }: ProjectGalleryProps) {
             src={images[currentIndex]}
             alt={`${title} - foto ${currentIndex + 1}`}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
             className="object-cover"
             priority
           />
-        </motion.div>
+        </m.div>
       </AnimatePresence>
 
       {/* Navigation Controls (Only if multiple images) */}
@@ -52,14 +53,14 @@ export default function ProjectGallery({ images, title }: ProjectGalleryProps) {
             className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-primary hover:text-neutral-dark transition-all opacity-0 group-hover:opacity-100"
             aria-label="Předchozí obrázek"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <Icons.ChevronLeft className="w-6 h-6" />
           </button>
           <button
             onClick={handleNext}
             className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-primary hover:text-neutral-dark transition-all opacity-0 group-hover:opacity-100"
             aria-label="Další obrázek"
           >
-            <ChevronRight className="w-6 h-6" />
+            <Icons.ChevronRight className="w-6 h-6" />
           </button>
 
           {/* Dots Indicator */}

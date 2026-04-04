@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import MotionProvider from "@/components/MotionProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -19,6 +20,13 @@ export const metadata: Metadata = {
   description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě. Celá ČR.",
   keywords: ["sanace zdiva", "podřezávání zdiva", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "hydroizolace", "Nové Hrady"],
   authors: [{ name: "IZODIAMANT" }],
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: 'https://izodiamant.cz',
+  },
   creator: "IZODIAMANT",
   openGraph: {
     type: "website",
@@ -41,6 +49,11 @@ export const metadata: Metadata = {
     title: "IZODIAMANT | Sanace a podřezávání vlhkého zdiva",
     description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě.",
     images: ["/logo.png"],
+  },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/logo.png',
   },
 };
 
@@ -99,7 +112,9 @@ export default function RootLayout({
         <Script id="json-ld-local-business" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} strategy="afterInteractive" />
       </head>
       <body className={`${inter.variable} antialiased font-sans`}>
-        {children}
+        <MotionProvider>
+          {children}
+        </MotionProvider>
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
         )}

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, CheckCircle2, Phone, Mail, MapPin } from 'lucide-react';
+import { m, AnimatePresence } from 'framer-motion';
+import { Icons } from './Icons';
 import { cn } from '@/lib/utils';
 
 interface FormErrors {
@@ -79,7 +79,7 @@ export default function ContactForm() {
             <div className="space-y-8">
               <div className="flex items-center gap-6 group">
                 <div className="w-14 h-14 bg-primary flex items-center justify-center rounded-xl shadow-lg shadow-primary/20 transform transition-transform group-hover:scale-110 text-neutral-dark">
-                  <Phone className="w-6 h-6" />
+                  <Icons.Phone className="w-6 h-6" />
                 </div>
                 <div>
                   <div className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1 italic">Zavolejte nám</div>
@@ -92,7 +92,7 @@ export default function ContactForm() {
 
               <div className="flex items-center gap-6 group">
                 <div className="w-14 h-14 bg-primary flex items-center justify-center rounded-xl shadow-lg shadow-primary/20 transform transition-transform group-hover:scale-110 text-neutral-dark">
-                  <Mail className="w-6 h-6" />
+                  <Icons.Mail className="w-6 h-6" />
                 </div>
                 <div>
                   <div className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1 italic">Napište nám</div>
@@ -102,7 +102,7 @@ export default function ContactForm() {
 
               <div className="flex items-center gap-6 group">
                 <div className="w-14 h-14 bg-primary flex items-center justify-center rounded-xl shadow-lg shadow-primary/20 transform transition-transform group-hover:scale-110 text-neutral-dark">
-                  <MapPin className="w-6 h-6" />
+                  <Icons.MapPin className="w-6 h-6" />
                 </div>
                 <div>
                   <div className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1 italic">Sídlo firmy</div>
@@ -125,7 +125,7 @@ export default function ContactForm() {
           <div className="bg-neutral-dark rounded-3xl p-8 md:p-12 shadow-2xl relative">
             <AnimatePresence mode="wait">
               {!isSubmitted ? (
-                <motion.form key="contact-form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleSubmit} noValidate className="space-y-6">
+                <m.form key="contact-form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleSubmit} noValidate className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label htmlFor="contact-name" className="block text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic cursor-pointer">Jméno a příjmení *</label>
@@ -168,17 +168,17 @@ export default function ContactForm() {
                   </div>
                   <button type="submit" disabled={isSubmitting} className="w-full btn-primary py-6 text-xl uppercase tracking-[0.2em] flex items-center justify-center gap-3 disabled:opacity-50">
                     {isSubmitting ? 'Odesílám...' : 'Odeslat zprávu'}
-                    <Send className="w-6 h-6" />
+                    <Icons.Send className="w-6 h-6" />
                   </button>
-                </motion.form>
+                </m.form>
               ) : (
-                <motion.div key="success-contact" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center text-center py-20 text-white">
+                <m.div key="success-contact" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center text-center py-20 text-white">
                   <div className="w-24 h-24 bg-primary text-neutral-dark rounded-full flex items-center justify-center mb-10 shadow-xl shadow-primary/20">
-                    <CheckCircle2 className="w-12 h-12" />
+                    <Icons.CheckCircle2 className="w-12 h-12" />
                   </div>
                   <h3 className="text-4xl font-black uppercase tracking-tighter italic mb-6 leading-none">Zpráva <br /> odeslána!</h3>
                   <p className="text-xl text-white/60 font-medium max-w-md mx-auto leading-relaxed">Děkujeme. Budeme vás kontaktovat co nejdříve.</p>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
           </div>
