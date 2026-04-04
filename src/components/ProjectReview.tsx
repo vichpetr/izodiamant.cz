@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Star, Quote, StarHalf } from 'lucide-react';
+import { Icons } from './Icons';
 import staticReviews from '@/data/reviews.json';
 
 interface Review {
@@ -57,16 +57,16 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
       <div className="flex items-center gap-1 text-primary">
         {[...Array(5)].map((_, i) => {
           const fillAmount = Math.max(0, Math.min(1, rating - i));
-          if (fillAmount >= 1) return <Star key={i} className="w-4 h-4 fill-current" />;
+          if (fillAmount >= 1) return <Icons.Star key={i} className="w-4 h-4 fill-current" />;
           if (fillAmount > 0) return (
             <div key={i} className="relative w-4 h-4">
-              <Star className="absolute inset-0 w-4 h-4 text-neutral-dark/10" />
+              <Icons.Star className="absolute inset-0 w-4 h-4 text-neutral-dark/10" />
               <div className="absolute inset-0 overflow-hidden" style={{ width: `${fillAmount * 100}%` }}>
-                <Star className="w-4 h-4 fill-current" />
+                <Icons.Star className="w-4 h-4 fill-current" />
               </div>
             </div>
           );
-          return <Star key={i} className="w-4 h-4 text-neutral-dark/10" />;
+          return <Icons.Star key={i} className="w-4 h-4 text-neutral-dark/10" />;
         })}
       </div>
     );
@@ -95,7 +95,7 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
   return (
     <div className="bg-white rounded-3xl p-8 border-2 border-primary/10 relative overflow-hidden group shadow-sm mt-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
-      <Quote className="absolute top-6 right-8 w-12 h-12 text-primary/5 group-hover:text-primary/10 transition-colors" />
+      <Icons.Quote className="absolute top-6 right-8 w-12 h-12 text-primary/5 group-hover:text-primary/10 transition-colors" />
       
       <div className="mb-6">
         {renderStars(review.rating)}

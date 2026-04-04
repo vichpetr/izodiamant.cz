@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import dynamic from 'next/dynamic';
-import { MapPin, ArrowLeft, Gem, Zap, CheckCircle2, Calendar } from "lucide-react";
+import { Icons } from "@/components/Icons";
 import Link from "next/link";
 import Image from "next/image";
 import referencesData from '@/data/references.json';
@@ -58,7 +58,7 @@ export default async function ProjectPage({
             href="/#reference" 
             className="inline-flex items-center gap-2 text-neutral-dark/60 hover:text-primary font-bold uppercase tracking-widest text-xs mb-12 transition-colors group"
           >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <Icons.ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Zpět na přehled
           </Link>
 
@@ -67,16 +67,16 @@ export default async function ProjectPage({
               <div>
                 <div className="flex flex-wrap gap-3 mb-6">
                   <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary font-black text-xs uppercase tracking-widest">
-                    {project.technology.includes('lano') ? <Gem className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
+                    {project.technology.includes('lano') ? <Icons.Gem className="w-4 h-4" /> : <Icons.Zap className="w-4 h-4" />}
                     {project.technology}
                   </div>
                   <div className="inline-flex items-center gap-3 bg-neutral-dark/5 px-4 py-2 rounded-lg text-neutral-dark/60 font-black text-xs uppercase tracking-widest">
-                    <Calendar className="w-4 h-4" />
+                    <Icons.Calendar className="w-4 h-4" />
                     {formatDate(project.date)}
                   </div>
                   {project.reviewId && (
                     <div className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-lg text-neutral-dark/60 font-black text-xs uppercase tracking-widest border border-neutral-dark/5 shadow-sm">
-                      <CheckCircle2 className="w-4 h-4 text-primary" />
+                      <Icons.CheckCircle2 className="w-4 h-4 text-primary" />
                       Ověřená reference
                     </div>
                   )}
@@ -85,7 +85,7 @@ export default async function ProjectPage({
                   {project.title}
                 </h1>
                 <div className="flex items-center gap-2 text-neutral-dark/60 font-bold uppercase tracking-widest text-sm">
-                  <MapPin className="w-4 h-4 text-primary" />
+                  <Icons.MapPin className="w-4 h-4 text-primary" />
                   {project.location}
                 </div>
               </div>
@@ -113,7 +113,7 @@ export default async function ProjectPage({
                 <ul className="grid sm:grid-cols-2 gap-4">
                   {project.features.map((feature: string, i: number) => (
                     <li key={i} className="flex items-center gap-3 text-sm text-neutral-dark font-bold uppercase tracking-tight">
-                      <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
+                      <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
                       {feature}
                     </li>
                   ))}

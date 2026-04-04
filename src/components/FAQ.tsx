@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Minus } from 'lucide-react';
+import { Icons } from './Icons';
 import faqData from '@/data/faq.json';
 
 export default function FAQ() {
@@ -61,7 +61,7 @@ function FAQItem({ question, answer }: { question: string, answer: string }) {
       >
         <span className="font-black text-neutral-dark uppercase tracking-tight pr-4">{question}</span>
         <div className="flex-shrink-0 w-10 h-10 rounded-full bg-neutral-light flex items-center justify-center text-primary transition-transform shadow-inner">
-          {isOpen ? <Minus className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+          {isOpen ? <Icons.Minus className="w-5 h-5" /> : <Icons.Plus className="w-5 h-5" />}
         </div>
       </button>
       <AnimatePresence>

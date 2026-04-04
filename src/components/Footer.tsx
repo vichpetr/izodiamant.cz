@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Phone, Mail, MapPin, User, FileText } from 'lucide-react';
+import { Icons } from './Icons';
 import Image from 'next/image';
 import FirmyBadge from './FirmyBadge';
 
@@ -52,11 +52,11 @@ export default function Footer() {
             </div>
             <div className="pt-4 space-y-3 border-t border-white/5">
               <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/40">
-                <User className="w-3 h-3 text-primary" />
+                <Icons.User className="w-3 h-3 text-primary" />
                 Václav Ropek
               </div>
               <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/40">
-                <FileText className="w-3 h-3 text-primary" />
+                <Icons.FileText className="w-3 h-3 text-primary" />
                 IČO: 74650726
               </div>
             </div>
@@ -98,18 +98,18 @@ export default function Footer() {
             <h3 className="text-primary font-bold uppercase tracking-widest text-sm mb-8">{content.contact}</h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3 group">
-                <Phone className="w-5 h-5 text-primary shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                <Icons.Phone className="w-5 h-5 text-primary shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
                 <div className="flex flex-col gap-1">
                   <a href="tel:+420737017012" className="text-white/70 hover:text-white transition-colors font-bold">+420 737 017 012</a>
                   <a href="tel:+420732902754" className="text-white/70 hover:text-white transition-colors font-bold">+420 732 902 754</a>
                 </div>
               </li>
               <li className="flex items-start gap-3 group">
-                <Mail className="w-5 h-5 text-primary shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                <Icons.Mail className="w-5 h-5 text-primary shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
                 <a href="mailto:info@izodiamant.cz" className="text-white/70 hover:text-white transition-colors font-bold">info@izodiamant.cz</a>
               </li>
               <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <Icons.MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <span className="text-white/50 text-sm leading-relaxed font-bold uppercase tracking-tight">
                   Mokrá Lhota 26<br />
                   539 44 Nové Hrady

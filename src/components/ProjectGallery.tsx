@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Icons } from './Icons';
 
 interface ProjectGalleryProps {
   images: string[];
@@ -52,14 +52,14 @@ export default function ProjectGallery({ images, title }: ProjectGalleryProps) {
             className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-primary hover:text-neutral-dark transition-all opacity-0 group-hover:opacity-100"
             aria-label="Předchozí obrázek"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <Icons.ChevronLeft className="w-6 h-6" />
           </button>
           <button
             onClick={handleNext}
             className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-primary hover:text-neutral-dark transition-all opacity-0 group-hover:opacity-100"
             aria-label="Další obrázek"
           >
-            <ChevronRight className="w-6 h-6" />
+            <Icons.ChevronRight className="w-6 h-6" />
           </button>
 
           {/* Dots Indicator */}
