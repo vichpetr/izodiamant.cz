@@ -42,7 +42,7 @@ export default function AboutSection() {
             </h2>
             <div className="space-y-6 text-lg text-white/70 font-medium leading-relaxed">
               <p>
-                Jsme ryze česká firma zaměřená na profesionální řešení vlhkosti v objektech všech typů. Od historických kamenných staveb přes rodinné domy ze smíšeného zdiva až po moderní průmyslové haly – tam všude vracíme zdraví vaší stavbě.
+                Jsme ryze česká firma zaměřená na profesionální řešení vlhkosti v objektech všech typů. Od historických kamenných staveb přes rodinné domy ze smíšeného zdiva až po moderní průmyslové haly – tam všude vracíme zdraví vaší stavbě. Věříme, že každý <strong>dům si zaslouží</strong> spolehlivou ochranu, která vydrží <strong>navždy</strong>.
               </p>
               <p>
                 Chápeme, že vlhkost není jen estetický problém, ale vážná hrozba pro statiku domu a zdraví jeho obyvatel. Proto ke každé zakázce přistupujeme s maximální zodpovědností a využíváme postupy, které jsou prověřené dekádami v oboru sanací.
