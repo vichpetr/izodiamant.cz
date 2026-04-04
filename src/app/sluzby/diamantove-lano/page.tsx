@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: "Podřezávání zdiva diamantovým lanem | IZODIAMANT",
   description: "Sanace vlhkého zdiva diamantovým lanem pro extrémně tvrdé materiály jako kámen a beton. Rychlá realizace, nulové otřesy – vracíme zdraví vaší stavbě.",
   keywords: ["diamantové lano", "podřezání zdiva lanem", "sanace kamenného zdiva", "izolace betonu", "Nové Hrady", "ČR"],
+  alternates: {
+    canonical: 'https://izodiamant.cz/sluzby/diamantove-lano',
+  },
 };
 
 export default function DiamondWirePage() {

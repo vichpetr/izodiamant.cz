@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: "Podřezávání zdiva řetězovou pilou | IZODIAMANT",
   description: "Rychlé a efektivní podřezávání cihelného zdiva řetězovou pilou. Trvalé odstranění vzlínající vlhkosti s dlouholetou zárukou.",
   keywords: ["řetězová pila", "podřezávání cihelného zdiva", "sanace vlhkého zdiva", "izolace proti vlhkosti", "Nové Hrady", "ČR"],
+  alternates: {
+    canonical: 'https://izodiamant.cz/sluzby/retezova-pila',
+  },
 };
 
 export default function ChainSawPage() {

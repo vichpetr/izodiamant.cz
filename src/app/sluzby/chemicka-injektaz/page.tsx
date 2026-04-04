@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: "Chemická injektáž vlhkého zdiva | IZODIAMANT",
   description: "Moderní a šetrná metoda vytvoření dodatečné hydroizolace pomocí chemické injektáže. Certifikované gely, rychlá aplikace bez narušení statiky.",
   keywords: ["chemická injektáž", "injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "odvlhčení", "Nové Hrady", "ČR"],
+  alternates: {
+    canonical: 'https://izodiamant.cz/sluzby/chemicka-injektaz',
+  },
 };
 
 export default function ChemicalInjectionPage() {

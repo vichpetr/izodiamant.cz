@@ -5,6 +5,7 @@ import { Icons } from "@/components/Icons";
 import Link from "next/link";
 import Image from "next/image";
 import referencesData from '@/data/references.json';
+import { Metadata } from 'next';
 
 const ProjectReview = dynamic(() => import("@/components/ProjectReview"), { ssr: true });
 const ProjectGallery = dynamic(() => import("@/components/ProjectGallery"), { ssr: true });
@@ -22,6 +23,30 @@ interface Project {
   image: string;
   gallery?: string[];
   reviewId?: string;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const project = (referencesData as Project[]).find(p => p.id === id);
+
+  if (!project) return { title: 'Projekt nenalezen' };
+
+  return {
+    title: `${project.title} | IZODIAMANT`,
+    description: project.description.substring(0, 160),
+    openGraph: {
+      title: `${project.title} | IZODIAMANT`,
+      description: project.description.substring(0, 160),
+      images: [project.image],
+    },
+    alternates: {
+      canonical: `https://izodiamant.cz/reference/${project.id}`,
+    },
+  };
 }
 
 export async function generateStaticParams() {
