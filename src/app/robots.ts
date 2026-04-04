@@ -5,6 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
+      disallow: '/cdn-cgi/',
     },
     sitemap: 'https://izodiamant.cz/sitemap.xml',
   };
