@@ -24,6 +24,9 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  alternates: {
+    canonical: 'https://izodiamant.cz',
+  },
   creator: "IZODIAMANT",
   openGraph: {
     type: "website",
