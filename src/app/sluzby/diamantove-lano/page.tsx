@@ -8,7 +8,7 @@ import Script from "next/script";
 import servicesData from "@/data/services.json";
 
 export const metadata: Metadata = {
-  title: "Podřezávání zdiva diamantovým lanem | IZODIAMANT",
+  title: "Podřezávání zdiva diamantovým lanem",
   description: "Sanace vlhkého zdiva diamantovým lanem pro extrémně tvrdé materiály jako kámen a beton. Nejmodernější technologie pro suché zdivo bez otřesů. Vracíme zdraví vaší stavbě.",
   keywords: ["diamantové lano", "podřezání zdiva lanem", "sanace kamenného zdiva", "izolace betonu", "Nové Hrady", "ČR"],
   alternates: {
