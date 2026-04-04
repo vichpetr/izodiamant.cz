@@ -107,30 +107,50 @@ export async function POST(request: Request) {
     if (email) {
       const customerSubject = 'Děkujeme za vaši poptávku – IZODIAMANT.cz';
       const customerHtml = `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a1a; border: 1px solid #eee; border-radius: 12px; overflow: hidden;">
-          <div style="background-color: #1a1a1a; padding: 30px; text-align: center;">
-            <h1 style="color: #c4d600; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">IZODIAMANT</h1>
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a1a; border: 1px solid #eee; border-radius: 20px; overflow: hidden; background-color: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+          <div style="background-color: #1a1a1a; padding: 40px 30px; text-align: center;">
+            <h1 style="color: #c4d600; margin: 0; font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; font-style: italic;">IZODIAMANT</h1>
+            <p style="color: rgba(255,255,255,0.5); margin: 8px 0 0; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold;">Vracíme zdraví vaší stavbě</p>
           </div>
-          <div style="padding: 40px; text-align: center;">
-            <h2 style="font-size: 22px; margin-bottom: 20px;">Dobrý den, ${name},</h2>
-            <p style="font-size: 16px; line-height: 1.6; color: #444; margin-bottom: 30px;">
+          
+          <div style="padding: 50px 40px; text-align: center;">
+            <div style="width: 60px; height: 6px; background-color: #c4d600; margin: 0 auto 30px; border-radius: 3px;"></div>
+            <h2 style="font-size: 24px; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; tracking: -0.02em; italic: true;">Dobrý den, ${name},</h2>
+            <p style="font-size: 16px; line-height: 1.7; color: #444; margin-bottom: 35px; font-weight: 500;">
               Děkujeme za váš zájem o naše služby. Vaši zprávu jsme úspěšně přijali a náš technik ji již začal zpracovávat.
             </p>
-            <div style="background-color: #f9f9f9; padding: 25px; border-radius: 8px; text-align: left; margin-bottom: 30px;">
-              <p style="margin: 0 0 10px; font-size: 14px; color: #666; text-transform: uppercase;">Co se bude dít dál?</p>
-              <ul style="margin: 0; padding-left: 20px; font-size: 15px; line-height: 1.8;">
-                <li>Prověříme technické možnosti realizace.</li>
-                <li>Budeme vás kontaktovat pro upřesnění detailů nebo domluvení bezplatné obhlídky.</li>
-                <li>V případě kalkulačky pro vás připravíme přesný rozpis prací.</li>
-              </ul>
+            
+            <div style="background-color: #f8f9fa; padding: 30px; border-radius: 15px; text-align: left; margin-bottom: 35px; border: 1px solid #f0f1f2;">
+              <p style="margin: 0 0 15px; font-size: 12px; font-weight: 900; color: #c4d600; text-transform: uppercase; letter-spacing: 1px;">Co se bude dít dál?</p>
+              <div style="display: flex; margin-bottom: 12px;">
+                <div style="color: #c4d600; font-weight: bold; margin-right: 10px;">•</div>
+                <div style="font-size: 14px; color: #555; font-weight: 500;">Prověříme technické možnosti realizace.</div>
+              </div>
+              <div style="display: flex; margin-bottom: 12px;">
+                <div style="color: #c4d600; font-weight: bold; margin-right: 10px;">•</div>
+                <div style="font-size: 14px; color: #555; font-weight: 500;">Budeme vás kontaktovat pro upřesnění detailů nebo domluvení <span style="font-weight: bold; color: #1a1a1a;">bezplatné obhlídky</span>.</div>
+              </div>
+              <div style="display: flex;">
+                <div style="color: #c4d600; font-weight: bold; margin-right: 10px;">•</div>
+                <div style="font-size: 14px; color: #555; font-weight: 500;">V případě poptávky z kalkulačky pro vás připravíme přesný rozpis prací.</div>
+              </div>
             </div>
-            <p style="font-size: 14px; color: #888;">
-              Tento e-mail je potvrzením o doručení zprávy. <br />
-              V případě potřeby nás můžete kontaktovat přímo na <a href="tel:+420737017012" style="color: #1a1a1a; font-weight: bold; text-decoration: none;">+420 737 017 012</a>.
+
+            <p style="font-size: 14px; color: #888; line-height: 1.6;">
+              Tento e-mail je potvrzením o doručení zprávy.<br />
+              V případě potřeby nás můžete kontaktovat přímo:
             </p>
+            
+            <div style="margin-top: 20px;">
+              <a href="tel:+420737017012" style="display: inline-block; padding: 12px 25px; background-color: #1a1a1a; color: #c4d600; text-decoration: none; border-radius: 10px; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
+                +420 737 017 012
+              </a>
+            </div>
           </div>
-          <div style="background-color: #f4f4f4; padding: 20px; text-align: center; color: #999; font-size: 11px;">
-            &copy; ${new Date().getFullYear()} IZODIAMANT - Sanace a izolace zdiva
+          
+          <div style="background-color: #f8f9fa; padding: 30px; text-align: center; color: #adb5bd; font-size: 11px; border-top: 1px solid #f0f1f2; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">
+            &copy; ${new Date().getFullYear()} IZODIAMANT — Sanace a izolace zdiva<br />
+            <a href="https://izodiamant.cz" style="color: #c4d600; text-decoration: none; margin-top: 5px; display: inline-block;">www.izodiamant.cz</a>
           </div>
         </div>
       `;
