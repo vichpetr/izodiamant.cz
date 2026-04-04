@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, PlayCircle } from 'lucide-react';
+import { Icons } from './Icons';
 import HeroBadges from './HeroBadges';
 
 export default function Hero() {
@@ -43,13 +43,13 @@ export default function Hero() {
                 className="w-full sm:w-auto btn-primary py-4 px-10 text-lg uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center justify-center gap-3 group"
               >
                 {content.cta_calc}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <Icons.ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/#reference"
                 className="w-full sm:w-auto btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center justify-center gap-3 group border-neutral-dark/20 text-neutral-dark hover:bg-neutral-dark hover:text-white"
               >
-                <PlayCircle className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                <Icons.PlayCircle className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
                 {content.cta_ref}
               </Link>
             </div>
