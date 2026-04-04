@@ -363,7 +363,7 @@ export default function PricingCalculator() {
                 </div>
                 <h3 className="text-4xl font-black uppercase tracking-tighter italic mb-4 leading-none">Poptávka <br /> úspěšně odeslána!</h3>
                 <p className="text-lg text-white/60 font-medium max-w-sm mx-auto mb-10 leading-relaxed">Děkujeme. Brzy se vám ozveme s detailním rozpisem práce a přesnou cenou.</p>
-                <button onClick={() => {setIsSubmitted(false); setStep(1); setMaterialId(null); setServiceId(null);}} className="btn-outline border-white/20 hover:bg-white/10 py-3.5 px-10 text-sm">Nová kalkulace</button>
+                <button onClick={() => {setIsSubmitted(false); setStep(1); setMaterialId(null); setServiceId(null);}} className="btn-outline border-white/20 hover:bg-white/10 text-white py-3.5 px-10 text-sm">Nová kalkulace</button>
               </motion.div>
             )}
           </AnimatePresence>
