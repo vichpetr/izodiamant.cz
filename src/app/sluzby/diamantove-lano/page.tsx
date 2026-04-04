@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Script from "next/script";
 import servicesData from "@/data/services.json";
+import referencesData from '@/data/references.json';
 
 export const metadata: Metadata = {
   title: "Podřezávání zdiva diamantovým lanem",
@@ -182,6 +183,43 @@ export default function DiamondWirePage() {
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Garantovaná doživotní funkčnost vložené izolace.</li>
               </ul>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-neutral-light overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-12">
+            <h2 className="text-3xl font-black uppercase italic mb-2">Nedávné realizace</h2>
+            <p className="text-neutral-dark/60 font-medium">Prohlédněte si naše projekty, kde jsme využili diamantové lano.</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {servicesData["diamantove-lano"].relatedIds?.map(id => {
+              const project = referencesData.find(p => p.id === id);
+              if (!project) return null;
+              return (
+                <Link key={id} href={`/reference/${id}`} className="group bg-white rounded-2xl overflow-hidden border border-neutral-dark/5 shadow-sm hover:shadow-xl transition-all">
+                  <div className="relative aspect-video">
+                    <Image src={project.image} alt={project.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-black uppercase italic text-sm mb-2 group-hover:text-primary transition-colors">{project.title}</h3>
+                    <div className="flex items-center gap-2 text-xs text-neutral-dark/40 font-bold uppercase">
+                      <Icons.MapPin className="w-3 h-3 text-primary" />
+                      {project.location}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+          
+          <div className="mt-12 text-center">
+            <Link href="/#reference" className="inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-neutral-dark transition-colors group">
+              Všechny reference
+              <Icons.ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
         </div>
       </section>
