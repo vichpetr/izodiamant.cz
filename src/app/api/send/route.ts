@@ -115,7 +115,7 @@ export async function POST(request: Request) {
           
           <div style="padding: 50px 40px; text-align: center;">
             <div style="width: 60px; height: 6px; background-color: #c4d600; margin: 0 auto 30px; border-radius: 3px;"></div>
-            <h2 style="font-size: 24px; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; tracking: -0.02em; italic: true;">Dobrý den, ${name},</h2>
+            <h2 style="font-size: 24px; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; tracking: -0.02em; italic: true;">Dobrý den,</h2>
             <p style="font-size: 16px; line-height: 1.7; color: #444; margin-bottom: 35px; font-weight: 500;">
               Děkujeme za váš zájem o naše služby. Vaši zprávu jsme úspěšně přijali a náš technik ji již začal zpracovávat.
             </p>
