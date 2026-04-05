@@ -36,7 +36,7 @@ export async function generateMetadata({
   if (!project) return { title: 'Projekt nenalezen' };
 
   const title = `${project.title} (${project.location})`;
-  const description = `Realizace ${project.technology} v lokalitě ${project.location}. ${project.description.substring(0, 120)}... Prohlédněte si naše reference sanace zdiva.`;
+  const description = `${project.title} (${project.technology}). ${project.description.substring(0, 70)}... Vracíme zdraví vaší stavbě.`;
 
   return {
     title,
