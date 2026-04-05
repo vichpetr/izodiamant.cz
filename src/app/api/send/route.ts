@@ -110,7 +110,7 @@ export async function POST(request: Request) {
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a1a; border: 1px solid #eee; border-radius: 20px; overflow: hidden; background-color: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
           <div style="background-color: #1a1a1a; padding: 40px 30px; text-align: center;">
             <h1 style="color: #c4d600; margin: 0; font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; font-style: italic;">IZODIAMANT</h1>
-            <p style="color: rgba(255,255,255,0.5); margin: 8px 0 0; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold;">Vracíme zdraví vaší stavbě</p>
+            <p style="color: rgba(255,255,255,0.5); margin: 8px 0 0; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold;">Vracíme zdraví vaší stavbě.</p>
           </div>
           
           <div style="padding: 50px 40px; text-align: center;">

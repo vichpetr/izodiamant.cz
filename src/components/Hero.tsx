@@ -23,7 +23,7 @@ export default function Hero() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div>
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black text-neutral-dark tracking-tighter mb-8 text-balance uppercase italic leading-[1.1] sm:leading-[0.95]">
+          <h1 className="text-3xl sm:text-7xl lg:text-8xl font-black text-neutral-dark tracking-tight sm:tracking-tighter mb-8 text-balance uppercase italic leading-[1.1] sm:leading-[0.95] px-4">
             {content.h1.split('. ')[0]}. <br className="hidden sm:block" />
             <span className="text-primary">{content.h1.split('. ')[1]}</span>
           </h1>

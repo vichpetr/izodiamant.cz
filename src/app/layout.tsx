@@ -27,6 +27,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://izodiamant.cz',
   },
+  other: {
+    'preconnect': [
+      'https://izodiamant-reviews-api.petr-c3c.workers.dev',
+      'https://www.google-analytics.com'
+    ]
+  },
   creator: "IZODIAMANT",
   openGraph: {
     type: "website",

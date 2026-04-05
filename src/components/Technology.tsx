@@ -29,6 +29,7 @@ export default function Technology() {
     {
       icon: Icons.Gem,
       title: content.tech1_title,
+      label: "diamantové lano",
       description: content.tech1_desc,
       features: content.tech1_features,
       href: content.tech1_href,
@@ -36,6 +37,7 @@ export default function Technology() {
     {
       icon: Icons.Zap,
       title: content.tech2_title,
+      label: "řetězovou pilu",
       description: content.tech2_desc,
       features: content.tech2_features,
       href: content.tech2_href,
@@ -43,6 +45,7 @@ export default function Technology() {
     {
       icon: Icons.ShieldCheck,
       title: content.tech3_title,
+      label: "chemickou injektáž",
       description: content.tech3_desc,
       features: content.tech3_features,
       href: content.tech3_href,
@@ -53,7 +56,7 @@ export default function Technology() {
     <section id="technologie" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-3xl mx-auto mb-20">
-          <h2 className="text-4xl md:text-6xl font-black text-neutral-dark uppercase tracking-tighter italic mb-2">
+          <h2 className="text-3xl md:text-6xl font-black text-neutral-dark uppercase tracking-tight md:tracking-tighter italic mb-2 px-2">
             {content.h2}
           </h2>
           <h3 className="text-2xl md:text-3xl font-black text-primary uppercase tracking-tight italic mb-6">
@@ -96,9 +99,9 @@ export default function Technology() {
                 <Link 
                   href={tech.href}
                   className="inline-flex items-center gap-2 text-neutral-dark font-black uppercase tracking-widest text-xs hover:text-primary transition-colors group/link"
-                  aria-label={`Více o technologii ${tech.title.split(' – ')[0].toLowerCase()}`}
+                  aria-label={`Více o technologii ${tech.label}`}
                 >
-                  Více o technologii
+                  Více o {tech.label}
                   <Icons.ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                 </Link>
               </div>

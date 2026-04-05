@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Technology from "@/components/Technology";
+import AboutSection from "@/components/AboutSection";
 import { SectionSkeleton } from "@/components/Skeleton";
 
 // Components that are SSR by default for SEO
@@ -25,6 +26,7 @@ export default function Page() {
       <Header />
       <Hero />
       <Technology />
+      <AboutSection />
       <PricingCalculator />
       <References />
       <HomeReviews />

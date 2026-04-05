@@ -11,6 +11,13 @@ test.describe('IZODIAMANT Performance Audit', () => {
     test.skip(browserName !== 'chromium', 'LCP extraction is most reliable in Chromium');
     
     await page.goto('/');
+
+    // Accept cookies if the modal is present
+    const acceptButton = page.getByRole('button', { name: 'Povolit vše' });
+    try {
+      await acceptButton.waitFor({ state: 'visible', timeout: 2000 });
+      await acceptButton.click();
+    } catch (e) {}
     
     // Extract performance metrics including LCP
     const metrics = await page.evaluate(async () => {

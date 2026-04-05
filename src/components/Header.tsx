@@ -87,7 +87,7 @@ export default function Header() {
             </a>
             <Link
               href="/#calculator"
-              className="btn-primary py-2 px-6"
+              className="btn-primary py-3 px-6"
             >
               Nezávazná kalkulace
             </Link>
