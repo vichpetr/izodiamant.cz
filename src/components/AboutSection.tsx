@@ -66,9 +66,9 @@ export default function AboutSection() {
                 <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary group-hover:text-neutral-dark" />
                 </div>
-                <h3 className="text-xl font-black uppercase italic mb-4 text-white group-hover:text-primary transition-colors">
+                <div className="text-xl font-black uppercase italic mb-4 text-white group-hover:text-primary transition-colors">
                   {point.title}
-                </h3>
+                </div>
                 <p className="text-sm text-white/50 font-medium leading-relaxed">
                   {point.text}
                 </p>

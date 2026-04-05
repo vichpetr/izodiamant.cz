@@ -15,8 +15,8 @@ export default function Header() {
   const isHomepage = pathname === '/';
   const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
 
-  if (!profileUrl) {
-    throw new Error("Kritická chyba: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
+  if (!process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL) {
+    console.warn("Varování: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
   }
 
   useEffect(() => {

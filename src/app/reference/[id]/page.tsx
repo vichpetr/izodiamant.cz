@@ -35,8 +35,10 @@ export async function generateMetadata({
 
   if (!project) return { title: 'Projekt nenalezen' };
 
-  const title = `${project.title} (${project.location})`;
-  const description = `Realizace ${project.technology} v lokalitě ${project.location}. ${project.description.substring(0, 120)}... Prohlédněte si naše reference sanace zdiva.`;
+  const title = project.title.includes(project.location) || project.title.includes(project.location.split(' ')[0])
+    ? project.title 
+    : `${project.title} – ${project.location}`;
+  const description = `${project.title} (${project.technology}). ${project.description.substring(0, 70)}... Vracíme zdraví vaší stavbě.`;
 
   return {
     title,
@@ -110,7 +112,7 @@ export default async function ProjectPage({
                   )}
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.9] mb-8">
-                  {project.title}
+                  Realizace sanace: {project.title}
                 </h1>
                 <div className="flex items-center gap-2 text-neutral-dark/60 font-bold uppercase tracking-widest text-sm">
                   <Icons.MapPin className="w-4 h-4 text-primary" />

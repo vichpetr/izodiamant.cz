@@ -9,8 +9,8 @@ export default function FirmyBadge() {
   const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
   const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
 
-  if (!profileUrl) {
-    throw new Error("Kritická chyba: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
+  if (!process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL) {
+    console.warn("Varování: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
   }
 
   useEffect(() => {
@@ -19,12 +19,14 @@ export default function FirmyBadge() {
     async function fetchLiveSummary() {
       try {
         const res = await fetch(workerUrl!); // Using non-null assertion since we check it above
+        if (!res.ok) return;
+        
         const json = await res.json();
         if (json.rating) {
           setData({ rating: json.rating, count: json.count });
         }
       } catch (err) {
-        console.error('Chyba při načítání živých dat hodnocení');
+        console.warn('Chyba při načítání živých dat hodnocení');
       }
     }
 

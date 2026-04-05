@@ -18,8 +18,19 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
+    - name: Build project
+      run: npm run build
+      env:
+        NEXT_PUBLIC_FIRMY_PROFILE_URL: https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html
+        NEXT_PUBLIC_REVIEWS_API_URL: izodiamant-reviews-api.petr-c3c.workers.dev
+        RESEND_API_KEY: re_test_key
     - name: Run Playwright tests
       run: npx playwright test
+      env:
+        NEXT_PUBLIC_FIRMY_PROFILE_URL: https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html
+        NEXT_PUBLIC_REVIEWS_API_URL: izodiamant-reviews-api.petr-c3c.workers.dev
+        RESEND_API_KEY: re_test_key
+
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
