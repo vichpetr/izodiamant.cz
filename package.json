@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "browserslist": [
-    "last 2 years",
+    "last 2 versions and supports es6-module",
     "not dead",
-    "fully supports es6-module"
+    "not ie 11",
+    "not op_mini all"
   ],
   "scripts": {
     "dev": "next dev",
