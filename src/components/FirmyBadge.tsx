@@ -19,12 +19,14 @@ export default function FirmyBadge() {
     async function fetchLiveSummary() {
       try {
         const res = await fetch(workerUrl!); // Using non-null assertion since we check it above
+        if (!res.ok) return;
+        
         const json = await res.json();
         if (json.rating) {
           setData({ rating: json.rating, count: json.count });
         }
       } catch (err) {
-        console.error('Chyba při načítání živých dat hodnocení');
+        console.warn('Chyba při načítání živých dat hodnocení');
       }
     }
 

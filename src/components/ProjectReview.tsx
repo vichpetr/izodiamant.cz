@@ -22,11 +22,10 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
       if (workerUrl && !workerUrl.includes('vás-účet')) {
         try {
           const res = await fetch(workerUrl, { 
-            next: { revalidate: 3600 },
             headers: { 'Accept': 'application/json' }
           });
           
-          if (!res.ok) throw new Error(`API returned ${res.status}`);
+          if (!res.ok) return;
           
           const contentType = res.headers.get('content-type');
           if (!contentType || !contentType.includes('application/json')) {
@@ -56,7 +55,7 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
           setReview({ ...fallback, rating: Number(fallback.rating) });
         }
       } catch (err) {
-        console.error('Static review lookup failed');
+        console.warn('Static review lookup failed');
       }
     }
 
