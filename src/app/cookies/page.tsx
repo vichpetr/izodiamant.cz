@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "Zásady používání cookies",
+  description: "Informace o tom, jak na našem webu používáme soubory cookies a jak je můžete spravovat.",
+  alternates: {
+    canonical: 'https://izodiamant.cz/cookies',
+  },
+};
 
 export default function CookiesPolicy() {
   return (

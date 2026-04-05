@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { m, AnimatePresence } from 'framer-motion';
+import { m } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Icons } from './Icons';
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
 import referencesData from '@/data/references.json';
 
 export default function References() {
@@ -22,8 +23,8 @@ export default function References() {
   // Sort references by date (newest first)
   const sortedReferences = [...referencesData].sort((a, b) => b.date.localeCompare(a.date));
   
-  // Initially show only first 3
-  const visibleReferences = showAll ? sortedReferences : sortedReferences.slice(0, 3);
+  // Render all for SEO but control visibility
+  const visibleReferences = sortedReferences;
 
   const formatDate = (dateStr: string) => {
     const [year, month] = dateStr.split('-');
@@ -59,18 +60,18 @@ export default function References() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-          <AnimatePresence mode="popLayout">
-            {visibleReferences.map((project, index) => (
-              <m.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ delay: showAll ? 0 : index * 0.1 }}
-                className="group"
-                layout
-              >
-                <Link href={`/reference/${project.id}`} className="block relative aspect-[4/5] overflow-hidden rounded-3xl bg-neutral-dark text-foreground">
+          {visibleReferences.map((project, index) => (
+            <m.div
+              key={project.id}
+              initial={index < 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              animate={showAll || index < 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.4, delay: showAll && index >= 3 ? (index - 3) * 0.1 : 0 }}
+              className={cn(
+                "group",
+                !showAll && index >= 3 && "hidden md:hidden lg:hidden" // Purely for visual hiding, but will be in DOM during SSR
+              )}
+            >
+              <Link href={`/reference/${project.id}`} className="block relative aspect-[4/5] overflow-hidden rounded-3xl bg-neutral-dark text-foreground">
                   <Image 
                     src={project.image}
                     alt={project.title}
@@ -113,7 +114,6 @@ export default function References() {
                 </Link>
               </m.div>
             ))}
-          </AnimatePresence>
         </div>
 
         {referencesData.length > 3 && (

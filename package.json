@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "browserslist": [
-    "last 2 years",
-    "not dead",
-    "fully supports es6-module"
+    "Chrome >= 90",
+    "Safari >= 14",
+    "Edge >= 90",
+    "Firefox >= 90",
+    "not dead"
   ],
   "scripts": {
     "dev": "next dev",
