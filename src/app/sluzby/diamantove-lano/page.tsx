@@ -180,7 +180,7 @@ export default function DiamondWirePage() {
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Schopnost řezat jakýkoliv stavební materiál včetně armovaného betonu.</li>
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Práce bez omezení tloušťky stěn – od běžných příček po metrové hradní zdi.</li>
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Čistý a přesný řez s minimální prašností díky vodnímu chlazení.</li>
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Garantovaná doživotní funkčnost vložené izolace.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Po aplikaci moderní izolace vracíme zdraví vaší stavbě.</li>
               </ul>
             </div>
           </div>

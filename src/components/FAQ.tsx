@@ -32,7 +32,7 @@ export default function FAQ() {
       />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-black text-neutral-dark mb-6 uppercase tracking-tighter italic">
+          <h2 className="text-4xl md:text-5xl font-black text-neutral-dark mb-6 uppercase tracking-tight md:tracking-tighter italic px-2">
             {content.h2}
           </h2>
           <p className="text-lg text-neutral-dark/60 font-medium">

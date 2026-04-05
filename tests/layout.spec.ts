@@ -3,6 +3,17 @@ import { test, expect } from '@playwright/test';
 test.describe('IZODIAMANT Frontend Consistency', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    
+    // Accept cookies if the modal is present
+    const acceptButton = page.getByRole('button', { name: 'Povolit vše' });
+    try {
+      // The modal appears after 1000ms, so we wait a bit
+      await acceptButton.waitFor({ state: 'visible', timeout: 2000 });
+      await acceptButton.click();
+    } catch (e) {
+      // Modal might not have appeared or already accepted
+    }
+
     // Wait for animations to finish
     await page.waitForTimeout(300);
   });
@@ -37,7 +48,7 @@ test.describe('IZODIAMANT Frontend Consistency', () => {
   });
 
   test('Primary buttons contrast and size', async ({ page }) => {
-    const btn = page.locator('.btn-primary').first();
+    const btn = page.locator('.btn-primary').filter({ visible: true }).first();
     await expect(btn).toBeVisible();
     
     const box = await btn.boundingBox();

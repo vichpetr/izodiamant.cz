@@ -140,7 +140,7 @@ export default function PricingCalculator() {
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center gap-2 mb-6 relative group w-full">
             <Icons.Calculator className="w-6 h-6 text-primary" />
-            <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter italic leading-none">
+            <h2 className="text-2xl md:text-4xl font-black text-white uppercase tracking-tight md:tracking-tighter italic leading-none px-2">
               Kalkulačka <span className="text-primary">ceny sanace</span>
             </h2>
             

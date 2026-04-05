@@ -18,7 +18,7 @@ Jako **Senior Content Strategist a Copywriter** předkládám kompletní obsahov
 ### Sekce Služby (Autorita & Detail)
 *   **H2:** Naše technologie pro váš suchý domov
 *   **Služba 1 – Podřezávání diamantovým lanem:**
-    *   **Text:** Jediná metoda schopná bezpečně a precizně proříznout i to nejtvrdší kamenné či smíšené zdivo. Ideální pro historické objekty a hrady, kde klasické řetězové pily selhávají. Šetří statiku budovy a zajišťuje doživotní izolaci.
+    *   **Text:** Jediná metoda schopná bezpečně a precizně proříznout i to nejtvrdší kamenné či smíšené zdivo. Ideální pro historické objekty a hrady, kde klasické řetězové pily selhávají. Šetří statiku budovy a vracíme zdraví vaší stavbě.
 *   **Služba 2 – Chemická injektáž:**
     *   **Text:** Rychlé a čisté řešení tam, kde není možné mechanické podřezání. Vytváříme neprostupnou bariéru proti vzlínající vlhkosti pomocí certifikovaných hydroizolačních gelů a krémů.
 

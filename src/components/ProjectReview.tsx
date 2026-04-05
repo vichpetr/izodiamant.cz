@@ -21,9 +21,22 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
       // 1. Try Live API if configured
       if (workerUrl && !workerUrl.includes('vás-účet')) {
         try {
-          const res = await fetch(workerUrl, { next: { revalidate: 3600 } });
+          const res = await fetch(workerUrl, { 
+            next: { revalidate: 3600 },
+            headers: { 'Accept': 'application/json' }
+          });
+          
           if (!res.ok) throw new Error(`API returned ${res.status}`);
-          const data = await res.json();
+          
+          const contentType = res.headers.get('content-type');
+          if (!contentType || !contentType.includes('application/json')) {
+            throw new Error(`Expected JSON but received ${contentType}`);
+          }
+
+          const text = await res.text();
+          if (!text) throw new Error('Empty response from review API');
+          
+          const data = JSON.parse(text);
           if (data && data.reviews) {
             const found = data.reviews.find((r: any) => r.id === reviewId);
             if (found) {
