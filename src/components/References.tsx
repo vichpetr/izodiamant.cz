@@ -99,9 +99,9 @@ export default function References() {
                       <Icons.Diamond className="w-3 h-3" />
                       {project.technology}
                     </div>
-                    <h3 className="text-2xl font-black text-white uppercase tracking-tight leading-tight mb-4 group-hover:text-primary transition-colors">
+                    <div className="text-2xl font-black text-white uppercase tracking-tight leading-tight mb-4 group-hover:text-primary transition-colors">
                       {project.title}
-                    </h3>
+                    </div>
                     <div className="flex items-center gap-2 text-white/60 text-xs font-bold uppercase tracking-widest">
                       <Icons.MapPin className="w-3 h-3 text-primary" />
                       {project.location}

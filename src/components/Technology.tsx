@@ -80,9 +80,9 @@ export default function Technology() {
               <div className="w-16 h-16 bg-primary flex items-center justify-center rounded-xl mb-8 transform group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-lg shadow-primary/20">
                 <tech.icon className="w-8 h-8 text-neutral-dark" />
               </div>
-              <h3 className="text-2xl font-black text-neutral-dark mb-6 uppercase tracking-tight leading-tight">
+              <div className="text-2xl font-black text-neutral-dark mb-6 uppercase tracking-tight leading-tight">
                 {tech.title}
-              </h3>
+              </div>
               <p className="text-neutral-dark/70 mb-8 font-medium leading-relaxed">
                 {tech.description}
               </p>

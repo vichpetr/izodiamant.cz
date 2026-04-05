@@ -112,7 +112,7 @@ export default async function ProjectPage({
                   )}
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.9] mb-8">
-                  {project.title}
+                  Realizace sanace: {project.title}
                 </h1>
                 <div className="flex items-center gap-2 text-neutral-dark/60 font-bold uppercase tracking-widest text-sm">
                   <Icons.MapPin className="w-4 h-4 text-primary" />
