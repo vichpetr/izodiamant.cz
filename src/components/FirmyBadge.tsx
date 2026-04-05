@@ -9,8 +9,8 @@ export default function FirmyBadge() {
   const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
   const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
 
-  if (!profileUrl) {
-    throw new Error("Kritická chyba: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
+  if (!process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL) {
+    console.warn("Varování: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
   }
 
   useEffect(() => {
