@@ -19,49 +19,77 @@ export default function PrivacyPolicy() {
           <h1 className="text-4xl font-black text-neutral-dark uppercase tracking-tighter italic mb-10">Ochrana osobních údajů</h1>
           
           <div className="prose prose-neutral max-w-none space-y-8 text-neutral-dark/80 font-medium leading-relaxed">
+            <p>
+              Ochrana Vašich osobních údajů je pro nás v IZODIAMANT prioritou. Tento dokument obsahuje podrobné informace o tom, jaké osobní údaje zpracováváme, za jakým účelem, na jakém právním základě a jaká jsou Vaše práva v souvislosti s nařízením GDPR (Obecné nařízení o ochraně osobních údajů).
+            </p>
+
             <section>
-              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">1. Základní ustanovení</h2>
+              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">1. Totožnost a kontaktní údaje správce</h2>
               <p>
-                Správcem osobních údajů podle čl. 4 bod 7 nařízení Evropského parlamentu a Rady (EU) 2016/679 o ochraně fyzických osob v souvislosti se zpracováním osobních údajů a o volném pohybu těchto údajů (dále jen: "GDPR") je Václav Ropek, IČO: 74650726, se sídlem Mokrá Lhota 26, 539 44 Nové Hrady (dále jen: "správce").
+                Správcem osobních údajů podle čl. 4 bod 7 nařízení Evropského parlamentu a Rady (EU) 2016/679 (GDPR) je <strong>Václav Ropek, IČO: 74650726</strong>, se sídlem Mokrá Lhota 26, 539 44 Nové Hrady (dále jen: "správce").
+              </p>
+              <p>
+                Pokud máte jakékoliv dotazy ohledně zpracování Vašich dat, můžete nás kontaktovat na e-mailu: <strong>info@izodiamant.cz</strong>.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">2. Zdroje a kategorie zpracovávaných osobních údajů</h2>
-              <p>
-                Správce zpracovává osobní údaje, které jste mu poskytli prostřednictvím kontaktního formuláře nebo kalkulačky na webových stránkách izodiamant.cz. Jedná se především o:
-              </p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Jméno a příjmení</li>
-                <li>E-mailová adresa</li>
-                <li>Telefonní číslo</li>
-                <li>Technické parametry stavby (pro účely kalkulace)</li>
+              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">2. Jaké údaje zpracováváme a proč?</h2>
+              <p>Zpracováváme pouze údaje, které jsou nezbytné pro poskytování našich služeb sanace zdiva a podřezávání domů:</p>
+              <ul className="list-disc pl-6 space-y-4">
+                <li>
+                  <strong>Kontaktní formulář a poptávky:</strong> Zpracováváme Vaše jméno, e-mail, telefonní číslo a technické parametry stavby (pro účely přesné kalkulace). Tyto údaje potřebujeme k vyřízení Vašeho dotazu, přípravě cenové nabídky a následné komunikaci. Právním základem je zde plnění smlouvy nebo opatření před uzavřením smlouvy.
+                </li>
+                <li>
+                  <strong>Technické údaje a soubory cookies:</strong> Při návštěvě našeho webu zpracováváme údaje o Vašem chování (např. navštívené stránky, anonymizovaná IP adresa, typ prohlížeče). Tyto údaje využíváme ke zlepšování webu a pro analytické účely (přes Google Analytics). Právním základem je náš oprávněný zájem nebo Váš souhlas.
+                </li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">3. Zákonný důvod a účel zpracování</h2>
+              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">3. Doba uložení osobních údajů</h2>
               <p>
-                Zákonným důvodem zpracování osobních údajů je váš souhlas udělený odesláním formuláře a nezbytnost pro plnění opatření přijatých před uzavřením smlouvy (příprava cenové nabídky). Účelem zpracování je vyřízení vaší poptávky a komunikace ohledně sanace zdiva.
+                Vaše osobní údaje uchováváme pouze po dobu nezbytně nutnou. Údaje z kontaktních formulářů uchováváme po dobu vyřizování poptávky a následně po dobu 2 let pro případ další komunikace, pokud nedojde k uzavření smlouvy. 
+              </p>
+              <p>
+                V případě realizace zakázky uchováváme údaje po dobu stanovenou zákonem (účetní a daňové předpisy, obvykle 10 let) a s ohledem na poskytovanou prodlouženou záruku na naše hydroizolační práce.
               </p>
             </section>
 
             <section>
-              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">4. Doba uchovávání údajů</h2>
+              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">4. Komu údaje předáváme?</h2>
               <p>
-                Správce uchovává osobní údaje po dobu nezbytnou k vyřízení poptávky a následné realizaci zakázky, nejdéle však po dobu 2 let od odeslání poptávky, pokud není uzavřena smlouva o dílo.
+                Vaše data jsou u nás v bezpečí a nepředáváme je žádným třetím stranám pro marketingové účely. K Vašim údajům mohou mít přístup prověření zpracovatelé, kteří nám pomáhají s provozem webu a služeb:
               </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>Poskytovatelé IT služeb a hostingu (Vercel, GitHub).</li>
+                <li>Poskytovatelé analytických nástrojů (Google LLC).</li>
+                <li>Externí účetní (pouze v případě realizované zakázky).</li>
+              </ul>
             </section>
 
             <section>
-              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">5. Vaše práva</h2>
+              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">5. Vaše práva v souvislosti s GDPR</h2>
+              <p>Podle nařízení o ochraně osobních údajů máte právo:</p>
+              <ul className="list-disc pl-6 space-y-4">
+                <li><strong>Právo na přístup:</strong> Můžete od nás chtít informaci, jaké Vaše údaje zpracováváme.</li>
+                <li><strong>Právo na opravu:</strong> Máte právo na aktualizaci svých údajů, pokud jsou neúplné nebo nesprávné.</li>
+                <li><strong>Právo na výmaz:</strong> Můžete požadovat smazání svých údajů, pokud neexistuje zákonný důvod pro jejich další uchování.</li>
+                <li><strong>Právo na omezení zpracování:</strong> V určitých případech můžete chtít, abychom s Vašimi údaji dále nenakládali.</li>
+                <li><strong>Právo vznést námitku:</strong> Máte právo namítat proti zpracování založeném na oprávněném zájmu správce.</li>
+                <li><strong>Právo podat stížnost:</strong> Máte právo podat stížnost u Úřadu pro ochranu osobních údajů.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">6. Zabezpečení dat</h2>
               <p>
-                Za podmínek stanovených v GDPR máte právo na přístup ke svým osobním údajům, právo na opravu, právo na výmaz a právo vznést námitku proti zpracování. Máte také právo podat stížnost u Úřadu pro ochranu osobních údajů.
+                V IZODIAMANT využíváme moderní technické i organizační opatření, abychom Vaše osobní údaje ochránili před neoprávněným přístupem, ztrátou nebo zničením. Veškerá komunikace s naším webem probíhá přes zabezpečený protokol HTTPS (SSL šifrování).
               </p>
             </section>
 
             <div className="pt-10 border-t border-neutral-light text-sm italic">
-              Tyto podmínky nabývají účinnosti dnem 1. 3. 2026.
+              Tyto zásady ochrany osobních údajů jsou účinné od 6. 4. 2026. Vyhrazujeme si právo tyto zásady v budoucnu aktualizovat v souladu s legislativními změnami.
             </div>
           </div>
         </div>
