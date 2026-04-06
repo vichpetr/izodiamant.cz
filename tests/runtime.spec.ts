@@ -31,8 +31,9 @@ test.describe('Reference Detail Pages Runtime Check', () => {
 
       await page.goto(`/reference/${project.id}`, { waitUntil: 'domcontentloaded' });
       
-      // Wait a bit for hydration and potential async errors
-      await page.waitForTimeout(2000);
+      // Wait for network to settle and hydration to complete
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
 
       if (consoleErrors.length > 0) {
         console.error(`Errors found on page /reference/${project.id}:`, consoleErrors);

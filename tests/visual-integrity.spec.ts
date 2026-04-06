@@ -3,24 +3,21 @@ import { test, expect } from '@playwright/test';
 test.describe('Visual Integrity & Responsive Checks', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the main page
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
     
     // Accept cookies if the modal is present
-    const acceptButton = page.getByRole('button', { name: 'Povolit vše' });
+    const acceptButton = page.locator('.btn-primary').filter({ hasText: 'Povolit vše' });
     try {
-      // The modal appears after 1000ms, so we wait a bit
-      await acceptButton.waitFor({ state: 'visible', timeout: 2000 });
+      // Small wait for the dynamic component to mount
+      await acceptButton.waitFor({ state: 'visible', timeout: 3000 });
       await acceptButton.click();
     } catch (e) {
       // Modal might not have appeared or already accepted
     }
     
-    // Explicitly wait for the main content to be ready
-    await page.waitForSelector('header', { state: 'visible', timeout: 15000 });
-    await page.waitForSelector('footer', { state: 'visible', timeout: 15000 });
-    
-    // Wait for animations to settle
-    await page.waitForTimeout(1000);
+    // Wait for network to settle and animations to finish
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(500);
   });
 
   test('No horizontal overflow should occur', async ({ page }) => {
