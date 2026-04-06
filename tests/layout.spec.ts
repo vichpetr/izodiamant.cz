@@ -2,20 +2,18 @@ import { test, expect } from '@playwright/test';
 
 test.describe('IZODIAMANT Frontend Consistency', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
     
     // Accept cookies if the modal is present
-    const acceptButton = page.getByRole('button', { name: 'Povolit vše' });
+    const acceptButton = page.locator('.btn-primary').filter({ hasText: 'Povolit vše' });
     try {
-      // The modal appears after 1000ms, so we wait a bit
-      await acceptButton.waitFor({ state: 'visible', timeout: 2000 });
+      await acceptButton.waitFor({ state: 'visible', timeout: 3000 });
       await acceptButton.click();
     } catch (e) {
       // Modal might not have appeared or already accepted
     }
 
-    // Wait for animations to finish
-    await page.waitForTimeout(300);
+    await page.waitForLoadState('networkidle');
   });
 
   test('Hero section layout and text visibility', async ({ page }) => {

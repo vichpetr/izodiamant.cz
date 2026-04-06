@@ -64,7 +64,7 @@ export default function DiamondWirePage() {
                 Podřezávání <br /><span className="text-primary">diamantovým lanem</span>
               </h1>
               <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-10">
-                Nejmodernější a nejuniverzálnější metoda sanace vlhkého zdiva. Tam, kde klasické řetězové pily selhávají, nastupuje diamantové lano. Tato technologie si poradí s jakýmkoliv materiálem od smíšeného zdiva až po tvrdý kámen či železobeton.
+                Profesionální <strong>podřezávání zdiva diamantovým lanem</strong> představuje nejmodernější a nejuniverzálnější metodu sanace vlhkého zdiva. Tam, kde klasické řetězové pily selhávají, nastupuje technologie diamantového lana, která si poradí s jakýmkoliv materiálem od smíšeného zdiva až po tvrdý kámen či železobeton.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
@@ -75,12 +75,66 @@ export default function DiamondWirePage() {
             <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
               <Image 
                 src="/images/sluzby/diamantove-lano.jpg"
-                alt="Podřezávání zdiva diamantovým lanem"
+                alt="Podřezávání zdiva diamantovým lanem - profesionální sanace"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-neutral-dark/80 via-transparent to-transparent" />
+            </div>
+          </div>
+
+          <div className="prose prose-lg max-w-none mb-20 text-neutral-dark/80">
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Proč zvolit diamantové lano pro sanaci?</h2>
+            <p>
+              Tato metoda je unikátní svou schopností provádět čisté řezy v libovolně silném zdivu bez vzniku nebezpečných otřesů a vibrací. Při <strong>podřezávání diamantovým lanem</strong> využíváme lano osazené průmyslovými diamanty, které je poháněno výkonným hydraulickým nebo elektrickým agregátem. Díky tomu jsme schopni sanovat i historické objekty, hrady nebo stavby s extrémně silnými zdmi, kde by jiná technologie byla neúčinná nebo riskantní z hlediska statiky.
+            </p>
+            <p>
+              Po provedení řezu do spáry okamžitě vkládáme novou, vysoce odolnou hydroizolaci (nerezové plechy nebo sklolaminátové desky), která vytvoří neprostupnou bariéru proti vzlínající vlhkosti. Celý proces je zakončen statickým zajištěním a tlakovou injektáží, čímž vracíme zdraví vaší stavbě.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-16 mb-20">
+            <div className="space-y-8">
+              <h2 className="text-3xl font-black uppercase italic text-neutral-dark">Průběh realizace diamantovým lanem</h2>
+              <div className="space-y-6">
+                {[
+                  { step: "01", title: "Příprava a diagnostika", desc: "Zaměření objektu, kontrola tloušťky a materiálu zdiva pro optimální nastavení řezného lana." },
+                  { step: "02", title: "Instalace techniky", desc: "Osazení vodících kladek a upevnění agregátu pro pohon diamantového lana." },
+                  { step: "03", title: "Samotný řez", desc: "Plynulé prořezávání zdiva pod neustálým chlazením, které eliminuje prašnost." },
+                  { step: "04", title: "Izolace a statika", desc: "Vložení izolačního materiálu, statické vyklínování a tlaková výplň spáry." }
+                ].map((s, i) => (
+                  <div key={i} className="flex gap-6 items-start">
+                    <div className="text-4xl font-black text-primary/20 italic italic shrink-0 leading-none">{s.step}</div>
+                    <div>
+                      <div className="text-lg font-black uppercase italic text-neutral-dark mb-1">{s.title}</div>
+                      <p className="text-neutral-dark/60 font-medium">{s.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="bg-neutral-dark text-white p-10 rounded-3xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 -rotate-12 translate-x-10 -translate-y-10" />
+              <h3 className="text-2xl font-black uppercase italic mb-6 relative z-10">Kdy je tato metoda nejlepší volbou?</h3>
+              <ul className="space-y-4 relative z-10">
+                <li className="flex items-start gap-3">
+                  <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
+                  <span>Zdivo o tloušťce nad 100 cm</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
+                  <span>Tvrdý kámen, železobeton nebo prolitý beton</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
+                  <span>Stavby s narušenou statikou vyžadující nulové otřesy</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
+                  <span>Členité historické budovy a hrady</span>
+                </li>
+              </ul>
             </div>
           </div>
 
