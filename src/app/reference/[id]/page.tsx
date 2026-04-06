@@ -38,7 +38,7 @@ export async function generateMetadata({
   const title = project.title.includes(project.location) || project.title.includes(project.location.split(' ')[0])
     ? project.title 
     : `${project.title} – ${project.location}`;
-  const description = `${project.title} (${project.technology}). ${project.description.substring(0, 70)}... Vracíme zdraví vaší stavbě.`;
+  const description = `${project.title} (${project.technology}). ${project.description.substring(0, 50)}... Vracíme zdraví vaší stavbě.`;
 
   return {
     title,
