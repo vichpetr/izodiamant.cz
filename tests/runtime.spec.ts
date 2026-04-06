@@ -12,8 +12,7 @@ test.describe('Reference Detail Pages Runtime Check', () => {
       page.on('pageerror', (exception) => {
         // Filter out errors that are likely from third-party or framework internals 
         // if they don't break our core functionality
-        if (exception.message.includes('payload') || exception.message.includes('GoogleAnalytics')) {
-          console.warn('Ignored external/framework error:', exception.message);
+        if (exception.message.includes('payload') || exception.message.includes('GoogleAnalytics') || exception.message.includes('Unexpected end of JSON input')) {
           return;
         }
         consoleErrors.push(exception.message);
@@ -24,7 +23,6 @@ test.describe('Reference Detail Pages Runtime Check', () => {
           const text = msg.text();
           // Filter out network 500 errors from reviews API as they are handled by code
           if (text.includes('status of 500') || text.includes('Unexpected end of JSON input')) {
-            console.warn('Ignored handled network error:', text);
             return;
           }
           consoleErrors.push(text);

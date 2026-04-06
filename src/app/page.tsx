@@ -4,6 +4,12 @@ import Hero from "@/components/Hero";
 import Technology from "@/components/Technology";
 import AboutSection from "@/components/AboutSection";
 import { SectionSkeleton } from "@/components/Skeleton";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Sanace zdiva a podřezávání domu – komplexní řešení vlhkosti",
+  description: "Specialisté na sanace vlhkého zdiva po celé ČR. Podřezávání diamantovým lanem, řetězovou pilou a chemická injektáž. Vracíme zdraví vaší stavbě.",
+};
 
 // Components that are SSR by default for SEO
 const References = dynamic(() => import("@/components/References"));

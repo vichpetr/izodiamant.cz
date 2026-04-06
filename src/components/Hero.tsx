@@ -7,7 +7,7 @@ import HeroBadges from './HeroBadges';
 
 export default function Hero() {
   const content = {
-    h1: "Váš dům si zaslouží suché základy. Navždy.",
+    h1: "Sanace a podřezávání zdiva. Váš dům si zaslouží suché základy.",
     desc: "Zajistíme pro váš dům suché základy a trvalou ochranu proti vlhkosti. Profesionální sanace a podřezávání zdiva nejmodernější technologií – vracíme zdraví vaší stavbě.",
     cta_calc: "Nezávazná kalkulace",
     cta_ref: "Naše reference",
