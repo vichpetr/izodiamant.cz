@@ -47,8 +47,6 @@ export default function AboutSection() {
               <p>
                 Jsme ryze česká firma <strong>IZODIAMANT</strong> zaměřená na profesionální a <strong>komplexní</strong> řešení vlhkosti v objektech všech typů. Od historických kamenných staveb přes rodinné domy ze smíšeného zdiva až po moderní průmyslové haly – tam všude <strong>vracíme zdraví vaší stavbě.</strong> Věříme, že každý <strong>dům si zaslouží</strong> spolehlivou ochranu, která vydrží <strong>navždy</strong>. Naše specializace na <strong>podřezávání zdiva</strong> a <strong>komplexní sanace vlhkého zdiva</strong> nás řadí mezi špičku v oboru v rámci celé České republiky.
               </p>
-            </div>
-          </m.div>
               <p>
                 Chápeme, že vlhkost není jen estetický problém, ale vážná hrozba pro statiku domu a zdraví jeho obyvatel. Vzlínající vlhkost v konstrukcích způsobuje degradaci materiálů, vznik plísní a výrazně zvyšuje náklady na vytápění. Proto ke každé zakázce přistupujeme s maximální zodpovědností a využíváme postupy, které jsou prověřené dekádami v oboru sanací. Naše technologie, jako je <strong>podřezávání diamantovým lanem</strong> nebo strojní řezání řetězovou pilou, představují definitivní řešení pro suchý a bezpečný domov.
               </p>
