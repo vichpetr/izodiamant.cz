@@ -11,7 +11,7 @@ import referencesData from '@/data/references.json';
 export const metadata: Metadata = {
   title: "Chemická injektáž vlhkého zdiva",
   description: "Dodatečná hydroizolace pomocí chemické injektáže. Šetrná metoda pro trvalé sucho bez narušení statiky zdiva. Vracíme zdraví vaší stavbě.",
-  keywords: ["chemická injektáž", "injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "odvlhčení", "Nové Hrady", "ČR"],
+  keywords: ["chemická injektáž", "injektáž zdiva", "injektáž zdiva proti vlhkosti", "krémová injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "odvlhčení", "Nové Hrady", "ČR"],
   alternates: {
     canonical: 'https://izodiamant.cz/sluzby/chemicka-injektaz',
   },

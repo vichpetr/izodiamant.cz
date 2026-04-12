@@ -11,7 +11,7 @@ import referencesData from '@/data/references.json';
 export const metadata: Metadata = {
   title: "Podřezávání zdiva řetězovou pilou",
   description: "Sanace zdiva řetězovou pilou. Ideální pro cihelné stavby – rychlý postup a okamžité vložení hydroizolace. Vracíme zdraví vaší stavbě.",
-  keywords: ["řetězová pila", "podřezávání cihelného zdiva", "sanace vlhkého zdiva", "izolace proti vlhkosti", "Nové Hrady", "ČR"],
+  keywords: ["řetězová pila", "podřezávání cihelného zdiva", "podřezání zdiva řetězovou pilou", "sanace vlhkého zdiva", "izolace proti vlhkosti", "podřezání domu cena", "Nové Hrady", "ČR"],
   alternates: {
     canonical: 'https://izodiamant.cz/sluzby/retezova-pila',
   },

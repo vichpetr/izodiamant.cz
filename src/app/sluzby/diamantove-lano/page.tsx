@@ -11,7 +11,7 @@ import referencesData from '@/data/references.json';
 export const metadata: Metadata = {
   title: "Podřezávání zdiva diamantovým lanem",
   description: "Sanace zdiva diamantovým lanem pro kámen a beton. Moderní technologie bez otřesů pro trvale suchý dům. Vracíme zdraví vaší stavbě.",
-  keywords: ["diamantové lano", "podřezání zdiva lanem", "sanace kamenného zdiva", "izolace betonu", "Nové Hrady", "ČR"],
+  keywords: ["diamantové lano", "podřezání zdiva diamantovým lanem", "sanace kamenného zdiva", "izolace betonu", "řezání betonu", "podřezání zdiva cena", "Nové Hrady", "ČR"],
   alternates: {
     canonical: 'https://izodiamant.cz/sluzby/diamantove-lano',
   },
