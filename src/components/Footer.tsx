@@ -66,7 +66,7 @@ export default function Footer() {
           <div>
             <h3 className="text-primary font-bold uppercase tracking-widest text-sm mb-8">{content.nav}</h3>
             <ul className="space-y-4 font-bold text-sm">
-              <li><Link href="/#technologie" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Technologie</Link></li>
+              <li><Link href="/#sluzby" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Technologie</Link></li>
               <li><Link href="/#calculator" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Kalkulátor</Link></li>
               <li><Link href="/#reference" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Reference</Link></li>
               <li><a href={profileUrl} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Hodnocení</a></li>

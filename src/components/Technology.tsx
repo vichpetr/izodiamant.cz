@@ -53,7 +53,9 @@ export default function Technology() {
   ];
 
   return (
-    <section id="technologie" className="py-24 bg-white">
+    <section id="technologie" className="py-24 bg-white scroll-mt-20 relative">
+      <div id="sluzby" className="absolute -top-20" />
+      <div id="services" className="absolute -top-20" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-3xl mx-auto mb-20">
           <h2 className="text-3xl md:text-6xl font-black text-neutral-dark uppercase tracking-tight md:tracking-tighter italic mb-2 px-2">
