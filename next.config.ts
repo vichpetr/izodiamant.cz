@@ -33,6 +33,26 @@ const nextConfig: NextConfig = {
         destination: '/#services',
         permanent: true,
       },
+      {
+        source: '/sluzby/sanace-pilou-s-diamantovym-lanem',
+        destination: '/sluzby/diamantove-lano',
+        permanent: true,
+      },
+      {
+        source: '/sluzby/sluzby-podrezani-retezovou-pilou',
+        destination: '/sluzby/retezova-pila',
+        permanent: true,
+      },
+      {
+        source: '/kontakt',
+        destination: '/#contact',
+        permanent: true,
+      },
+      {
+        source: '/category/reference',
+        destination: '/#reference',
+        permanent: true,
+      },
     ]
   },
 };
