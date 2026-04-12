@@ -94,8 +94,8 @@ export default async function ProjectPage({
 
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <div className="space-y-12">
-              <div>
-                <div className="flex flex-wrap gap-3 mb-6">
+              <div className="mb-16">
+                <div className="flex flex-wrap gap-3 mb-10">
                   <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary font-black text-xs uppercase tracking-widest">
                     {project.technology.includes('lano') ? <Icons.Gem className="w-4 h-4" /> : <Icons.Zap className="w-4 h-4" />}
                     {project.technology}
@@ -111,12 +111,18 @@ export default async function ProjectPage({
                     </div>
                   )}
                 </div>
-                <h1 className="text-4xl md:text-6xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.9] mb-8">
-                  Realizace sanace: {project.title}
-                </h1>
-                <div className="flex items-center gap-2 text-neutral-dark/60 font-bold uppercase tracking-widest text-sm">
-                  <Icons.MapPin className="w-4 h-4 text-primary" />
-                  {project.location}
+
+                <div className="space-y-4">
+                  <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] italic ml-1">
+                    Realizace sanace
+                  </div>
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.85] -ml-1">
+                    {project.title.replace('Sanace ', '').replace('Reference ', '')}
+                  </h1>
+                  <div className="flex items-center gap-2 text-neutral-dark/60 font-bold uppercase tracking-widest text-sm ml-1 pt-4">
+                    <Icons.MapPin className="w-4 h-4 text-primary" />
+                    {project.location}
+                  </div>
                 </div>
               </div>
 
