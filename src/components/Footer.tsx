@@ -107,7 +107,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-3 group">
                 <Icons.Mail className="w-5 h-5 text-primary shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                <a href="mailto:info@izodiamant.cz" className="text-white/70 hover:text-white transition-colors font-bold">info@izodiamant.cz</a>
+                <a href="mailto:info@izodiamant.cz" rel="nofollow" className="text-white/70 hover:text-white transition-colors font-bold">info@izodiamant.cz</a>
               </li>
               <li className="flex items-start gap-3">
                 <Icons.MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />

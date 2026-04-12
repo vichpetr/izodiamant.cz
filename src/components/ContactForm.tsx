@@ -96,7 +96,7 @@ export default function ContactForm() {
                 </div>
                 <div>
                   <div className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1 italic">Napište nám</div>
-                  <a href="mailto:info@izodiamant.cz" className="text-xl font-black text-neutral-dark hover:text-primary transition-colors">info@izodiamant.cz</a>
+                  <a href="mailto:info@izodiamant.cz" rel="nofollow" className="text-xl font-black text-neutral-dark hover:text-primary transition-colors">info@izodiamant.cz</a>
                 </div>
               </div>
 
