@@ -28,7 +28,7 @@ export default function ChainSawPage() {
       "@type": "LocalBusiness",
       "name": "IZODIAMANT"
     },
-    "description": "Osvědčená mechanická metoda izolace vlhkého zdiva, určená primárně pro cihlové stavby s průběžnou spárou.",
+    "description": "Rychlá a efektivní metoda izolace vlhkého cihelného zdiva s vložením nové hydroizolační folie.",
     "offers": {
       "@type": "Offer",
       "priceSpecification": {
@@ -40,11 +40,11 @@ export default function ChainSawPage() {
 
   const features = [
     "Nejrychlejší metoda pro cihelné zdivo",
-    "Okamžité vložení hydroizolace",
-    "Zlepšení tepelných vlastností objektu",
-    "Statické zajištění pomocí klínů",
-    "Minimální zásah do chodu domácnosti",
-    "Vysoká efektivita a příznivá cena"
+    "Okamžité vložení 2mm PE hydroizolace",
+    "Statické zajištění pomocí plastových klínů",
+    "Vysoká životnost přesahující 50 let",
+    "Cenově nejvýhodnější mechanická sanace",
+    "Vracíme zdraví vaší stavbě."
   ];
 
   return (
@@ -58,17 +58,17 @@ export default function ChainSawPage() {
             <div>
               <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary font-black text-xs uppercase tracking-widest mb-6">
                 <Icons.Zap className="w-4 h-4" />
-                Rychlost a efektivita
+                Rychlá realizace
               </div>
               <h1 className="text-5xl md:text-7xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.9] mb-8">
                 Podřezávání <br /><span className="text-primary">řetězovou pilou</span>
               </h1>
               <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-10">
-                Strojní <strong>podřezávání zdiva řetězovou pilou</strong> je osvědčená mechanická metoda izolace vlhkého zdiva, určená primárně pro cihlové stavby s průběžnou spárou. Tato technologie umožňuje rychlé a definitivní odstranění vzlínající vlhkosti vložením nové hydroizolace přímo do konstrukce vašeho domu.
+                Strojní podřezávání zdiva řetězovou pilou je osvědčená mechanická metoda izolace vlhkého zdiva, určená primárně pro cihlové stavby s průběžnou spárou. Tato technologie umožňuje rychlé a definitivní odstranění vzlínající vlhkosti vložením nové hydroizolace přímo do konstrukce vašeho domu.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
-                  Nezávazná kalkulace pro cihlu
+                  Nezávazná kalkulace
                 </Link>
               </div>
             </div>
@@ -85,30 +85,27 @@ export default function ChainSawPage() {
           </div>
 
           <div className="prose prose-lg max-w-none mb-20 text-neutral-dark/80">
-            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Výhody podřezávání řetězovou pilou u IZODIAMANT</h2>
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Proč zvolit řetězovou pilu pro sanaci zdiva?</h2>
             <p>
-              Technologie <strong>podřezávání řetězovou pilou</strong> patří mezi nejvyhledávanější metody sanace díky svému vynikajícímu poměru cena/výkon. Používáme profesionální pily s tvrdokovovými řetězy, které plynule proříznou cihelné zdivo v ložné spáře. Tento postup je extrémně rychlý – u běžného rodinného domu jsme schopni dokončit izolaci obvodových zdí během několika málo dnů.
+              Technologie podřezávání řetězovou pilou patří mezi nejvyhledávanější metody sanace díky svému vynikajícímu poměru cena/výkon. Používáme profesionální pily s tvrdokovovými řetězy, které plynule proříznou cihelné zdivo v ložné spáře. Tento postup je extrémně rychlý – u běžného rodinného domu jsme schopni dokončit izolaci obvodových zdí během několika málo dnů.
             </p>
             <p>
-              Tým <strong>IZODIAMANT</strong> klade důraz na preciznost a čistotu provedení. Při práci dbáme na to, aby byl zásah do statiky objektu naprosto minimální. Postupujeme v úsecích, které jsou okamžitě staticky zajišťovány, čímž eliminujeme jakékoliv riziko sedání stavby. Tato metoda je ideální pro všechny typy cihelných staveb, od starších rodinných domků až po rozsáhlé hospodářské objekty.
-            </p>
-            <p>
-              Okamžitě po proříznutí vkládáme do spáry PE fólii o tloušťce 2 mm, která má životnost srovnatelnou se samotnou stavbou. Zdivo následně zajistíme statickými klíny a volné prostory vyplníme cementovou suspenzí. Tímto způsobem dosahujeme 100% účinnosti v boji proti vlhkosti a vracíme zdraví vaší stavbě bez nutnosti bourání velkých částí zdí.
+              Tým IZODIAMANT klade důraz na preciznost a čistotu provedení. Při práci dbáme na to, aby byl zásah do statiky objektu naprosto minimální. Postupujeme v úsecích, které jsou okamžitě staticky zajišťovány, čímž eliminujeme jakékoliv riziko sedání stavby. Tato metoda je ideální pro všechny typy cihelných staveb, od starších rodinných domků až po rozsáhlé hospodářské objekty.
             </p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-16 mb-20">
             <div className="space-y-8">
-              <h2 className="text-3xl font-black uppercase italic text-neutral-dark">Jak probíhá podřezání řetězovou pilou?</h2>
+              <h2 className="text-3xl font-black uppercase italic text-neutral-dark">Postup prací řetězovou pilou</h2>
               <div className="space-y-6">
                 {[
-                  { step: "01", title: "Příprava ložné spáry", desc: "Očištění zdiva a identifikace vhodné ložné spáry pro vedení řezu." },
-                  { step: "02", title: "Postupné prořezávání", desc: "Řezání zdiva v úsecích cca 80–100 cm pro zachování statické stability." },
-                  { step: "03", title: "Vložení hydroizolace", desc: "Instalace PE fólie o síle 2 mm s dostatečnými přesahy v místech spojů." },
-                  { step: "04", title: "Klínování a injektáž", desc: "Zajištění spáry plastovými statickými klíny a následná tlaková cementová výplň." }
+                  { step: "01", title: "Příprava trasy", desc: "Očištění zdiva v místě řezu a vytyčení ideální roviny pro vložení hydroizolace." },
+                  { step: "02", title: "Strojní řezání", desc: "Postupné prořezávání ložné spáry cihelného zdiva pomocí speciální řetězové pily." },
+                  { step: "03", title: "Vložení izolace", desc: "Okamžité vložení PE hydroizolační folie o tloušťce 2 mm do vzniklé spáry." },
+                  { step: "04", title: "Zajištění a výplň", desc: "Statické vyklínování a následné tlakové vyplnění spáry cementovou směsí." }
                 ].map((s, i) => (
                   <div key={i} className="flex gap-6 items-start">
-                    <div className="text-4xl font-black text-primary/20 italic italic shrink-0 leading-none">{s.step}</div>
+                    <div className="text-4xl font-black text-primary/20 italic shrink-0 leading-none">{s.step}</div>
                     <div>
                       <div className="text-lg font-black uppercase italic text-neutral-dark mb-1">{s.title}</div>
                       <p className="text-neutral-dark/60 font-medium">{s.desc}</p>
@@ -119,23 +116,23 @@ export default function ChainSawPage() {
             </div>
             <div className="bg-neutral-dark text-white p-10 rounded-3xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 -rotate-12 translate-x-10 -translate-y-10" />
-              <h3 className="text-2xl font-black uppercase italic mb-6 relative z-10">Ideální podmínky pro řetězovou pilu</h3>
+              <h3 className="text-2xl font-black uppercase italic mb-6 relative z-10">Ideální podmínky pro tuto metodu</h3>
               <ul className="space-y-4 relative z-10">
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
-                  <span>Cihelné zdivo s průběžnou ložnou spárou</span>
+                  <span>Cihelné zdivo s průběžnou spárou</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
-                  <span>Šířka zdiva do cca 100 cm</span>
+                  <span>Dostatečný prostor pro manipulaci s pilou</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
-                  <span>Dostatečný manipulační prostor z jedné strany zdi</span>
+                  <span>Požadavek na rychlost a efektivitu nákladů</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
-                  <span>Požadavek na maximální rychlost realizace</span>
+                  <span>Stavby bez velkých kamenných vložek v místě řezu</span>
                 </li>
               </ul>
             </div>
@@ -155,7 +152,7 @@ export default function ChainSawPage() {
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <Icons.ShieldCheck className="w-10 h-10 text-primary mb-6" />
               <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Záruka</h3>
-              <p className="text-neutral-dark/60 font-medium">Používáme vysoce kvalitní PE folie s životností přesahující 50 let.</p>
+              <p className="text-neutral-dark/60 font-medium">Používáme certifikované PE folie s životností přes 50 let.</p>
             </div>
           </div>
 
@@ -167,23 +164,23 @@ export default function ChainSawPage() {
                 <div className="space-y-6">
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">1</div>
-                    <p className="text-white/70 font-medium">Příprava pracovního prostoru a vyklizení okolí zdí.</p>
+                    <p className="text-white/70 font-medium">Zaměření a příprava pracovní spáry v úrovni podlahy.</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">2</div>
-                    <p className="text-white/70 font-medium">Postupné prořezávání ložné spáry cihelného zdiva speciální pilou.</p>
+                    <p className="text-white/70 font-medium">Strojní proříznutí cihelného zdiva speciální řetězovou pilou.</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">3</div>
-                    <p className="text-white/70 font-medium">Čištění spáry a vložení hydroizolační fólie (PE o tloušťce 2 mm).</p>
+                    <p className="text-white/70 font-medium">Vložení hydroizolační PE folie o tloušťce 2 mm.</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">4</div>
-                    <p className="text-white/70 font-medium">Statické zajištění zdiva pomocí plastových statických klínů.</p>
+                    <p className="text-white/70 font-medium">Zajištění spáry statickými klíny pro okamžitou stabilitu.</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">5</div>
-                    <p className="text-white/70 font-medium">Tlakové vyplnění zbylé spáry cementovou suspenzí.</p>
+                    <p className="text-white/70 font-medium">Tlakové vyplnění cementovou maltou pro dokonalé spojení.</p>
                   </div>
                 </div>
               </div>
@@ -200,10 +197,10 @@ export default function ChainSawPage() {
                 <div className="mt-12 p-8 bg-white/5 rounded-2xl border border-white/10">
                   <h3 className="flex items-center gap-2 font-black uppercase text-xs mb-4 text-primary italic">
                     <Icons.Construction className="w-4 h-4" />
-                    Vhodné materiály
+                    Požadavek pro realizaci
                   </h3>
                   <p className="text-sm text-white/50 leading-relaxed font-medium">
-                    Tato metoda je optimalizována pro cihlové zdivo s průběžnou vodorovnou spárou. U kamenného zdiva doporučujeme technologii diamantového lana.
+                    Pro práci s řetězovou pilou je nutný manipulační prostor přibližně 1,5 metru z vnější nebo vnitřní strany zdi.
                   </p>
                 </div>
               </div>
@@ -215,29 +212,29 @@ export default function ChainSawPage() {
       <section className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="prose prose-lg max-w-none text-neutral-dark/80">
-            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-8">Nejrychlejší cesta k suchému domu: Řetězová pila</h2>
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-8">Kdy zvolit podřezávání řetězovou pilou?</h2>
             <p className="mb-6 leading-relaxed">
-              Podřezávání zdiva řetězovou pilou je jednou z <strong>nejpoužívanějších a nejefektivnějších metod</strong> mechanické sanace vlhkého zdiva. Je určena především pro cihelné stavby, které mají průběžnou vodorovnou spáru. Pokud se potýkáte s opadávající omítkou, solnými výkvěty nebo plísní v interiéru, tato technologie nabízí definitivní řešení vašeho problému.
+              Podřezávání zdiva řetězovou pilou je jednou z nejpoužívanějších a nejefektivnějších metod mechanické sanace vlhkého zdiva. Je určena především pro cihelné stavby, které mají průběžnou vodorovnou spáru. Pokud se potýkáte s opadávající omítkou, solnými výkvěty nebo plísní v interiéru, tato technologie nabízí definitivní řešení vašeho problému.
             </p>
             <p className="mb-6 leading-relaxed">
-              Práce probíhají za pomoci speciálních elektrických nebo motorových pil s řeznou lištou osazenou řetězy s tvrdokovovými zuby. Celý proces je velmi rychlý – u běžného rodinného domu jsme schopni kompletně vložit novou hydroizolaci do celého obvodu <strong>v řádu několika málo dnů</strong>.
+              Práce probíhají za pomoci speciálních elektrických nebo motorových pil s řeznou lištou osazenou řetězy s tvrdokovovými zuby. Celý proces je velmi rychlý – u běžného rodinného domu jsme schopni kompletně vložit novou hydroizolaci do celého obvodu v řádu několika málo dnů.
+            </p>
+            <p className="mb-6 leading-relaxed">
+              Klíčem k úspěchu je vložení vysoce kvalitní polyethylenové (PE) fólie o tloušťce 2 mm přímo do proříznuté spáry. Tato fólie má životnost přesahující 50 let a je zcela imunní vůči agresivním látkám obsaženým ve vlhkém zdivu. Spára je následně staticky zajištěna speciálními plastovými klíny, které přebírají zatížení stavby, a nakonec tlakově vyplněna cementovou suspenzí.
             </p>
             
-            <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Trvalá izolace zdiva bez kompromisů</h3>
-            <p className="mb-6 leading-relaxed">
-              Klíčem k úspěchu je vložení vysoce kvalitní polyethylenové (PE) fólie o tloušťce 2 mm přímo do proříznuté spáry. Tato fólie má <strong>životnost přesahující 50 let</strong> a je zcela imunní vůči agresivním látkám obsaženým ve vlhkém zdivu. Spára je následně staticky zajištěna speciálními plastovými klíny, které přebírají zatížení stavby, a nakonec tlakově vyplněna cementovou suspenzí.
-            </p>
+            <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Proč je tato metoda u cihel nejlepší?</h3>
             <p className="mb-10 leading-relaxed">
-              Sanace zdiva řetězovou pilou nejen zastaví vzlínající vlhkost, ale také výrazně zvýší hodnotu vaší nemovitosti. Suchý dům je zdravý dům – eliminací vlhkosti chráníte zdraví své rodiny i samotnou konstrukci stavby před postupnou degradací.
+              Díky mechanickému proříznutí spáry dojde k fyzickému přerušení vzlínající vlhkosti. Oproti jiným metodám máte 100% jistotu, že hydroizolace je vložena v celé šířce zdiva a v souvislé vrstvě. Po vyschnutí zbytkové vlhkosti nad izolací se váš dům stane trvale suchým, což pocítíte na lepším klimatu i nižších nákladech na vytápění.
             </p>
 
             <div className="bg-neutral-light p-10 rounded-3xl border-2 border-primary/20">
-              <h4 className="text-xl font-black uppercase italic text-neutral-dark mb-4">Proč zvolit řetězovou pilu u nás?</h4>
+              <h4 className="text-xl font-black uppercase italic text-neutral-dark mb-4">Shrnutí výhod řetězové pily:</h4>
               <ul className="space-y-3 font-medium">
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Bezkonkurenční rychlost realizace u cihelných objektů.</li>
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Okamžitý efekt zastavení vzlínající vlhkosti hned po vložení izolace.</li>
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Minimální zásah do statiky díky postupnému postupu a klínování.</li>
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Vracíme zdraví vaší stavbě s garancí profesionálního přístupu.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Rychlost realizace i u větších objektů.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Příznivá cena v porovnání s diamantovým lanem.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Okamžité statické zajištění objektu.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Trvalé navrácení zdraví vaší stavbě.</li>
               </ul>
             </div>
           </div>
@@ -248,7 +245,7 @@ export default function ChainSawPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
             <h2 className="text-3xl font-black uppercase italic mb-2">Nedávné realizace</h2>
-            <p className="text-neutral-dark/60 font-medium">Prohlédněte si naše projekty, kde jsme využili strojní podřezání řetězovou pilou.</p>
+            <p className="text-neutral-dark/60 font-medium">Prohlédněte si naše projekty, kde jsme využili řetězovou pilu.</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">

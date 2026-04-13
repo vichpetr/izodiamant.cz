@@ -38,13 +38,13 @@ export default function PrivacyPolicy() {
               <p>Zpracováváme pouze ty osobní údaje, které jsou nezbytně nutné pro profesionální poskytování našich služeb sanace a izolace staveb:</p>
               <ul className="list-disc pl-6 space-y-4">
                 <li>
-                  <strong>Kontaktní formulář:</strong> Při odeslání poptávky zpracováváme Vaše jméno, příjmení, e-mailovou adresu, telefonní číslo a doplňující technické parametry stavby (např. tloušťka zdiva, materiál, lokalita). Tyto údaje jsou klíčové pro přípravu přesné a nezávazné cenové nabídky na podřezání zdiva nebo chemickou injektáž. Právním základem je zde plnění smlouvy nebo provedení opatření před uzavřením smlouvy na Vaši žádost.
+                  Kontaktní formulář: Při odeslání poptávky zpracováváme Vaše jméno, příjmení, e-mailovou adresu, telefonní číslo a doplňující technické parametry stavby (např. tloušťka zdiva, materiál, lokalita). Tyto údaje jsou klíčové pro přípravu přesné a nezávazné cenové nabídky na podřezání zdiva nebo chemickou injektáž. Právním základem je zde plnění smlouvy nebo provedení opatření před uzavřením smlouvy na Vaši žádost.
                 </li>
                 <li>
-                  <strong>Realizace zakázky:</strong> V případě uzavření dohody o provedení práce zpracováváme také fakturační údaje (adresa bydliště, IČO) a adresu místa realizace sanace. Tyto údaje uchováváme pro účely řádného plnění smluvních závazků a následné fakturace dle platných zákonů ČR.
+                  Realizace zakázky: V případě uzavření dohody o provedení práce zpracováváme také fakturační údaje (adresa bydliště, IČO) a adresu místa realizace sanace. Tyto údaje uchováváme pro účely řádného plnění smluvních závazků a následné fakturace dle platných zákonů ČR.
                 </li>
                 <li>
-                  <strong>Analýza návštěvnosti:</strong> Na našem webu využíváme nástroje pro analýzu chování uživatelů (např. Google Analytics). Tyto údaje jsou anonymizované a pomáhají nám lépe pochopit, o které technologie sanace je největší zájem, abychom mohli obsah webu neustále vylepšovat. Právním základem je náš oprávněný zájem na rozvoji podnikání nebo Váš dobrovolný souhlas s analytickými cookies.
+                  Analýza návštěvnosti: Na našem webu využíváme nástroje pro analýzu chování uživatelů (např. Google Analytics). Tyto údaje jsou anonymizované a pomáhají nám lépe pochopit, o které technologie sanace je největší zájem, abychom mohli obsah webu neustále vylepšovat. Právním základem je náš oprávněný zájem na rozvoji podnikání nebo Váš dobrovolný souhlas s analytickými cookies.
                 </li>
               </ul>
             </section>
@@ -80,12 +80,12 @@ export default function PrivacyPolicy() {
               <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">5. Vaše práva dle nařízení GDPR</h2>
               <p>Jako subjekt údajů máte v souvislosti s ochranou osobních údajů široká práva:</p>
               <ul className="list-disc pl-6 space-y-4">
-                <li><strong>Právo na přístup:</strong> Máte právo vědět, jaké konkrétní údaje o Vás zpracováváme a proč.</li>
-                <li><strong>Právo na opravu:</strong> Pokud zjistíte, že jsou Vaše údaje neaktuální nebo nesprávné, na Vaši žádost je okamžitě opravíme.</li>
-                <li><strong>Právo na výmaz:</strong> Pokud již neexistuje zákonný důvod pro zpracování, na Vaši žádost údaje vymažeme.</li>
-                <li><strong>Právo na omezení zpracování:</strong> V určitých situacích můžete požádat o pozastavení nakládání s Vašimi daty.</li>
-                <li><strong>Právo na přenositelnost:</strong> Můžete od nás získat své údaje ve strukturovaném, běžně používaném formátu.</li>
-                <li><strong>Právo vznést námitku:</strong> Máte právo kdykoliv namítat proti zpracování založeném na oprávněném zájmu.</li>
+                <li>Právo na přístup: Máte právo vědět, jaké konkrétní údaje o Vás zpracováváme a proč.</li>
+                <li>Právo na opravu: Pokud zjistíte, že jsou Vaše údaje neaktuální nebo nesprávné, na Vaši žádost je okamžitě opravíme.</li>
+                <li>Právo na výmaz: Pokud již neexistuje zákonný důvod pro zpracování, na Vaši žádost údaje vymažeme.</li>
+                <li>Právo na omezení zpracování: V určitých situacích můžete požádat o pozastavení nakládání s Vašimi daty.</li>
+                <li>Právo na přenositelnost: Můžete od nás získat své údaje ve strukturovaném, běžně používaném formátu.</li>
+                <li>Právo vznést námitku: Máte právo kdykoliv namítat proti zpracování založeném na oprávněném zájmu.</li>
               </ul>
             </section>
 
