@@ -11,7 +11,7 @@ import referencesData from '@/data/references.json';
 export const metadata: Metadata = {
   title: "Chemická injektáž vlhkého zdiva",
   description: "Dodatečná hydroizolace pomocí chemické injektáže. Šetrná metoda pro trvalé sucho bez narušení statiky zdiva. Vracíme zdraví vaší stavbě.",
-  keywords: ["chemická injektáž", "injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "odvlhčení", "Nové Hrady", "ČR"],
+  keywords: ["chemická injektáž", "injektáž zdiva", "injektáž zdiva proti vlhkosti", "krémová injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "odvlhčení", "Nové Hrady", "ČR"],
   alternates: {
     canonical: 'https://izodiamant.cz/sluzby/chemicka-injektaz',
   },
@@ -85,9 +85,12 @@ export default function ChemicalInjectionPage() {
           </div>
 
           <div className="prose prose-lg max-w-none mb-20 text-neutral-dark/80">
-            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Jak funguje chemická injektáž?</h2>
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Jak funguje chemická injektáž od IZODIAMANT?</h2>
             <p>
               Při realizaci <strong>chemické injektáže zdiva</strong> postupujeme vyvrtáním sítě otvorů do zasažených stěn v přesně definovaných rozestupech. Do těchto otvorů následně pod nízkým tlakem nebo infuzně vpravujeme certifikované hydroizolační krémy či gely na silan-siloxanové bázi. Tyto látky mají vynikající schopnost šířit se v pórech materiálu a po vytvrdnutí vytvoří nepropustnou hydrofobní clonu, která okamžitě zastaví vzlínající vlhkost.
+            </p>
+            <p>
+              Odborníci z <strong>IZODIAMANT</strong> využívají při práci moderní injektážní zařízení, která zaručují rovnoměrné nasycení zdiva hydroizolačním materiálem. Tato metoda je zvláště účinná u silně zavlhlého zdiva, kde mechanické metody narážejí na technické obtíže. Po aplikaci dochází k postupnému vysychání konstrukcí, což zlepšuje mikroklima v celém objektu a prodlužuje životnost omítek a dalších povrchových úprav.
             </p>
             <p>
               Tento postup je velmi šetrný ke stavbě, neboť nevyžaduje žádné rozsáhlé výkopové práce ani mechanické prořezávání. Je proto ideální volbou pro vnitřní příčky, sklepy nebo historické objekty se složitou strukturou základů. Naším cílem je dlouhodobý výsledek, kterým vracíme zdraví vaší stavbě.

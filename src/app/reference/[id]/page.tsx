@@ -38,7 +38,7 @@ export async function generateMetadata({
   const title = project.title.includes(project.location) || project.title.includes(project.location.split(' ')[0])
     ? project.title 
     : `${project.title} – ${project.location}`;
-  const description = `${project.title} (${project.technology}). ${project.description.substring(0, 70)}... Vracíme zdraví vaší stavbě.`;
+  const description = `Realizace sanace zdiva: ${project.title}. Technologie: ${project.technology}. Lokalita: ${project.location}. Vracíme zdraví vaší stavbě.`;
 
   return {
     title,
@@ -94,8 +94,8 @@ export default async function ProjectPage({
 
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <div className="space-y-12">
-              <div>
-                <div className="flex flex-wrap gap-3 mb-6">
+              <div className="mb-16">
+                <div className="flex flex-wrap gap-3 mb-10">
                   <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary font-black text-xs uppercase tracking-widest">
                     {project.technology.includes('lano') ? <Icons.Gem className="w-4 h-4" /> : <Icons.Zap className="w-4 h-4" />}
                     {project.technology}
@@ -111,12 +111,18 @@ export default async function ProjectPage({
                     </div>
                   )}
                 </div>
-                <h1 className="text-4xl md:text-6xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.9] mb-8">
-                  Realizace sanace: {project.title}
-                </h1>
-                <div className="flex items-center gap-2 text-neutral-dark/60 font-bold uppercase tracking-widest text-sm">
-                  <Icons.MapPin className="w-4 h-4 text-primary" />
-                  {project.location}
+
+                <div className="space-y-4">
+                  <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] italic ml-1">
+                    Realizace sanace
+                  </div>
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.85] -ml-1">
+                    {project.title.replace('Sanace ', '').replace('Reference ', '')}
+                  </h1>
+                  <div className="flex items-center gap-2 text-neutral-dark/60 font-bold uppercase tracking-widest text-sm ml-1 pt-4">
+                    <Icons.MapPin className="w-4 h-4 text-primary" />
+                    {project.location}
+                  </div>
                 </div>
               </div>
 
@@ -154,10 +160,50 @@ export default async function ProjectPage({
                 <h2 className="text-xs font-black text-neutral-dark uppercase tracking-[0.3em]">Technický popis a průběh</h2>
                 <div className="prose prose-sm text-neutral-dark/70 font-medium leading-relaxed">
                   <p>
-                    Tato <strong>realizace sanace</strong> byla provedena s důrazem na maximální zachování integrity objektu. Celý proces zahrnoval diagnostiku vlhkosti, přípravu pracoviště a samotné <strong>strojní podřezávání zdiva</strong> nebo aplikaci chemické bariéry.
+                    Tato <strong>realizace sanace</strong> u projektu <strong>{project.title}</strong> byla provedena týmem <strong>IZODIAMANT</strong> s důrazem na maximální zachování integrity objektu. Celý proces zahrnoval diagnostiku vlhkosti, přípravu pracoviště a samotné <strong>strojní podřezávání zdiva</strong> nebo aplikaci chemické bariéry.
                   </p>
                   <p>
                     Při práci využíváme výhradně profesionální vybavení a certifikované materiály s ověřenou životností. Každý krok realizace je pečlivě kontrolován, aby byl výsledek trvalý a plně funkční. Tímto přístupem vracíme zdraví vaší stavbě a chráníme ji před další degradací způsobenou vzlínající vlhkostí.
+                  </p>
+                </div>
+              </div>
+
+              {/* Detailed SEO Content Block */}
+              <div className="space-y-8 pt-8">
+                <h2 className="text-2xl font-black text-neutral-dark uppercase tracking-tight italic">Časté otázky k sanaci v lokalitě {project.location}</h2>
+                <div className="grid gap-6">
+                  <div className="bg-white p-6 rounded-2xl border border-neutral-dark/5 shadow-sm">
+                    <h3 className="font-black uppercase text-sm mb-3">Jak dlouho vydrží ochrana proti vlhkosti?</h3>
+                    <p className="text-neutral-dark/70 text-sm leading-relaxed">
+                      Při použití mechanického podřezání s vložením PE fólie nebo nerezových plechů je životnost izolace prakticky shodná s životností celé stavby. Jedná se o definitivní řešení, které fyzicky oddělí zdivo od vlhkého podloží. Vracíme zdraví vaší stavbě s jistotou na desítky let.
+                    </p>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl border border-neutral-dark/5 shadow-sm">
+                    <h3 className="font-black uppercase text-sm mb-3">Je tato metoda vhodná pro každý typ zdiva?</h3>
+                    <p className="text-neutral-dark/70 text-sm leading-relaxed">
+                      Díky kombinaci technologií (řetězová pila pro cihlu, diamantové lano pro kámen, chemická injektáž pro členité části) jsme schopni vyřešit vlhkost u jakéhokoliv objektu v lokalitě {project.location} a okolí. Každý projekt začíná odborným posouzením přímo na místě.
+                    </p>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl border border-neutral-dark/5 shadow-sm">
+                    <h3 className="font-black uppercase text-sm mb-3">Omezí sanace provoz v domě?</h3>
+                    <p className="text-neutral-dark/70 text-sm leading-relaxed">
+                      Většina prací probíhá z vnější strany objektu, což minimalizuje zásahy do interiéru. Technologie diamantového lana je navíc bezprašná díky vodnímu chlazení. Po dokončení prací a tlakovém vyplnění spár je objekt okamžitě staticky zajištěn a připraven k dalšímu užívání.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-6 pt-8 border-t border-neutral-dark/5">
+                <h2 className="text-xl font-black text-neutral-dark uppercase tracking-tight italic">Regionální působnost a materiály</h2>
+                <div className="prose prose-sm text-neutral-dark/70 font-medium leading-relaxed">
+                  <p>
+                    Ačkoliv se tato konkrétní realizace nachází v lokalitě <strong>{project.location}</strong>, naše firma IZODIAMANT poskytuje profesionální služby v oblasti <strong>sanace vlhkého zdiva</strong> po celé České republice. Specializujeme se na náročné projekty, kde je vyžadována maximální preciznost a použití nejmodernějších technologií, jako je právě <strong>podřezávání diamantovým lanem</strong> nebo řetězovou pilou.
+                  </p>
+                  <p>
+                    Kromě lokality {project.location} pravidelně realizujeme zakázky ve městech jako jsou <strong>Pardubice, Chrudim, Hradec Králové, Ústí nad Orlicí, Vysoké Mýto, Litomyšl, Polička, Svitavy</strong> a mnoho dalších. Naše technika nám umožňuje pracovat s různými typy materiálů – od klasické pálené cihly přes smíšené zdivo až po extrémně tvrdý pískovec či opuku, které jsou pro východočeský region typické.
+                  </p>
+                  <p>
+                    Každá stavba má svá specifika a vyžaduje individuální přístup k řešení <strong>hydroizolace</strong>. Naším cílem není pouze dočasné zakrytí problému, ale jeho systémové odstranění, kterým vracíme zdraví vaší stavbě a zvyšujeme její tržní hodnotu i energetickou efektivitu.
                   </p>
                 </div>
               </div>

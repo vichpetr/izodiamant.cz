@@ -11,7 +11,7 @@ import referencesData from '@/data/references.json';
 export const metadata: Metadata = {
   title: "Podřezávání zdiva řetězovou pilou",
   description: "Sanace zdiva řetězovou pilou. Ideální pro cihelné stavby – rychlý postup a okamžité vložení hydroizolace. Vracíme zdraví vaší stavbě.",
-  keywords: ["řetězová pila", "podřezávání cihelného zdiva", "sanace vlhkého zdiva", "izolace proti vlhkosti", "Nové Hrady", "ČR"],
+  keywords: ["řetězová pila", "podřezávání cihelného zdiva", "podřezání zdiva řetězovou pilou", "sanace vlhkého zdiva", "izolace proti vlhkosti", "podřezání domu cena", "Nové Hrady", "ČR"],
   alternates: {
     canonical: 'https://izodiamant.cz/sluzby/retezova-pila',
   },
@@ -85,9 +85,12 @@ export default function ChainSawPage() {
           </div>
 
           <div className="prose prose-lg max-w-none mb-20 text-neutral-dark/80">
-            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Výhody podřezávání řetězovou pilou</h2>
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Výhody podřezávání řetězovou pilou u IZODIAMANT</h2>
             <p>
               Technologie <strong>podřezávání řetězovou pilou</strong> patří mezi nejvyhledávanější metody sanace díky svému vynikajícímu poměru cena/výkon. Používáme profesionální pily s tvrdokovovými řetězy, které plynule proříznou cihelné zdivo v ložné spáře. Tento postup je extrémně rychlý – u běžného rodinného domu jsme schopni dokončit izolaci obvodových zdí během několika málo dnů.
+            </p>
+            <p>
+              Tým <strong>IZODIAMANT</strong> klade důraz na preciznost a čistotu provedení. Při práci dbáme na to, aby byl zásah do statiky objektu naprosto minimální. Postupujeme v úsecích, které jsou okamžitě staticky zajišťovány, čímž eliminujeme jakékoliv riziko sedání stavby. Tato metoda je ideální pro všechny typy cihelných staveb, od starších rodinných domků až po rozsáhlé hospodářské objekty.
             </p>
             <p>
               Okamžitě po proříznutí vkládáme do spáry PE fólii o tloušťce 2 mm, která má životnost srovnatelnou se samotnou stavbou. Zdivo následně zajistíme statickými klíny a volné prostory vyplníme cementovou suspenzí. Tímto způsobem dosahujeme 100% účinnosti v boji proti vlhkosti a vracíme zdraví vaší stavbě bez nutnosti bourání velkých částí zdí.

@@ -38,17 +38,20 @@ export default function AboutSection() {
           >
             <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight md:tracking-tighter italic mb-8 leading-tight px-2">
               Proč svěřit sanaci <br />
-              <span className="text-primary">právě nám?</span>
+              <span className="text-primary">vašeho domu nám?</span>
             </h2>
-            <div className="space-y-6 text-lg text-white/70 font-medium leading-relaxed">
+            <div className="prose prose-lg text-white/70 font-medium leading-relaxed mb-12 max-w-2xl px-2">
               <p>
-                Jsme ryze česká firma zaměřená na profesionální řešení vlhkosti v objektech všech typů. Od historických kamenných staveb přes rodinné domy ze smíšeného zdiva až po moderní průmyslové haly – tam všude vracíme zdraví vaší stavbě. Věříme, že každý <strong>dům si zaslouží</strong> spolehlivou ochranu, která vydrží <strong>navždy</strong>.
+                <strong>Sanace a podřezávání zdiva</strong> je zásadní investicí do budoucnosti vaší nemovitosti. Vlhké zdivo nejen zhoršuje tepelně-izolační vlastnosti domu, ale vede k rozvoji plísní a postupné degradaci stavebních materiálů. Naše firma se specializuje na kompletní odstranění těchto problémů pomocí certifikovaných technologií s dlouhou životností.
               </p>
               <p>
-                Chápeme, že vlhkost není jen estetický problém, ale vážná hrozba pro statiku domu a zdraví jeho obyvatel. Proto ke každé zakázce přistupujeme s maximální zodpovědností a využíváme postupy, které jsou prověřené dekádami v oboru sanací.
+                Jsme ryze česká firma <strong>IZODIAMANT</strong> zaměřená na profesionální a <strong>komplexní řešení</strong> vlhkosti v objektech všech typů. Od historických kamenných staveb přes rodinné domy ze smíšeného zdiva až po moderní průmyslové haly – tam všude <strong>vracíme zdraví vaší stavbě.</strong> Věříme, že každý <strong>dům si zaslouží</strong> spolehlivou ochranu, která vydrží <strong>navždy</strong>. Naše specializace na <strong>podřezávání zdiva</strong> a <strong>komplexní sanace vlhkého zdiva</strong> nás řadí mezi špičku v oboru v rámci celé České republiky.
               </p>
               <p>
-                Působíme po celém území České republiky a díky naší mobilitě jsme schopni realizovat zakázky v krátkých termínech. Naše cena je vždy konečná a transparentní, bez skrytých poplatků.
+                Chápeme, že vlhkost není jen estetický problém, ale vážná hrozba pro statiku domu a zdraví jeho obyvatel. Vzlínající vlhkost v konstrukcích způsobuje degradaci materiálů, vznik plísní a výrazně zvyšuje náklady na vytápění. Proto ke každé zakázce přistupujeme s maximální zodpovědností a využíváme postupy, které jsou prověřené dekádami v oboru sanací. Naše technologie, jako je <strong>podřezávání diamantovým lanem</strong> nebo strojní řezání řetězovou pilou, představují definitivní řešení pro suchý a bezpečný domov.
+              </p>
+              <p>
+                Působíme po celém území České republiky – od Prahy přes Brno až po nejmenší obce. Díky naší mobilitě a vlastnímu strojovému parku jsme schopni realizovat zakázky v krátkých termínech a s garantovanou kvalitou. Naše cena za metr podřezání zdiva je vždy konečná a transparentní, bez jakýchkoliv skrytých poplatků, což potvrzují stovky spokojených zákazníků po celé zemi. <strong>IZODIAMANT</strong> je synonymem pro suchý dům a zdravé bydlení.
               </p>
             </div>
           </m.div>
