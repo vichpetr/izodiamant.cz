@@ -199,13 +199,13 @@ export default async function ProjectPage({
                 <h2 className="text-xl font-black text-neutral-dark uppercase tracking-tight italic">Regionální působnost a materiály</h2>
                 <div className="prose prose-sm text-neutral-dark/70 font-medium leading-relaxed">
                   <p>
-                    Ačkoliv se tato konkrétní realizace nachází v lokalitě <strong>{project.location}</strong>, naše firma IZODIAMANT poskytuje profesionální služby v oblasti <strong>sanace vlhkého zdiva</strong> po celé České republice. Specializujeme se na náročné projekty, kde je vyžadována maximální preciznost a použití nejmodernějších technologií, jako je právě <strong>podřezávání diamantovým lanem</strong> nebo řetězovou pilou.
+                    Ačkoliv se tato konkrétní realizace nachází v lokalitě {project.location}, naše firma IZODIAMANT poskytuje profesionální služby v oblasti sanace vlhkého zdiva po celé České republice. Specializujeme se na náročné projekty, kde je vyžadována maximální preciznost a použití nejmodernějších technologií, jako je právě podřezávání diamantovým lanem nebo řetězovou pilou.
                   </p>
                   <p>
-                    Kromě lokality {project.location} pravidelně realizujeme zakázky ve městech jako jsou <strong>Pardubice, Chrudim, Hradec Králové, Ústí nad Orlicí, Vysoké Mýto, Litomyšl, Polička, Svitavy</strong> a mnoho dalších. Naše technika nám umožňuje pracovat s různými typy materiálů – od klasické pálené cihly přes smíšené zdivo až po extrémně tvrdý pískovec či opuku, které jsou pro východočeský region typické.
+                    Kromě lokality {project.location} pravidelně realizujeme zakázky ve městech jako jsou Pardubice, Chrudim, Hradec Králové, Ústí nad Orlicí, Vysoké Mýto, Litomyšl, Polička, Svitavy a mnoho dalších. Naše technika nám umožňuje pracovat s různými typy materiálů – od klasické pálené cihly přes smíšené zdivo až po extrémně tvrdý pískovec či opuku, které jsou pro východočeský region typické.
                   </p>
                   <p>
-                    Každá stavba má svá specifika a vyžaduje individuální přístup k řešení <strong>hydroizolace</strong>. Naším cílem není pouze dočasné zakrytí problému, ale jeho systémové odstranění, kterým vracíme zdraví vaší stavbě a zvyšujeme její tržní hodnotu i energetickou efektivitu.
+                    Každá stavba má svá specifika a vyžaduje individuální přístup k řešení hydroizolace. Naším cílem není pouze dočasné zakrytí problému, ale jeho systémové odstranění, kterým vracíme zdraví vaší stavbě a zvyšujeme její tržní hodnotu i energetickou efektivitu.
                   </p>
                 </div>
               </div>

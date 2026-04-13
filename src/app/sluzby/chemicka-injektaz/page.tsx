@@ -28,7 +28,7 @@ export default function ChemicalInjectionPage() {
       "@type": "LocalBusiness",
       "name": "IZODIAMANT"
     },
-    "description": "Moderní a vysoce účinná metoda vytvoření dodatečné hydroizolační clony. Ideální pro objekty, kde nelze mechanicky řezat.",
+    "description": "Šetrná metoda vytvoření dodatečné izolace proti vlhkosti pomocí infuzní nebo nízkotlaké injektáže.",
     "offers": {
       "@type": "Offer",
       "priceSpecification": {
@@ -39,12 +39,12 @@ export default function ChemicalInjectionPage() {
   };
 
   const features = [
-    "Vhodné tam, kde nelze mechanicky řezat",
-    "Minimální zásah do konstrukce zdiva",
-    "Čistý a rychlý proces bez vibrací",
-    "Vysoká účinnost proti vzlínající vlhkosti",
+    "Minimální zásah do statiky objektu",
+    "Vhodné pro cihelné i smíšené zdivo",
     "Možnost realizace z interiéru i exteriéru",
-    "Certifikované sanační gely a krémy"
+    "Rychlá a čistá aplikace bez prachu",
+    "Dlouhodobý hydrofobní účinek",
+    "Vracíme zdraví vaší stavbě."
   ];
 
   return (
@@ -57,18 +57,18 @@ export default function ChemicalInjectionPage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
             <div>
               <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary font-black text-xs uppercase tracking-widest mb-6">
-                <Icons.ShieldCheck className="w-4 h-4" />
-                Šetrné řešení
+                <Icons.Zap className="w-4 h-4" />
+                Šetrná metoda
               </div>
               <h1 className="text-5xl md:text-7xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.9] mb-8">
                 Chemická <br /><span className="text-primary">injektáž zdiva</span>
               </h1>
               <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-10">
-                Profesionální <strong>chemická injektáž zdiva</strong> je moderní a vysoce účinná metoda vytvoření dodatečné hydroizolační clony. Tato technologie je ideální pro objekty, kde statické nebo technické důvody neumožňují mechanické podřezání. Speciální gely pronikají hluboko do struktury zdiva a vytvářejí trvalou bariéru proti vlhkosti.
+                Profesionální chemická injektáž zdiva je moderní a vysoce účinná metoda vytvoření dodatečné hydroizolační clony. Tato technologie je ideální pro objekty, kde statické nebo technické důvody neumožňují mechanické podřezání. Speciální gely pronikají hluboko do struktury zdiva a vytvářejí trvalou bariéru proti vlhkosti.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
-                  Poptat injektáž
+                  Nezávazná kalkulace
                 </Link>
               </div>
             </div>
@@ -85,15 +85,12 @@ export default function ChemicalInjectionPage() {
           </div>
 
           <div className="prose prose-lg max-w-none mb-20 text-neutral-dark/80">
-            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Jak funguje chemická injektáž od IZODIAMANT?</h2>
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Jak funguje chemická injektáž zdiva?</h2>
             <p>
-              Při realizaci <strong>chemické injektáže zdiva</strong> postupujeme vyvrtáním sítě otvorů do zasažených stěn v přesně definovaných rozestupech. Do těchto otvorů následně pod nízkým tlakem nebo infuzně vpravujeme certifikované hydroizolační krémy či gely na silan-siloxanové bázi. Tyto látky mají vynikající schopnost šířit se v pórech materiálu a po vytvrdnutí vytvoří nepropustnou hydrofobní clonu, která okamžitě zastaví vzlínající vlhkost.
+              Při realizaci chemické injektáže zdiva postupujeme vyvrtáním sítě otvorů do zasažených stěn v přesně definovaných rozestupech. Do těchto otvorů následně pod nízkým tlakem nebo infuzně vpravujeme certifikované hydroizolační krémy či gely na silan-siloxanové bázi. Tyto látky mají vynikající schopnost šířit se v pórech materiálu a po vytvrdnutí vytvoří nepropustnou hydrofobní clonu, která okamžitě zastaví vzlínající vlhkost.
             </p>
             <p>
-              Odborníci z <strong>IZODIAMANT</strong> využívají při práci moderní injektážní zařízení, která zaručují rovnoměrné nasycení zdiva hydroizolačním materiálem. Tato metoda je zvláště účinná u silně zavlhlého zdiva, kde mechanické metody narážejí na technické obtíže. Po aplikaci dochází k postupnému vysychání konstrukcí, což zlepšuje mikroklima v celém objektu a prodlužuje životnost omítek a dalších povrchových úprav.
-            </p>
-            <p>
-              Tento postup je velmi šetrný ke stavbě, neboť nevyžaduje žádné rozsáhlé výkopové práce ani mechanické prořezávání. Je proto ideální volbou pro vnitřní příčky, sklepy nebo historické objekty se složitou strukturou základů. Naším cílem je dlouhodobý výsledek, kterým vracíme zdraví vaší stavbě.
+              Odborníci z IZODIAMANT využívají při práci moderní injektážní zařízení, která zaručují rovnoměrné nasycení zdiva hydroizolačním materiálem. Tato metoda je zvláště účinná u silně zavlhlého zdiva, kde mechanické metody narážejí na technické obtíže. Po aplikaci dochází k postupnému vysychání konstrukcí, což zlepšuje mikroklima v celém objektu a prodlužuje životnost omítek a dalších povrchových úprav.
             </p>
           </div>
 
@@ -102,13 +99,13 @@ export default function ChemicalInjectionPage() {
               <h2 className="text-3xl font-black uppercase italic text-neutral-dark">Průběh chemické injektáže</h2>
               <div className="space-y-6">
                 {[
-                  { step: "01", title: "Příprava a vrtání", desc: "Vyvrtání otvorů o průměru 12–14 mm v osových vzdálenostech dle typu zdiva." },
-                  { step: "02", title: "Čištění otvorů", desc: "Odstranění vrtné drti pomocí stlačeného vzduchu pro maximální absorpci gelu." },
-                  { step: "03", title: "Aplikace injektáže", desc: "Tlakové nebo beztlakové plnění otvorů hydroizolačním gelem/krémem." },
-                  { step: "04", title: "Zapravení a kontrola", desc: "Uzavření otvorů sanační maltou a kontrola nasycení okolního zdiva." }
+                  { step: "01", title: "Příprava a vrtání", desc: "Vyvrtání otvorů s optimálním průměrem a rozestupem podle typu a tloušťky zdiva." },
+                  { step: "02", title: "Vyčištění otvorů", desc: "Odstranění prachu a nečistot z vrtů pomocí stlačeného vzduchu pro maximální nasákavost." },
+                  { step: "03", title: "Aplikace materiálu", desc: "Tlakové nebo gravitační plnění otvorů hydroizolačním gelem či krémem." },
+                  { step: "04", title: "Zapravení", desc: "Odborné uzavření vrtů sanační maltou a příprava na finální úpravu povrchu." }
                 ].map((s, i) => (
                   <div key={i} className="flex gap-6 items-start">
-                    <div className="text-4xl font-black text-primary/20 italic italic shrink-0 leading-none">{s.step}</div>
+                    <div className="text-4xl font-black text-primary/20 italic shrink-0 leading-none">{s.step}</div>
                     <div>
                       <div className="text-lg font-black uppercase italic text-neutral-dark mb-1">{s.title}</div>
                       <p className="text-neutral-dark/60 font-medium">{s.desc}</p>
@@ -119,23 +116,23 @@ export default function ChemicalInjectionPage() {
             </div>
             <div className="bg-neutral-dark text-white p-10 rounded-3xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 -rotate-12 translate-x-10 -translate-y-10" />
-              <h3 className="text-2xl font-black uppercase italic mb-6 relative z-10">Kdy zvolit chemickou metodu?</h3>
+              <h3 className="text-2xl font-black uppercase italic mb-6 relative z-10">Hlavní přednosti metody</h3>
               <ul className="space-y-4 relative z-10">
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
-                  <span>Místa s omezeným přístupem pro těžkou techniku</span>
+                  <span>Realizace bez nutnosti těžké techniky</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
-                  <span>Vnitřní příčky a členité detaily zdiva</span>
+                  <span>Vhodné pro cihelné, kamenné i smíšené zdivo</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
-                  <span>Objekty s velmi narušenou statikou</span>
+                  <span>Absolutně bez vibrací a rizika pro statiku</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
-                  <span>Doplňková izolace k mechanickému podřezání</span>
+                  <span>Ideální pro špatně přístupná místa a rohy</span>
                 </li>
               </ul>
             </div>
@@ -154,8 +151,8 @@ export default function ChemicalInjectionPage() {
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <Icons.ShieldCheck className="w-10 h-10 text-primary mb-6" />
-              <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Záruka</h3>
-              <p className="text-neutral-dark/60 font-medium">Používáme špičkové certifikované materiály s dlouholetou životností.</p>
+              <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Účinnost</h3>
+              <p className="text-neutral-dark/60 font-medium">Garantujeme vytvoření souvislé vodoodpudivé clony.</p>
             </div>
           </div>
 
@@ -167,23 +164,23 @@ export default function ChemicalInjectionPage() {
                 <div className="space-y-6">
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">1</div>
-                    <p className="text-white/70 font-medium">Očištění zdiva a vyvrtání injektážních otvorů v předepsaných rozestupech.</p>
+                    <p className="text-white/70 font-medium">Osekaní poškozených omítek v pásu nad budoucí injektážní linií.</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">2</div>
-                    <p className="text-white/70 font-medium">Vyčištění vyvrtaných otvorů stlačeným vzduchem pro lepší přilnavost směsi.</p>
+                    <p className="text-white/70 font-medium">Navrtání injektážních otvorů ve sklonu nebo vodorovně dle typu materiálu.</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">3</div>
-                    <p className="text-white/70 font-medium">Osazení injektážních pakrů (ventilů) nebo přímé plnění krémovou směsí.</p>
+                    <p className="text-white/70 font-medium">Vyfouknutí prachu z vrtů pro zajištění maximálního kontaktu gelu se zdivem.</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">4</div>
-                    <p className="text-white/70 font-medium">Tlaková nebo beztlaková aplikace hydroizolační látky do zdiva.</p>
+                    <p className="text-white/70 font-medium">Aplikace hydroizolační látky až do úplného nasycení struktury zdiva.</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">5</div>
-                    <p className="text-white/70 font-medium">Zatěsnění otvorů speciální maltou a finální úprava povrchu.</p>
+                    <p className="text-white/70 font-medium">Povrchové uzavření vrtů sanační maltou.</p>
                   </div>
                 </div>
               </div>
@@ -200,10 +197,10 @@ export default function ChemicalInjectionPage() {
                 <div className="mt-12 p-8 bg-white/5 rounded-2xl border border-white/10">
                   <h3 className="flex items-center gap-2 font-black uppercase text-xs mb-4 text-primary italic">
                     <Icons.Construction className="w-4 h-4" />
-                    Kdy zvolit injektáž
+                    Kdy doporučujeme injektáž?
                   </h3>
                   <p className="text-sm text-white/50 leading-relaxed font-medium">
-                    Ideální pro případy, kdy je zdivo špatně přístupné, má nepravidelnou spáru nebo by mechanický zásah mohl ohrozit statiku historického objektu.
+                    Tuto metodu doporučujeme zejména u členitého zdiva, v rozích, u vnitřních příček nebo tam, kde by mechanické podřezání bylo staticky riskantní.
                   </p>
                 </div>
               </div>
@@ -215,29 +212,27 @@ export default function ChemicalInjectionPage() {
       <section className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="prose prose-lg max-w-none text-neutral-dark/80">
-            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-8">Moderní a šetrná metoda: Chemická injektáž zdiva</h2>
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-8">Kdy zvolit chemickou injektáž?</h2>
             <p className="mb-6 leading-relaxed">
-              Chemická injektáž představuje vysoce efektivní a minimálně invazivní způsob, jak vytvořit dodatečnou hydroizolaci v místech, kde <strong>nelze použít mechanické podřezání</strong>. Tato technologie je ideální pro objekty se špatně přístupným zdivem, nepravidelnou spárou nebo pro historické stavby, kde je prioritou maximální ochrana statiky bez jakýchkoliv vibrací.
+              Chemická injektáž představuje vysoce efektivní a minimálně invazivní způsob, jak vytvořit dodatečnou hydroizolaci v místech, kde nelze použít mechanické podřezání. Tato technologie je ideální pro objekty se špatně přístupným zdivem, nepravidelnou spárou nebo pro historické stavby, kde je prioritou maximální ochrana statiky bez jakýchkoliv vibrací.
             </p>
             <p className="mb-6 leading-relaxed">
-              Principem metody je nasycení struktury zdiva speciální hydrofobní látkou (krémem nebo gelem) na bázi silanů a siloxanů. Tato látka proniká i do těch nejmenších pórů a kapilár, kde po vytvrdnutí vytvoří <strong>neprostupnou vodoodpudivou clonu</strong>. Voda tak ztrácí schopnost vzlínat vzhůru a zdivo nad injektážní linií začíná postupně vysychat.
+              Principem metody je nasycení struktury zdiva speciální hydrofobní látkou (krémem nebo gelem) na bázi silanů a siloxanů. Tato látka proniká i do těch nejmenších pórů a kapilár, kde po vytvrdnutí vytvoří neprostupnou vodoodpudivou clonu. Voda tak ztrácí schopnost vzlínat vzhůru a zdivo nad injektážní linií začíná postupně vysychat.
             </p>
-            
-            <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Proč zvolit injektáž jako řešení vlhkosti?</h3>
             <p className="mb-6 leading-relaxed">
-              Jednou z největších výhod chemické injektáže je její <strong>univerzálnost a čistota provedení</strong>. Realizace může probíhat jak z exteriéru, tak z interiéru, což oceníte zejména u řadových domů nebo sklepních prostor. Injektáž nevyžaduje žádné těžké stroje a zásah do konstrukce domu se omezuje pouze na sérii malých navrtaných otvorů, které se po skončení prací odborně zapraví.
+              Jednou z největších výhod chemické injektáže je její univerzálnost a čistota provedení. Realizace může probíhat jak z exteriéru, tak z interiéru, což oceníte zejména u řadových domů nebo sklepních prostor. Injektáž nevyžaduje žádné těžké stroje a zásah do konstrukce domu se omezuje pouze na sérii malých navrtaných otvorů, které se po skončení prací odborně zapraví.
             </p>
             <p className="mb-10 leading-relaxed">
-              V IZODIAMANT používáme výhradně certifikované materiály s garantovanou účinností. Správně provedená injektáž zajistí vašemu domu <strong>suché zdi na desítky let</strong>, zlepší tepelný odpor zdiva a navrátí do vašich prostor zdravé bydlení bez plísní.
+              V IZODIAMANT používáme výhradně certifikované materiály s garantovanou účinností. Správně provedená injektáž zajistí vašemu domu suché zdi na desítky let, zlepší tepelný odpor zdiva a navrátí do vašich prostor zdravé bydlení bez plísní.
             </p>
 
             <div className="bg-neutral-light p-10 rounded-3xl border-2 border-primary/20">
-              <h4 className="text-xl font-black uppercase italic text-neutral-dark mb-4">Hlavní přednosti chemické injektáže:</h4>
+              <h4 className="text-xl font-black uppercase italic text-neutral-dark mb-4">Shrnutí výhod chemické injektáže:</h4>
               <ul className="space-y-3 font-medium">
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Možnost aplikace u smíšeného, kamenného i velmi silného zdiva.</li>
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Absolutně bez otřesů – nejšetrnější metoda k statice budovy.</li>
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Rychlá realizace bez nutnosti vyklízení celého patra.</li>
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Vysoce efektivní i u zdiva s vysokým stupněm vlhkosti.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Maximální ohled na statiku objektu (nulové otřesy).</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Možnost sanace i velmi nepravidelného a smíšeného zdiva.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Minimální prašnost a nepořádek během realizace.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Trvale suché zdi se zárukou dlouhé životnosti.</li>
               </ul>
             </div>
           </div>

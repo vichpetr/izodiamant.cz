@@ -98,7 +98,7 @@ export default function DiamondWirePage() {
 
             <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Výhody oproti klasickému podřezávání řetězovou pilou</h3>
             <p>
-              Zatímco řetězová pila je vynikající pro cihelné zdivo, u kamene, betonu nebo smíšeného zdiva s tvrdými vložkami naráží na své fyzikální limity. <strong>Podřezávání diamantovým lanem</strong> tyto limity odstraňuje. Lano si poradí s armovaným betonem, čedičem i žulou. Dalším zásadním rozdílem je bezpečnost – lano nepřenáší do zdiva vibrace, které by mohly způsobit praskliny v omítkách nebo narušit klenby.
+              Zatímco řetězová pila je vynikající pro cihelné zdivo, u kamene, betonu nebo smíšeného zdiva s tvrdými vložkami naráží na své fyzikální limity. Podřezávání diamantovým lanem tyto limity odstraňuje. Lano si poradí s armovaným betonem, čedičem i žulou. Dalším zásadním rozdílem je bezpečnost – lano nepřenáší do zdiva vibrace, které by mohly způsobit praskliny v omítkách nebo narušit klenby.
             </p>
           </div>
 
@@ -108,12 +108,12 @@ export default function DiamondWirePage() {
               <div className="space-y-6">
                 {[
                   { step: "01", title: "Příprava a diagnostika", desc: "Zaměření objektu, kontrola tloušťky a materiálu zdiva pro optimální nastavení řezného lana." },
-                  { step: "02", title: "Instalace techniky", desc: "Osazení vodících kladek a upevnění agregátu pro pohon diamantového lana." },
+                  { step: "02", title: "Instalace techniky", desc: "Osazení vodících kladek and upevnění agregátu pro pohon diamantového lana." },
                   { step: "03", title: "Samotný řez", desc: "Plynulé prořezávání zdiva pod neustálým chlazením, které eliminuje prašnost." },
                   { step: "04", title: "Izolace a statika", desc: "Vložení izolačního materiálu, statické vyklínování a tlaková výplň spáry." }
                 ].map((s, i) => (
                   <div key={i} className="flex gap-6 items-start">
-                    <div className="text-4xl font-black text-primary/20 italic italic shrink-0 leading-none">{s.step}</div>
+                    <div className="text-4xl font-black text-primary/20 italic shrink-0 leading-none">{s.step}</div>
                     <div>
                       <div className="text-lg font-black uppercase italic text-neutral-dark mb-1">{s.title}</div>
                       <p className="text-neutral-dark/60 font-medium">{s.desc}</p>
@@ -222,15 +222,15 @@ export default function DiamondWirePage() {
           <div className="prose prose-lg max-w-none text-neutral-dark/80">
             <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-8">Kdy zvolit podřezávání diamantovým lanem?</h2>
             <p className="mb-6 leading-relaxed">
-              Podřezávání zdiva diamantovým lanem představuje absolutní špičku v oboru sanace vlhkého zdiva. Tato technologie byla vyvinuta pro situace, kde standardní řetězové pily narážejí na své limity. Pokud váš objekt stojí na základech z <strong>tvrdého kamene, opracovaných kvádrů nebo železobetonu</strong>, je diamantové lano jedinou spolehlivou cestou k suchému domu.
+              Podřezávání zdiva diamantovým lanem představuje absolutní špičku v oboru sanace vlhkého zdiva. Tato technologie byla vyvinuta pro situace, kde standardní řetězové pily narážejí na své limity. Pokud váš objekt stojí na základech z tvrdého kamene, opracovaných kvádrů nebo železobetonu, je diamantové lano jedinou spolehlivou cestou k suchému domu.
             </p>
             <p className="mb-6 leading-relaxed">
-              Hlavní výhodou této metody je její <strong>univerzálnost</strong>. Lano osazené diamantovými segmenty prochází materiálem čistým řezem, aniž by do konstrukce vnášelo nebezpečné vibrace nebo otřesy. To je klíčové zejména u historických budov a památkově chráněných objektů, kde by hrubý mechanický zásah mohl nenávratně poškodit statiku nebo dekorativní prvky fasády.
+              Hlavní výhodou této metody je její univerzálnost. Lano osazené diamantovými segmenty prochází materiálem čistým řezem, aniž by do konstrukce vnášelo nebezpečné vibrace nebo otřesy. To je klíčové zejména u historických budov a památkově chráněných objektů, kde by hrubý mechanický zásah mohl nenávratně poškodit statiku nebo dekorativní prvky fasády.
             </p>
             
             <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Technologie, která vrací zdraví vaší stavbě</h3>
             <p className="mb-6 leading-relaxed">
-              Proces sanace začíná detailním technickým průzkumem. Náš tým navrhne optimální trasu řezu tak, aby byla nová hydroizolace vložena v nejvhodnějším místě nad úrovní terénu. Po proříznutí části zdiva vkládáme vysoce odolné izolační desky (sklolaminátové nebo PE), které vytvoří <strong>nepřekonatelnou bariéru proti vzlínající vlhkosti</strong>.
+              Proces sanace začíná detailním technickým průzkumem. Náš tým navrhne optimální trasu řezu tak, aby byla nová hydroizolace vložena v nejvhodnějším místě nad úrovní terénu. Po proříznutí části zdiva vkládáme vysoce odolné izolační desky (sklolaminátové nebo PE), které vytvoří nepřekonatelnou bariéru proti vzlínající vlhkosti.
             </p>
             <p className="mb-10 leading-relaxed">
               Investice do podřezání diamantovým lanem se dlouhodobě vyplatí. Odstraněním vlhkosti nejen zlepšíte vnitřní mikroklima a zbavíte se plísní, ale také výrazně snížíte náklady na vytápění objektu. Suché zdivo má mnohem lepší tepelně-izolační vlastnosti než zdivo nasycené vodou.
