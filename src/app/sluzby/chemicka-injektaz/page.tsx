@@ -64,7 +64,7 @@ export default function ChemicalInjectionPage() {
                 Chemická <br /><span className="text-primary">injektáž zdiva</span>
               </h1>
               <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-10">
-                Profesionální chemická injektáž zdiva je moderní a vysoce účinná metoda vytvoření dodatečné hydroizolační clony. Tato technologie je ideální pro objekty, kde statické nebo technické důvody neumožňují mechanické podřezání. Speciální gely pronikají hluboko do struktury zdiva a vytvářejí trvalou bariéru proti vlhkosti.
+                Chemická injektáž je skvělou alternativou pro sanaci všude tam, kde z technických či prostorových důvodů nelze zdivo mechanicky podřezat. Do zdiva aplikujeme speciální injektážní krém, který uvnitř pórů vytvoří vodoodpudivou bariéru a spolehlivě ochrání stěnu před stoupající vlhkostí.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
@@ -87,10 +87,10 @@ export default function ChemicalInjectionPage() {
           <div className="prose prose-lg max-w-none mb-20 text-neutral-dark/80">
             <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Jak funguje chemická injektáž zdiva?</h2>
             <p>
-              Při realizaci chemické injektáže zdiva postupujeme vyvrtáním sítě otvorů do zasažených stěn v přesně definovaných rozestupech. Do těchto otvorů následně pod nízkým tlakem nebo infuzně vpravujeme certifikované hydroizolační krémy či gely na silan-siloxanové bázi. Tyto látky mají vynikající schopnost šířit se v pórech materiálu a po vytvrdnutí vytvoří nepropustnou hydrofobní clonu, která okamžitě zastaví vzlínající vlhkost.
+              Chemická injektáž je skvělou alternativou pro sanaci všude tam, kde z technických či prostorových důvodů nelze zdivo mechanicky podřezat. Postup spočívá ve vyvrtání řady otvorů, do kterých aplikujeme speciální injektážní hmotu. Ta se v pórech materiálu rovnoměrně rozprostře a vytvoří vodoodpudivou clonu. Stěna je tak spolehlivě chráněna před stoupající vlhkostí.
             </p>
             <p>
-              Odborníci z IZODIAMANT využívají při práci moderní injektážní zařízení, která zaručují rovnoměrné nasycení zdiva hydroizolačním materiálem. Tato metoda je zvláště účinná u silně zavlhlého zdiva, kde mechanické metody narážejí na technické obtíže. Po aplikaci dochází k postupnému vysychání konstrukcí, což zlepšuje mikroklima v celém objektu a prodlužuje životnost omítek a dalších povrchových úprav.
+              Do zdiva aplikujeme speciální injektážní krém, který uvnitř pórů vytvoří vodoodpudivou bariéru. Ta účinně zabrání dalšímu pronikání vody a zdivo může začít přirozeně vysychat. Odborníci z IZODIAMANT využívají při práci moderní injektážní zařízení, která zaručují rovnoměrné nasycení zdiva hydroizolačním materiálem. Tato metoda je zvláště účinná u silně zavlhlého zdiva, kde mechanické metody narážejí na technické obtíže.
             </p>
           </div>
 
@@ -223,7 +223,7 @@ export default function ChemicalInjectionPage() {
               Jednou z největších výhod chemické injektáže je její univerzálnost a čistota provedení. Realizace může probíhat jak z exteriéru, tak z interiéru, což oceníte zejména u řadových domů nebo sklepních prostor. Injektáž nevyžaduje žádné těžké stroje a zásah do konstrukce domu se omezuje pouze na sérii malých navrtaných otvorů, které se po skončení prací odborně zapraví.
             </p>
             <p className="mb-10 leading-relaxed">
-              V IZODIAMANT používáme výhradně certifikované materiály s garantovanou účinností. Správně provedená injektáž zajistí vašemu domu suché zdi na desítky let, zlepší tepelný odpor zdiva a navrátí do vašich prostor zdravé bydlení bez plísní.
+              V IZODIAMANT používáme výhradně certifikované materiály s garantovanou účinností. Správně provedená injektáž zajistí vašemu domu spolehlivou vodoodpudivou bariéru na desítky let, zlepší tepelný odpor zdiva a navrátí do vašich prostor zdravé bydlení bez plísní.
             </p>
 
             <div className="bg-neutral-light p-10 rounded-3xl border-2 border-primary/20">

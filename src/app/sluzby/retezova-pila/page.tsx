@@ -64,7 +64,7 @@ export default function ChainSawPage() {
                 Podřezávání <br /><span className="text-primary">řetězovou pilou</span>
               </h1>
               <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-10">
-                Strojní podřezávání zdiva řetězovou pilou je osvědčená mechanická metoda izolace vlhkého zdiva, určená primárně pro cihlové stavby s průběžnou spárou. Tato technologie umožňuje rychlé a definitivní odstranění vzlínající vlhkosti vložením nové hydroizolace přímo do konstrukce vašeho domu.
+                Strojní podřezání řetězovou pilou patří mezi nejefektivnější a nejrychlejší způsoby, jak trvale odizolovat cihelné zdivo. Pilou vytvoříme ve stěně přesný řez, do kterého obratem vložíme odolnou hydroizolační fólii a zdivo pečlivě zajistíme statickými klíny.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
@@ -87,7 +87,7 @@ export default function ChainSawPage() {
           <div className="prose prose-lg max-w-none mb-20 text-neutral-dark/80">
             <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Proč zvolit řetězovou pilu pro sanaci zdiva?</h2>
             <p>
-              Technologie podřezávání řetězovou pilou patří mezi nejvyhledávanější metody sanace díky svému vynikajícímu poměru cena/výkon. Používáme profesionální pily s tvrdokovovými řetězy, které plynule proříznou cihelné zdivo v ložné spáře. Tento postup je extrémně rychlý – u běžného rodinného domu jsme schopni dokončit izolaci obvodových zdí během několika málo dnů.
+              Strojní podřezání řetězovou pilou patří mezi nejefektivnější a nejrychlejší způsoby, jak trvale odizolovat cihelné zdivo. Pilou vytvoříme ve stěně přesný řez, do kterého obratem vložíme odolnou hydroizolační fólii a zdivo pečlivě zajistíme statickými klíny. Tím vytvoříme neprostupnou bariéru – stěny přestanou natahovat vodu z podloží a mohou konečně začít přirozeně vysychat.
             </p>
             <p>
               Tým IZODIAMANT klade důraz na preciznost a čistotu provedení. Při práci dbáme na to, aby byl zásah do statiky objektu naprosto minimální. Postupujeme v úsecích, které jsou okamžitě staticky zajišťovány, čímž eliminujeme jakékoliv riziko sedání stavby. Tato metoda je ideální pro všechny typy cihelných staveb, od starších rodinných domků až po rozsáhlé hospodářské objekty.

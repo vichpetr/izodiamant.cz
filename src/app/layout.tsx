@@ -17,8 +17,7 @@ export const metadata: Metadata = {
     default: "IZODIAMANT | Sanace a podřezávání vlhkého zdiva",
     template: "%s | IZODIAMANT"
   },
-  description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě. Celá ČR.",
-  keywords: ["sanace zdiva", "podřezávání zdiva", "podřezání zdiva", "podřezání domu cena", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "sanace vlhkého zdiva", "hydroizolace", "izolace zdi", "izolace domu", "IZODIAMANT", "Nové Hrady"],
+  description: "Odborně podřezáváme a izolujeme vlhké zdivo. Vašemu domu vrátíme sucho a zdravé klima. Profesionální sanace nejmodernější technologií po celé ČR.",  keywords: ["sanace zdiva", "podřezávání zdiva", "podřezání zdiva", "podřezání domu cena", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "sanace vlhkého zdiva", "hydroizolace", "izolace zdi", "izolace domu", "IZODIAMANT", "Nové Hrady"],
   authors: [{ name: "IZODIAMANT" }],
   robots: {
     index: true,
