@@ -1,13 +1,13 @@
 [
   {
     "id": "2025-sloupnice",
-    "title": "Rekonstrukce a sanace domu Sloupnice",
+    "title": "Rekonstrukce domu Sloupnice",
     "location": "Sloupnice",
     "date": "2025-04",
     "technology": "Řetězová pila na zdivo",
     "scope": "Podřezání cihelného zdiva o šířce 50 cm",
     "duration": "Dle rozsahu zakázky",
-    "description": "Tato rozsáhlá rekonstrukce domu ve Sloupnici představovala zajímavou výzvu z hlediska logistiky i samotného provedení. Hlavním cílem projektu bylo trvalé odstranění vzlínající vlhkosti, která dlouhodobě ohrožovala statiku objektu a výrazně zhoršovala kvalitu vnitřního prostředí. Tato rekonstrukce zahrnovala dodatečnou vodorovnou hydroizolaci pomocí technologie strojního podřezání cihelného zdiva vysokovýkonnou řetězovou pilou. Tento postup je pro cihelné konstrukce o šířce 50 cm nejefektivnější volbou, neboť umožňuje plynulé vložení izolace bez nutnosti bourání velkých ploch. Celý objekt byl postupně proříznut v úrovni ložné spáry, kam jsme vložili novou PE hydroizolační fólii o tloušťce 2 mm s očekávanou životností přes padesát let. Po vložení izolace jsme spáru staticky zajistili certifikovanými plastovými klíny, které okamžitě převzaly zatížení stavby, a následně jsme provedli tlakové vyplnění zbývajícího prostoru cementovou suspenzí. Výsledkem je dokonale izolovaný objekt chráněný před zemní vlhkostí, což majitelům umožnilo pokračovat v celkové rekonstrukci s jistotou suchého podkladu. Celý proces sanace byl naplánován tak, aby minimálně narušil běžný provoz v okolí stavby. Naši technici využili nejmodernější vybavení, které IZODIAMANT pravidelně servisuje a modernizuje. Díky tomu jsme dosáhli milimetrové přesnosti řezu i v náročných detailech rohů a napojení vnitřních příček. Pro majitele byl klíčový především výsledek – tedy 100% suché zdi, které umožnily okamžité pokračování v dalších zednických a malířských pracích bez rizika vzniku plísní nebo solných výkvětů. Tato realizace ve Sloupnici potvrzuje, že správně zvolená technologie sanace je základem každé úspěšné rekonstrukce historického i moderního objektu. Vracíme zdraví vaší stavbě pomocí prověřených metod a špičkového strojového parku. Naše firma dbá na to, aby každá sanace zdiva byla provedena podle nejvyšších standardů kvality, což v tomto případě znamenalo i důkladné očištění zdiva před aplikací následných sanačních omítek. Majitelé domu ve Sloupnici se nyní mohou těšit z energeticky úspornějšího bydlení, protože suché zdivo má mnohem lepší tepelně-izolační parametry než zdivo nasycené vlhkostí. Celý dům nyní dýchá a poskytuje zdravé prostředí pro celou rodinu bez rizika vzniku respiračních onemocnění spojených s výskytem plísní.",
+    "description": "Tato rozsáhlá rekonstrukce domu ve Sloupnici představovala zajímavou výzvu z hlediska logistiky i samotného provedení. Hlavním cílem projektu bylo trvalé odstranění vzlínající vlhkosti, která dlouhodobě ohrožovala statiku objektu a výrazně zhoršovala kvalitu vnitřního prostředí. Tato rekonstrukce zahrnovala dodatečnou vodorovnou hydroizolaci pomocí technologie strojního podřezání cihelného zdiva vysokovýkonnou řetězovou pilou. Tento postup je pro cihelné konstrukce o šířce 50 cm nejefektivnější volbou, neboť umožňuje plynulé vložení izolace bez nutnosti bourání velkých ploch. Celý objekt byl postupně proříznut v úrovni ložné spáry, kam jsme vložili novou PE hydroizolační fólii o tloušťce 2 mm s očekávanou životností přes padesát let. Po vložení izolace jsme spáru staticky zajistili certifikovanými plastovými klíny, které okamžitě převzaly zatížení stavby, a následně jsme provedli tlakové vyplnění zbývajícího prostoru cementovou suspenzí. Výsledkem je dokonale izolovaný objekt chráněný před zemní vlhkostí, což majitelům umožnilo pokračovat v celkové rekonstrukci s jistotou suchého podkladu. Celý proces sanace byl naplánován tak, aby minimálně narušil běžný provoz v okolí stavby. Naši technici využili nejmodernější vybavení, které IZODIAMANT pravidelně servisuje a modernizuje. Díky tomu jsme dosáhli milimetrové přesnosti řezu i v náročných detailech rohů a napojení vnitřních příček. Pro majitele byl klíčový především výsledek – tedy 100% suché zdi, které umožnily okamžité pokračování v další zednických a malířských pracích bez rizika vzniku plísní nebo solných výkvětů. Tato realizace ve Sloupnici potvrzuje, že správně zvolená technologie sanace je základem každé úspěšné rekonstrukce historického i moderního objektu. Vracíme zdraví vaší stavbě pomocí prověřených metod a špičkového strojového parku. Naše firma dbá na to, aby každá sanace zdiva byla provedena podle nejvyšších standardů kvality, což v tomto případě znamenalo i důkladné očištění zdiva před aplikací následných sanačních omítek. Majitelé domu ve Sloupnici se nyní mohou těšit z energeticky úspornějšího bydlení, protože suché zdivo má mnohem lepší tepelně-izolační parametry než zdivo nasycené vlhkostí. Celý dům nyní dýchá a poskytuje zdravé prostředí pro celou rodinu bez rizika vzniku respiračních onemocnění spojených s výskytem plísní.",
     "features": [
       "Dodatečné vložení hydroizolační fólie o tloušťce 2 mm",
       "Podřezání zdiva vysokovýkonnou řetězovou pilou",
@@ -23,7 +23,7 @@
   },
   {
     "id": "zleby",
-    "title": "Sanace kamenného zdiva historického objektu Žleby",
+    "title": "Sanace kamenného zdiva Žleby",
     "location": "Žleby",
     "date": "2024-07",
     "technology": "Diamantové lano",
@@ -44,7 +44,7 @@
   },
   {
     "id": "skorkov",
-    "title": "Sanace a izolace domu ve Skorkově u Humpolce",
+    "title": "Sanace domu Skorkov u Humpolce",
     "location": "Skorkov u Humpolce",
     "date": "2024-05",
     "technology": "Řetězová pila",
@@ -65,7 +65,7 @@
   },
   {
     "id": "stare-zdanice",
-    "title": "Podřezání a sanace zdiva rodinného domu Staré Žďánice",
+    "title": "Sanace domu Staré Žďánice",
     "location": "Staré Žďánice",
     "date": "2024-03",
     "technology": "Diamantové lano",
@@ -85,7 +85,7 @@
   },
   {
     "id": "bernartice",
-    "title": "Kompletní sanace vlhkého zdiva domu Bernartice u Trutnova",
+    "title": "Sanace domu Bernartice u Trutnova",
     "location": "Bernartice u Trutnova",
     "date": "2023-11",
     "technology": "Řetězová pila",
@@ -105,7 +105,7 @@
   },
   {
     "id": "pardubice-diamant",
-    "title": "Podřezání zdiva rodinného domu Pardubice",
+    "title": "Sanace domu Pardubice",
     "location": "Pardubice",
     "date": "2023-08",
     "technology": "Diamantové lano",
@@ -125,7 +125,7 @@
   },
   {
     "id": "policka",
-    "title": "Sanace objektu kombinovanou metodou Polička",
+    "title": "Sanace objektu Polička",
     "location": "Polička",
     "date": "2023-05",
     "technology": "Kombinovaná metoda",

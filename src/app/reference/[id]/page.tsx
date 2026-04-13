@@ -38,13 +38,13 @@ export async function generateMetadata({
   const title = project.title.includes(project.location) || project.title.includes(project.location.split(' ')[0])
     ? project.title 
     : `${project.title} – ${project.location}`;
-  const description = `Realizace sanace zdiva: ${project.title}. Technologie: ${project.technology}. Lokalita: ${project.location}. Vracíme zdraví vaší stavbě.`;
+  const description = `Sanace zdiva: ${project.title}. ${project.location}. Vracíme zdraví vaší stavbě.`;
 
   return {
     title,
     description,
     openGraph: {
-      title: `${title} | IZODIAMANT`,
+      title: title,
       description,
       images: [project.image],
     },
