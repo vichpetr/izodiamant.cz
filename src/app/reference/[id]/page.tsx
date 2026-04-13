@@ -117,7 +117,9 @@ export default async function ProjectPage({
                     Realizace sanace
                   </div>
                   <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.85] -ml-1">
-                    {project.title.replace('Sanace ', '').replace('Reference ', '')}
+                    {project.title.includes('sanace') || project.title.includes('Sanace') 
+                      ? project.title 
+                      : `Sanace objektu: ${project.title}`}
                   </h1>
                   <div className="flex items-center gap-2 text-neutral-dark/60 font-bold uppercase tracking-widest text-sm ml-1 pt-4">
                     <Icons.MapPin className="w-4 h-4 text-primary" />
@@ -160,7 +162,7 @@ export default async function ProjectPage({
                 <h2 className="text-xs font-black text-neutral-dark uppercase tracking-[0.3em]">Technický popis a průběh</h2>
                 <div className="prose prose-sm text-neutral-dark/70 font-medium leading-relaxed">
                   <p>
-                    Tato <strong>realizace sanace</strong> u projektu <strong>{project.title}</strong> byla provedena týmem <strong>IZODIAMANT</strong> s důrazem na maximální zachování integrity objektu. Celý proces zahrnoval diagnostiku vlhkosti, přípravu pracoviště a samotné <strong>strojní podřezávání zdiva</strong> nebo aplikaci chemické bariéry.
+                    Tato realizace sanace u projektu {project.title} byla provedena týmem IZODIAMANT s důrazem na maximální zachování integrity objektu. Celý proces zahrnoval diagnostiku vlhkosti, přípravu pracoviště a samotné strojní podřezávání zdiva nebo aplikaci chemické bariéry.
                   </p>
                   <p>
                     Při práci využíváme výhradně profesionální vybavení a certifikované materiály s ověřenou životností. Každý krok realizace je pečlivě kontrolován, aby byl výsledek trvalý a plně funkční. Tímto přístupem vracíme zdraví vaší stavbě a chráníme ji před další degradací způsobenou vzlínající vlhkostí.

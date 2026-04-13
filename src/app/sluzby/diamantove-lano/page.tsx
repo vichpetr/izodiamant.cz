@@ -64,7 +64,7 @@ export default function DiamondWirePage() {
                 Podřezávání <br /><span className="text-primary">diamantovým lanem</span>
               </h1>
               <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-10">
-                Profesionální <strong>podřezávání zdiva diamantovým lanem</strong> představuje nejmodernější a nejuniverzálnější metodu sanace vlhkého zdiva. Tam, kde klasické řetězové pily selhávají, nastupuje technologie diamantového lana, která si poradí s jakýmkoliv materiálem od smíšeného zdiva až po tvrdý kámen či železobeton.
+                Profesionální podřezávání zdiva diamantovým lanem představuje nejmodernější a nejuniverzálnější metodu sanace vlhkého zdiva. Tam, kde klasické řetězové pily selhávají, nastupuje technologie diamantového lana, která si poradí s jakýmkoliv materiálem od smíšeného zdiva až po tvrdý kámen či železobeton.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
@@ -87,10 +87,10 @@ export default function DiamondWirePage() {
           <div className="prose prose-lg max-w-none mb-20 text-neutral-dark/80">
             <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Proč zvolit diamantové lano pro sanaci a podřezávání?</h2>
             <p>
-              Tato metoda je unikátní svou schopností provádět čisté řezy v libovolně silném zdivu bez vzniku nebezpečných otřesů a vibrací. Při <strong>podřezávání diamantovým lanem</strong> využíváme lano osazené průmyslovými diamanty, které je poháněno výkonným hydraulickým nebo elektrickým agregátem. Díky tomu jsme schopni sanovat i historické objekty, hrady nebo stavby s extrémně silnými zdmi, kde by jiná technologie byla neúčinná nebo riskantní z hlediska statiky.
+              Tato metoda je unikátní svou schopností provádět čisté řezy v libovolně silném zdivu bez vzniku nebezpečných otřesů a vibrací. Při podřezávání diamantovým lanem využíváme lano osazené průmyslovými diamanty, které je poháněno výkonným hydraulickým nebo elektrickým agregátem. Díky tomu jsme schopni sanovat i historické objekty, hrady nebo stavby s extrémně silnými zdmi, kde by jiná technologie byla neúčinná nebo riskantní z hlediska statiky.
             </p>
             <p>
-              <strong>IZODIAMANT</strong> se specializuje na tuto prémiovou technologii právě pro její nekompromisní výsledky. Na rozdíl od běžných metod, diamantové lano netrpí limity hloubky řezu. Dokážeme proříznout základy o šířce dvou i více metrů, což je u masivních kamenných staveb naprostou nezbytností. Celý proces sanace zdiva je navržen tak, aby byl co nejšetrnější k původní konstrukci, přičemž vodní chlazení lana zajišťuje bezprašný provoz, což je klíčové při práci v obydlených prostorech nebo v blízkosti cenných interiérů.
+              IZODIAMANT se specializuje na tuto prémiovou technologii právě pro její nekompromisní výsledky. Na rozdíl od běžných metod, diamantové lano netrpí limity hloubky řezu. Dokážeme proříznout základy o šířce dvou i více metrů, což je u masivních kamenných staveb naprostou nezbytností. Celý proces sanace zdiva je navržen tak, aby byl co nejšetrnější k původní konstrukci, přičemž vodní chlazení lana zajišťuje bezprašný provoz, což je klíčové při práci v obydlených prostorech nebo v blízkosti cenných interiérů.
             </p>
             <p>
               Po provedení řezu do spáry okamžitě vkládáme novou, vysoce odolnou hydroizolaci (nerezové plechy nebo sklolaminátové desky), která vytvoří neprostupnou bariéru proti vzlínající vlhkosti. Celý proces je zakončen statickým zajištěním a tlakovou injektáží, čímž vracíme zdraví vaší stavbě. Tato komplexní sanace zdiva zaručuje, že se vlhkost do objektu již nikdy nevrátí.
