@@ -1,7 +1,7 @@
 [
   {
     "id": "2025-sloupnice",
-    "title": "Rekonstrukce domu Sloupnice",
+    "title": "Rekonstrukce a sanace domu Sloupnice",
     "location": "Sloupnice",
     "date": "2025-04",
     "technology": "Řetězová pila na zdivo",
@@ -23,14 +23,14 @@
   },
   {
     "id": "zleby",
-    "title": "Sanace kamenného zdiva Žleby",
+    "title": "Sanace kamenného zdiva historického objektu Žleby",
     "location": "Žleby",
     "date": "2024-07",
     "technology": "Diamantové lano",
     "scope": "32 m² řezné plochy",
     "duration": "5 pracovních dnů",
     "reviewId": "2025-03-02-tomas-bludicka",
-    "description": "Náročná sanace historického kamenného zdiva v suterénních prostorách objektu v obci Žleby vyžadovala maximální preciznost. Vzhledem k extrémní tloušťce zdiva, která dosahovala místy až 180 cm, a požadavku na absolutně nulové otřesy, jsme jako jedinou možnou metodu zvolili technologii diamantového lana. Tato špičková metoda sanace umožňuje provést čistý řez i skrze ten nejtvrdší kámen, aniž by došlo k jakémukoliv narušení statiky klenbových stropů, které jsou pro historické budovy typické. Proces probíhal za stálého chlazení vodou, což minimalizovalo prašnost v interiéru. Do vzniklé spáry byla následně vložena nerezová izolace, která představuje nejodolnější možnou formu ochrany proti vlhkosti s prakticky neomezenou životností. Po instalaci nerezových plechů byla spára staticky zajistila a následně byla provedena tlaková injektáž cementovou směsí, která dokonale vyplnila všechny vnitřní kaverny a dutiny v masivním zdivu. Tato realizace zajistila trvalé odvlhčení suterénu a umožnila jeho další využití bez obav z vlhkosti a plísní. Sanace objektu Žleby byla náročná i z hlediska logistiky, kdy bylo nutné dopravit těžkou techniku do stísněných sklepních prostor. Naši specialisté z IZODIAMANT se však s touto výzvou vypořádali excelentně. Použití diamantového lana v tak masivním kamenném zdivu ukázalo plný potenciál této technologie. Každý metr řezu byl pečlivě monitorován, aby nedošlo k přehřívání lana a aby byla zachována maximální efektivita práce. Tato realizace je důkazem, že ani ty nejsilnější kamenné zdi nejsou pro naši techniku překážkou. Výsledný suchý sklep nyní slouží jako reprezentativní prostor, což by bez provedené sanace nebylo možné. Investice do kvalitního podřezání diamantovým lanem se majiteli vrátila v podobě záchrany historické hodnoty objektu a jeho funkčního rozšíření. Vracíme zdraví vaší stavbě i v těch nejnáročnějších podmínkách. Tato technika řezání lanem je šetrná k okolním konstrukcím a nevyžaduje přístup z obou stran zdi, což bylo v tomto případě klíčové. Výsledek byl ověřen kontrolním měřením vlhkosti, které potvrdilo okamžitý pokles hodnot po uzavření vzlínající cesty. Pro budoucí generace je tak objekt Žleby bezpečně zakonzervován a chráněn před ničivými účinky soli a vody.",
+    "description": "Náročná sanace historického kamenného zdiva v suterénních prostorách objektu v obci Žleby vyžadovala maximální preciznost. Vzhledem k extrémní tloušťce zdiva, která dosahovala místy až 180 cm, a požadavku na absolutně nulové otřesy, jsme jako jedinou možnou metodu zvolili technologii diamantového lana. Tato špičková metoda sanace umožňuje provést čistý řez i skrze ten nejtvrdší kámen, aniž by došlo k jakémukoliv narušení statiky klenbových stropů, které jsou pro historické budovy typické. Proces probíhal za stálého chlazení vodou, což minimalizovalo prašnost v interiéru. Do vzniklé spáry byla následně vložena nerezová izolace, která představuje nejodolnější možnou formu ochrany proti vlhkosti s prakticky neomezenou životností. Po instalaci nerezových plechů byla spára staticky zajistila a následně byla provedena tlaková injektáž cementovou směsí, která dokonale vyplnila všechny vnitřní kaverny a dutiny v masivním zdivu. Tato realizace zajistila trvalé odvlhčení suterénu a umožnila jeho další využití bez obav z vlhkosti a plísní. Sanace objektu Žleby byla náročná i z hlediska logistiky, kdy bylo nutné dopravit těžkou techniku do stísněných sklepních prostor. Naši specialisté z IZODIAMANT se však s touto výzvou vypořádali excelentně. Použití diamantového lana v tak masivním kamenném zdivu ukázalo plný potenciál této technologie. Každý metr řezu byl pečlivě monitorován, aby nedošlo k přehřívání lana a aby byla zachována maximální efektivita práce. Tato realizace je důkazem, že ani ty nejsilnější kamenné zdi nejsou pro naši techniku překážkou. Výsledný suchý sklep nyní slouží jako reprezentativní prostor, což by bez provedené sanace nebylo možné. Investice do kvalitního podřezání diamantovým lanem se majiteli vrátila v podobě záchrany historické hodnoty objektu a jeho funkčního rozšíření. Vracíme zdraví vaší stavbě i v těch nejnáročnějších podmínkách. Tato technika řezání lanem je šetrná k okolním konstrukcím a nevyžaduje přístup z obou stran zdi, což bylo v tomto případě klíčové. Výsledek byl ověřen kontrolním měřením vlhkosti, které potvrdilo okamžitý pokles hodnot po uzavření vzlínající cesty. Pro budoucí generace je tak objekt Žleby bezpečně zakonzervován a chráněn před ničivými učinky soli a vody.",
     "features": [
       "Řezání extrémně silného kamene o tloušťce až 180 cm",
       "Vložení nerezové izolace s extrémní životností",
@@ -44,14 +44,14 @@
   },
   {
     "id": "skorkov",
-    "title": "Dům ve Skorkově u Humpolce",
+    "title": "Sanace a izolace domu ve Skorkově u Humpolce",
     "location": "Skorkov u Humpolce",
     "date": "2024-05",
     "technology": "Řetězová pila",
     "scope": "52 běžných metrů",
     "duration": "3 pracovní dny",
     "reviewId": "2025-01-15-zdenek-pecina",
-    "description": "Projekt izolace a sanace pro rodinný dům ve Skorkově u Humpolce zahrnoval kompletní obnovu obvodového zdiva, které bylo značně zasaženo vzlínající vlhkostí z podloží. Původní izolace pro tento dům ve Skorkově byla již zcela nefunkční, což se projevovalo vlhkými mapami na omítkách a nepříjemným zápachem v interiéru. Pro sanaci jsme zvolili technologii podřezání řetězovou pilou, která je pro cihelné konstrukce nejefektivnější a zároveň cenově nejdostupnější cestou. Během pouhých tří pracovních dnů jsme zvládli proříznout celých 52 běžných metrů obvodového zdiva. Do spáry byla průběžně vkládána nová PE hydroizolace o tloušťce 2 mm, která tvoří neprostupnou bariéru proti vlhkosti. Důraz byl kladen na statické zajištění, které jsme provedli pomocí certifikovaných plastových klínů rozmístěných v pravidelných intervalech tak, aby byla zaručena stabilita celého objektu. Nakonec byla spára pod tlakem vyplněna cementovou maltou. Majitelé díky rychlé realizaci mohli v krátké době pokračovat ve vysoušení vnitřních prostor a v následných stavebních úpravách. Tato realizace ukazuje, jak důležité je včasné řešení problémů s vlhkostí. Sanace zdiva metodou řetězové pily u IZODIAMANT je proces, který minimalizuje nepořádek a hluk, což ocenili i sousedé v husté zástavbě obce Skorkov. Dům nyní vykazuje výrazné zlepšení mikroklimatu – zmizel zápach vlhkosti a omítky zůstávají suché i v deštivých měsících. Kromě technického přínosu došlo také k estetickému zhodnocení celého objektu. Majitelé se nyní mohou spolehnout na to, že jejich investice do sanace je trvalá a že konstrukce domu je chráněna před další degradací. Celkový rozsah prací byl dokončen v souladu s časovým harmonogramem, což umožnilo plynulé navázání dalších řemesel. Vracíme zdraví vaší stavbě a zajišťujeme bezpečné bydlení pro další generace. Tato sanace dům ve Skorkově zbavila problémů, které jej trápily desetiletí. Následná aplikace sanačních omítek umožnila zbylé vlhkosti bezpečně odejít ze zdiva bez poškození fasády. Dům je nyní plně funkční a připraven na moderní standardy bydlení 21. století, přičemž jeho hodnota na trhu nemovitostí vzrostla díky doložitelné kvalitní hydroizolaci.",
+    "description": "Projekt izolace a sanace pro rodinný dům ve Skorkově u Humpolce zahrnoval kompletní obnovu obvodového zdiva, které bylo značně zasaženo vzlínající vlhkostí z podloží. Původní izolace pro tento dům ve Skorkově byla již zcela nefunkční, což se projevovalo vlhkými mapami na omítkách a nepříjemným zápachem v interiéru. Pro sanaci jsme zvolili technologii podřezání řetězovou pilou, která je pro cihelné konstrukce nejefektivnější a zároveň cenově nejdostupnější cestou. Během pouhých tří pracovních dnů jsme zvládli proříznout celých 52 běžných metrů obvodového zdiva. Do spáry byla průběžně vkládána nová PE hydroizolace o tloušťce 2 mm, která tvoří neprostupnou bariéru proti vlhkosti. Důraz byl kladen na statické zajištění, které jsme provedli pomocí certifikovaných plastového klínů rozmístěných v pravidelných intervalech tak, aby byla zaručena stabilita celého objektu. Nakonec byla spára pod tlakem vyplněna cementovou maltou. Majitelé díky rychlé realizaci mohli v krátké době pokračovat ve vysoušení vnitřních prostor a v následných stavebních úpravách. Tato realizace ukazuje, jak důležité je včasné řešení problémů s vlhkostí. Sanace zdiva metodou řetězové pily u IZODIAMANT je proces, který minimalizuje nepořádek a hluk, což ocenili i sousedé v husté zástavbě obce Skorkov. Dům nyní vykazuje výrazné zlepšení mikroklimatu – zmizel zápach vlhkosti a omítky zůstávají suché i v deštivých měsících. Kromě technického přínosu došlo také k estetickému zhodnocení celého objektu. Majitelé se nyní mohou spolehnout na to, že jejich investice do sanace je trvalá a že konstrukce domu je chráněna před další degradací. Celkový rozsah prací byl dokončen v souladu s časovým harmonogramem, což umožnilo plynulé navázání dalších řemesel. Vracíme zdraví vaší stavbě a zajišťujeme bezpečné bydlení pro další generace. Tato sanace dům ve Skorkově zbavila problémů, které jej trápily desetiletí. Následná aplikace sanačních omítek umožnila zbylé vlhkosti bezpečně odejít ze zdiva bez poškození fasády. Dům je nyní plně funkční a připraven na moderní standardy bydlení 21. století, přičemž jeho hodnota na trhu nemovitostí vzrostla díky doložitelné kvalitní hydroizolaci.",
     "features": [
       "Rychlé podřezání řetězovou pilou v cihelném zdivu",
       "Vložení nové PE hydroizolace s životností přes 50 let",
@@ -65,7 +65,7 @@
   },
   {
     "id": "stare-zdanice",
-    "title": "Dům Staré Žďánice",
+    "title": "Podřezání a sanace zdiva rodinného domu Staré Žďánice",
     "location": "Staré Žďánice",
     "date": "2024-03",
     "technology": "Diamantové lano",
@@ -85,7 +85,7 @@
   },
   {
     "id": "bernartice",
-    "title": "Dům Bernartice u Trutnova",
+    "title": "Kompletní sanace vlhkého zdiva domu Bernartice u Trutnova",
     "location": "Bernartice u Trutnova",
     "date": "2023-11",
     "technology": "Řetězová pila",
@@ -105,7 +105,7 @@
   },
   {
     "id": "pardubice-diamant",
-    "title": "Reference baráček Pardubice",
+    "title": "Podřezání zdiva rodinného domu Pardubice",
     "location": "Pardubice",
     "date": "2023-08",
     "technology": "Diamantové lano",
@@ -125,7 +125,7 @@
   },
   {
     "id": "policka",
-    "title": "Pila s diamantovým lanem a injektáž",
+    "title": "Sanace objektu kombinovanou metodou Polička",
     "location": "Polička",
     "date": "2023-05",
     "technology": "Kombinovaná metoda",
