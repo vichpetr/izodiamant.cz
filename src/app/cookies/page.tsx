@@ -22,10 +22,10 @@ export default function CookiesPolicy() {
             <section>
               <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">1. Co jsou soubory cookies a k čemu slouží?</h2>
               <p>
-                Soubory cookies jsou malé textové datové soubory, které náš web IZODIAMANT.cz ukládá do Vašeho koncového zařízení (počítač, tablet nebo chytrý telefon) prostřednictvím webového prohlížeče. Cookies samy o sobě neslouží k identifikaci konkrétní osoby, ale umožňují webové stránce rozpoznat Vaše zařízení při opakované návštěvě.
+                Soubory cookies jsou malé textové datové soubory, které náš web IZODIAMANT.cz ukládá do vašeho koncového zařízení (počítač, tablet nebo chytrý telefon) prostřednictvím webového prohlížeče. Cookies samy o sobě neslouží k identifikaci konkrétní osoby, ale umožňují webové stránce rozpoznat vaše zařízení při opakované návštěvě.
               </p>
               <p>
-                Hlavním účelem cookies je zajistit plynulý a bezpečný chod webu a přizpůsobit jeho obsah Vašim preferencím. Díky těmto souborům si stránka může "pamatovat" Vaše nastavení, jako je například volba jazyka nebo potvrzení o seznámení se s cookie lištou, takže tyto informace nemusíte zadávat při každé další návštěvě znovu. Cookies jsou také nezbytné pro správné fungování interaktivních prvků, jako je naše cenová kalkulačka podřezání zdiva.
+                Hlavním účelem cookies je zajistit plynulý a bezpečný chod webu a přizpůsobit jeho obsah vašim preferencím. Díky těmto souborům si stránka může "pamatovat" vaše nastavení, jako je například volba jazyka nebo potvrzení o seznámení se s cookie lištou, takže tyto informace nemusíte zadávat při každé další návštěvě znovu. Cookies jsou také nezbytné pro správné fungování interaktivních prvků, jako je naše cenová kalkulačka podřezání zdiva.
               </p>
             </section>
 
@@ -40,7 +40,7 @@ export default function CookiesPolicy() {
                   Analytické a výkonnostní cookies: Pomáhají nám anonymně sbírat statistické informace o tom, jak uživatelé s webem IZODIAMANT interagují. Sledujeme například počet návštěvníků, čas strávený na jednotlivých stránkách nebo to, které naše služby (např. diamantové lano nebo řetězová pila) Vás zajímají nejvíce. K těmto účelům využíváme prověřené nástroje jako Google Analytics. Získaná data využíváme výhradně ke zlepšování obsahu a struktury webu.
                 </li>
                 <li>
-                  Funkční a preferenční cookies: Tyto soubory umožňují webu zapamatovat si Vaše volby a poskytnout Vám vylepšené a personalizované funkce. Mohou si například zapamatovat Vaše nastavení v interaktivních částech webu, aby pro Vás byla práce s nimi při příští návštěvě pohodlnější.
+                  Funkční a preferenční cookies: Tyto soubory umožňují webu zapamatovat si vaše volby a poskytnout vám vylepšené a personalizované funkce. Mohou si například zapamatovat vaše nastavení v interaktivních částech webu, aby pro Vás byla práce s nimi při příští návštěvě pohodlnější.
                 </li>
               </ul>
             </section>
@@ -48,10 +48,10 @@ export default function CookiesPolicy() {
             <section>
               <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">3. Souhlas a správa nastavení cookies</h2>
               <p>
-                Při Vaší první návštěvě našeho webu se Vám zobrazí informační lišta, která Vám umožní zvolit rozsah cookies, se kterými souhlasíte. Technické cookies jsou aktivní automaticky, zatímco analytické cookies využíváme pouze s Vaším výslovným souhlasem.
+                Při Vaší první návštěvě našeho webu se vám zobrazí informační lišta, která vám umožní zvolit rozsah cookies, se kterými souhlasíte. Technické cookies jsou aktivní automaticky, zatímco analytické cookies využíváme pouze s vaším výslovným souhlasem.
               </p>
               <p>
-                Své rozhodnutí můžete kdykoliv v budoucnu změnit. Nejjednodušším způsobem je vymazání souborů cookies v historii Vašeho prohlížeče, což způsobi, že se cookie lišta při příští návštěvě webu IZODIAMANT.cz zobrazí znovu. Většina moderních prohlížečů také umožňuje nastavit automatické blokování cookies nebo varování před jejich uložením.
+                Své rozhodnutí můžete kdykoliv v budoucnu změnit. Nejjednodušším způsobem je vymazání souborů cookies v historii vašeho prohlížeče, což způsobi, že se cookie lišta při příští návštěvě webu IZODIAMANT.cz zobrazí znovu. Většina moderních prohlížečů také umožňuje nastavit automatické blokování cookies nebo varování před jejich uložením.
               </p>
             </section>
 

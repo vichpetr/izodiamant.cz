@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
           
           <div className="prose prose-neutral max-w-none space-y-8 text-neutral-dark/80 font-medium leading-relaxed">
             <p>
-              Ochrana Vašich osobních údajů je pro nás v IZODIAMANT naprostou prioritou. Jako specialisté na sanaci vlhkého zdiva a podřezávání domů si zakládáme na důvěře, kterou do nás naši zákazníci vkládají. Tento dokument slouží k tomu, aby Vám poskytl transparentní a srozumitelný přehled o tom, jaké osobní údaje zpracováváme, za jakým konkrétním účelem, na jakém právním základě a jaká jsou Vaše práva v souvislosti s nařízením GDPR (Obecné nařízení o ochraně osobních údajů).
+              Ochrana vašich osobních údajů je pro nás v IZODIAMANT naprostou prioritou. Jako specialisté na sanaci vlhkého zdiva a podřezávání domů si zakládáme na důvěře, kterou do nás naši zákazníci vkládají. Tento dokument slouží k tomu, aby vám poskytl transparentní a srozumitelný přehled o tom, jaké osobní údaje zpracováváme, za jakým konkrétním účelem, na jakém právním základě a jaká jsou vaše práva v souvislosti s nařízením GDPR (Obecné nařízení o ochraně osobních údajů).
             </p>
 
             <section>
@@ -38,7 +38,7 @@ export default function PrivacyPolicy() {
               <p>Zpracováváme pouze ty osobní údaje, které jsou nezbytně nutné pro profesionální poskytování našich služeb sanace a izolace staveb:</p>
               <ul className="list-disc pl-6 space-y-4">
                 <li>
-                  Kontaktní formulář: Při odeslání poptávky zpracováváme Vaše jméno, příjmení, e-mailovou adresu, telefonní číslo a doplňující technické parametry stavby (např. tloušťka zdiva, materiál, lokalita). Tyto údaje jsou klíčové pro přípravu přesné a nezávazné cenové nabídky na podřezání zdiva nebo chemickou injektáž. Právním základem je zde plnění smlouvy nebo provedení opatření před uzavřením smlouvy na Vaši žádost.
+                  Kontaktní formulář: Při odeslání poptávky zpracováváme vaše jméno, příjmení, e-mailovou adresu, telefonní číslo a doplňující technické parametry stavby (např. tloušťka zdiva, materiál, lokalita). Tyto údaje jsou klíčové pro přípravu přesné a nezávazné cenové nabídky na podřezání zdiva nebo chemickou injektáž. Právním základem je zde plnění smlouvy nebo provedení opatření před uzavřením smlouvy na vaši žádost.
                 </li>
                 <li>
                   Realizace zakázky: V případě uzavření dohody o provedení práce zpracováváme také fakturační údaje (adresa bydliště, IČO) a adresu místa realizace sanace. Tyto údaje uchováváme pro účely řádného plnění smluvních závazků a následné fakturace dle platných zákonů ČR.
@@ -52,7 +52,7 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">3. Doba uchovávání osobních údajů</h2>
               <p>
-                Vaše soukromí respektujeme a údaje neuchováváme déle, než je nezbytně nutné:
+                vaše soukromí respektujeme a údaje neuchováváme déle, než je nezbytně nutné:
               </p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>Údaje z poptávkových formulářů uchováváme po dobu vyřizování nabídky, nejdéle však 2 roky, pokud nedojde k následné realizaci zakázky.</li>
@@ -64,7 +64,7 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">4. Zabezpečení a příjemci údajů</h2>
               <p>
-                Vaše data jsou u nás v maximálním bezpečí. Neprodáváme je, nepronajímáme ani nepředáváme žádným třetím stranám pro účely marketingu. Přístup k údajům mají pouze prověřené subjekty, které nám pomáhají s provozem:
+                vaše data jsou u nás v maximálním bezpečí. Neprodáváme je, nepronajímáme ani nepředáváme žádným třetím stranám pro účely marketingu. Přístup k údajům mají pouze prověřené subjekty, které nám pomáhají s provozem:
               </p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>Poskytovatelé technického řešení webu a cloudového hostingu (Vercel, GitHub).</li>
@@ -72,7 +72,7 @@ export default function PrivacyPolicy() {
                 <li>Externí účetní kancelář (pouze v případě smluvního vztahu).</li>
               </ul>
               <p className="mt-4">
-                Web izodiamant.cz je plně šifrován pomocí bezpečnostního certifikátu SSL (HTTPS), což zajišťuje, že veškerá data přenášená mezi Vaším prohlížečem a naším serverem jsou chráněna proti odposlechu.
+                Web izodiamant.cz je plně šifrován pomocí bezpečnostního certifikátu SSL (HTTPS), což zajišťuje, že veškerá data přenášená mezi vaším prohlížečem a naším serverem jsou chráněna proti odposlechu.
               </p>
             </section>
 
@@ -81,9 +81,9 @@ export default function PrivacyPolicy() {
               <p>Jako subjekt údajů máte v souvislosti s ochranou osobních údajů široká práva:</p>
               <ul className="list-disc pl-6 space-y-4">
                 <li>Právo na přístup: Máte právo vědět, jaké konkrétní údaje o Vás zpracováváme a proč.</li>
-                <li>Právo na opravu: Pokud zjistíte, že jsou Vaše údaje neaktuální nebo nesprávné, na Vaši žádost je okamžitě opravíme.</li>
-                <li>Právo na výmaz: Pokud již neexistuje zákonný důvod pro zpracování, na Vaši žádost údaje vymažeme.</li>
-                <li>Právo na omezení zpracování: V určitých situacích můžete požádat o pozastavení nakládání s Vašimi daty.</li>
+                <li>Právo na opravu: Pokud zjistíte, že jsou vaše údaje neaktuální nebo nesprávné, na vaši žádost je okamžitě opravíme.</li>
+                <li>Právo na výmaz: Pokud již neexistuje zákonný důvod pro zpracování, na vaši žádost údaje vymažeme.</li>
+                <li>Právo na omezení zpracování: V určitých situacích můžete požádat o pozastavení nakládání s vašimi daty.</li>
                 <li>Právo na přenositelnost: Můžete od nás získat své údaje ve strukturovaném, běžně používaném formátu.</li>
                 <li>Právo vznést námitku: Máte právo kdykoliv namítat proti zpracování založeném na oprávněném zájmu.</li>
               </ul>

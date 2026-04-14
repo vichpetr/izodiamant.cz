@@ -8,19 +8,19 @@ export default function Technology() {
   const content = {
     h2: "Žádné kompromisy, jen čistý řez.",
     h3: "Sanace pro 21. století",
-    sub: "Využíváme špičkové vybavení, abychom zaručili precizní výsledek bez ohrožení statiky vaší nemovitosti.",
+    sub: "Díky dlouholetým zkušenostem našich techniků získáte z moderních sanačních metod maximum bez ohrožení statiky vaší nemovitosti.",
     tech1_title: "Diamantové lano",
-    tech1_desc: "Technologie diamantového lana umožňuje řezat i ty nejnáročnější materiály bez otřesů, které by ohrozily statiku vašeho domu.",
+    tech1_desc: "Tato technika umožňuje šetrné proříznutí zdiva a vytvoření přesné ložné spáry pro uložení nepropustné izolace i u těch nejnáročnějších materiálů.",
     tech1_features: ['Pro kámen, beton i smíšené zdivo', 'Milimetrová přesnost', 'Bez limitu tloušťky zdi'],
     tech1_href: '/sluzby/diamantove-lano',
     
     tech2_title: "Řetězová pila",
-    tech2_desc: "Ideální řešení pro cihelné zdivo. Rychlý postup a okamžité vložení hydroizolace zajišťují suchý domov v řádu dnů, nikoliv týdnů.",
+    tech2_desc: "Nejefektivnější způsob, jak trvale odizolovat cihelné zdivo. Přesný řez a okamžité vložení hydroizolace zajistí suchý domov v řádu dnů.",
     tech2_features: ['Ideální pro cihlové zdivo', 'Extrémně rychlý postup', 'Minimální zásah do provozu'],
     tech2_href: '/sluzby/retezova-pila',
 
     tech3_title: "Chemická injektáž",
-    tech3_desc: "Moderní metoda vytvoření dodatečné hydroizolační clony pomocí speciálních gelů a pryskyřic. Vhodné tam, kde nelze fyzicky řezat.",
+    tech3_desc: "Do zdiva aplikujeme speciální injektážní krém, který uvnitř pórů vytvoří vodoodpudivou bariéru a zabrání dalšímu pronikání vody.",
     tech3_features: ['Bezhlučný proces', 'Vysoce účinné gely', 'Šetrné ke zdivu'],
     tech3_href: '/sluzby/chemicka-injektaz',
   };
