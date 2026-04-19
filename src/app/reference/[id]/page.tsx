@@ -35,16 +35,19 @@ export async function generateMetadata({
 
   if (!project) return { title: 'Projekt nenalezen' };
 
-  const title = project.title.includes(project.location) || project.title.includes(project.location.split(' ')[0])
-    ? project.title 
-    : `${project.title} – ${project.location}`;
-  const description = `Sanace zdiva: ${project.title}. ${project.location}. Vracíme zdraví vaší stavbě.`;
+  // Titles in references.json are already optimized: "Sanace [type] zdiva, [Location]"
+  const title = project.title;
+  // Description pattern from GEMINI.md: "Sanace zdiva: [Title]. [Location]. Vracíme zdraví vaší stavbě."
+  // Since project.title already contains location, we don't repeat it if unnecessary.
+  const description = project.title.includes(project.location)
+    ? `Sanace zdiva: ${project.title}. Vracíme zdraví vaší stavbě.`
+    : `Sanace zdiva: ${project.title}. ${project.location}. Vracíme zdraví vaší stavbě.`;
 
   return {
     title,
     description,
     openGraph: {
-      title: title,
+      title: `${title} | IZODIAMANT`,
       description,
       images: [project.image],
     },
