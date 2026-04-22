@@ -98,6 +98,8 @@ export default function RootLayout({
   return (
     <html lang="cs" className="scroll-smooth">
       <head>
+        <link rel="service-doc" href="/llms.txt" />
+        <link rel="api-catalog" href="/.well-known/api-catalog" />
         {/* Google Analytics Consent Mode Initialization */}
         <Script id="ga-consent" strategy="afterInteractive">
           {`

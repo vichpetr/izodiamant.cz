@@ -1,2 +1,5 @@
 /*
   X-Robots-Tag: index, follow
+
+/
+  Link: </llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog"
