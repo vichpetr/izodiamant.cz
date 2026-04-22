@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import MotionProvider from "@/components/MotionProvider";
+import WebMCP from "@/components/WebMCP";
 import "./globals.css";
 
 const inter = Inter({
@@ -97,6 +98,11 @@ export default function RootLayout({
   return (
     <html lang="cs" className="scroll-smooth">
       <head>
+        <link rel="service-doc" href="/llms.txt" />
+        <link rel="api-catalog" href="/.well-known/api-catalog" />
+        <link rel="openid-configuration" href="/.well-known/openid-configuration" />
+        <link rel="oauth-protected-resource" href="/.well-known/oauth-protected-resource" />
+        <link rel="agent-card" href="/.well-known/agent-card.json" />
         {/* Google Analytics Consent Mode Initialization */}
         <Script id="ga-consent" strategy="afterInteractive">
           {`
@@ -117,6 +123,7 @@ export default function RootLayout({
         <Script id="json-ld-local-business" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} strategy="afterInteractive" />
       </head>
       <body className={`${inter.variable} antialiased font-sans`}>
+        <WebMCP />
         <MotionProvider>
           {children}
         </MotionProvider>

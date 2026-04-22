@@ -1,0 +1,25 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://izodiamant.cz/api/send",
+      "service-desc": [
+        {
+          "href": "https://izodiamant.cz/.well-known/mcp/server-card.json",
+          "type": "application/json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://izodiamant.cz/llms.txt",
+          "type": "text/markdown"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://izodiamant.cz/api/send",
+          "type": "application/json"
+        }
+      ]
+    }
+  ]
+}

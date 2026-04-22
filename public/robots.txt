@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /cdn-cgi/
+
+Content-Signal: ai-train=no, search=yes, ai-input=no
+
+Sitemap: https://izodiamant.cz/sitemap.xml

@@ -1,0 +1,26 @@
+{
+  "name": "izodiamant-agent",
+  "version": "1.0.0",
+  "description": "Agent representing IZODIAMANT masonry repair services",
+  "supportedInterfaces": [
+    {
+      "url": "https://izodiamant.cz",
+      "protocol": "https"
+    },
+    {
+      "url": "https://izodiamant.cz/.well-known/mcp/server-card.json",
+      "protocol": "mcp"
+    }
+  ],
+  "capabilities": [
+    "information-retrieval",
+    "service-catalog"
+  ],
+  "skills": [
+    {
+      "id": "get-services",
+      "name": "Get Services",
+      "description": "Get detailed information about masonry repair and dewatering services"
+    }
+  ]
+}

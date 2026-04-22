@@ -1,0 +1,5 @@
+{
+  "resource": "https://izodiamant.cz",
+  "authorization_servers": ["https://izodiamant.cz"],
+  "scopes_supported": ["read", "write"]
+}
