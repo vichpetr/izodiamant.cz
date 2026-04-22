@@ -108,7 +108,7 @@ export default function DiamondWirePage() {
               <div className="space-y-6">
                 {[
                   { step: "01", title: "Příprava a diagnostika", desc: "Zaměření objektu, kontrola tloušťky a materiálu zdiva pro optimální nastavení řezného lana." },
-                  { step: "02", title: "Instalace techniky", desc: "Osazení vodících kladek and upevnění agregátu pro pohon diamantového lana." },
+                  { step: "02", title: "Instalace techniky", desc: "Osazení vodicích kladek a upevnění agregátu pro pohon diamantového lana." },
                   { step: "03", title: "Samotný řez", desc: "Plynulé prořezávání zdiva pod neustálým chlazením, které eliminuje prašnost." },
                   { step: "04", title: "Izolace a statika", desc: "Vložení izolačního materiálu, statické vyklínování a tlaková výplň spáry." }
                 ].map((s, i) => (

@@ -1,16 +1,16 @@
 {
   "diamantove-lano": {
-    "priceRange": "4 500 – 6 500 Kč / m²",
+    "priceRange": "Orientační cena od 4 500 Kč / m²",
     "duration": "3–5 pracovních dnů",
     "relatedIds": ["zleby", "stare-zdanice", "pardubice-diamant"]
   },
   "retezova-pila": {
-    "priceRange": "2 500 – 3 500 Kč / m²",
+    "priceRange": "Orientační cena od 2 500 Kč / m²",
     "duration": "2–3 pracovní dny",
     "relatedIds": ["2025-sloupnice", "skorkov", "bernartice"]
   },
   "chemicka-injektaz": {
-    "priceRange": "2 500 – 3 900 Kč / bm",
+    "priceRange": "Orientační cena od 2 500 Kč / bm",
     "duration": "1–2 pracovní dny",
     "relatedIds": ["policka"]
   }

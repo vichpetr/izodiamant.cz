@@ -121,7 +121,7 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
-          <p>&copy; {currentYear} IZODIAMANT. {content.rights}</p>
+          <p>&copy; {currentYear} IZODIAMANT. {content.rights} Nejsme plátci DPH.</p>
           <div className="flex gap-8">
             <Link href="/ochrana-udaju" className="hover:text-primary transition-colors">{content.privacy}</Link>
             <Link href="/cookies" className="hover:text-primary transition-colors">{content.cookies}</Link>
