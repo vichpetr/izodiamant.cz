@@ -118,6 +118,7 @@ export default function RootLayout({
         <Script id="json-ld-local-business" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} strategy="afterInteractive" />
       </head>
       <body className={`${inter.variable} antialiased font-sans`}>
+        <WebMCP />
         <MotionProvider>
           {children}
         </MotionProvider>
