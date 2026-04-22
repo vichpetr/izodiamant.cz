@@ -100,6 +100,8 @@ export default function RootLayout({
       <head>
         <link rel="service-doc" href="/llms.txt" />
         <link rel="api-catalog" href="/.well-known/api-catalog" />
+        <link rel="openid-configuration" href="/.well-known/openid-configuration" />
+        <link rel="oauth-protected-resource" href="/.well-known/oauth-protected-resource" />
         {/* Google Analytics Consent Mode Initialization */}
         <Script id="ga-consent" strategy="afterInteractive">
           {`
