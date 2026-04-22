@@ -29,7 +29,7 @@ export default function Technology() {
     {
       icon: Icons.Gem,
       title: content.tech1_title,
-      label: "diamantové lano",
+      label: "diamantovém lanu",
       description: content.tech1_desc,
       features: content.tech1_features,
       href: content.tech1_href,
@@ -37,7 +37,7 @@ export default function Technology() {
     {
       icon: Icons.Zap,
       title: content.tech2_title,
-      label: "řetězovou pilu",
+      label: "řetězové pile",
       description: content.tech2_desc,
       features: content.tech2_features,
       href: content.tech2_href,
@@ -45,7 +45,7 @@ export default function Technology() {
     {
       icon: Icons.ShieldCheck,
       title: content.tech3_title,
-      label: "chemickou injektáž",
+      label: "chemické injektáži",
       description: content.tech3_desc,
       features: content.tech3_features,
       href: content.tech3_href,
