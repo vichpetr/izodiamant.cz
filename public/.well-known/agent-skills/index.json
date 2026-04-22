@@ -1,4 +1,12 @@
 {
   "$schema": "https://agentskills.io/schema/v0.2.0/index.json",
-  "skills": []
+  "skills": [
+    {
+      "name": "izodiamant-services",
+      "type": "skill",
+      "description": "Information about masonry repair and dewatering services",
+      "url": "https://izodiamant.cz/.well-known/agent-skills/get-services/SKILL.md",
+      "digest": "sha256:7e8b6d8b9e8f4a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b"
+    }
+  ]
 }

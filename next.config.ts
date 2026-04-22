@@ -23,7 +23,34 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Link',
-            value: '</llms.txt>; rel="service-doc", </.well-known/mcp/server-card.json>; rel="api-catalog"',
+            value: '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog"',
+          },
+        ],
+      },
+      {
+        source: '/.well-known/api-catalog',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/linkset+json',
+          },
+        ],
+      },
+      {
+        source: '/.well-known/openid-configuration',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/json',
+          },
+        ],
+      },
+      {
+        source: '/.well-known/oauth-protected-resource',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/json',
           },
         ],
       },
