@@ -58,6 +58,8 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Ensure we match the root and other relevant content pages
-  matcher: ['/', '/reference/:path*', '/sluzby/:path*'],
+  // Match content pages but explicitly exclude static assets and .well-known
+  matcher: [
+    '/((?!api|_next/static|_next/image|.well-known|favicon.ico).*)',
+  ],
 };
