@@ -99,10 +99,10 @@ export default function RootLayout({
     <html lang="cs" className="scroll-smooth">
       <head>
         <link rel="service-doc" href="/llms.txt" />
-        <link rel="api-catalog" href="/.well-known/api-catalog.json" />
-        <link rel="openid-configuration" href="/.well-known/openid-configuration.json" />
-        <link rel="oauth-protected-resource" href="/.well-known/oauth-protected-resource.json" />
-        <link rel="agent-card" href="/.well-known/agent-card.json" />
+        <link rel="api-catalog" href="/.well-known/api-catalog" />
+        <link rel="openid-configuration" href="/.well-known/openid-configuration" />
+        <link rel="oauth-protected-resource" href="/.well-known/oauth-protected-resource" />
+        <link rel="agent-card" href="/.well-known/agent-card" />
         {/* Google Analytics Consent Mode Initialization */}
         <Script id="ga-consent" strategy="afterInteractive">
           {`

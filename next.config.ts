@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Link',
-            value: '</llms.txt>; rel="service-doc", </.well-known/api-catalog.json>; rel="api-catalog", </.well-known/openid-configuration.json>; rel="openid-configuration", </.well-known/oauth-protected-resource.json>; rel="oauth-protected-resource", </.well-known/agent-card.json>; rel="agent-card"',
+            value: '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog", </.well-known/openid-configuration>; rel="openid-configuration", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource", </.well-known/agent-card>; rel="agent-card"',
           },
         ],
       },
@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/.well-known/api-catalog.json',
+        source: '/.well-known/api-catalog',
         headers: [
           {
             key: 'Content-Type',
@@ -46,7 +46,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/.well-known/openid-configuration.json',
+        source: '/.well-known/openid-configuration',
         headers: [
           {
             key: 'Content-Type',
@@ -55,7 +55,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/.well-known/oauth-protected-resource.json',
+        source: '/.well-known/oauth-protected-resource',
         headers: [
           {
             key: 'Content-Type',
@@ -64,7 +64,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/.well-known/agent-card.json',
+        source: '/.well-known/agent-card',
         headers: [
           {
             key: 'Content-Type',

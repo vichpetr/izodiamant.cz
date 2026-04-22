@@ -4,11 +4,11 @@
   "description": "Agent representing IZODIAMANT masonry repair services",
   "supportedInterfaces": [
     {
-      "serviceURL": "https://izodiamant.cz",
+      "url": "https://izodiamant.cz",
       "protocol": "https"
     },
     {
-      "serviceURL": "https://izodiamant.cz/.well-known/mcp/server-card.json",
+      "url": "https://izodiamant.cz/.well-known/mcp/server-card.json",
       "protocol": "mcp"
     }
   ],
