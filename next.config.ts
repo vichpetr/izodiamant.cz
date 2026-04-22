@@ -28,6 +28,15 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: '/llms.txt',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/markdown; charset=utf-8',
+          },
+        ],
+      },
+      {
         source: '/.well-known/api-catalog',
         headers: [
           {
