@@ -1,7 +1,7 @@
 [
   {
     "id": "2025-sloupnice",
-    "title": "Kompletní sanace cihelného zdiva rodinného domu, Sloupnice",
+    "title": "Sanace cihelného zdiva, Sloupnice",
     "location": "Sloupnice",
     "date": "2025-04",
     "technology": "Řetězová pila",
@@ -23,7 +23,7 @@
   },
   {
     "id": "zleby",
-    "title": "Sanace masivního kamenného zdiva v suterénu, Žleby",
+    "title": "Sanace kamenného zdiva, Žleby",
     "location": "Žleby",
     "date": "2024-07",
     "technology": "Diamantové lano",
@@ -44,7 +44,7 @@
   },
   {
     "id": "skorkov",
-    "title": "Sanace vlhkého zdiva rodinného domu, Skorkov u Humpolce",
+    "title": "Sanace zdiva domu, Skorkov",
     "location": "Skorkov u Humpolce",
     "date": "2024-05",
     "technology": "Řetězová pila",
@@ -65,7 +65,7 @@
   },
   {
     "id": "stare-zdanice",
-    "title": "Izolace smíšeného zdiva rodinného domu, Staré Žďánice",
+    "title": "Izolace zdiva domu, Staré Žďánice",
     "location": "Staré Žďánice",
     "date": "2024-03",
     "technology": "Diamantové lano",
@@ -85,7 +85,7 @@
   },
   {
     "id": "bernartice",
-    "title": "Sanace rozsáhlého rodinného domu, Bernartice u Trutnova",
+    "title": "Sanace rodinného domu, Bernartice",
     "location": "Bernartice u Trutnova",
     "date": "2023-11",
     "technology": "Řetězová pila",
@@ -105,7 +105,7 @@
   },
   {
     "id": "pardubice-diamant",
-    "title": "Sanace vlhkého zdiva diamantovým lanem, Pardubice",
+    "title": "Sanace diamantovým lanem, Pardubice",
     "location": "Pardubice",
     "date": "2023-08",
     "technology": "Diamantové lano",
@@ -125,7 +125,7 @@
   },
   {
     "id": "policka",
-    "title": "Kombinovaná sanace historického objektu, Polička",
+    "title": "Sanace historického objektu, Polička",
     "location": "Polička",
     "date": "2023-05",
     "technology": "Kombinovaná metoda",

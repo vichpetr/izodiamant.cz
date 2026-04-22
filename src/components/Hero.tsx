@@ -8,7 +8,7 @@ import HeroBadges from './HeroBadges';
 export default function Hero() {
   const content = {
     h1: "Sanace a podřezávání zdiva. Váš dům si zaslouží suché základy.",
-    desc: "Vás i váš dům trvale zbavíme vzlínající vlhkosti a plísní. Odborně podřezáváme a izolujeme vlhké zdivo nejmodernější technologií po celé ČR.",
+    desc: "Vás i váš dům trvale zbavíme vzlínající vlhkosti a plísní. Odborně podřezáváme a izolujeme vlhké zdivo pro suché základy a zdravé bydlení po celé ČR. Vracíme zdraví vaší stavbě.",
     cta_calc: "Nezávazná kalkulace",
     cta_ref: "Naše reference",
   };

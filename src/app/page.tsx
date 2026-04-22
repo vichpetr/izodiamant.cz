@@ -7,7 +7,7 @@ import { SectionSkeleton } from "@/components/Skeleton";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Sanace zdiva a podřezávání domu – komplexní řešení vlhkosti",
+  title: "Sanace a podřezávání zdiva – komplexní řešení",
   description: "Specialisté na sanace vlhkého zdiva po celé ČR. Podřezávání diamantovým lanem, řetězovou pilou a chemická injektáž. Vracíme zdraví vaší stavbě.",
 };
 
