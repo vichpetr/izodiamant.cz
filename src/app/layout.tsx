@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import MotionProvider from "@/components/MotionProvider";
+import WebMCP from "@/components/WebMCP";
 import "./globals.css";
 
 const inter = Inter({

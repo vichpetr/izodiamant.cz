@@ -1,0 +1,23 @@
+{
+  "serverInfo": {
+    "name": "izodiamant",
+    "version": "1.0.0",
+    "description": "IZODIAMANT Website Agent Protocol"
+  },
+  "transport": {
+    "type": "http",
+    "url": "https://izodiamant.cz"
+  },
+  "capabilities": {
+    "tools": [
+      {
+        "name": "get_services",
+        "description": "Get information about masonry repair services"
+      },
+      {
+        "name": "get_contact",
+        "description": "Get contact information"
+      }
+    ]
+  }
+}

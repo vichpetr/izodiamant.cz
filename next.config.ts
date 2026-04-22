@@ -16,6 +16,19 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  async headers() {
+    return [
+      {
+        source: '/',
+        headers: [
+          {
+            key: 'Link',
+            value: '</llms.txt>; rel="service-doc", </.well-known/mcp/server-card.json>; rel="api-catalog"',
+          },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       {
