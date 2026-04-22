@@ -2,7 +2,7 @@
   X-Robots-Tag: index, follow
 
 /
-  Link: </llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog", </.well-known/openid-configuration>; rel="openid-configuration", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource", </.well-known/agent-card>; rel="agent-card"
+  Link: </llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog", </.well-known/openid-configuration>; rel="openid-configuration", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource", </.well-known/agent-card.json>; rel="agent-card"
   Vary: Accept
 
 /llms.txt
@@ -18,7 +18,7 @@
 /.well-known/oauth-protected-resource
   Content-Type: application/json
 
-/.well-known/agent-card
+/.well-known/agent-card.json
   Content-Type: application/json
 
 /.well-known/mcp/server-card.json

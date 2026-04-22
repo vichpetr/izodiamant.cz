@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Link',
-            value: '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog", </.well-known/openid-configuration>; rel="openid-configuration", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource", </.well-known/agent-card>; rel="agent-card"',
+            value: '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog", </.well-known/openid-configuration>; rel="openid-configuration", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource", </.well-known/agent-card.json>; rel="agent-card"',
           },
         ],
       },
@@ -64,7 +64,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/.well-known/agent-card',
+        source: '/.well-known/agent-card.json',
         headers: [
           {
             key: 'Content-Type',

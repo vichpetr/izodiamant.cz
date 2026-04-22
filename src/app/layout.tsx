@@ -102,7 +102,7 @@ export default function RootLayout({
         <link rel="api-catalog" href="/.well-known/api-catalog" />
         <link rel="openid-configuration" href="/.well-known/openid-configuration" />
         <link rel="oauth-protected-resource" href="/.well-known/oauth-protected-resource" />
-        <link rel="agent-card" href="/.well-known/agent-card" />
+        <link rel="agent-card" href="/.well-known/agent-card.json" />
         {/* Google Analytics Consent Mode Initialization */}
         <Script id="ga-consent" strategy="afterInteractive">
           {`

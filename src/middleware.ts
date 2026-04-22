@@ -41,7 +41,7 @@ export function middleware(request: NextRequest) {
     response.headers.set('X-Markdown-Tokens', '450'); 
     
     // Discovery Link headers
-    response.headers.set('Link', '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog", </.well-known/openid-configuration>; rel="openid-configuration", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource", </.well-known/agent-card>; rel="agent-card"');
+    response.headers.set('Link', '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog", </.well-known/openid-configuration>; rel="openid-configuration", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource", </.well-known/agent-card.json>; rel="agent-card"');
     
     return response;
   }
@@ -49,7 +49,7 @@ export function middleware(request: NextRequest) {
   // 2. Handle discovery headers for regular HTML requests on the homepage
   if (pathname === '/') {
     const response = NextResponse.next();
-    response.headers.set('Link', '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog", </.well-known/openid-configuration>; rel="openid-configuration", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource", </.well-known/agent-card>; rel="agent-card"');
+    response.headers.set('Link', '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog", </.well-known/openid-configuration>; rel="openid-configuration", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource", </.well-known/agent-card.json>; rel="agent-card"');
     response.headers.set('Vary', 'Accept'); // Important for negotiation caching
     return response;
   }
