@@ -28,6 +28,7 @@ export const metadata: Metadata = {
     canonical: 'https://izodiamant.cz',
   },
   other: {
+    'seznam-wmt': 'Vz7SKZJRpsg1w5RIGrTU2589oyNqXmMf',
     'preconnect': [
       'https://izodiamant-reviews-api.petr-c3c.workers.dev',
       'https://www.google-analytics.com'

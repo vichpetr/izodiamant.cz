@@ -18,6 +18,12 @@ test.describe('SEO and Metadata', () => {
     expect(text).not.toContain('User-agent: GPTBot\nDisallow: /');
   });
 
+  test('homepage has correct Seznam Webmaster Tool meta tag', async ({ page }) => {
+    await page.goto('/');
+    const metaTag = await page.locator('meta[name="seznam-wmt"]');
+    await expect(metaTag).toHaveAttribute('content', 'Vz7SKZJRpsg1w5RIGrTU2589oyNqXmMf');
+  });
+
   test('sitemap.xml is accessible', async ({ request }) => {
     const response = await request.get('/sitemap.xml');
     expect(response.ok()).toBeTruthy();
