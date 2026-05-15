@@ -5,12 +5,43 @@ import { m, AnimatePresence } from 'framer-motion';
 import { Icons } from './Icons';
 import staticReviews from '@/data/reviews.json';
 
+type ReviewSource = 'firmy' | 'google';
+
 interface Review {
   id: string;
+  source: ReviewSource;
   author: string;
   rating: number;
   text: string;
   date: string;
+  sourceUrl?: string;
+  authorUrl?: string;
+  profilePhoto?: string;
+}
+
+const SOURCE_LABEL: Record<ReviewSource, string> = {
+  firmy: 'Seznam Firmy.cz',
+  google: 'Google',
+};
+
+function normalizeReview(r: unknown): Review | null {
+  if (!r || typeof r !== 'object') return null;
+  const o = r as Record<string, unknown>;
+  if (typeof o.author !== 'string' || typeof o.text !== 'string' || typeof o.date !== 'string') return null;
+  const ratingNum = Number(o.rating);
+  if (!Number.isFinite(ratingNum)) return null;
+  const source: ReviewSource = o.source === 'google' ? 'google' : 'firmy';
+  return {
+    id: typeof o.id === 'string' ? o.id : `${source}-${o.date}-${o.author}`,
+    source,
+    author: o.author,
+    text: o.text,
+    date: o.date,
+    rating: ratingNum,
+    sourceUrl: typeof o.sourceUrl === 'string' ? o.sourceUrl : undefined,
+    authorUrl: typeof o.authorUrl === 'string' ? o.authorUrl : undefined,
+    profilePhoto: typeof o.profilePhoto === 'string' ? o.profilePhoto : undefined,
+  };
 }
 
 export default function HomeReviews() {
@@ -22,38 +53,45 @@ export default function HomeReviews() {
   const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
   const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
 
-  if (!process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL) {
-    console.warn("Varování: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
-  }
-
   useEffect(() => {
+    let cancelled = false;
+
     async function fetchLiveReviews() {
+      const fallback = (staticReviews as unknown[])
+        .map(normalizeReview)
+        .filter((r): r is Review => r !== null);
+
       if (!workerUrl || workerUrl.includes('vás-účet')) {
-        setReviews(staticReviews as Review[]);
-        setStatus('fallback');
+        if (!cancelled) {
+          setReviews(fallback);
+          setStatus('fallback');
+        }
         return;
       }
 
       try {
         const res = await fetch(workerUrl);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        if (data.reviews && data.reviews.length > 0) {
-          const mappedReviews = data.reviews.map((r: any) => ({
-            ...r,
-            rating: Number(r.rating)
-          }));
-          setReviews(mappedReviews);
+        const list = Array.isArray(data?.reviews) ? data.reviews : [];
+        const mapped = list.map(normalizeReview).filter((r: Review | null): r is Review => r !== null);
+        if (mapped.length === 0) throw new Error('No reviews in data');
+        if (!cancelled) {
+          setReviews(mapped);
           setStatus('live');
-        } else {
-          throw new Error('No reviews in data');
         }
-      } catch (err) {
-        setReviews(staticReviews as Review[]);
-        setStatus('fallback');
+      } catch {
+        if (!cancelled) {
+          setReviews(fallback);
+          setStatus('fallback');
+        }
       }
     }
 
     fetchLiveReviews();
+    return () => {
+      cancelled = true;
+    };
   }, [workerUrl]);
 
   if (reviews.length === 0 && status !== 'loading') return null;
@@ -83,7 +121,7 @@ export default function HomeReviews() {
       <div className="flex items-center gap-1 text-primary">
         {[...Array(5)].map((_, i) => {
           const fillAmount = Math.max(0, Math.min(1, rating - i));
-          
+
           if (fillAmount >= 1) {
             return <Icons.Star key={i} className="w-4 h-4 fill-current" />;
           } else if (fillAmount > 0) {
@@ -106,7 +144,7 @@ export default function HomeReviews() {
   return (
     <section id="reviews" ref={sectionRef} className="py-24 bg-neutral-dark text-white overflow-hidden relative scroll-mt-20">
       <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36z4SVAeLSEBvBDmYECQJUA3IDIn4AOisSAn8qnN0AAAAASUVORK5CYII=')] bg-repeat" />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div className="max-w-2xl">
@@ -117,15 +155,17 @@ export default function HomeReviews() {
               Přečtěte si zkušenosti lidí, kterým jsme pomohli k suchému a zdravému domovu.
             </p>
           </div>
-          <a 
-            href={profileUrl} 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-white transition-colors shrink-0 mb-2"
-          >
-            Všechny recenze na Seznamu
-            <Icons.ExternalLink className="w-4 h-4" />
-          </a>
+          {profileUrl && (
+            <a
+              href={profileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-white transition-colors shrink-0 mb-2"
+            >
+              Všechny recenze na Seznamu
+              <Icons.ExternalLink className="w-4 h-4" />
+            </a>
+          )}
         </div>
 
         {status === 'loading' ? (
@@ -157,13 +197,28 @@ export default function HomeReviews() {
                     className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-white/10 flex flex-col h-full relative group hover:bg-white/10 transition-all"
                   >
                     <Icons.Quote className="absolute top-6 right-8 w-10 h-10 text-primary/10 group-hover:text-primary/20 transition-colors" />
-                    
-                    <div className="mb-6">
+
+                    <div className="flex items-center justify-between mb-6">
                       {renderStars(review.rating)}
+                      {review.sourceUrl ? (
+                        <a
+                          href={review.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-primary transition-colors"
+                          title={`Zdroj: ${SOURCE_LABEL[review.source]}`}
+                        >
+                          {SOURCE_LABEL[review.source]}
+                        </a>
+                      ) : (
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">
+                          {SOURCE_LABEL[review.source]}
+                        </span>
+                      )}
                     </div>
 
                     <p className="text-white/80 font-medium italic leading-relaxed mb-10 flex-grow">
-                      "{review.text}"
+                      &ldquo;{review.text}&rdquo;
                     </p>
 
                     <div className="pt-6 border-t border-white/10 mt-auto">
@@ -178,7 +233,7 @@ export default function HomeReviews() {
             </div>
 
             {reviews.length > 3 && (
-              <m.div 
+              <m.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="mt-16"
@@ -187,7 +242,7 @@ export default function HomeReviews() {
                   onClick={handleToggle}
                   className="btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center gap-3 mx-auto group border-white/10 text-white/60 hover:border-primary hover:text-primary transition-all"
                 >
-                  {showAll ? "Zobrazit méně" : "Zobrazit další hodnocení"}
+                  {showAll ? 'Zobrazit méně' : 'Zobrazit další hodnocení'}
                   {showAll ? (
                     <Icons.ChevronUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
                   ) : (

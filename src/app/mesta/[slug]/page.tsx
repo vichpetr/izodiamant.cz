@@ -3,7 +3,6 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Icons } from "@/components/Icons";
-import Image from "next/image";
 import mestaData from "@/data/mesta.json";
 
 type Mesto = {
@@ -21,6 +20,8 @@ type Mesto = {
   benefits: string;
 };
 
+const SITE_URL = "https://izodiamant.cz";
+
 export async function generateStaticParams() {
   return (mestaData as Mesto[]).map((mesto) => ({
     slug: mesto.slug,
@@ -30,17 +31,37 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const mesto = (mestaData as Mesto[]).find((m) => m.slug === params.slug);
+  const { slug } = await params;
+  const mesto = (mestaData as Mesto[]).find((m) => m.slug === slug);
   if (!mesto) return { title: "Město nenalezeno" };
 
   return {
-    title: `Sanace a podřezávání zdiva ${mesto.name} – IZODIAMANT`,
+    title: `Sanace zdiva ${mesto.name} | IZODIAMANT`,
     description: mesto.description,
-    keywords: [...mesto.keywords, "sanace zdiva", "podřezávání zdiva", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "hydroizolace", "IZODIAMANT"],
+    keywords: [
+      ...mesto.keywords,
+      "sanace zdiva",
+      "podřezávání zdiva",
+      "diamantové lano",
+      "řetězová pila",
+      "chemická injektáž",
+      "odvlhčení zdiva",
+      "hydroizolace",
+      "IZODIAMANT",
+    ],
     alternates: {
-      canonical: `https://izodiamant.cz/mesta/${mesto.slug}`,
+      canonical: `${SITE_URL}/mesta/${mesto.slug}`,
+    },
+    openGraph: {
+      type: "website",
+      locale: "cs_CZ",
+      url: `${SITE_URL}/mesta/${mesto.slug}`,
+      siteName: "IZODIAMANT",
+      title: `Sanace zdiva ${mesto.name} | IZODIAMANT`,
+      description: mesto.description,
+      images: [{ url: "/logo.png", width: 800, height: 600, alt: `IZODIAMANT – sanace zdiva ${mesto.name}` }],
     },
   };
 }
@@ -48,9 +69,10 @@ export async function generateMetadata({
 export default async function MestoPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const mesto = (mestaData as Mesto[]).find((m) => m.slug === params.slug);
+  const { slug } = await params;
+  const mesto = (mestaData as Mesto[]).find((m) => m.slug === slug);
   if (!mesto) {
     return (
       <main className="min-h-screen bg-neutral-light">
@@ -63,6 +85,12 @@ export default async function MestoPage({
       </main>
     );
   }
+
+  const benefitItems = mesto.benefits
+    .replace(/^Proč zvolit naši službu[^:]*:\s*/i, "")
+    .split(/,\s*/)
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   return (
     <main className="min-h-screen bg-neutral-light">
@@ -80,14 +108,14 @@ export default async function MestoPage({
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href={`/mesta/${mesto.slug}#kalkulace`}
-                className="btn-primary py-4 px-10 text-lg uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center justify-center gap-3"
+                href="/#calculator"
+                className="group btn-primary py-4 px-10 text-lg uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center justify-center gap-3"
               >
                 Nezávazná kalkulace
                 <Icons.ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <a
-                href={`tel:${mesto.telephone}`}
+                href={`tel:${mesto.telephone.replace(/\s+/g, "")}`}
                 className="btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center justify-center gap-3 border-neutral-dark/20 text-neutral-dark hover:bg-neutral-dark hover:text-white"
               >
                 <Icons.Phone className="w-5 h-5 text-primary" />
@@ -107,7 +135,7 @@ export default async function MestoPage({
               <span className="text-primary">{mesto.name}</span>?
             </h2>
             <p className="text-lg text-neutral-dark/70 font-medium leading-relaxed mb-12 text-center">
-              Nemusíte hned psát blog – ale vězte, že vlhkost zdiva je vážný problém, který se neodstraní sám. Vzlínající vlhkost ničí omítky, způsobuje plísně a zhoršuje tepelnou izolaci vašeho domu. My vám nabízíme trvalé řešení.
+              Vlhkost zdiva je vážný problém, který se neodstraní sám. Vzlínající vlhkost ničí omítky, způsobuje plísně a zhoršuje tepelnou izolaci vašeho domu. Nabízíme trvalé řešení.
             </p>
           </div>
 
@@ -126,7 +154,7 @@ export default async function MestoPage({
               {
                 icon: Icons.Thermometer,
                 title: "Ztráta tepla",
-                text: "Mokré zdivo má o 5× horší tepelnou vodivost než suché. Výrazně navyšuje vaše náklady na vytápění.",
+                text: "Mokré zdivo má až 5× horší tepelnou vodivost než suché. Výrazně navyšuje vaše náklady na vytápění.",
               },
             ].map((item, index) => (
               <div
@@ -152,7 +180,7 @@ export default async function MestoPage({
               <span className="text-primary">{mesto.name}</span>?
             </h3>
             <p className="text-neutral-dark/70 font-medium leading-relaxed mb-6">
-              Jediný trvalý způsob, jak se zbavit vlhkého zdiva, je jeho podřezání a následné vložení hydroizolační bariéry. V {mesto.name} a okolí provádíme tři moderní technologie:
+              {mesto.services}
             </p>
             <div className="grid md:grid-cols-3 gap-4">
               <div className="bg-white p-6 rounded-xl border border-neutral-light/50">
@@ -247,6 +275,17 @@ export default async function MestoPage({
             Proč zvolit IZODIAMANT v <span className="text-primary">{mesto.name}</span>?
           </h2>
 
+          {benefitItems.length > 0 && (
+            <ul className="max-w-3xl mx-auto mb-12 grid sm:grid-cols-2 gap-3">
+              {benefitItems.map((b, i) => (
+                <li key={i} className="flex items-start gap-3 text-neutral-dark/80 font-medium">
+                  <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <span>{b.charAt(0).toUpperCase() + b.slice(1)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
           <div className="grid md:grid-cols-2 gap-12">
             <div className="space-y-6">
               <div className="flex gap-4 items-start">
@@ -327,25 +366,52 @@ export default async function MestoPage({
         </div>
       </section>
 
-      {/* Local Schema */}
+      {/* Structured data: Service + Breadcrumbs (LocalBusiness with real address lives in root layout) */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            "name": `IZODIAMANT ${mesto.name}`,
-            "image": "https://izodiamant.cz/logo.png",
-            "description": `Profesionální sanace a podřezávání zdiva ve ${mesto.name}. ${mesto.services}`,
-            "url": `https://izodiamant.cz/mesta/${mesto.slug}`,
-            "telephone": mesto.telephone,
-            "areaServed": mesto.name,
-            "geo": {
-              "@type": "GeoCoordinates",
-              "latitude": mesto.lat,
-              "longitude": mesto.lng,
-            },
-            "priceRange": "$$",
+            "@graph": [
+              {
+                "@type": "Service",
+                "@id": `${SITE_URL}/mesta/${mesto.slug}#service`,
+                "serviceType": "Sanace a podřezávání vlhkého zdiva",
+                "name": `Sanace zdiva ${mesto.name}`,
+                "description": mesto.description,
+                "url": `${SITE_URL}/mesta/${mesto.slug}`,
+                "provider": {
+                  "@type": "LocalBusiness",
+                  "name": "IZODIAMANT",
+                  "url": SITE_URL,
+                  "telephone": mesto.telephone,
+                  "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "Mokrá Lhota 26",
+                    "addressLocality": "Nové Hrady",
+                    "postalCode": "53944",
+                    "addressCountry": "CZ",
+                  },
+                },
+                "areaServed": {
+                  "@type": "City",
+                  "name": mesto.name,
+                  "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": mesto.lat,
+                    "longitude": mesto.lng,
+                  },
+                },
+              },
+              {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  { "@type": "ListItem", "position": 1, "name": "Úvod", "item": SITE_URL },
+                  { "@type": "ListItem", "position": 2, "name": "Města", "item": `${SITE_URL}/mesta` },
+                  { "@type": "ListItem", "position": 3, "name": mesto.name, "item": `${SITE_URL}/mesta/${mesto.slug}` },
+                ],
+              },
+            ],
           }),
         }}
       />

@@ -1,11 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Icons } from "@/components/Icons";
 import mestaData from "@/data/mesta.json";
 
-export const metadata = {
-  title: "Sanace zdiva – Města a oblasti | IZODIAMANT",
-  description: "Zvolte si město nebo oblast a zjistěte, jak vám můžeme pomoci s odstraněním vlhkosti zdiva. Přehled měst, kde poskytujeme služby.",
+export const metadata: Metadata = {
+  title: "Sanace zdiva – města a oblasti | IZODIAMANT",
+  description: "Přehled měst, kde poskytujeme sanace vlhkého zdiva, podřezávání a chemickou injektáž. Vracíme zdraví vaší stavbě.",
+  alternates: { canonical: "https://izodiamant.cz/mesta" },
 };
+
+const HQ_PHONE = "+420737017012";
 
 type Mesto = {
   id: string;
@@ -80,10 +84,10 @@ export default function MestaPage() {
             Nemůžete najít vaše město?
           </h2>
           <p className="text-neutral-dark/60 font-medium mb-6 max-w-xl mx-auto">
-            IZODIAMANT působí po celé České republice. Pokud vaše město nebo oblast není v seznamu, neváhejte nás kontaktovat – rádi vám připravíme individuální nabídek na sanace vlhkého zdiva.
+            IZODIAMANT působí po celé České republice. Pokud vaše město nebo oblast není v seznamu, neváhejte nás kontaktovat – rádi vám připravíme individuální nabídku na sanace vlhkého zdiva.
           </p>
           <a
-            href="tel:+420737017012"
+            href={`tel:${HQ_PHONE}`}
             className="btn-primary py-4 px-10 text-lg uppercase tracking-widest shadow-xl shadow-primary/20 inline-flex items-center justify-center gap-3"
           >
             Zavolat nám

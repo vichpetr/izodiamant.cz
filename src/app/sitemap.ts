@@ -26,7 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}/mesta/${mesto.slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
-    priority: 0.7 as const,
+    priority: 0.7,
   }));
 
   // Reference pages
