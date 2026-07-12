@@ -2,6 +2,7 @@
   {
     "id": "pardubice",
     "name": "Pardubice",
+    "locative": "v Pardubicích",
     "slug": "pardubice",
     "keywords": ["podřezání zdiva Pardubice", "sanace vlhkého zdiva Pardubice", "diamantové lano Pardubice"],
     "description": "Profesionální sanace a podřezávání zdiva v Pardubicích a okolí. Diamantové lano, řetězová pila a chemická injektáž. Vracíme zdraví vaší stavbě.",
@@ -16,6 +17,7 @@
   {
     "id": "nove-hrady",
     "name": "Nové Hrady",
+    "locative": "v Nových Hradech",
     "slug": "nove-hrady",
     "keywords": ["podřezání zdiva Nové Hrady", "sanace vlhkého zdiva Nové Hrady", "diamantové lano Nové Hrady"],
     "description": "Profesionální sanace a podřezávání zdiva v Nových Hradech (okres Ústí nad Orlicí). Diamantové lano, řetězová pila a chemická injektáž. Vracíme zdraví vaší stavbě.",
@@ -30,6 +32,7 @@
   {
     "id": "zleby",
     "name": "Žleby",
+    "locative": "ve Žlebech",
     "slug": "zleby",
     "keywords": ["podřezání zdiva Žleby", "sanace kamenného zdiva Žleby", "diamantové lano Žleby"],
     "description": "Profesionální sanace a podřezávání zdiva ve Žlebech a okolí. Zkušenosti s řezáním kamenného a historického zdiva. Vracíme zdraví vaší stavbě.",
@@ -44,6 +47,7 @@
   {
     "id": "sloupnice",
     "name": "Sloupnice",
+    "locative": "ve Sloupnici",
     "slug": "sloupnice",
     "keywords": ["podřezání zdiva Sloupnice", "sanace vlhkého zdiva Sloupnice", "řetězová pila Sloupnice"],
     "description": "Profesionální sanace a podřezávání zdiva ve Sloupnici a okolí. Rychlá a efektivní oprava vlhkého zdiva řetězovou pilou. Vracíme zdraví vaší stavbě.",
@@ -58,6 +62,7 @@
   {
     "id": "skorkov",
     "name": "Skorkov",
+    "locative": "ve Skorkově",
     "slug": "skorkov",
     "keywords": ["podřezání zdiva Skorkov", "sanace vlhkého zdiva Skorkov", "řetězová pila Skorkov"],
     "description": "Profesionální sanace a podřezávání zdiva ve Skorkově a okolí. Rychlá oprava vlhkého cihelného zdiva řetězovou pilou. Vracíme zdraví vaší stavbě.",
@@ -72,6 +77,7 @@
   {
     "id": "bernartice",
     "name": "Bernartice",
+    "locative": "v Bernarticích",
     "slug": "bernartice",
     "keywords": ["podřezání zdiva Bernartice", "sanace zdiva Bernartice", "řetězová pila Bernartice"],
     "description": "Profesionální sanace a podřezávání zdiva v Bernarticích a okolí (Trutnovsko). Rychlá a efektivní oprava vlhkého zdiva. Vracíme zdraví vaší stavbě.",
@@ -86,6 +92,7 @@
   {
     "id": "stare-zdanice",
     "name": "Staré Ždánice",
+    "locative": "ve Starých Ždánicích",
     "slug": "stare-zdanice",
     "keywords": ["podřezání zdiva Staré Ždánice", "sanace vlhkého zdiva Staré Ždánice", "diamantové lano Staré Ždánice"],
     "description": "Profesionální sanace a podřezávání zdiva ve Starých Ždánicích a okolí. Diamantové lano i řetězová pila pro trvalé odstranění vlhkosti. Vracíme zdraví vaší stavbě.",
@@ -100,6 +107,7 @@
   {
     "id": "policka",
     "name": "Polička",
+    "locative": "v Poličce",
     "slug": "policka",
     "keywords": ["podřezání zdiva Polička", "sanace historického zdiva Polička", "diamantové lano Polička"],
     "description": "Profesionální sanace a podřezávání zdiva v Poličce a okolí. Zkušenosti s historickými objekty. Vracíme zdraví vaší stavbě.",

@@ -16,7 +16,7 @@ export default function Technology() {
     
     tech2_title: "Řetězová pila",
     tech2_desc: "Nejefektivnější způsob, jak trvale odizolovat cihelné zdivo. Přesný řez a okamžité vložení hydroizolace zajistí suchý domov v řádu dnů.",
-    tech2_features: ['Ideální pro cihlové zdivo', 'Extrémně rychlý postup', 'Minimální zásah do provozu'],
+    tech2_features: ['Ideální pro cihelné zdivo', 'Extrémně rychlý postup', 'Minimální zásah do provozu'],
     tech2_href: '/sluzby/retezova-pila',
 
     tech3_title: "Chemická injektáž",

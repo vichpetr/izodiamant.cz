@@ -44,7 +44,7 @@ export default function PrivacyPolicy() {
                   Realizace zakázky: V případě uzavření dohody o provedení práce zpracováváme také fakturační údaje (adresa bydliště, IČO) a adresu místa realizace sanace. Tyto údaje uchováváme pro účely řádného plnění smluvních závazků a následné fakturace dle platných zákonů ČR.
                 </li>
                 <li>
-                  Analýza návštěvnosti: Na našem webu využíváme nástroje pro analýzu chování uživatelů (např. Google Analytics). Tyto údaje jsou anonymizované a pomáhají nám lépe pochopit, o které technologie sanace je největší zájem, abychom mohli obsah webu neustále vylepšovat. Právním základem je náš oprávněný zájem na rozvoji podnikání nebo Váš dobrovolný souhlas s analytickými cookies.
+                  Analýza návštěvnosti: Na našem webu využíváme nástroje pro analýzu chování uživatelů (např. Google Analytics). Tyto údaje jsou anonymizované a pomáhají nám lépe pochopit, o které technologie sanace je největší zájem, abychom mohli obsah webu neustále vylepšovat. Právním základem je náš oprávněný zájem na rozvoji podnikání nebo váš dobrovolný souhlas s analytickými cookies.
                 </li>
               </ul>
             </section>
@@ -52,7 +52,7 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">3. Doba uchovávání osobních údajů</h2>
               <p>
-                vaše soukromí respektujeme a údaje neuchováváme déle, než je nezbytně nutné:
+                Vaše soukromí respektujeme a údaje neuchováváme déle, než je nezbytně nutné:
               </p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>Údaje z poptávkových formulářů uchováváme po dobu vyřizování nabídky, nejdéle však 2 roky, pokud nedojde k následné realizaci zakázky.</li>
@@ -64,10 +64,10 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">4. Zabezpečení a příjemci údajů</h2>
               <p>
-                vaše data jsou u nás v maximálním bezpečí. Neprodáváme je, nepronajímáme ani nepředáváme žádným třetím stranám pro účely marketingu. Přístup k údajům mají pouze prověřené subjekty, které nám pomáhají s provozem:
+                Vaše data jsou u nás v maximálním bezpečí. Neprodáváme je, nepronajímáme ani nepředáváme žádným třetím stranám pro účely marketingu. Přístup k údajům mají pouze prověřené subjekty, které nám pomáhají s provozem:
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Poskytovatelé technického řešení webu a cloudového hostingu (Vercel, GitHub).</li>
+                <li>Poskytovatelé technického řešení webu a cloudového hostingu (Cloudflare, GitHub).</li>
                 <li>Poskytovatelé analytických a měřicích služeb (Google LLC).</li>
                 <li>Externí účetní kancelář (pouze v případě smluvního vztahu).</li>
               </ul>
@@ -80,7 +80,7 @@ export default function PrivacyPolicy() {
               <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">5. Vaše práva dle nařízení GDPR</h2>
               <p>Jako subjekt údajů máte v souvislosti s ochranou osobních údajů široká práva:</p>
               <ul className="list-disc pl-6 space-y-4">
-                <li>Právo na přístup: Máte právo vědět, jaké konkrétní údaje o Vás zpracováváme a proč.</li>
+                <li>Právo na přístup: Máte právo vědět, jaké konkrétní údaje o vás zpracováváme a proč.</li>
                 <li>Právo na opravu: Pokud zjistíte, že jsou vaše údaje neaktuální nebo nesprávné, na vaši žádost je okamžitě opravíme.</li>
                 <li>Právo na výmaz: Pokud již neexistuje zákonný důvod pro zpracování, na vaši žádost údaje vymažeme.</li>
                 <li>Právo na omezení zpracování: V určitých situacích můžete požádat o pozastavení nakládání s vašimi daty.</li>

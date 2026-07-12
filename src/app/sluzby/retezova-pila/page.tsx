@@ -28,7 +28,7 @@ export default function ChainSawPage() {
       "@type": "LocalBusiness",
       "name": "IZODIAMANT"
     },
-    "description": "Rychlá a efektivní metoda izolace vlhkého cihelného zdiva s vložením nové hydroizolační folie.",
+    "description": "Rychlá a efektivní metoda izolace vlhkého cihelného zdiva s vložením nové hydroizolační fólie.",
     "offers": {
       "@type": "Offer",
       "priceSpecification": {
@@ -101,7 +101,7 @@ export default function ChainSawPage() {
                 {[
                   { step: "01", title: "Příprava trasy", desc: "Očištění zdiva v místě řezu a vytyčení ideální roviny pro vložení hydroizolace." },
                   { step: "02", title: "Strojní řezání", desc: "Postupné prořezávání ložné spáry cihelného zdiva pomocí speciální řetězové pily." },
-                  { step: "03", title: "Vložení izolace", desc: "Okamžité vložení PE hydroizolační folie o tloušťce 2 mm do vzniklé spáry." },
+                  { step: "03", title: "Vložení izolace", desc: "Okamžité vložení PE hydroizolační fólie o tloušťce 2 mm do vzniklé spáry." },
                   { step: "04", title: "Zajištění a výplň", desc: "Statické vyklínování a následné tlakové vyplnění spáry cementovou směsí." }
                 ].map((s, i) => (
                   <div key={i} className="flex gap-6 items-start">
@@ -152,7 +152,7 @@ export default function ChainSawPage() {
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <Icons.ShieldCheck className="w-10 h-10 text-primary mb-6" />
               <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Záruka</h3>
-              <p className="text-neutral-dark/60 font-medium">Používáme certifikované PE folie s životností přes 50 let.</p>
+              <p className="text-neutral-dark/60 font-medium">Používáme certifikované PE fólie s životností přes 50 let.</p>
             </div>
           </div>
 
@@ -172,7 +172,7 @@ export default function ChainSawPage() {
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">3</div>
-                    <p className="text-white/70 font-medium">Vložení hydroizolační PE folie o tloušťce 2 mm.</p>
+                    <p className="text-white/70 font-medium">Vložení hydroizolační PE fólie o tloušťce 2 mm.</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">4</div>

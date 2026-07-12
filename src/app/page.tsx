@@ -48,7 +48,7 @@ function ProblemSection() {
             {
               icon: Icons.Droplet,
               title: "Vzlínající vlhkost zdiva",
-              text: "Voda kapí zdí a vytváří vlhké mapy. Bez zásahu se problém neustále zhoršuje a postupně ničí stavbu. Vlhké zdivo má až 5× horší tepelnou vodivost než suché.",
+              text: "Vlhkost vzlíná zdivem a vytváří vlhké mapy. Bez zásahu se problém neustále zhoršuje a postupně ničí stavbu. Vlhké zdivo má až 5× horší tepelně-izolační vlastnosti než suché.",
             },
             {
               icon: Icons.Mold,

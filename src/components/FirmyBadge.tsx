@@ -47,7 +47,7 @@ export default function FirmyBadge() {
       <div className="relative w-10 h-10 shrink-0">
         <Image 
           src="/images/mapy-com.jpeg"
-          alt="Mapy.cz" 
+          alt="Mapy.com"
           fill
           sizes="40px"
           className="object-contain"
@@ -64,7 +64,7 @@ export default function FirmyBadge() {
           <span className="ml-1 text-neutral-dark font-black text-sm italic">{rating.toFixed(1)}</span>
         </div>
         <div className="text-[10px] font-black text-neutral-dark/40 uppercase tracking-widest group-hover:text-neutral-dark transition-colors">
-          {count} hodnocení na Firmy.cz
+          {count} hodnocení na Mapy.com
         </div>
       </div>
     </a>

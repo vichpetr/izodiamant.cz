@@ -20,7 +20,7 @@ interface Review {
 }
 
 const SOURCE_LABEL: Record<ReviewSource, string> = {
-  firmy: 'Seznam Firmy.cz',
+  firmy: 'Mapy.com',
   google: 'Google',
 };
 
@@ -162,7 +162,7 @@ export default function HomeReviews() {
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-white transition-colors shrink-0 mb-2"
             >
-              Všechny recenze na Seznamu
+              Všechny recenze na Mapy.com
               <Icons.ExternalLink className="w-4 h-4" />
             </a>
           )}

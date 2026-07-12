@@ -184,7 +184,7 @@ export default function DiamondWirePage() {
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">4</div>
-                    <p className="text-white/70 font-medium">Vložení hydroizolační vrstvy (PE folie nebo sklolaminátové desky).</p>
+                    <p className="text-white/70 font-medium">Vložení hydroizolační vrstvy (PE fólie nebo sklolaminátové desky).</p>
                   </div>
                   <div className="flex gap-4">
                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-neutral-dark font-black shrink-0">5</div>

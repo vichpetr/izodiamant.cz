@@ -8,6 +8,7 @@ import mestaData from "@/data/mesta.json";
 type Mesto = {
   id: string;
   name: string;
+  locative: string;
   slug: string;
   keywords: string[];
   description: string;
@@ -131,8 +132,8 @@ export default async function MestoPage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-5xl font-black text-neutral-dark uppercase tracking-tighter italic mb-8 text-center">
-              Trápí vás vlhké zdivo, plísně<br />nebo vzlínající vlhkost v{" "}
-              <span className="text-primary">{mesto.name}</span>?
+              Trápí vás vlhké zdivo, plísně<br />nebo vzlínající vlhkost{" "}
+              <span className="text-primary">{mesto.locative}</span>?
             </h2>
             <p className="text-lg text-neutral-dark/70 font-medium leading-relaxed mb-12 text-center">
               Vlhkost zdiva je vážný problém, který se neodstraní sám. Vzlínající vlhkost ničí omítky, způsobuje plísně a zhoršuje tepelnou izolaci vašeho domu. Nabízíme trvalé řešení.
@@ -144,7 +145,7 @@ export default async function MestoPage({
               {
                 icon: Icons.Droplet,
                 title: "Vzlínající vlhkost zdiva",
-                text: "Voda kapí zdí a vytváří nevzhledné vlhké mapy. Bez zásahu se problém neustále zhoršuje a postupně ničí stavbu.",
+                text: "Vlhkost vzlíná zdivem a vytváří nevzhledné vlhké mapy. Bez zásahu se problém neustále zhoršuje a postupně ničí stavbu.",
               },
               {
                 icon: Icons.Mold,
@@ -176,8 +177,8 @@ export default async function MestoPage({
 
           <div className="mt-16 bg-primary/5 rounded-3xl p-8 md:p-12 border-2 border-primary/10">
             <h3 className="text-2xl font-black text-neutral-dark uppercase italic mb-4">
-              Jak problém s vlhkostí zdiva řešit v{" "}
-              <span className="text-primary">{mesto.name}</span>?
+              Jak problém s vlhkostí zdiva řešit{" "}
+              <span className="text-primary">{mesto.locative}</span>?
             </h3>
             <p className="text-neutral-dark/70 font-medium leading-relaxed mb-6">
               {mesto.services}
@@ -205,7 +206,7 @@ export default async function MestoPage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-neutral-dark uppercase tracking-tighter italic mb-4">
-              Kolik stojí sanace zdiva v <span className="text-primary">{mesto.name}</span>?
+              Kolik stojí sanace zdiva <span className="text-primary">{mesto.locative}</span>?
             </h2>
             <p className="text-lg text-neutral-dark/60 font-medium max-w-2xl mx-auto">
               Cena závisí na typu zdiva, tloušťce a zvolené technologii. Pomocí naší kalkulačky si můžete nechat spočítat orientační cenu ještě před kontaktem.
@@ -272,7 +273,7 @@ export default async function MestoPage({
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-5xl font-black text-neutral-dark uppercase tracking-tighter italic mb-12 text-center">
-            Proč zvolit IZODIAMANT v <span className="text-primary">{mesto.name}</span>?
+            Proč zvolit IZODIAMANT <span className="text-primary">{mesto.locative}</span>?
           </h2>
 
           {benefitItems.length > 0 && (
@@ -293,7 +294,7 @@ export default async function MestoPage({
                   <Icons.MapPin className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-black text-neutral-dark uppercase text-lg mb-1">Lokální přítomnost v {mesto.name}</h3>
+                  <h3 className="font-black text-neutral-dark uppercase text-lg mb-1">Lokální přítomnost {mesto.locative}</h3>
                   <p className="text-neutral-dark/60 font-medium text-sm leading-relaxed">
                     Nacházíme se blízko vás. Díky místní přítomnosti jsme schopni rychleji reagovat na vaše požadavky a nabídnout rychlé termíny realizace.
                   </p>
@@ -317,7 +318,7 @@ export default async function MestoPage({
                   <Icons.Coins className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-black text-neutral-dark uppercase text-lg mb-1">Transparentní ceny bez skrytých poplatků v {mesto.name}</h3>
+                  <h3 className="font-black text-neutral-dark uppercase text-lg mb-1">Transparentní ceny bez skrytých poplatků {mesto.locative}</h3>
                   <p className="text-neutral-dark/60 font-medium text-sm leading-relaxed">
                     Naše kalkulačka vám ukáže orientační cenu ještě před spuštěním strojů. Cena za metr podřezání zdiva je vždy konečná a jasná.
                   </p>
@@ -333,7 +334,7 @@ export default async function MestoPage({
                 <div>
                   <h3 className="font-black text-neutral-dark uppercase text-lg mb-1">Záruka na všechny práce</h3>
                   <p className="text-neutral-dark/60 font-medium text-sm leading-relaxed">
-                    Naše sanace zdiva v {mesto.name} je zakončena prodlouženou zárukou. Používáme pouze certifikované izolační materiály s ověřenou životností.
+                    Naše sanace zdiva {mesto.locative} je zakončena prodlouženou zárukou. Používáme pouze certifikované izolační materiály s ověřenou životností.
                   </p>
                 </div>
               </div>
@@ -357,7 +358,7 @@ export default async function MestoPage({
                 <div>
                   <h3 className="font-black text-neutral-dark uppercase text-lg mb-1">100% suchý dům – garantováno</h3>
                   <p className="text-neutral-dark/60 font-medium text-sm leading-relaxed">
-                    Vracíme zdraví vaší stavbě. Díky moderním technologiím – diamantovému lanu, řetězové pile a chemické injektáži – je vaše domov navždy chráněn před vlhkostí.
+                    Vracíme zdraví vaší stavbě. Díky moderním technologiím – diamantovému lanu, řetězové pile a chemické injektáži – je váš domov navždy chráněn před vlhkostí.
                   </p>
                 </div>
               </div>
