@@ -120,8 +120,8 @@ export default async function ProjectPage({
                     Realizace sanace
                   </div>
                   <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.85] -ml-1">
-                    {project.title.includes('sanace') || project.title.includes('Sanace') 
-                      ? project.title 
+                    {/[Ss]anace|[Ii]zolace/.test(project.title)
+                      ? project.title
                       : `Sanace objektu: ${project.title}`}
                   </h1>
                   <div className="flex items-center gap-2 text-neutral-dark/60 font-bold uppercase tracking-widest text-sm ml-1 pt-4">

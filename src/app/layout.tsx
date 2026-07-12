@@ -19,7 +19,7 @@ export const metadata: Metadata = {
       template: "%s | IZODIAMANT"
     },
     description: "Odborně podřezáváme a izolujeme vlhké zdivo. Profesionální sanace nejmodernější technologií (diamantové lano, řetězová pila, chemická injektáž) po celé České republice. Vracíme zdraví vaší stavbě.",
-    keywords: ["sanace zdiva", "podřezávání zdiva", "podřezání zdiva", "podřezání domu cena", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "sanace vlhkého zdiva", "hydroizolace", "izolace zdi", "izolace domu", "vzlínající vlhkost", "plísně ve zdivu", "vlhké zdivo", "sanace vlhkosti", "trvalé odstranění vlhkosti", "IZODIAMANT", "Nové Hrady", "Pardubice", "Žleby", "Sloupnice", "Skorkov", "Bernartice", "Staré Žďánice", "Polička"],
+    keywords: ["sanace zdiva", "podřezávání zdiva", "podřezání zdiva", "podřezání domu cena", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "sanace vlhkého zdiva", "hydroizolace", "izolace zdi", "izolace domu", "vzlínající vlhkost", "plísně ve zdivu", "vlhké zdivo", "sanace vlhkosti", "trvalé odstranění vlhkosti", "IZODIAMANT", "Nové Hrady", "Pardubice", "Žleby", "Sloupnice", "Skorkov", "Bernartice", "Staré Ždánice", "Polička"],
   authors: [{ name: "IZODIAMANT" }],
   robots: {
     index: true,
@@ -27,9 +27,16 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: 'https://izodiamant.cz',
+    languages: {
+      'cs-CZ': 'https://izodiamant.cz',
+      'x-default': 'https://izodiamant.cz',
+    },
   },
   other: {
     'seznam-wmt': 'Vz7SKZJRpsg1w5RIGrTU2589oyNqXmMf',
+    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? { 'google-site-verification': process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : {}),
     'preconnect': [
       'https://izodiamant-reviews-api.petr-c3c.workers.dev',
       'https://www.google-analytics.com'
@@ -70,11 +77,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const googleMapsUrl = process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL;
+  const firmyUrl = "https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html";
+
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
+    "@id": "https://izodiamant.cz/#business",
     "name": "IZODIAMANT",
     "image": "https://izodiamant.cz/logo.png",
+    "logo": "https://izodiamant.cz/logo.png",
     "description": "Profesionální sanace a podřezávání vlhkého zdiva nejmodernější technologií (diamantové lano, řetězová pila, chemická injektáž).",
     "url": "https://izodiamant.cz",
     "telephone": "+420737017012",
@@ -90,11 +102,23 @@ export default function RootLayout({
       "latitude": "49.8517231",
       "longitude": "16.1432100"
     },
-    "areaServed": "CZ",
+    "areaServed": [
+      { "@type": "Country", "name": "Česká republika" },
+      { "@type": "AdministrativeArea", "name": "Pardubický kraj" },
+      { "@type": "AdministrativeArea", "name": "Královéhradecký kraj" },
+      { "@type": "AdministrativeArea", "name": "Středočeský kraj" },
+      { "@type": "AdministrativeArea", "name": "Hlavní město Praha" }
+    ],
     "priceRange": "$$",
-    "sameAs": [
-      "https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html"
-    ]
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "08:00",
+        "closes": "17:00"
+      }
+    ],
+    "sameAs": [firmyUrl, googleMapsUrl].filter(Boolean),
   };
 
   return (

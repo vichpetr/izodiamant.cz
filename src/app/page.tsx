@@ -10,7 +10,7 @@ import { Icons } from "@/components/Icons";
 
 export const metadata: Metadata = {
   title: "Sanace a podřezávání zdiva – komplexní řešení | IZODIAMANT",
-  description: "Specialisté na sanace vlhkého zdiva po celé ČR. Podřezávání diamantovým lanem, řetězovou pilou a chemická injektáž. Vracíme zdraví vaší stavbě.",
+  description: "Specialisté na sanace vlhkého zdiva po celé České republice. Podřezávání diamantovým lanem, řetězovou pilou a chemická injektáž. Vracíme zdraví vaší stavbě.",
   keywords: ["sanace zdiva", "podřezávání zdiva", "podřezání zdiva", "podřezání domu cena", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "sanace vlhkého zdiva", "hydroizolace", "izolace zdi", "izolace domu", "vzlínající vlhkost", "plísně ve zdivu", "vlhké zdivo", "IZODIAMANT", "Nové Hrady"],
 };
 
@@ -39,7 +39,7 @@ function ProblemSection() {
             Trápí vás vlhké zdivo, plísně<br />nebo vzlínající vlhkost?
           </h2>
           <p className="text-lg text-neutral-dark/60 font-medium leading-relaxed">
-            Nemusíte hned psát blog – ale upravte svůj dům k lepšímu. Vlhké zdivo ničí omítky, způsobuje plísně a zvyšuje náklady na vytápění. My vám nabízíme trvalé odstranění vlhkosti zdiva pomocí moderních technologií.
+            Vlhké zdivo ničí omítky, způsobuje plísně a zvyšuje náklady na vytápění. Nabízíme trvalé odstranění vlhkosti zdiva pomocí moderních technologií.
           </p>
         </div>
 
@@ -48,12 +48,12 @@ function ProblemSection() {
             {
               icon: Icons.Droplet,
               title: "Vzlínající vlhkost zdiva",
-              text: "Voda kapí zdí a vytváří vlhké mapy. Bez zásahu se problém neustále zhoršuje a postupně ničí stavbu. Vlhké zdivo má až 5× horší tepelnou vodivost než suché.",
+              text: "Vlhkost vzlíná zdivem a vytváří vlhké mapy. Bez zásahu se problém neustále zhoršuje a postupně ničí stavbu. Vlhké zdivo má až 5× horší tepelně-izolační vlastnosti než suché.",
             },
             {
               icon: Icons.Mold,
               title: "Plísně ve zdivu",
-              text: "Vlhké prostředí je ideální pro růst plísní, které škodí nejen na stavbě, ale i na zdraví vaší rodiny. Plísně ve zdivu jsou častý problém v podřezaných doměch bez funkční hydroizolace.",
+              text: "Vlhké prostředí je ideální pro růst plísní, které škodí nejen stavbě, ale i zdraví vaší rodiny. Plísně ve zdivu jsou častý problém v domech bez funkční hydroizolace.",
             },
             {
               icon: Icons.Thermometer,

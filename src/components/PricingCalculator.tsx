@@ -164,7 +164,7 @@ export default function PricingCalculator() {
                     ))}
                   </div>
                   <div className="mt-4 pt-2 border-t border-white/10 text-[8px] text-white/30 font-bold uppercase tracking-widest leading-relaxed">
-                    * bm kalkulován při standardní tloušťce zdiva 45cm.
+                    * bm kalkulován při standardní tloušťce zdiva 45 cm.
                   </div>
                 </div>
               </div>
