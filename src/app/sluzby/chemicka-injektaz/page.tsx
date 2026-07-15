@@ -4,17 +4,18 @@ import Footer from "@/components/Footer";
 import { Icons } from "@/components/Icons";
 import Link from "next/link";
 import Image from "next/image";
-import Script from "next/script";
 import servicesData from "@/data/services.json";
 import referencesData from '@/data/references.json';
+import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Chemická injektáž vlhkého zdiva",
-  description: "Dodatečná hydroizolace pomocí chemické injektáže. Šetrná metoda pro trvalé sucho bez narušení statiky zdiva. Vracíme zdraví vaší stavbě.",
+  ...pageMetadata({
+    path: '/sluzby/chemicka-injektaz',
+    title: "Chemická injektáž vlhkého zdiva",
+    description: "Dodatečná hydroizolace pomocí chemické injektáže. Šetrná metoda bez narušení statiky zdiva, vhodná tam, kde nelze mechanicky řezat.",
+    images: ['/images/sluzby/chemicka-injektaz.jpg'],
+  }),
   keywords: ["chemická injektáž", "injektáž zdiva", "injektáž zdiva proti vlhkosti", "krémová injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "odvlhčení", "Nové Hrady", "ČR"],
-  alternates: {
-    canonical: 'https://izodiamant.cz/sluzby/chemicka-injektaz',
-  },
 };
 
 export default function ChemicalInjectionPage() {
@@ -44,12 +45,16 @@ export default function ChemicalInjectionPage() {
     "Možnost realizace z interiéru i exteriéru",
     "Rychlá a čistá aplikace bez prachu",
     "Dlouhodobý hydrofobní účinek",
-    "Vracíme zdraví vaší stavbě."
+    "Řešení tam, kde nelze mechanicky řezat"
   ];
 
   return (
     <main className="min-h-screen bg-neutral-light">
-      <Script id="service-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} strategy="afterInteractive" />
+      {/* JSON-LD renderujeme jako běžný <script>, aby byl v serverovém HTML i pro crawlery bez JS. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
       <Header />
       
       <section className="pt-32 pb-20">
@@ -217,7 +222,7 @@ export default function ChemicalInjectionPage() {
               Chemická injektáž představuje vysoce efektivní a minimálně invazivní způsob, jak vytvořit dodatečnou hydroizolaci v místech, kde nelze použít mechanické podřezání. Tato technologie je ideální pro objekty se špatně přístupným zdivem, nepravidelnou spárou nebo pro historické stavby, kde je prioritou maximální ochrana statiky bez jakýchkoliv vibrací.
             </p>
             <p className="mb-6 leading-relaxed">
-              Principem metody je nasycení struktury zdiva speciální hydrofobní látkou (krémem nebo gelem) na bázi silanů a siloxanů. Tato látka proniká i do těch nejmenších pórů a kapilár, kde po vytvrdnutí vytvoří neprostupnou vodoodpudivou clonu. Voda tak ztrácí schopnost vzlínat vzhůru a zdivo nad injektážní linií začíná postupně vysychat.
+              Principem metody je nasycení struktury zdiva speciální hydrofobní látkou (krémem nebo gelem) na bázi silanů a siloxanů. Tato látka proniká i do těch nejmenších pórů a kapilár, kde po vytvrdnutí vytvoří souvislou vodoodpudivou clonu. Voda tak ztrácí schopnost vzlínat vzhůru a zdivo nad injektážní linií začíná postupně vysychat.
             </p>
             <p className="mb-6 leading-relaxed">
               Jednou z největších výhod chemické injektáže je její univerzálnost a čistota provedení. Realizace může probíhat jak z exteriéru, tak z interiéru, což oceníte zejména u řadových domů nebo sklepních prostor. Injektáž nevyžaduje žádné těžké stroje a zásah do konstrukce domu se omezuje pouze na sérii malých navrtaných otvorů, které se po skončení prací odborně zapraví.

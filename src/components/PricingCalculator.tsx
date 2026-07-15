@@ -8,12 +8,15 @@ import Link from 'next/link';
 import calculatorData from '@/data/calculator.json';
 import servicesData from '@/data/services.json';
 
+// Ceny v calculator.json jsou sazby za běžný metr při referenční tloušťce zdiva.
+// U silnějšího zdiva roste cena úměrně poměru skutečné a referenční tloušťky.
+const REFERENCE_THICKNESS_CM = 45;
+
 interface Service {
   id: string;
   label: string;
   minPrice: number;
   maxPrice: number;
-  unit: string;
 }
 
 interface Material {
@@ -76,9 +79,8 @@ export default function PricingCalculator() {
     }
 
     const prices: number[] = [];
+    const factor = (thickness / REFERENCE_THICKNESS_CM) * length;
     candidates.forEach(s => {
-      const isM2 = s.unit === 'm2';
-      const factor = isM2 ? (thickness / 100) * length : length;
       prices.push(s.minPrice * factor);
       prices.push(s.maxPrice * factor);
     });
@@ -127,8 +129,8 @@ export default function PricingCalculator() {
   };
 
   const priceListTooltip = [
-    { name: "Diamantové lano", price: servicesData["diamantove-lano"].priceRange.replace('m²', 'bm*'), href: "/sluzby/diamantove-lano" },
-    { name: "Řetězová pila", price: servicesData["retezova-pila"].priceRange.replace('m²', 'bm*'), href: "/sluzby/retezova-pila" },
+    { name: "Diamantové lano", price: servicesData["diamantove-lano"].priceRange, href: "/sluzby/diamantove-lano" },
+    { name: "Řetězová pila", price: servicesData["retezova-pila"].priceRange, href: "/sluzby/retezova-pila" },
     { name: "Chemická injektáž", price: servicesData["chemicka-injektaz"].priceRange, href: "/sluzby/chemicka-injektaz" }
   ];
 
@@ -164,7 +166,7 @@ export default function PricingCalculator() {
                     ))}
                   </div>
                   <div className="mt-4 pt-2 border-t border-white/10 text-[8px] text-white/30 font-bold uppercase tracking-widest leading-relaxed">
-                    * bm kalkulován při standardní tloušťce zdiva 45 cm.
+                    Ceny jsou orientační pro tloušťku zdiva {REFERENCE_THICKNESS_CM} cm; u silnějšího zdiva se cena úměrně navyšuje.
                   </div>
                 </div>
               </div>
@@ -284,8 +286,11 @@ export default function PricingCalculator() {
                             </div>
                           </div>
                           <div className="inline-block px-3 py-1 bg-white/5 rounded-full text-[9px] text-white/40 font-black uppercase tracking-widest leading-none">
-                            Bez DPH | {selectedService?.label || (selectedMaterial ? "Všechny dostupné metody" : "Všechny varianty")}
+                            Nejsme plátci DPH | {selectedService?.label || (selectedMaterial ? "Všechny dostupné metody" : "Všechny varianty")}
                           </div>
+                          <p className="mt-4 text-[9px] text-white/30 font-bold leading-relaxed">
+                            Orientační odhad pro {length} bm zdi o tloušťce {thickness} cm. Ceny vycházejí ze sazby za běžný metr při tloušťce {REFERENCE_THICKNESS_CM} cm; u silnějšího zdiva se cena úměrně navyšuje. Závaznou nabídku zpracujeme po prohlídce.
+                          </p>
                         </div>
                       </div>
                     </div>

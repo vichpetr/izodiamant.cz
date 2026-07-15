@@ -1,4 +1,8 @@
-# IZODIAMANT - Sanace a podřezávání zdiva
+// Jediný zdroj pravdy pro obsah llms.txt.
+// Musí zůstat shodný s public/llms.txt, který se servíruje jako statický soubor –
+// hlídá to test v tests/audit.spec.ts. Middleware běží na edge a nemá přístup k fs,
+// proto je obsah vložen jako konstanta.
+export const LLMS_MD = `# IZODIAMANT - Sanace a podřezávání zdiva
 
 Specialisté na profesionální sanace vlhkého zdiva po celé České republice. Vracíme zdraví vaší stavbě.
 
@@ -35,3 +39,4 @@ Poskytujeme služby po celé České republice. Naše týmy pravidelně realizuj
 - Statické zajištění budovy je součástí každého procesu podřezávání.
 - Transparentní kalkulace ceny bez skrytých poplatků.
 - Dlouholetá praxe a stovky úspěšných realizací.
+`;

@@ -4,6 +4,7 @@ import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import MotionProvider from "@/components/MotionProvider";
 import WebMCP from "@/components/WebMCP";
+import firmyData from "@/data/firmy.json";
 import "./globals.css";
 
 const inter = Inter({
@@ -85,16 +86,24 @@ export default function RootLayout({
     "@type": "LocalBusiness",
     "@id": "https://izodiamant.cz/#business",
     "name": "IZODIAMANT",
+    "legalName": "Václav Ropek",
+    "identifier": "74650726",
     "image": "https://izodiamant.cz/logo.png",
     "logo": "https://izodiamant.cz/logo.png",
     "description": "Profesionální sanace a podřezávání vlhkého zdiva nejmodernější technologií (diamantové lano, řetězová pila, chemická injektáž).",
     "url": "https://izodiamant.cz",
     "telephone": "+420737017012",
+    "email": "info@izodiamant.cz",
+    "founder": {
+      "@type": "Person",
+      "name": "Václav Ropek"
+    },
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Mokrá Lhota 26",
       "addressLocality": "Nové Hrady",
-      "postalCode": "53944",
+      "postalCode": "539 44",
+      "addressRegion": "Pardubický kraj",
       "addressCountry": "CZ"
     },
     "geo": {
@@ -110,14 +119,45 @@ export default function RootLayout({
       { "@type": "AdministrativeArea", "name": "Hlavní město Praha" }
     ],
     "priceRange": "$$",
-    "openingHoursSpecification": [
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        "opens": "08:00",
-        "closes": "17:00"
-      }
-    ],
+    "currenciesAccepted": "CZK",
+    // Otevírací doba se neuvádí – firma pracuje po domluvě, bez pevné otevírací doby.
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": firmyData.rating,
+      "reviewCount": firmyData.count,
+      "bestRating": 5,
+      "worstRating": 1
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Sanace vlhkého zdiva",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Podřezávání zdiva diamantovým lanem",
+            "url": "https://izodiamant.cz/sluzby/diamantove-lano"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Podřezávání zdiva řetězovou pilou",
+            "url": "https://izodiamant.cz/sluzby/retezova-pila"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Chemická injektáž vlhkého zdiva",
+            "url": "https://izodiamant.cz/sluzby/chemicka-injektaz"
+          }
+        }
+      ]
+    },
     "sameAs": [firmyUrl, googleMapsUrl].filter(Boolean),
   };
 
@@ -146,7 +186,12 @@ export default function RootLayout({
           `}
         </Script>
 
-        <Script id="json-ld-local-business" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} strategy="afterInteractive" />
+        {/* JSON-LD musí být v serverovém HTML – přes next/script se vloží až po
+            hydrataci a crawleři, kteří nespouštějí JS (Seznam, část AI botů), ho neuvidí. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+        />
       </head>
       <body className={`${inter.variable} antialiased font-sans`}>
         <WebMCP />

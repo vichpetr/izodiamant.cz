@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: '/ochrana-udaju',
   title: "Ochrana osobních údajů",
   description: "Zásady zpracování a ochrany osobních údajů na webu izodiamant.cz v souladu s GDPR. Informace o tom, jak chráníme vaše data při poptávce sanace zdiva.",
-  alternates: {
-    canonical: 'https://izodiamant.cz/ochrana-udaju',
-  },
-};
+});
 
 export default function PrivacyPolicy() {
   return (
