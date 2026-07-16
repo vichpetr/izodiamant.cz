@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Icons } from './Icons';
 import staticReviews from '@/data/reviews.json';
+import ExpandableText from './ExpandableText';
+
+type ReviewSource = 'firmy' | 'google';
 
 interface Review {
   id: string;
@@ -10,6 +13,25 @@ interface Review {
   rating: number;
   text: string;
   date: string;
+  source?: ReviewSource;
+  sourceUrl?: string;
+}
+
+const SOURCE_LABEL: Record<ReviewSource, string> = {
+  firmy: 'Mapy.com',
+  google: 'Google',
+};
+
+// Sjednotí id napříč zdroji dat: statická data i nový worker používají prefix
+// (firmy-/google-), starý worker a reviewId v referencích ho nemají.
+const normId = (id: string) => id.replace(/^(firmy|google)-/, '');
+
+// Zdroj recenze primárně z prefixu reviewId (spolehlivé „kam reference patří“),
+// jinak z nalezené recenze, jinak Mapy.com.
+function resolveSource(reviewId: string, found?: Review): ReviewSource {
+  if (reviewId.startsWith('google-')) return 'google';
+  if (reviewId.startsWith('firmy-')) return 'firmy';
+  return found?.source ?? 'firmy';
 }
 
 export default function ProjectReview({ reviewId }: { reviewId: string }) {
@@ -18,29 +40,30 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
 
   useEffect(() => {
     async function fetchReview() {
-      // 1. Try Live API if configured
+      const target = normId(reviewId);
+
+      // 1. Živé API, pokud je nastaveno
       if (workerUrl && !workerUrl.includes('vás-účet')) {
         try {
-          const res = await fetch(workerUrl, { 
-            headers: { 'Accept': 'application/json' }
-          });
-          
-          if (!res.ok) return;
-          
-          const contentType = res.headers.get('content-type');
-          if (!contentType || !contentType.includes('application/json')) {
-            throw new Error(`Expected JSON but received ${contentType}`);
-          }
-
-          const text = await res.text();
-          if (!text) throw new Error('Empty response from review API');
-          
-          const data = JSON.parse(text);
-          if (data && data.reviews) {
-            const found = data.reviews.find((r: Review) => r.id === reviewId);
-            if (found) {
-              setReview({ ...found, rating: Number(found.rating) });
-              return;
+          const res = await fetch(workerUrl, { headers: { Accept: 'application/json' } });
+          if (res.ok) {
+            const contentType = res.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+              const text = await res.text();
+              if (text) {
+                const data = JSON.parse(text);
+                if (data && Array.isArray(data.reviews)) {
+                  const found = (data.reviews as Review[]).find((r) => normId(r.id) === target);
+                  if (found) {
+                    setReview({
+                      ...found,
+                      rating: Number(found.rating),
+                      source: resolveSource(reviewId, found),
+                    });
+                    return;
+                  }
+                }
+              }
             }
           }
         } catch (err) {
@@ -48,14 +71,14 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
         }
       }
 
-      // 2. Fallback to static
-      try {
-        const fallback = (staticReviews as Review[]).find(r => r.id === reviewId);
-        if (fallback) {
-          setReview({ ...fallback, rating: Number(fallback.rating) });
-        }
-      } catch (err) {
-        console.warn('Static review lookup failed');
+      // 2. Fallback na statická data
+      const fallback = (staticReviews as unknown as Review[]).find((r) => normId(r.id) === target);
+      if (fallback) {
+        setReview({
+          ...fallback,
+          rating: Number(fallback.rating),
+          source: resolveSource(reviewId, fallback),
+        });
       }
     }
 
@@ -63,6 +86,8 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
   }, [reviewId, workerUrl]);
 
   if (!review) return null;
+
+  const source = review.source ?? 'firmy';
 
   const renderStars = (rating: number) => {
     return (
@@ -104,27 +129,41 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
     "datePublished": review.date
   };
 
+  const sourceBadge = (
+    <div className="bg-primary/10 text-primary px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest">
+      Recenze z {SOURCE_LABEL[source]}
+    </div>
+  );
+
   return (
     <div className="bg-white rounded-3xl p-8 border-2 border-primary/10 relative overflow-hidden group shadow-sm mt-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }} />
       <Icons.Quote className="absolute top-6 right-8 w-12 h-12 text-primary/5 group-hover:text-primary/10 transition-colors" />
-      
+
       <div className="mb-6">
         {renderStars(review.rating)}
       </div>
 
-      <p className="text-lg text-neutral-dark/80 font-medium italic leading-relaxed mb-8 relative z-10">
-        „{review.text}“
-      </p>
+      <ExpandableText
+        text={`„${review.text}“`}
+        clampLines={10}
+        charThreshold={450}
+        className="text-lg text-neutral-dark/80 font-medium italic leading-relaxed relative z-10"
+        buttonClassName="text-[11px] text-primary hover:text-neutral-dark"
+      />
 
-      <div className="pt-6 border-t border-neutral-light flex justify-between items-center">
+      <div className="pt-6 mt-8 border-t border-neutral-light flex justify-between items-center">
         <div>
           <div className="font-black text-neutral-dark uppercase tracking-tight italic">{review.author}</div>
           <div className="text-[10px] font-bold text-neutral-dark/40 uppercase tracking-widest mt-1">Zákazník IZODIAMANT</div>
         </div>
-        <div className="bg-primary/10 text-primary px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest">
-          Ověřená recenze
-        </div>
+        {review.sourceUrl ? (
+          <a href={review.sourceUrl} target="_blank" rel="noopener noreferrer" title={`Zdroj: ${SOURCE_LABEL[source]}`}>
+            {sourceBadge}
+          </a>
+        ) : (
+          sourceBadge
+        )}
       </div>
     </div>
   );
