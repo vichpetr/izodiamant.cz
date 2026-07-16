@@ -73,4 +73,6 @@ From `GEMINI.md` — apply when editing any metadata or page copy:
 
 ## Deployment
 
-Cloudflare Pages (frontend) + a separate Cloudflare Worker (reviews API). `@cloudflare/next-on-pages` is in devDependencies. Full procedure including Worker source code lives in `deployment.MD`.
+Cloudflare Pages (frontend) + a separate Cloudflare Worker (reviews API). `@cloudflare/next-on-pages` is in devDependencies.
+
+**Reviews Worker** lives in `worker/` (`worker/src/index.js` is the single source of truth, `worker/wrangler.toml` the config) and **auto-deploys** via `.github/workflows/deploy-worker.yml` on any push to `master` under `worker/**`. Non-secret config (`FIRMY_PROFILE_URL`, `GOOGLE_PLACE_ID`) is in `wrangler.toml [vars]`; `GOOGLE_API_KEY` is a Cloudflare secret (persists across deploys). CI needs repo secrets `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`. Full procedure in `deployment.MD`.

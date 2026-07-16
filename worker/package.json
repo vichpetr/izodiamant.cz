@@ -1,0 +1,14 @@
+{
+  "name": "izodiamant-reviews-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker – živé recenze (Firmy.cz + Google) pro izodiamant.cz",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "wrangler deploy --dry-run"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}

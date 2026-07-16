@@ -11,6 +11,7 @@ export default [
       '.next/**',
       'node_modules/**',
       'out/**',
+      'worker/**',
       'test-results/**',
       'playwright-report/**',
       'next-env.d.ts',

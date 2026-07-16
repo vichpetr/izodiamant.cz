@@ -1,0 +1,18 @@
+# Cloudflare Worker – izodiamant-reviews-api
+# Nasazuje se automaticky přes .github/workflows/deploy-worker.yml při změně worker/**.
+#
+# name MUSÍ odpovídat existujícímu workeru, aby se aktualizoval (a zůstala stejná URL
+# izodiamant-reviews-api.<subdomena>.workers.dev), ne aby vznikl nový.
+name = "izodiamant-reviews-api"
+main = "src/index.js"
+compatibility_date = "2024-11-06"
+
+# Nesekretní konfigurace (verzovaná). Aplikuje se při každém nasazení.
+[vars]
+FIRMY_PROFILE_URL = "https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html?widget&limit=150"
+# Doplňte Place ID (ChIJ...) z Google. Prázdné = Google se přeskočí (worker vrací jen Firmy.cz).
+GOOGLE_PLACE_ID = ""
+
+# GOOGLE_API_KEY je SECRET – NENÍ zde. Nastavte jednorázově:
+#   cd worker && npx wrangler secret put GOOGLE_API_KEY
+# Secret přežije další nasazení `wrangler deploy` (nepřepisuje se).
