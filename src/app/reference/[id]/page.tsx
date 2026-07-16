@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import referencesData from '@/data/references.json';
 import { Metadata } from 'next';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, breadcrumbSchema } from '@/lib/seo';
 
 const ProjectReview = dynamic(() => import("@/components/ProjectReview"), { ssr: true });
 const ProjectGallery = dynamic(() => import("@/components/ProjectGallery"), { ssr: true });
@@ -68,6 +68,12 @@ export default async function ProjectPage({
 
   if (!project) return <div>Projekt nenalezen</div>;
 
+  const breadcrumb = breadcrumbSchema([
+    { name: "Domů", path: "/" },
+    { name: "Reference", path: "/#reference" },
+    { name: project.title, path: `/reference/${project.id}` },
+  ]);
+
   const formatDate = (dateStr: string) => {
     const parts = dateStr.split('-');
     if (parts.length < 2) return dateStr;
@@ -78,6 +84,10 @@ export default async function ProjectPage({
 
   return (
     <main className="min-h-screen bg-neutral-light text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
       <Header />
       
       <section className="pt-32 pb-24">

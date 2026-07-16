@@ -19,6 +19,9 @@ Ceny jsou uvedeny za běžný metr (bm) zdi a platí pro tloušťku zdiva 45 cm;
 - **Naruší podřezání statiku domu?** Při dodržení postupu ne. Postupuje se po malých úsecích „na střídačku“, do spáry se ihned vkládá izolace a statické klíny a spára se tlakově vyplní cementovou směsí s plastifikátorem.
 - **Práší se při podřezávání?** Prašnost je díky odsávání a vodnímu chlazení lana minimální. Většina prací probíhá bez nutnosti opustit nemovitost.
 - **Vyřeší podřezání vlhkost úplně?** Podřezání přeruší vzlínající zemní vlhkost. Zdivo nad izolací pak postupně vysychá (u silných stěn i několik měsíců). Při dalších zdrojích vlhkosti (zatékání, chybějící drenáž, kondenzace) doporučujeme navazující opatření.
+- **Jak poznám vzlínající vlhkost?** Vlhké mapy a tmavší pás u paty zdi (do 0,5–1,5 m), opadávající omítka, solné výkvěty, plíseň v rozích, zatuchlý vzduch. Vlhkost stoupá z podloží kapilárami odspodu nahoru.
+- **Podřezání, nebo chemická injektáž?** Mechanické podřezání (pila/lano) je nejspolehlivější a nejtrvanlivější, vhodné všude, kde lze zdivo proříznout. Injektáž volíme tam, kde řezat nelze. Metodu doporučíme podle materiálu a stavu stavby.
+- **Dá se podřezání udělat svépomocí?** Nedoporučujeme – zasahuje do nosné konstrukce a vyžaduje profesionální techniku, postup „na střídačku“, statické klínování a tlakovou injektáž. Práce pro odbornou firmu se zárukou.
 - **Doporuč a získej odměnu:** Za tip na nového zákazníka náleží finanční odměna, pokud tip obdržíme dříve, než nás klient sám kontaktuje. Vyplácí se po dokončení a proplacení zakázky. https://izodiamant.cz/doporuc-a-ziskej-odmenu
 
 ## Kontakt
