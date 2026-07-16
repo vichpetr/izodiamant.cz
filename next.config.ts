@@ -134,6 +134,17 @@ const nextConfig: NextConfig = {
         destination: '/#reference',
         permanent: true,
       },
+      // Zrušené landing pages měst (byly krátce živé a v sitemapě) → homepage.
+      {
+        source: '/mesta',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/mesta/:slug*',
+        destination: '/',
+        permanent: true,
+      },
     ]
   },
 };
