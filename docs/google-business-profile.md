@@ -35,7 +35,7 @@ Tento dokument popisuje, jak založit a spravovat firemní profil firmy IZODIAMA
 
 Po ověření a publikaci profilu:
 
-- **Place ID** (pro `GOOGLE_PLACE_ID` ve workeru): <https://developers.google.com/maps/documentation/places/web-service/place-id> – stránka má vyhledávání, zadejte „IZODIAMANT Nové Hrady", zkopírujte `ChIJ...` ID.
+- **Place ID** (pro `GOOGLE_PLACE_ID` ve workeru): <https://developers.google.com/maps/documentation/places/web-service/place-id> – odscrolujte k mapě, do vyhledávání zadejte „IZODIAMANT Nové Hrady", zkopírujte `ChIJ...` ID. **Pozor: Place ID není v URL profilu** (ta obsahuje jen CID a feature ID) – dohledejte ho zde. Podrobný postup i alternativa přes API klíč jsou v `deployment.MD` 2.1.1.
 - **Maps URL** (pro `NEXT_PUBLIC_GOOGLE_MAPS_URL` v Pages env): otevřete profil v Google Maps a v adresním řádku zkopírujte celou URL (`https://www.google.com/maps/place/IZODIAMANT/@49.85...,...`). Tato URL skončí v `sameAs` v JSON-LD a v `<a>` linkách na recenze.
 
 ### 1.4 Google API Key pro recenze (Worker)

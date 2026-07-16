@@ -22,14 +22,26 @@ Tento Worker:
 
 #### 2.1.1 Jak získat `GOOGLE_PLACE_ID`
 
-Place ID je stálý identifikátor firmy v Google Mapách (mění se jen výjimečně).
+Place ID je stálý identifikátor firmy v Google Mapách (`ChIJ...`; mění se jen výjimečně).
 
-1. Otevřete **Place ID Finder**: <https://developers.google.com/maps/documentation/places/web-service/place-id>.
-2. Do vyhledávacího pole na mapě zadejte `IZODIAMANT Nové Hrady` a vyberte firmu.
-3. Pod špendlíkem se zobrazí `Place ID` ve tvaru `ChIJ...` – zkopírujte ho.
-4. Vložte do `worker/wrangler.toml` → `[vars]` → `GOOGLE_PLACE_ID = "ChIJ..."` a commitněte (Place ID není tajné).
+> **Pozor – Place ID NENÍ v URL profilu.** Odkaz z Google Maps obsahuje jen **CID** a **feature ID**, ne Place ID. Např. v `…!1s0x470d95c41287715b:0xa247d518cbaca940…!16s%2Fg%2F11zgw3dcgm…` je `0x…a247d518cbaca940` = CID a `/g/11zgw3dcgm` = feature ID. **Ani jedno není `ChIJ...`** – Place ID se musí dohledat jedním ze způsobů níže. (CID se používá jen pro `NEXT_PUBLIC_GOOGLE_MAPS_URL` / `sameAs`, což web už má.)
 
-Alternativa (pokud znáte jen odkaz z profilu): v URL profilu bývá CID (`...!1s0x...:0x<hex>` nebo `cid=<číslo>`). CID ≠ Place ID – pro worker potřebujete `ChIJ...` z finderu výše. (CID se používá jen pro `NEXT_PUBLIC_GOOGLE_MAPS_URL` / `sameAs`, což už web má.)
+**Způsob A – Place ID Finder (bez API klíče):**
+
+1. Otevřete <https://developers.google.com/maps/documentation/places/web-service/place-id>.
+2. **Odscrolujte k interaktivní mapě** níže na stránce – přímo v mapě je vyhledávací pole „Enter a location".
+3. Zadejte `IZODIAMANT Nové Hrady` a vyberte firmu.
+4. Nad špendlíkem vyskočí bublina s **`Place ID: ChIJ...`** – zkopírujte ho.
+
+**Způsob B – přes API klíč (jedna adresa v prohlížeči):** až budete mít `GOOGLE_API_KEY` (viz 2.1.2), otevřete:
+
+```
+https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=IZODIAMANT%20Nov%C3%A9%20Hrady&inputtype=textquery&fields=place_id&key=VAS_KLIC
+```
+
+Odpověď obsahuje `"place_id": "ChIJ..."`.
+
+Získané `ChIJ...` vložte do `worker/wrangler.toml` → `[vars]` → `GOOGLE_PLACE_ID = "ChIJ..."` a commitněte (Place ID není tajné).
 
 #### 2.1.2 Jak získat `GOOGLE_API_KEY`
 
