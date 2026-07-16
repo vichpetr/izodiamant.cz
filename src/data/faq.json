@@ -28,6 +28,18 @@
     "answer": "Podřezání spolehlivě přeruší vzlínající zemní vlhkost, což je u vlhkého zdiva nejčastější příčina potíží. Zdivo nad izolací pak postupně vysychá – u silných stěn to může trvat i několik měsíců. Pokud se na objektu podílejí i další zdroje vlhkosti (zatékající srážková voda, chybějící odvodnění, kondenzace), doporučíme k podřezání navazující opatření, například drenáž nebo sanační omítky."
   },
   {
+    "question": "Jak poznám vzlínající vlhkost ve zdivu?",
+    "answer": "Typické příznaky jsou vlhké mapy a tmavší pás u paty zdi zhruba do výšky 0,5–1,5 m, opadávající omítka, bílé solné výkvěty (salpetr), plíseň v rozích a u podlahy, odlupující se malby a zatuchlý vzduch. Vlhkost obvykle stoupá zdivem z podloží kapilárami, proto se projevuje odspodu nahoru. Přesnou příčinu i vlhkost zdiva ověříme měřením při nezávazné prohlídce."
+  },
+  {
+    "question": "Je lepší podřezání zdiva, nebo chemická injektáž?",
+    "answer": "Mechanické podřezání (řetězovou pilou nebo diamantovým lanem) fyzicky přeruší zdivo a vloží do něj celistvou hydroizolaci – je to nejspolehlivější a nejtrvanlivější řešení, vhodné všude, kde se dá zdivo proříznout. Chemická injektáž vytvoří hydrofobní clonu nasáknutím zdiva a volíme ji tam, kde řezat nelze (špatný přístup, členité nebo velmi silné zdivo, blízkost sítí). Nejvhodnější metodu doporučíme podle materiálu a stavu konkrétní stavby."
+  },
+  {
+    "question": "Dá se podřezání zdiva zvládnout svépomocí?",
+    "answer": "Nedoporučujeme. Podřezání zasahuje do nosné konstrukce – při špatném postupu hrozí sedání a praskliny. Vyžaduje profesionální techniku (řetězovou pilu nebo diamantové lano s vodním chlazením), postup po krátkých úsecích „na střídačku“, statické klínování a tlakovou injektáž spáry. Právě správně vložená a napojená hydroizolace rozhoduje o tom, zda bude dům trvale suchý, proto jde o práci pro odbornou firmu se zárukou."
+  },
+  {
     "question": "Jak funguje program „Doporuč a získej odměnu“?",
     "answer": "Pokud nám doporučíte nového zákazníka, náleží vám finanční odměna. Podmínkou je, že váš tip musíme obdržet jako první – tedy dříve, než nás doporučený klient sám kontaktuje. Odměna je vyplacena po řádném dokončení a proplacení zakázky doporučeným klientem. Podrobnosti najdete na stránce programu Doporuč a získej odměnu."
   }

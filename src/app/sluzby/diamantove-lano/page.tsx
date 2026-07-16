@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import servicesData from "@/data/services.json";
 import referencesData from '@/data/references.json';
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, breadcrumbSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -48,12 +48,22 @@ export default function DiamondWirePage() {
     "Ideální pro historické a památkové objekty"
   ];
 
+  const breadcrumb = breadcrumbSchema([
+    { name: "Domů", path: "/" },
+    { name: "Služby", path: "/#sluzby" },
+    { name: "Diamantové lano", path: "/sluzby/diamantove-lano" },
+  ]);
+
   return (
     <main className="min-h-screen bg-neutral-light">
       {/* JSON-LD renderujeme jako běžný <script>, aby byl v serverovém HTML i pro crawlery bez JS. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
       />
       <Header />
       
@@ -295,6 +305,25 @@ export default function DiamondWirePage() {
         </div>
       </section>
       
+      <section className="py-20 bg-white border-t border-neutral-dark/5">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl md:text-3xl font-black uppercase italic text-neutral-dark mb-8 text-center">Další metody sanace zdiva</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Link href="/sluzby/retezova-pila" className="group flex items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-neutral-dark/5 shadow-sm hover:shadow-xl hover:border-primary/30 transition-all">
+              <span className="font-black uppercase italic text-neutral-dark group-hover:text-primary transition-colors">Podřezávání řetězovou pilou</span>
+              <Icons.ArrowRight className="w-5 h-5 text-primary shrink-0 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link href="/sluzby/chemicka-injektaz" className="group flex items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-neutral-dark/5 shadow-sm hover:shadow-xl hover:border-primary/30 transition-all">
+              <span className="font-black uppercase italic text-neutral-dark group-hover:text-primary transition-colors">Chemická injektáž</span>
+              <Icons.ArrowRight className="w-5 h-5 text-primary shrink-0 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+          <p className="text-center text-neutral-dark/60 font-medium mt-8">
+            Nevíte, která metoda je pro vaše zdivo vhodná? <Link href="/#calculator" className="text-primary font-bold hover:underline">Spočítejte si cenu v kalkulačce</Link> nebo nám napište – poradíme.
+          </p>
+        </div>
+      </section>
+
       <Footer />
     </main>
   );

@@ -31,6 +31,23 @@ test.describe('Audit: og:url na podstránkách', () => {
   }
 });
 
+test.describe('Audit: titulky značky', () => {
+  test('každá stránka má „| IZODIAMANT" právě jednou (žádný zdvojený suffix)', async ({ request }) => {
+    for (const path of PAGES) {
+      const html = await (await request.get(path)).text();
+      const title = html.match(/<title>(.*?)<\/title>/s)?.[1] ?? '';
+      const count = (title.match(/IZODIAMANT/g) || []).length;
+      expect(count, `${path} má chybný počet značky v titulku: "${title}"`).toBe(1);
+    }
+  });
+
+  test('homepage má v titulku značku (kořenový segment – šablona se neaplikuje)', async ({ request }) => {
+    const html = await (await request.get('/')).text();
+    const title = html.match(/<title>(.*?)<\/title>/s)?.[1] ?? '';
+    expect(title).toContain('| IZODIAMANT');
+  });
+});
+
 test.describe('Audit: JSON-LD musí být v serverovém HTML', () => {
   // Přes next/script se JSON-LD vloží až po hydrataci – crawleři bez JS ho neuvidí.
   // Proto testujeme surové HTML z requestu, ne vyrenderovaný DOM.

@@ -12,9 +12,13 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata: Metadata = {
   ...pageMetadata({
     path: '',
-    title: "Sanace a podřezávání zdiva – komplexní řešení",
-    description: "Specialisté na sanace vlhkého zdiva po celé České republice. Podřezávání diamantovým lanem, řetězovou pilou a chemická injektáž. Vracíme zdraví vaší stavbě.",
+    title: "Podřezání a sanace vlhkého zdiva po celé ČR",
+    description: "Podřezání a sanace vlhkého zdiva – diamantové lano, řetězová pila, chemická injektáž. Orientační cena od 2 500 Kč/bm, kalkulačka online. Sídlíme ve východních Čechách, jezdíme po celé ČR. Vracíme zdraví vaší stavbě.",
   }),
+  // Homepage je kořenový segment – title.template z layoutu se na něj NEAPLIKUJE,
+  // takže značku „| IZODIAMANT" musíme doplnit ručně. (Nezdvojí se: OG title si
+  // pageMetadata staví z holého názvu, tady přepisujeme jen <title>.)
+  title: "Podřezání a sanace vlhkého zdiva po celé ČR | IZODIAMANT",
   keywords: ["sanace zdiva", "podřezávání zdiva", "podřezání zdiva", "podřezání domu cena", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "sanace vlhkého zdiva", "hydroizolace", "izolace zdi", "izolace domu", "vzlínající vlhkost", "plísně ve zdivu", "vlhké zdivo", "IZODIAMANT", "Nové Hrady"],
 };
 
@@ -116,6 +120,81 @@ function ProblemSection() {
   );
 }
 
+// Oblasti působení – lokální relevance (východní Čechy) + interní prolinkování.
+// Záměrně bez samostatných stránek měst (viz odstraněné /mesta – osamocené a duplicitní).
+function AreasSection() {
+  const regions = [
+    "Pardubický kraj",
+    "Královéhradecký kraj",
+    "Středočeský kraj",
+    "Praha",
+  ];
+  const cities = [
+    "Pardubice", "Chrudim", "Hradec Králové", "Ústí nad Orlicí",
+    "Vysoké Mýto", "Litomyšl", "Polička", "Svitavy",
+  ];
+
+  return (
+    <section className="py-20 bg-neutral-light" id="oblasti-pusobeni">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-5xl font-black text-neutral-dark uppercase tracking-tighter italic mb-6">
+            Kde podřezáváme a sanujeme vlhké zdivo
+          </h2>
+          <p className="text-lg text-neutral-dark/60 font-medium leading-relaxed max-w-3xl mx-auto">
+            Sídlíme ve východních Čechách a na sanaci vlhkého zdiva vyjíždíme po celé České republice.
+            Nejčastěji podřezáváme domy v Pardubickém, Královéhradeckém a Středočeském kraji, pravidelně
+            i v Praze a okolí. Doprava a prohlídka objektu s nezávaznou cenovou nabídkou jsou zdarma.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-10">
+          <div className="bg-white p-8 rounded-2xl border border-neutral-dark/5">
+            <h3 className="text-sm font-black text-primary uppercase tracking-widest mb-4">Kraje, kde působíme</h3>
+            <ul className="grid grid-cols-2 gap-2">
+              {regions.map((r) => (
+                <li key={r} className="flex items-center gap-2 text-neutral-dark/70 font-medium">
+                  <Icons.MapPin className="w-4 h-4 text-primary shrink-0" />
+                  {r}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-white p-8 rounded-2xl border border-neutral-dark/5">
+            <h3 className="text-sm font-black text-primary uppercase tracking-widest mb-4">Vybraná města</h3>
+            <ul className="grid grid-cols-2 gap-2">
+              {cities.map((c) => (
+                <li key={c} className="flex items-center gap-2 text-neutral-dark/70 font-medium">
+                  <Icons.MapPin className="w-4 h-4 text-primary shrink-0" />
+                  {c}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="text-center">
+          <p className="text-neutral-dark/60 font-medium mb-6">
+            Vyberte metodu podle typu zdiva:{" "}
+            <Link href="/sluzby/diamantove-lano" className="text-primary font-bold hover:underline">diamantové lano</Link>{" "}
+            (kámen, beton),{" "}
+            <Link href="/sluzby/retezova-pila" className="text-primary font-bold hover:underline">řetězová pila</Link>{" "}
+            (cihla) nebo{" "}
+            <Link href="/sluzby/chemicka-injektaz" className="text-primary font-bold hover:underline">chemická injektáž</Link>.
+          </p>
+          <Link
+            href="/#calculator"
+            className="btn-primary py-4 px-10 text-lg uppercase tracking-widest shadow-xl shadow-primary/20 inline-flex items-center justify-center gap-3"
+          >
+            Spočítat cenu podřezání
+            <Icons.Calculator className="w-5 h-5" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Page() {
   return (
     <main className="min-h-screen">
@@ -126,6 +205,7 @@ export default function Page() {
       <ProblemSection />
       <PricingCalculator />
       <References />
+      <AreasSection />
       <HomeReviews />
       <FAQ />
       <ContactForm />

@@ -78,7 +78,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const googleMapsUrl = process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL;
+  // Kanonická (stabilní) URL Google firemního profilu přes CID – propojuje web
+  // s Google Business Profile v sameAs. Lze přepsat env proměnnou.
+  const googleMapsUrl = process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL || "https://www.google.com/maps?cid=11693549259963803968";
   const firmyUrl = "https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html";
 
   const localBusinessSchema = {

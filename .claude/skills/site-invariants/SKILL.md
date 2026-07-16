@@ -76,9 +76,14 @@ as a constant. **Edit `public/llms.txt`, then run `npm run sync:llms`** to regen
 - If you hand-roll `openGraph` instead of using the helper, you **must** include
   `url`, `siteName`, `locale`, and `type`, or og:url regresses to `/`.
 - Meta title format stays `[Short Title] | IZODIAMANT`; the `| IZODIAMANT` suffix comes
-  from the layout `title.template`, so pass the short title **without** it. Setting a
-  title that already ends in `| IZODIAMANT` produces a doubled `| IZODIAMANT | IZODIAMANT`
-  (the bug that got the removed `/mesta` pages). See the SEO conventions in CLAUDE.md.
+  from the layout `title.template`, so on **child** pages pass the short title **without**
+  it. Setting a child title that already ends in `| IZODIAMANT` produces a doubled
+  `| IZODIAMANT | IZODIAMANT` (the bug that got the removed `/mesta` pages).
+- **Exception — the homepage (`app/page.tsx`).** The template does **not** apply to the
+  root segment (same level as `app/layout.tsx`), so the homepage `<title>` must include
+  `| IZODIAMANT` **manually** or it renders brand-less. Do it by overriding the top-level
+  `title` after spreading `pageMetadata(...)` (which builds the OG title from the bare
+  name, so OG doesn't double). See `app/page.tsx`.
 
 ## 5. Every page is in the sitemap
 
