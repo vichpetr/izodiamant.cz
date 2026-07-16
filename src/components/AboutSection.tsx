@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { m } from 'framer-motion';
 import { Icons } from './Icons';
 
 export default function AboutSection() {
@@ -30,11 +29,7 @@ export default function AboutSection() {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <m.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+          <div
           >
             <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight md:tracking-tighter italic mb-8 leading-tight px-2">
               Proč svěřit sanaci <br />
@@ -53,16 +48,12 @@ export default function AboutSection() {
                 Působíme po celém území České republiky – od Prahy přes Brno až po nejmenší obce. Díky naší mobilitě a vlastnímu strojovému parku jsme schopni realizovat zakázky v krátkých termínech a s garantovanou kvalitou. Naše cena za metr podřezání zdiva je vždy konečná a transparentní, bez jakýchkoliv skrytých poplatků, což potvrzují stovky spokojených zákazníků po celé zemi. IZODIAMANT je synonymem pro suchý dům a zdravé bydlení.
               </p>
             </div>
-          </m.div>
+          </div>
 
           <div className="grid sm:grid-cols-2 gap-6">
             {points.map((point, index) => (
-              <m.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
                 className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-primary/30 transition-colors group"
               >
                 <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-primary transition-colors">
@@ -74,7 +65,7 @@ export default function AboutSection() {
                 <p className="text-sm text-white/50 font-medium leading-relaxed">
                   {point.text}
                 </p>
-              </m.div>
+              </div>
             ))}
           </div>
         </div>
