@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import DeferredAnalytics from "@/components/DeferredAnalytics";
 import MotionProvider from "@/components/MotionProvider";
 import WebMCP from "@/components/WebMCP";
 import firmyData from "@/data/firmy.json";
@@ -203,7 +203,7 @@ export default function RootLayout({
           {children}
         </MotionProvider>
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+          <DeferredAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
         )}
       </body>
     </html>
