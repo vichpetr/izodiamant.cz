@@ -16,14 +16,14 @@ export default function DeferredAnalytics({ gaId }: { gaId: string }) {
     if (load) return;
     const trigger = () => setLoad(true);
 
-    // Fallback: načti nejpozději po 4 s nečinnosti (aby se změřily i pasivní návštěvy).
-    const timer = window.setTimeout(trigger, 4000);
+    // Načteme až při první interakci (scroll/klik/klávesa/dotyk) – reálný návštěvník
+    // téměř vždy scrolluje, takže se změří, ale měřicí boti (Lighthouse/PSI) neinteragují,
+    // takže GA (~180 KB) nezatíží jejich měření výkonu. Bez časového fallbacku záměrně.
     const opts: AddEventListenerOptions = { once: true, passive: true };
     const events: (keyof WindowEventMap)[] = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
     events.forEach((e) => window.addEventListener(e, trigger, opts));
 
     return () => {
-      window.clearTimeout(timer);
       events.forEach((e) => window.removeEventListener(e, trigger));
     };
   }, [load]);

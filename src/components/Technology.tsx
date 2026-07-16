@@ -1,5 +1,3 @@
-'use client';
-
 import { Icons } from './Icons';
 import Link from 'next/link';
 
