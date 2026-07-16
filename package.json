@@ -13,6 +13,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "sync:llms": "node scripts/sync-llms.mjs",
     "lint": "eslint .",
     "test": "playwright test"
   },

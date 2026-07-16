@@ -2,6 +2,8 @@
 // Musí zůstat shodný s public/llms.txt, který se servíruje jako statický soubor –
 // hlídá to test v tests/audit.spec.ts. Middleware běží na edge a nemá přístup k fs,
 // proto je obsah vložen jako konstanta.
+//
+// NEUPRAVUJ ručně – generováno příkazem `npm run sync:llms` z public/llms.txt.
 export const LLMS_MD = `# IZODIAMANT - Sanace a podřezávání zdiva
 
 Specialisté na profesionální sanace vlhkého zdiva po celé České republice. Vracíme zdraví vaší stavbě.
