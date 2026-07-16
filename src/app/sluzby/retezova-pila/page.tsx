@@ -4,17 +4,18 @@ import Footer from "@/components/Footer";
 import { Icons } from "@/components/Icons";
 import Link from "next/link";
 import Image from "next/image";
-import Script from "next/script";
 import servicesData from "@/data/services.json";
 import referencesData from '@/data/references.json';
+import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Podřezávání zdiva řetězovou pilou",
-  description: "Sanace zdiva řetězovou pilou. Ideální pro cihelné stavby – rychlý postup a okamžité vložení hydroizolace. Vracíme zdraví vaší stavbě.",
+  ...pageMetadata({
+    path: '/sluzby/retezova-pila',
+    title: "Podřezávání zdiva řetězovou pilou",
+    description: "Sanace zdiva řetězovou pilou. Ideální pro cihelné stavby – rychlý postup a okamžité vložení hydroizolace s životností přes 50 let.",
+    images: ['/images/sluzby/retezova-pila.jpg'],
+  }),
   keywords: ["řetězová pila", "podřezávání cihelného zdiva", "podřezání zdiva řetězovou pilou", "sanace vlhkého zdiva", "izolace proti vlhkosti", "podřezání domu cena", "Nové Hrady", "ČR"],
-  alternates: {
-    canonical: 'https://izodiamant.cz/sluzby/retezova-pila',
-  },
 };
 
 export default function ChainSawPage() {
@@ -44,12 +45,16 @@ export default function ChainSawPage() {
     "Statické zajištění pomocí plastových klínů",
     "Vysoká životnost přesahující 50 let",
     "Cenově nejvýhodnější mechanická sanace",
-    "Vracíme zdraví vaší stavbě."
+    "Minimální zásah do provozu domácnosti"
   ];
 
   return (
     <main className="min-h-screen bg-neutral-light">
-      <Script id="service-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} strategy="afterInteractive" />
+      {/* JSON-LD renderujeme jako běžný <script>, aby byl v serverovém HTML i pro crawlery bez JS. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
       <Header />
       
       <section className="pt-32 pb-20">
@@ -87,7 +92,7 @@ export default function ChainSawPage() {
           <div className="prose prose-lg max-w-none mb-20 text-neutral-dark/80">
             <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Proč zvolit řetězovou pilu pro sanaci zdiva?</h2>
             <p>
-              Strojní podřezání řetězovou pilou patří mezi nejefektivnější a nejrychlejší způsoby, jak trvale odizolovat cihelné zdivo. Pilou vytvoříme ve stěně přesný řez, do kterého obratem vložíme odolnou hydroizolační fólii a zdivo pečlivě zajistíme statickými klíny. Tím vytvoříme neprostupnou bariéru – stěny přestanou natahovat vodu z podloží a mohou konečně začít přirozeně vysychat.
+              Strojní podřezání řetězovou pilou patří mezi nejefektivnější a nejrychlejší způsoby, jak trvale odizolovat cihelné zdivo. Pilou vytvoříme ve stěně přesný řez, do kterého obratem vložíme odolnou hydroizolační fólii a zdivo pečlivě zajistíme statickými klíny. Tím vytvoříme souvislou bariéru – stěny přestanou natahovat vodu z podloží a mohou konečně začít přirozeně vysychat.
             </p>
             <p>
               Tým IZODIAMANT klade důraz na preciznost a čistotu provedení. Při práci dbáme na to, aby byl zásah do statiky objektu naprosto minimální. Postupujeme v úsecích, které jsou okamžitě staticky zajišťovány, čímž eliminujeme jakékoliv riziko sedání stavby. Tato metoda je ideální pro všechny typy cihelných staveb, od starších rodinných domků až po rozsáhlé hospodářské objekty.
@@ -214,7 +219,7 @@ export default function ChainSawPage() {
           <div className="prose prose-lg max-w-none text-neutral-dark/80">
             <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-8">Kdy zvolit podřezávání řetězovou pilou?</h2>
             <p className="mb-6 leading-relaxed">
-              Podřezávání zdiva řetězovou pilou je jednou z nejpoužívanějších a nejefektivnějších metod mechanické sanace vlhkého zdiva. Je určena především pro cihelné stavby, které mají průběžnou vodorovnou spáru. Pokud se potýkáte s opadávající omítkou, solnými výkvěty nebo plísní v interiéru, tato technologie nabízí definitivní řešení vašeho problému.
+              Podřezávání zdiva řetězovou pilou je jednou z nejpoužívanějších a nejefektivnějších metod mechanické sanace vlhkého zdiva. Je určena především pro cihelné stavby, které mají průběžnou vodorovnou spáru. Pokud se potýkáte s opadávající omítkou, solnými výkvěty nebo plísní v interiéru, tato technologie řeší jejich hlavní příčinu – vzlínající zemní vlhkost.
             </p>
             <p className="mb-6 leading-relaxed">
               Práce probíhají za pomoci speciálních elektrických nebo motorových pil s řeznou lištou osazenou řetězy s tvrdokovovými zuby. Celý proces je velmi rychlý – u běžného rodinného domu jsme schopni kompletně vložit novou hydroizolaci do celého obvodu v řádu několika málo dnů.
@@ -225,7 +230,7 @@ export default function ChainSawPage() {
             
             <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Proč je tato metoda u cihel nejlepší?</h3>
             <p className="mb-10 leading-relaxed">
-              Díky mechanickému proříznutí spáry dojde k fyzickému přerušení vzlínající vlhkosti. Oproti jiným metodám máte 100% jistotu, že hydroizolace je vložena v celé šířce zdiva a v souvislé vrstvě. Po vyschnutí zbytkové vlhkosti nad izolací se váš dům stane trvale suchým, což pocítíte na lepším klimatu i nižších nákladech na vytápění.
+              Díky mechanickému proříznutí spáry dojde k fyzickému přerušení vzlínající vlhkosti. Oproti chemickým metodám je hydroizolace prokazatelně vložena v celé šířce zdiva a v souvislé vrstvě. Po vyschnutí zbytkové vlhkosti nad izolací zdivo dlouhodobě vysychá, což pocítíte na lepším klimatu i nižších nákladech na vytápění.
             </p>
 
             <div className="bg-neutral-light p-10 rounded-3xl border-2 border-primary/20">
@@ -234,7 +239,7 @@ export default function ChainSawPage() {
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Rychlost realizace i u větších objektů.</li>
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Příznivá cena v porovnání s diamantovým lanem.</li>
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Okamžité statické zajištění objektu.</li>
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Trvalé navrácení zdraví vaší stavbě.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Životnost vložené PE fólie přesahující 50 let.</li>
               </ul>
             </div>
           </div>

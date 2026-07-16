@@ -4,17 +4,18 @@ import Footer from "@/components/Footer";
 import { Icons } from "@/components/Icons";
 import Link from "next/link";
 import Image from "next/image";
-import Script from "next/script";
 import servicesData from "@/data/services.json";
 import referencesData from '@/data/references.json';
+import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Podřezávání zdiva diamantovým lanem",
-  description: "Sanace zdiva diamantovým lanem pro kámen a beton. Moderní technologie bez otřesů pro trvale suchý dům. Vracíme zdraví vaší stavbě.",
+  ...pageMetadata({
+    path: '/sluzby/diamantove-lano',
+    title: "Podřezávání zdiva diamantovým lanem",
+    description: "Sanace zdiva diamantovým lanem pro kámen a beton. Moderní technologie s minimem otřesů pro dlouhodobě suchý dům.",
+    images: ['/images/sluzby/diamantove-lano.jpg'],
+  }),
   keywords: ["diamantové lano", "podřezání zdiva diamantovým lanem", "sanace kamenného zdiva", "izolace betonu", "řezání betonu", "podřezání zdiva cena", "Nové Hrady", "ČR"],
-  alternates: {
-    canonical: 'https://izodiamant.cz/sluzby/diamantove-lano',
-  },
 };
 
 export default function DiamondWirePage() {
@@ -28,7 +29,7 @@ export default function DiamondWirePage() {
       "@type": "LocalBusiness",
       "name": "IZODIAMANT"
     },
-    "description": "Nejmodernější a nejuniverzálnější metoda sanace vlhkého zdiva. Poradí si s jakýmkoliv materiálem od smíšeného zdiva až po tvrdý kámen či železobeton.",
+    "description": "Univerzální metoda sanace vlhkého zdiva. Poradí si s tvrdými materiály od smíšeného zdiva až po kámen či železobeton, bez praktického omezení tloušťky.",
     "offers": {
       "@type": "Offer",
       "priceSpecification": {
@@ -41,15 +42,19 @@ export default function DiamondWirePage() {
   const features = [
     "Vhodné pro extrémně tvrdé materiály (kámen, beton)",
     "Bez omezení tloušťky zdiva",
-    "Nulové otřesy chránící statiku objektu",
+    "Minimální otřesy chránící statiku objektu",
     "Milimetrová přesnost řezu",
-    "Vracíme zdraví vaší stavbě.",
+    "Životnost izolace přesahující 50 let",
     "Ideální pro historické a památkové objekty"
   ];
 
   return (
     <main className="min-h-screen bg-neutral-light">
-      <Script id="service-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} strategy="afterInteractive" />
+      {/* JSON-LD renderujeme jako běžný <script>, aby byl v serverovém HTML i pro crawlery bez JS. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
       <Header />
       
       <section className="pt-32 pb-20">
@@ -64,7 +69,7 @@ export default function DiamondWirePage() {
                 Podřezávání <br /><span className="text-primary">diamantovým lanem</span>
               </h1>
               <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-10">
-                Podřezání zdiva diamantovým lanem je ideální a vysoce šetrnou volbou pro sanaci kamenného, smíšeného nebo velmi tvrdého zdiva, kde už běžná pila nestačí. Budova se tak trvale a staticky bezpečně odřízne od vzlínající zemní vlhkosti.
+                Podřezání zdiva diamantovým lanem je vysoce šetrnou volbou pro sanaci kamenného, smíšeného nebo velmi tvrdého zdiva, kde už běžná pila nestačí. Budova se tak staticky bezpečně odřízne od vzlínající zemní vlhkosti.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
@@ -87,13 +92,13 @@ export default function DiamondWirePage() {
           <div className="prose prose-lg max-w-none mb-20 text-neutral-dark/80">
             <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Proč zvolit diamantové lano pro sanaci a podřezávání?</h2>
             <p>
-              Podřezání zdiva diamantovým lanem je ideální a vysoce šetrnou volbou pro sanaci kamenného, smíšeného nebo velmi tvrdého zdiva, kde už běžná pila nestačí. Postup spočívá v mimořádně přesném proříznutí vodorovné spáry bez zbytečných otřesů. Do vzniklého řezu ihned vkládáme pevnou hydroizolační bariéru. Budova se tak trvale a staticky bezpečně odřízne od vzlínající zemní vlhkosti.
+              Podřezání zdiva diamantovým lanem je ideální a vysoce šetrnou volbou pro sanaci kamenného, smíšeného nebo velmi tvrdého zdiva, kde už běžná pila nestačí. Postup spočívá v mimořádně přesném proříznutí vodorovné spáry bez zbytečných otřesů. Do vzniklého řezu ihned vkládáme pevnou hydroizolační bariéru. Budova se tak staticky bezpečně odřízne od vzlínající zemní vlhkosti.
             </p>
             <p>
-              IZODIAMANT se specializuje na tuto technologii právě pro její nekompromisní výsledky. Na rozdíl od běžných metod diamantové lano netrpí limity hloubky řezu. Dokážeme proříznout základy o šířce dvou i více metrů, což je u masivních kamenných staveb naprostou nezbytností. Celý proces sanace zdiva je navržen tak, aby byl co nejšetrnější k původní konstrukci, přičemž vodní chlazení lana zajišťuje bezprašný provoz, což je klíčové při práci v obydlených prostorech.
+              IZODIAMANT se na tuto technologii specializuje právě pro její univerzálnost. Na rozdíl od běžných metod diamantové lano nemá praktický limit hloubky řezu – prořízneme i základy o šířce dvou a více metrů, což je u masivních kamenných staveb často jediná schůdná cesta. Celý proces sanace zdiva je navržen tak, aby byl co nejšetrnější k původní konstrukci, přičemž vodní chlazení lana výrazně omezuje prašnost, což je klíčové při práci v obydlených prostorech.
             </p>
             <p>
-              Po provedení řezu do spáry okamžitě vkládáme novou, vysoce odolnou hydroizolaci, která vytvoří neprostupnou bariéru proti vzlínající vlhkosti. Celý proces je zakončen statickým zajištěním a tlakovou injektáží, čímž vracíme zdraví vaší stavbě. Tato komplexní sanace zdiva zaručuje, že se vlhkost do objektu již nikdy nevrátí.
+              Po provedení řezu do spáry okamžitě vkládáme novou, vysoce odolnou hydroizolaci, která tvoří souvislou bariéru proti vzlínající vlhkosti. Celý proces je zakončen statickým zajištěním a tlakovou injektáží. Tato komplexní sanace zdiva spolehlivě přeruší vzlínání zemní vlhkosti a při správně navazujících opatřeních (odvodnění, sanační omítky) zůstane zdivo dlouhodobě suché.
             </p>
 
             <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Šetrnější než metoda pomocí řetězové pily</h3>
@@ -109,7 +114,7 @@ export default function DiamondWirePage() {
                 {[
                   { step: "01", title: "Příprava a diagnostika", desc: "Zaměření objektu, kontrola tloušťky a materiálu zdiva pro optimální nastavení řezného lana." },
                   { step: "02", title: "Instalace techniky", desc: "Osazení vodicích kladek a upevnění agregátu pro pohon diamantového lana." },
-                  { step: "03", title: "Samotný řez", desc: "Plynulé prořezávání zdiva pod neustálým chlazením, které eliminuje prašnost." },
+                  { step: "03", title: "Samotný řez", desc: "Plynulé prořezávání zdiva pod neustálým chlazením, které výrazně omezuje prašnost." },
                   { step: "04", title: "Izolace a statika", desc: "Vložení izolačního materiálu, statické vyklínování a tlaková výplň spáry." }
                 ].map((s, i) => (
                   <div key={i} className="flex gap-6 items-start">
@@ -128,15 +133,19 @@ export default function DiamondWirePage() {
               <ul className="space-y-4 relative z-10">
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
-                  <span>Zdivo o tloušťce nad 100 cm</span>
+                  <span>Tvrdý kámen, železobeton nebo prolitý beton – i u tenkých stěn</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
-                  <span>Tvrdý kámen, železobeton nebo prolitý beton</span>
+                  <span>Smíšené zdivo s tvrdými vložkami bez průběžné spáry</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
-                  <span>Stavby s narušenou statikou vyžadující nulové otřesy</span>
+                  <span>I pro extrémní tloušťky zdiva – nad 100 cm i přes dva metry</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
+                  <span>Stavby s narušenou statikou vyžadující minimální otřesy</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" />
@@ -160,7 +169,7 @@ export default function DiamondWirePage() {
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <Icons.ShieldCheck className="w-10 h-10 text-primary mb-6" />
               <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Záruka</h3>
-              <p className="text-neutral-dark/60 font-medium">Při použití sklolaminátových desek vracíme zdraví vaší stavbě.</p>
+              <p className="text-neutral-dark/60 font-medium">Prodloužená záruka na vloženou hydroizolaci a funkčnost podřezání. Životnost sklolaminátových desek přesahuje 50 let.</p>
             </div>
           </div>
 
@@ -222,15 +231,15 @@ export default function DiamondWirePage() {
           <div className="prose prose-lg max-w-none text-neutral-dark/80">
             <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-8">Kdy zvolit podřezávání diamantovým lanem?</h2>
             <p className="mb-6 leading-relaxed">
-              Podřezávání zdiva diamantovým lanem představuje absolutní špičku v oboru sanace vlhkého zdiva. Tato technologie byla vyvinuta pro situace, kde standardní řetězové pily narážejí na své limity. Pokud váš objekt stojí na základech z tvrdého kamene, opracovaných kvádrů nebo železobetonu, je diamantové lano jedinou spolehlivou cestou k suchému domu.
+              Podřezávání zdiva diamantovým lanem patří k nejuniverzálnějším metodám sanace vlhkého zdiva. Tato technologie je určena pro situace, kde standardní řetězové pily narážejí na své limity. Pokud váš objekt stojí na základech z tvrdého kamene, opracovaných kvádrů nebo železobetonu, je diamantové lano zpravidla nejspolehlivější cestou k suchému domu. Rozhodujícím kritériem přitom není tloušťka zdiva, ale jeho materiál – lano nasadíme i u tenčí kamenné či betonové stěny.
             </p>
             <p className="mb-6 leading-relaxed">
               Hlavní výhodou této metody je její univerzálnost. Lano osazené diamantovými segmenty prochází materiálem čistým řezem, aniž by do konstrukce vnášelo nebezpečné vibrace nebo otřesy. To je klíčové zejména u historických budov a památkově chráněných objektů, kde by hrubý mechanický zásah mohl nenávratně poškodit statiku nebo dekorativní prvky fasády.
             </p>
             
-            <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Technologie, která vrací zdraví vaší stavbě</h3>
+            <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Jak probíhá sanace diamantovým lanem</h3>
             <p className="mb-6 leading-relaxed">
-              Proces sanace začíná detailním technickým průzkumem. Náš tým navrhne optimální trasu řezu tak, aby byla nová hydroizolace vložena v nejvhodnějším místě nad úrovní terénu. Po proříznutí části zdiva vkládáme vysoce odolné izolační desky (sklolaminátové nebo PE), které vytvoří nepřekonatelnou bariéru proti vzlínající vlhkosti.
+              Proces sanace začíná detailním technickým průzkumem. Náš tým navrhne optimální trasu řezu tak, aby byla nová hydroizolace vložena v nejvhodnějším místě nad úrovní terénu. Po proříznutí části zdiva vkládáme vysoce odolné izolační desky (sklolaminátové nebo PE) s životností přesahující 50 let, které tvoří souvislou bariéru proti vzlínající vlhkosti.
             </p>
             <p className="mb-10 leading-relaxed">
               Investice do podřezání diamantovým lanem se dlouhodobě vyplatí. Odstraněním vlhkosti nejen zlepšíte vnitřní mikroklima a zbavíte se plísní, ale také výrazně snížíte náklady na vytápění objektu. Suché zdivo má mnohem lepší tepelně-izolační vlastnosti než zdivo nasycené vodou.
@@ -242,7 +251,7 @@ export default function DiamondWirePage() {
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Schopnost řezat jakýkoliv stavební materiál včetně armovaného betonu.</li>
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Práce bez omezení tloušťky stěn – od běžných příček po metrové hradní zdi.</li>
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Čistý a přesný řez s minimální prašností díky vodnímu chlazení.</li>
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Po aplikaci moderní izolace vracíme zdraví vaší stavbě.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Dlouhodobá životnost vložené izolace přesahující 50 let.</li>
               </ul>
             </div>
           </div>

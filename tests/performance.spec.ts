@@ -26,7 +26,7 @@ test.describe('IZODIAMANT Performance Audit', () => {
       const fcp = paint.find(entry => entry.name === 'first-contentful-paint');
       
       // LCP is measured via observer
-      const lcp: any = await new Promise((resolve) => {
+      const lcp = await new Promise<{ startTime: number }>((resolve) => {
         new PerformanceObserver((entryList) => {
           const entries = entryList.getEntries();
           resolve(entries[entries.length - 1]);

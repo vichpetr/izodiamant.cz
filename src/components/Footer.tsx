@@ -71,6 +71,7 @@ export default function Footer() {
               <li><Link href="/#reference" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Reference</Link></li>
               <li><a href={profileUrl} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Hodnocení</a></li>
               <li><Link href="/#faq" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Časté dotazy</Link></li>
+              <li><Link href="/doporuc-a-ziskej-odmenu" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">Doporuč a získej odměnu</Link></li>
             </ul>
           </div>
 

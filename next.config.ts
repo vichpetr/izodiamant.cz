@@ -111,6 +111,29 @@ const nextConfig: NextConfig = {
         destination: '/#reference',
         permanent: true,
       },
+      // Staré URL z předchozí verze webu (WordPress), stále v indexu vyhledávačů.
+      // Bez 301 vzniká duplicitní obsah a Google/Seznam si sám vybírá, kterou verzi zobrazí.
+      // Pozor: žádný catch-all na /sluzby/:slug* – přepsal by skutečné stránky služeb.
+      {
+        source: '/clanky',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/clanky/:slug*',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/category/:slug*',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/reference/ref-:id',
+        destination: '/#reference',
+        permanent: true,
+      },
     ]
   },
 };

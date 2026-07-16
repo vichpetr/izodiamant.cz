@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import referencesData from '@/data/references.json';
 import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 
 const ProjectReview = dynamic(() => import("@/components/ProjectReview"), { ssr: true });
 const ProjectGallery = dynamic(() => import("@/components/ProjectGallery"), { ssr: true });
@@ -43,18 +44,12 @@ export async function generateMetadata({
     ? `Sanace zdiva: ${project.title}. Vracíme zdraví vaší stavbě.`
     : `Sanace zdiva: ${project.title}. ${project.location}. Vracíme zdraví vaší stavbě.`;
 
-  return {
+  return pageMetadata({
+    path: `/reference/${project.id}`,
     title,
     description,
-    openGraph: {
-      title: `${title} | IZODIAMANT`,
-      description,
-      images: [project.image],
-    },
-    alternates: {
-      canonical: `https://izodiamant.cz/reference/${project.id}`,
-    },
-  };
+    images: [project.image],
+  });
 }
 
 export async function generateStaticParams() {

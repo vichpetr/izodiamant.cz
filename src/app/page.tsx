@@ -7,10 +7,14 @@ import { SectionSkeleton } from "@/components/Skeleton";
 import { Metadata } from 'next';
 import Link from "next/link";
 import { Icons } from "@/components/Icons";
+import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Sanace a podřezávání zdiva – komplexní řešení | IZODIAMANT",
-  description: "Specialisté na sanace vlhkého zdiva po celé České republice. Podřezávání diamantovým lanem, řetězovou pilou a chemická injektáž. Vracíme zdraví vaší stavbě.",
+  ...pageMetadata({
+    path: '',
+    title: "Sanace a podřezávání zdiva – komplexní řešení",
+    description: "Specialisté na sanace vlhkého zdiva po celé České republice. Podřezávání diamantovým lanem, řetězovou pilou a chemická injektáž. Vracíme zdraví vaší stavbě.",
+  }),
   keywords: ["sanace zdiva", "podřezávání zdiva", "podřezání zdiva", "podřezání domu cena", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "sanace vlhkého zdiva", "hydroizolace", "izolace zdi", "izolace domu", "vzlínající vlhkost", "plísně ve zdivu", "vlhké zdivo", "IZODIAMANT", "Nové Hrady"],
 };
 

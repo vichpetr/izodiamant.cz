@@ -218,7 +218,7 @@ export default function HomeReviews() {
                     </div>
 
                     <p className="text-white/80 font-medium italic leading-relaxed mb-10 flex-grow">
-                      &ldquo;{review.text}&rdquo;
+                      „{review.text}“
                     </p>
 
                     <div className="pt-6 border-t border-white/10 mt-auto">

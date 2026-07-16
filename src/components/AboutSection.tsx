@@ -20,7 +20,7 @@ export default function AboutSection() {
     },
     {
       title: "Záruka kvality",
-      text: "Za svou prací si stojíme. Používáme pouze certifikované izolační materiály s ověřenou životností. Naším cílem není jen 'oprava', ale kompletní navrácení zdraví vaší stavbě."
+      text: "Za svou prací si stojíme. Používáme pouze certifikované izolační materiály s ověřenou životností a na vloženou hydroizolaci poskytujeme prodlouženou záruku. Naším cílem není jen 'oprava', ale trvalé odstranění příčiny vlhkosti."
     }
   ];
 
@@ -45,7 +45,7 @@ export default function AboutSection() {
                 <strong>Sanace a podřezávání zdiva</strong> je zásadní investicí do budoucnosti vaší nemovitosti. Vlhké zdivo nejen zhoršuje tepelně-izolační vlastnosti domu, ale vede k rozvoji plísní a postupné degradaci stavebních materiálů. Naše firma se specializuje na kompletní odstranění těchto problémů pomocí certifikovaných technologií s dlouhou životností.
               </p>
               <p>
-                Jsme ryze česká firma IZODIAMANT zaměřená na profesionální a <strong>komplexní řešení</strong> vlhkosti v objektech všech typů. Od historických kamenných staveb přes rodinné domy ze smíšeného zdiva až po moderní průmyslové haly – tam všude vracíme zdraví vaší stavbě. Věříme, že každý dům si zaslouží spolehlivou ochranu, která vydrží navždy. Naše specializace na podřezávání zdiva a komplexní sanace vlhkého zdiva nás řadí mezi špičku v oboru v rámci celé České republiky.
+                Jsme ryze česká firma IZODIAMANT zaměřená na profesionální a <strong>komplexní řešení</strong> vlhkosti v objektech všech typů – od historických kamenných staveb přes rodinné domy ze smíšeného zdiva až po moderní průmyslové haly. Věříme, že každý dům si zaslouží spolehlivou ochranu s dlouhodobou životností: materiály, které vkládáme do zdiva, mají deklarovanou životnost přesahující 50 let. Podřezávání zdiva a sanacím vlhkého zdiva se věnujeme dlouhodobě a působíme po celé České republice.
               </p>
               <p>
                 Chápeme, že vlhkost není jen estetický problém, ale vážná hrozba pro statiku domu a zdraví jeho obyvatel. Vzlínající vlhkost v konstrukcích způsobuje degradaci materiálů, vznik plísní a výrazně zvyšuje náklady na vytápění. Proto ke každé zakázce přistupujeme s maximální zodpovědností a využíváme postupy, které jsou prověřené dekádami v oboru sanací. Naše technologie, jako je <strong>podřezávání diamantovým lanem</strong> nebo strojní řezání řetězovou pilou, představují definitivní řešení pro suchý a bezpečný domov. Odborně podřezáváme a izolujeme vlhké zdivo. Vašemu domu vrátíme sucho a zdravé klima.              </p>

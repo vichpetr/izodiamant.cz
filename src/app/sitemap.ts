@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '',
     '/cookies',
     '/ochrana-udaju',
+    '/doporuc-a-ziskej-odmenu',
     '/sluzby/diamantove-lano',
     '/sluzby/retezova-pila',
     '/sluzby/chemicka-injektaz',

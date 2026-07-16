@@ -6,7 +6,9 @@ export default function WebMCP() {
   useEffect(() => {
     // Check if the browser or agent supports WebMCP
     if (typeof window !== 'undefined' && 'modelContext' in navigator) {
-      const nav = navigator as any;
+      const nav = navigator as Navigator & {
+        modelContext?: { provideContext?: (context: unknown) => void };
+      };
       if (nav.modelContext && nav.modelContext.provideContext) {
         try {
           nav.modelContext.provideContext({

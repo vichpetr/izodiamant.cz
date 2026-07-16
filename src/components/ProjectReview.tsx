@@ -37,7 +37,7 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
           
           const data = JSON.parse(text);
           if (data && data.reviews) {
-            const found = data.reviews.find((r: any) => r.id === reviewId);
+            const found = data.reviews.find((r: Review) => r.id === reviewId);
             if (found) {
               setReview({ ...found, rating: Number(found.rating) });
               return;
@@ -50,7 +50,7 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
 
       // 2. Fallback to static
       try {
-        const fallback = (staticReviews as any[]).find(r => r.id === reviewId);
+        const fallback = (staticReviews as Review[]).find(r => r.id === reviewId);
         if (fallback) {
           setReview({ ...fallback, rating: Number(fallback.rating) });
         }
@@ -114,7 +114,7 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
       </div>
 
       <p className="text-lg text-neutral-dark/80 font-medium italic leading-relaxed mb-8 relative z-10">
-        "{review.text}"
+        „{review.text}“
       </p>
 
       <div className="pt-6 border-t border-neutral-light flex justify-between items-center">
