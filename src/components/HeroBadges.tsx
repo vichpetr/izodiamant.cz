@@ -49,7 +49,7 @@ export default function HeroBadges() {
                 alt="Mapy.com"
                 width={96}
                 height={24}
-                priority
+                loading="lazy"
                 quality={60}
                 className="object-contain grayscale group-hover:grayscale-0 transition-all opacity-80 group-hover:opacity-100"
               />

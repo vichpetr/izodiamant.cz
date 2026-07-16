@@ -38,10 +38,6 @@ export const metadata: Metadata = {
     ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
       ? { 'google-site-verification': process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
       : {}),
-    'preconnect': [
-      'https://izodiamant-reviews-api.petr-c3c.workers.dev',
-      'https://www.google-analytics.com'
-    ]
   },
   creator: "IZODIAMANT",
   openGraph: {
@@ -166,6 +162,12 @@ export default function RootLayout({
   return (
     <html lang="cs" className="scroll-smooth">
       <head>
+        {/* Skutečné preconnect/dns-prefetch pro externí originy (recenze worker, GA).
+            Dřív byly v metadata.other, což renderuje neúčinný <meta name="preconnect">. */}
+        <link rel="preconnect" href="https://izodiamant-reviews-api.petr-c3c.workers.dev" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://izodiamant-reviews-api.petr-c3c.workers.dev" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="service-doc" href="/llms.txt" />
         <link rel="api-catalog" href="/.well-known/api-catalog" />
         <link rel="openid-configuration" href="/.well-known/openid-configuration" />

@@ -1,6 +1,3 @@
-'use client';
-
-import { m } from 'framer-motion';
 import Link from 'next/link';
 import { Icons } from './Icons';
 import HeroBadges from './HeroBadges';
@@ -28,11 +25,9 @@ export default function Hero() {
             <span className="text-primary">{content.h1.split('. ')[1]}</span>
           </h1>
           
-          <m.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
-          >
+          {/* Bez vstupní framer-motion animace: tento blok obsahuje LCP prvek (popisek).
+              Gating přes opacity:0 do hydratace posouval LCP na mobilu na ~10 s. */}
+          <div>
             <p className="max-w-2xl mx-auto text-lg md:text-xl text-neutral-dark/70 mb-12 text-balance font-medium leading-relaxed">
               {content.desc}
             </p>
@@ -53,7 +48,7 @@ export default function Hero() {
                 {content.cta_ref}
               </Link>
             </div>
-          </m.div>
+          </div>
 
           <HeroBadges />
         </div>
