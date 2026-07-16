@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Icons } from './Icons';
 import Image from 'next/image';
 import FirmyBadge from './FirmyBadge';
+import GoogleBadge from './GoogleBadge';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -48,8 +49,9 @@ export default function Footer() {
             <p className="text-sm text-white/50 leading-relaxed pt-2">
               {content.desc}
             </p>
-            <div className="pt-2">
+            <div className="pt-2 flex flex-col gap-3">
               <FirmyBadge />
+              <GoogleBadge />
             </div>
             <div className="pt-4 space-y-3 border-t border-white/5">
               <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/40">

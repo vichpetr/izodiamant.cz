@@ -22,7 +22,11 @@ export default function FirmyBadge() {
         if (!res.ok) return;
         
         const json = await res.json();
-        if (json.rating) {
+        // Preferuj skóre přímo ze zdroje Firmy.cz/Mapy.com; fallback na sloučené skóre.
+        const f = json?.sources?.firmy;
+        if (f && typeof f.rating === 'number') {
+          setData({ rating: f.rating, count: f.count });
+        } else if (json.rating) {
           setData({ rating: json.rating, count: json.count });
         }
       } catch (err) {
