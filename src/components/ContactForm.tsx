@@ -70,7 +70,7 @@ export default function ContactForm() {
               <h2 className="text-4xl md:text-5xl font-black text-neutral-dark uppercase tracking-tighter italic mb-6 leading-tight">
                 Nezávazná <br /><span className="text-primary">poptávka</span>
               </h2>
-              <p className="text-lg text-neutral-dark/60 font-medium">
+              <p className="text-lg text-neutral-dark/70 font-medium">
                 Máte dotaz nebo chcete domluvit obhlídku? Napište nám.
               </p>
             </div>
@@ -114,7 +114,7 @@ export default function ContactForm() {
 
             <div className="p-8 bg-neutral-light rounded-3xl border-2 border-neutral-dark/5">
               <h3 className="font-black uppercase tracking-tight mb-4 italic text-neutral-dark">Konzultace zdarma</h3>
-              <p className="text-neutral-dark/60 text-sm font-medium leading-relaxed">
+              <p className="text-neutral-dark/70 text-sm font-medium leading-relaxed">
                 Náš odborný technik vás navštíví, provede přesné měření vlhkosti a navrhne nejvhodnější technologický postup přímo na míru vaší stavbě. Vše zcela zdarma a nezávazně.
               </p>
             </div>

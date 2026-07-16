@@ -58,10 +58,10 @@ export default function Technology() {
           <h2 className="text-3xl md:text-6xl font-black text-neutral-dark uppercase tracking-tight md:tracking-tighter italic mb-2 px-2">
             {content.h2}
           </h2>
-          <h3 className="text-2xl md:text-3xl font-black text-primary uppercase tracking-tight italic mb-6">
+          <h3 className="text-2xl md:text-3xl font-black text-primary-ink uppercase tracking-tight italic mb-6">
             {content.h3}
           </h3>
-          <p className="text-lg text-neutral-dark/60 font-medium">
+          <p className="text-lg text-neutral-dark/70 font-medium">
             {content.sub}
           </p>
         </div>
@@ -91,10 +91,9 @@ export default function Technology() {
               </ul>
               
               <div className="mt-auto">
-                <Link 
+                <Link
                   href={tech.href}
                   className="inline-flex items-center gap-2 text-neutral-dark font-black uppercase tracking-widest text-xs hover:text-primary transition-colors group/link"
-                  aria-label={`Více o technologii ${tech.label}`}
                 >
                   Více o {tech.label}
                   <Icons.ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />

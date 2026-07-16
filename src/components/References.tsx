@@ -53,7 +53,7 @@ export default function References() {
           <h3 className="text-2xl md:text-3xl font-black text-primary uppercase tracking-tight italic mb-6">
             {content.h3}
           </h3>
-          <p className="text-lg text-neutral-dark/60 font-medium">
+          <p className="text-lg text-neutral-dark/70 font-medium">
             {content.sub}
           </p>
         </div>
@@ -118,7 +118,7 @@ export default function References() {
           >
             <button
               onClick={handleToggle}
-              className="btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center gap-3 mx-auto group border-neutral-dark/10 text-neutral-dark/60 hover:border-primary hover:text-primary transition-all"
+              className="btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center gap-3 mx-auto group border-neutral-dark/10 text-neutral-dark/70 hover:border-primary hover:text-primary transition-all"
             >
               {showAll ? content.cta_less : content.cta_more}
               {showAll ? (

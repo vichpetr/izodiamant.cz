@@ -63,7 +63,7 @@ export default function ReferralProgramPage() {
                   <div className="text-4xl font-black text-primary/20 italic shrink-0 leading-none">{s.step}</div>
                   <div>
                     <h3 className="text-lg font-black uppercase italic text-neutral-dark mb-1">{s.title}</h3>
-                    <p className="text-neutral-dark/60 font-medium leading-relaxed">{s.desc}</p>
+                    <p className="text-neutral-dark/70 font-medium leading-relaxed">{s.desc}</p>
                   </div>
                 </div>
               ))}
@@ -99,7 +99,7 @@ export default function ReferralProgramPage() {
 
           <div className="bg-white p-8 md:p-12 rounded-3xl shadow-sm border-2 border-primary/20 text-center">
             <h2 className="text-2xl font-black uppercase italic text-neutral-dark mb-4">Máte tip?</h2>
-            <p className="text-neutral-dark/60 font-medium mb-8 max-w-xl mx-auto leading-relaxed">
+            <p className="text-neutral-dark/70 font-medium mb-8 max-w-xl mx-auto leading-relaxed">
               Zavolejte nám nebo napište. Stačí kontakt na majitele objektu a vaše jméno – zbytek vyřídíme za vás.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

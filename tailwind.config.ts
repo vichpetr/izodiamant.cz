@@ -14,6 +14,9 @@ const config: Config = {
         primary: {
           DEFAULT: "#c4d600",
           foreground: "#1a1a1a",
+          // Tmavší varianta pro text na světlém pozadí (WCAG AA – lime #c4d600
+          // na bílé má nedostatečný kontrast). Použij `text-primary-ink`.
+          ink: "#5c6a00",
         },
         accent: {
           DEFAULT: "#a3b200",

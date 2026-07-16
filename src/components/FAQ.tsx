@@ -34,7 +34,7 @@ export default function FAQ() {
           <h2 className="text-4xl md:text-5xl font-black text-neutral-dark mb-6 uppercase tracking-tight md:tracking-tighter italic px-2">
             {content.h2}
           </h2>
-          <p className="text-lg text-neutral-dark/60 font-medium">
+          <p className="text-lg text-neutral-dark/70 font-medium">
             {content.sub}
           </p>
         </div>

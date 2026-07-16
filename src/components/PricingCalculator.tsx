@@ -146,7 +146,7 @@ export default function PricingCalculator() {
             </h2>
             
             <div className="ml-2 relative">
-              <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:bg-primary hover:text-neutral-dark transition-all cursor-help border border-white/10 shrink-0">
+              <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-white/60 hover:bg-primary hover:text-neutral-dark transition-all cursor-help border border-white/10 shrink-0">
                 <Icons.Info className="w-3 h-3" />
               </div>
               
@@ -164,7 +164,7 @@ export default function PricingCalculator() {
                       </div>
                     ))}
                   </div>
-                  <div className="mt-4 pt-2 border-t border-white/10 text-[8px] text-white/30 font-bold uppercase tracking-widest leading-relaxed">
+                  <div className="mt-4 pt-2 border-t border-white/10 text-[8px] text-white/70 font-bold uppercase tracking-widest leading-relaxed">
                     Ceny jsou orientační pro tloušťku zdiva {REFERENCE_THICKNESS_CM} cm; u silnějšího zdiva se cena úměrně navyšuje.
                   </div>
                 </div>
@@ -180,15 +180,15 @@ export default function PricingCalculator() {
                   "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-all",
                   step === 1 ? "bg-primary text-neutral-dark" : "bg-primary/20 text-primary"
                 )}>1</div>
-                <span className={cn("text-[10px] font-black uppercase tracking-widest", step === 1 ? "text-white" : "text-white/40")}>Konfigurace</span>
+                <span className={cn("text-[10px] font-black uppercase tracking-widest", step === 1 ? "text-white" : "text-white/60")}>Konfigurace</span>
               </div>
               <div className="w-8 h-px bg-white/10" />
               <div className="flex items-center gap-2">
                 <div className={cn(
                   "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black transition-all",
-                  step === 2 ? "bg-primary text-neutral-dark" : "bg-white/5 text-white/20"
+                  step === 2 ? "bg-primary text-neutral-dark" : "bg-white/5 text-white/70"
                 )}>2</div>
-                <span className={cn("text-[10px] font-black uppercase tracking-widest", step === 2 ? "text-white" : "text-white/40")}>Odeslání</span>
+                <span className={cn("text-[10px] font-black uppercase tracking-widest", step === 2 ? "text-white" : "text-white/60")}>Odeslání</span>
               </div>
             </div>
           )}
@@ -207,14 +207,14 @@ export default function PricingCalculator() {
                           <div>
                             <div className="flex justify-between items-end mb-3">
                               <label htmlFor="thickness-range" className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic cursor-pointer">1. Tloušťka zdiva</label>
-                              <span className="text-2xl font-black text-white italic leading-none">{thickness} <span className="text-xs font-bold text-white/40 not-italic uppercase tracking-widest ml-1">cm</span></span>
+                              <span className="text-2xl font-black text-white italic leading-none">{thickness} <span className="text-xs font-bold text-white/60 not-italic uppercase tracking-widest ml-1">cm</span></span>
                             </div>
                             <input id="thickness-range" type="range" min="15" max="150" step="5" value={thickness} onChange={(e) => setThickness(parseInt(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
                           </div>
                           <div>
                             <div className="flex justify-between items-end mb-3">
                               <label htmlFor="length-range" className="text-[10px] font-black text-primary uppercase tracking-[0.2em] italic cursor-pointer">2. Délka zdi</label>
-                              <span className="text-2xl font-black text-white italic leading-none">{length} <span className="text-xs font-bold text-white/40 not-italic uppercase tracking-widest ml-1">m</span></span>
+                              <span className="text-2xl font-black text-white italic leading-none">{length} <span className="text-xs font-bold text-white/60 not-italic uppercase tracking-widest ml-1">m</span></span>
                             </div>
                             <input id="length-range" type="range" min="1" max="100" step="1" value={length} onChange={(e) => setLength(parseInt(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
                           </div>
@@ -245,7 +245,7 @@ export default function PricingCalculator() {
                             <h3 className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-2 italic">4. Technologie</h3>
                             <div className="flex flex-col gap-2">
                               {!materialId ? (
-                                <div className="p-3 rounded-xl border-2 border-dashed border-white/5 text-white/20 text-[9px] font-bold uppercase tracking-widest leading-tight">
+                                <div className="p-3 rounded-xl border-2 border-dashed border-white/5 text-white/70 text-[9px] font-bold uppercase tracking-widest leading-tight">
                                   Vyberte zdivo
                                 </div>
                               ) : (
@@ -276,17 +276,17 @@ export default function PricingCalculator() {
                           </div>
                           <div className="flex flex-col items-center mb-4">
                             <div className="text-4xl md:text-5xl font-black text-white italic tracking-tighter leading-none">
-                              {range.min.toLocaleString('cs-CZ')} <span className="text-lg not-italic font-bold text-white/40 uppercase">Kč</span>
+                              {range.min.toLocaleString('cs-CZ')} <span className="text-lg not-italic font-bold text-white/60 uppercase">Kč</span>
                             </div>
                             <div className="text-primary font-black text-2xl my-1">–</div>
                             <div className="text-4xl md:text-5xl font-black text-white italic tracking-tighter leading-none">
-                              {range.max.toLocaleString('cs-CZ')} <span className="text-lg not-italic font-bold text-white/40 uppercase">Kč</span>
+                              {range.max.toLocaleString('cs-CZ')} <span className="text-lg not-italic font-bold text-white/60 uppercase">Kč</span>
                             </div>
                           </div>
-                          <div className="inline-block px-3 py-1 bg-white/5 rounded-full text-[9px] text-white/40 font-black uppercase tracking-widest leading-none">
+                          <div className="inline-block px-3 py-1 bg-white/5 rounded-full text-[9px] text-white/60 font-black uppercase tracking-widest leading-none">
                             Nejsme plátci DPH | {selectedService?.label || (selectedMaterial ? "Všechny dostupné metody" : "Všechny varianty")}
                           </div>
-                          <p className="mt-4 text-[9px] text-white/30 font-bold leading-relaxed">
+                          <p className="mt-4 text-[9px] text-white/70 font-bold leading-relaxed">
                             Orientační odhad pro {length} bm zdi o tloušťce {thickness} cm. Ceny vycházejí ze sazby za běžný metr při tloušťce {REFERENCE_THICKNESS_CM} cm; u silnějšího zdiva se cena úměrně navyšuje. Závaznou nabídku zpracujeme po prohlídce.
                           </p>
                         </div>
