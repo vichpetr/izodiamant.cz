@@ -1,0 +1,37 @@
+name: Deploy Reviews Worker
+
+# Nasadí Cloudflare Worker (recenze API) automaticky, jakmile se na master
+# změní jeho zdroj. `paths` filtr zajistí, že se workflow spustí jen při
+# změně worker/** (ne při běžných změnách frontendu).
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'worker/**'
+      - '.github/workflows/deploy-worker.yml'
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      # Přeneseme secret do env, abychom podle něj mohli podmínit krok.
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Dokud nejsou nastavené repo secrets, deploy se přeskočí (workflow zůstane
+      # zelený). Po přidání CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID se nasadí.
+      - name: Chybí secrets – přeskočeno
+        if: env.CF_TOKEN == ''
+        run: echo "CLOUDFLARE_API_TOKEN není nastaven → deploy přeskočen. Přidejte repo secrets dle deployment.MD."
+
+      - name: Deploy to Cloudflare Workers
+        if: env.CF_TOKEN != ''
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          # wrangler.toml řídí name/main/vars; secret GOOGLE_API_KEY je uložen
+          # v Cloudflare a nasazení `wrangler deploy` ho zachová.
