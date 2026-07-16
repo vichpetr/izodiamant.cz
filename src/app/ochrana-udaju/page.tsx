@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">1. Totožnost a kontaktní údaje správce</h2>
               <p>
-                Správcem osobních údajů podle čl. 4 bod 7 nařízení Evropského parlamentu a Rady (EU) 2016/679 (GDPR) je fyzická osoba podnikající: <strong>Václav Ropek, IČO: 74650726</strong>, se sídlem na adrese Mokrá Lhota 26, 539 44 Nové Hrady (dále jen: "správce").
+                Správcem osobních údajů podle čl. 4 bod 7 nařízení Evropského parlamentu a Rady (EU) 2016/679 (GDPR) je fyzická osoba podnikající: <strong>Václav Ropek, IČO: 74650726</strong>, se sídlem na adrese Mokrá Lhota 26, 539 44 Nové Hrady (dále jen: „správce“).
               </p>
               <p>
                 Jsme plně k dispozici pro jakékoliv dotazy nebo požadavky týkající se ochrany soukromí. Můžete nás kontaktovat přímo na e-mailové adrese: info@izodiamant.cz nebo telefonicky na čísle +420 737 017 012. Vaše požadavky budeme řešit bez zbytečného odkladu v zákonných lhůtách.

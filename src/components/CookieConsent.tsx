@@ -17,8 +17,9 @@ export default function CookieConsent() {
     localStorage.setItem("cookie-consent", isAccepted ? "true" : "false");
     
     // Odeslání informace do Google Analytics (Consent Mode)
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('consent', 'update', {
+    const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+    if (typeof window !== 'undefined' && gtag) {
+      gtag('consent', 'update', {
         'analytics_storage': isAccepted ? 'granted' : 'denied',
         'ad_storage': isAccepted ? 'granted' : 'denied'
       });

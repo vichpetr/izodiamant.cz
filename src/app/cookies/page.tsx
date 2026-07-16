@@ -24,7 +24,7 @@ export default function CookiesPolicy() {
                 Soubory cookies jsou malé textové datové soubory, které náš web IZODIAMANT.cz ukládá do vašeho koncového zařízení (počítač, tablet nebo chytrý telefon) prostřednictvím webového prohlížeče. Cookies samy o sobě neslouží k identifikaci konkrétní osoby, ale umožňují webové stránce rozpoznat vaše zařízení při opakované návštěvě.
               </p>
               <p>
-                Hlavním účelem cookies je zajistit plynulý a bezpečný chod webu a přizpůsobit jeho obsah vašim preferencím. Díky těmto souborům si stránka může "pamatovat" vaše nastavení, jako je například volba jazyka nebo potvrzení o seznámení se s cookie lištou, takže tyto informace nemusíte zadávat při každé další návštěvě znovu. Cookies jsou také nezbytné pro správné fungování interaktivních prvků, jako je naše cenová kalkulačka podřezání zdiva.
+                Hlavním účelem cookies je zajistit plynulý a bezpečný chod webu a přizpůsobit jeho obsah vašim preferencím. Díky těmto souborům si stránka může „pamatovat“ vaše nastavení, jako je například volba jazyka nebo potvrzení o seznámení se s cookie lištou, takže tyto informace nemusíte zadávat při každé další návštěvě znovu. Cookies jsou také nezbytné pro správné fungování interaktivních prvků, jako je naše cenová kalkulačka podřezání zdiva.
               </p>
             </section>
 
@@ -73,7 +73,7 @@ export default function CookiesPolicy() {
             <section>
               <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">5. Doba uložení a zabezpečení</h2>
               <p>
-                Některé cookies jsou tzv. "relační" a vymažou se automaticky po zavření prohlížeče. Jiné jsou "trvalé" a zůstávají v zařízení uloženy po delší dobu (obvykle několik měsíců až let), nebo dokud je sami neodstraníte. IZODIAMANT dbá na to, aby všechny využívané cookies pocházely od důvěryhodných partnerů a splňovaly vysoké nároky na bezpečnost a ochranu soukromí návštěvníků.
+                Některé cookies jsou tzv. „relační“ a vymažou se automaticky po zavření prohlížeče. Jiné jsou „trvalé“ a zůstávají v zařízení uloženy po delší dobu (obvykle několik měsíců až let), nebo dokud je sami neodstraníte. IZODIAMANT dbá na to, aby všechny využívané cookies pocházely od důvěryhodných partnerů a splňovaly vysoké nároky na bezpečnost a ochranu soukromí návštěvníků.
               </p>
             </section>
 

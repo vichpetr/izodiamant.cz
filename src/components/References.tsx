@@ -86,7 +86,7 @@ export default function References() {
                       <Icons.Calendar className="w-3 h-3" />
                       {formatDate(project.date)}
                     </div>
-                    {(project as any).reviewId && (
+                    {(project as { reviewId?: string }).reviewId && (
                       <div className="bg-white/90 backdrop-blur-md text-neutral-dark px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest flex items-center gap-2 w-fit shadow-lg border border-primary/20">
                         <Icons.CheckCircle2 className="w-3 h-3 text-primary" />
                         Ověřená reference
