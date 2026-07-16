@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { Icons } from './Icons';
 import staticReviews from '@/data/reviews.json';
+import ExpandableText from './ExpandableText';
 
 type ReviewSource = 'firmy' | 'google';
 
@@ -217,9 +218,14 @@ export default function HomeReviews() {
                       )}
                     </div>
 
-                    <p className="text-white/80 font-medium italic leading-relaxed mb-10 flex-grow">
-                      „{review.text}“
-                    </p>
+                    <div className="mb-10 flex-grow">
+                      <ExpandableText
+                        text={`„${review.text}“`}
+                        clampLines={8}
+                        className="text-white/80 font-medium italic leading-relaxed"
+                        buttonClassName="text-[11px] text-primary hover:text-white"
+                      />
+                    </div>
 
                     <div className="pt-6 border-t border-white/10 mt-auto">
                       <div className="font-black uppercase tracking-tight italic text-white">{review.author}</div>

@@ -43,7 +43,11 @@ enforces them.
 - `/doporuc-a-ziskej-odmenu` — referral program page.
 - `next.config.ts` declares legacy redirects (`/reference`, `/sluzby`, `/kontakt`, old service slugs, `/category/reference`, `/clanky`, `/mesta`) — preserve them when restructuring URLs.
 
-**Reviews integration ("Proxy API" pattern):** Components `FirmyBadge` and `HomeReviews` fetch live data from the Cloudflare Worker at `NEXT_PUBLIC_REVIEWS_API_URL`. Worker source is in `deployment.MD`. `src/data/reviews.json` is the static fallback when the worker errors.
+**Reviews integration ("Proxy API" pattern):** Components `HeroBadges`, `FirmyBadge`, `HomeReviews` and `ProjectReview` fetch live data from the Cloudflare Worker at `NEXT_PUBLIC_REVIEWS_API_URL`. Worker source is in `deployment.MD`. `src/data/reviews.json` is the static fallback when the worker errors.
+
+- **Multi-source, source-aware.** Reviews carry a `source` (`firmy` = Mapy.com, `google`). The new worker returns per-source aggregates in `sources.{firmy,google}` and per-review `source`; the summary hook `src/lib/useReviewSummary.ts` reads that and gracefully degrades on the old worker (top-level `rating`/`count` = Mapy.com only, no Google). **Google reviews/badge only appear once the worker is redeployed with `GOOGLE_PLACE_ID` + `GOOGLE_API_KEY`** (see `deployment.MD`).
+- **Review IDs are prefixed** `firmy-…` / `google-…`. `references.json` `reviewId` uses the same prefixed form; `ProjectReview` matches by prefix-stripped id (`normId`) so pairing survives the old worker's non-prefixed ids too. Keep `reviewId` in step with `reviews.json` (or the live worker) ids.
+- Long review text is clamped by `ExpandableText` (char-threshold based, not DOM measurement — reliable under async load).
 
 **Agent / LLM discovery layer** is unusually prominent and intentional:
 - `src/middleware.ts` content-negotiates `Accept: text/markdown` on any page and serves the `LLMS_MD` constant from `src/lib/llms.ts`. **`public/llms.txt` is the source of truth; `src/lib/llms.ts` is generated** — edit the former and run `npm run sync:llms`. A test in `tests/audit.spec.ts` fails if they drift.

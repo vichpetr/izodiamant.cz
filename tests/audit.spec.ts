@@ -31,6 +31,17 @@ test.describe('Audit: og:url na podstránkách', () => {
   }
 });
 
+test.describe('Audit: párování recenzí k referenci', () => {
+  // reviewId v referencích je prefixovaný (firmy-…); porovnání musí být odolné
+  // vůči prefixu, jinak se spárovaná recenze nezobrazí (bug z auditu).
+  test('/reference/zleby zobrazí spárovanou recenzi se zdrojem', async ({ page }) => {
+    await page.goto('/reference/zleby');
+    // ProjectReview načítá klientsky; bez workeru padá na statický fallback.
+    await expect(page.getByText('Tomáš Bludička')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/Recenze z (Mapy\.com|Google)/)).toBeVisible();
+  });
+});
+
 test.describe('Audit: titulky značky', () => {
   test('každá stránka má „| IZODIAMANT" právě jednou (žádný zdvojený suffix)', async ({ request }) => {
     for (const path of PAGES) {
