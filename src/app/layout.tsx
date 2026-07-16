@@ -10,7 +10,9 @@ import "./globals.css";
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
   variable: "--font-inter",
-  display: "swap",
+  // "optional": text se vykreslí systémovým fallbackem hned (LCP = FCP) a nečeká
+  // na stažení Inter přes pomalou síť. next/font metrikami sladí fallback (bez CLS).
+  display: "optional",
 });
 
 export const metadata: Metadata = {
