@@ -40,8 +40,8 @@ enforces them.
 - `/` (`src/app/page.tsx`) is the long scroll: Hero, About, Technology, Services, References, Reviews, Calculator, FAQ, Contact.
 - `/sluzby/{diamantove-lano,retezova-pila,chemicka-injektaz}` — per-service detail pages.
 - `/reference/[id]` — single project detail, ID matches `references.json`.
-- `/mesta` + `/mesta/[slug]` — city landing pages driven by `mesta.json` (SEO long-tail).
-- `next.config.ts` declares legacy redirects (`/reference`, `/sluzby`, `/kontakt`, old service slugs, `/category/reference`) — preserve them when restructuring URLs.
+- `/doporuc-a-ziskej-odmenu` — referral program page.
+- `next.config.ts` declares legacy redirects (`/reference`, `/sluzby`, `/kontakt`, old service slugs, `/category/reference`, `/clanky`, `/mesta`) — preserve them when restructuring URLs.
 
 **Reviews integration ("Proxy API" pattern):** Components `FirmyBadge` and `HomeReviews` fetch live data from the Cloudflare Worker at `NEXT_PUBLIC_REVIEWS_API_URL`. Worker source is in `deployment.MD`. `src/data/reviews.json` is the static fallback when the worker errors.
 

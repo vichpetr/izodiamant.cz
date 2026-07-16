@@ -73,19 +73,21 @@ as a constant. **Edit `public/llms.txt`, then run `npm run sync:llms`** to regen
   `openGraph`. This exists because Next.js does **not** deep-merge `openGraph`: a page
   that sets it without `url`/`siteName` drops the layout's values and pins `og:url` to
   the homepage.
-- If you hand-roll `openGraph` instead (as the `/mesta` pages do), you **must** include
+- If you hand-roll `openGraph` instead of using the helper, you **must** include
   `url`, `siteName`, `locale`, and `type`, or og:url regresses to `/`.
 - Meta title format stays `[Short Title] | IZODIAMANT`; the `| IZODIAMANT` suffix comes
-  from the layout `title.template`, so pass the short title **without** it (avoids a
-  doubled suffix). See also the SEO conventions in CLAUDE.md.
+  from the layout `title.template`, so pass the short title **without** it. Setting a
+  title that already ends in `| IZODIAMANT` produces a doubled `| IZODIAMANT | IZODIAMANT`
+  (the bug that got the removed `/mesta` pages). See the SEO conventions in CLAUDE.md.
 
 ## 5. Every page is in the sitemap
 
 **Files:** `src/app/sitemap.ts`
 
-Add each new route to `sitemap.ts`. Data-driven collections (`references.json`,
-`mesta.json`) are mapped there already — a new static page is not. Enforced indirectly
-by the redirect/route tests.
+Add each new route to `sitemap.ts`. Data-driven collections (e.g. `references.json`)
+are mapped there already — a new static page is not. Conversely, when you delete a
+route, remove it from `sitemap.ts` too and add a 301 (rule 6), so the sitemap never
+lists a URL that 404s.
 
 ## 6. Old URLs get 301s — but never shadow a real page
 

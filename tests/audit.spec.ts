@@ -100,6 +100,8 @@ test.describe('Audit: staré URL se přesměrovávají (duplicitní obsah)', () 
     ['/clanky/vyuziti-sklepa', '/'],
     ['/reference/ref-1', '/'],
     ['/category/reference', '/'],
+    ['/mesta', '/'],
+    ['/mesta/pardubice', '/'],
   ];
 
   for (const [oldUrl, expectedPath] of OLD_URLS) {
