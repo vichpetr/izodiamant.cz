@@ -27,7 +27,7 @@ Tento dokument popisuje, jak založit a spravovat firemní profil firmy IZODIAMA
    - **Logo** + **úvodní fotka** (banner).
    - **Fotografie realizací** (před/po). Min. 5–10 fotek, vysoké rozlišení, vlastní (ne stock).
    - **Popis firmy** (do 750 znaků): obsahuje „sanace vlhkého zdiva", „podřezávání diamantovým lanem / řetězovou pilou", „chemická injektáž", „Vracíme zdraví vaší stavbě.".
-   - **Otevírací doba**: Po–Pá 08:00–17:00 (musí odpovídat tomu, co máme v `LocalBusiness` JSON-LD v `src/app/layout.tsx`).
+   - **Otevírací doba**: firma nemá pevnou otevírací dobu (pracuje **po domluvě**). V GBP buď nechte hodiny nevyplněné, nebo použijte atribut/otevírací dobu „Po domluvě". **Nezadávejte smyšlené hodiny** – web proto záměrně neuvádí `openingHours` v `LocalBusiness` JSON-LD (`src/app/layout.tsx`) a GBP s tím musí být v souladu.
    - **Atributy**: „Bezplatný odhad ceny", „Vlastník působí v této firmě" apod.
    - **Produkty / služby**: jednotlivé položky (Diamantové lano, Řetězová pila, Chemická injektáž, Statické zajištění, …) s krátkým popisem a orientační cenou.
 
@@ -35,7 +35,7 @@ Tento dokument popisuje, jak založit a spravovat firemní profil firmy IZODIAMA
 
 Po ověření a publikaci profilu:
 
-- **Place ID** (pro `GOOGLE_PLACE_ID` ve workeru): <https://developers.google.com/maps/documentation/places/web-service/place-id> – stránka má vyhledávání, zadejte „IZODIAMANT Nové Hrady", zkopírujte `ChIJ...` ID.
+- **Place ID** (pro `GOOGLE_PLACE_ID` ve workeru): <https://developers.google.com/maps/documentation/places/web-service/place-id> – odscrolujte k mapě, do vyhledávání zadejte „IZODIAMANT Nové Hrady", zkopírujte `ChIJ...` ID. **Pozor: Place ID není v URL profilu** (ta obsahuje jen CID a feature ID) – dohledejte ho zde. Podrobný postup i alternativa přes API klíč jsou v `deployment.MD` 2.1.1.
 - **Maps URL** (pro `NEXT_PUBLIC_GOOGLE_MAPS_URL` v Pages env): otevřete profil v Google Maps a v adresním řádku zkopírujte celou URL (`https://www.google.com/maps/place/IZODIAMANT/@49.85...,...`). Tato URL skončí v `sameAs` v JSON-LD a v `<a>` linkách na recenze.
 
 ### 1.4 Google API Key pro recenze (Worker)
@@ -55,7 +55,7 @@ Po ověření a publikaci profilu:
 ## 2. Správa profilu (denní/měsíční rutina)
 
 - **Nové fotografie** (cca 1× měsíčně po realizaci) – Google odměňuje aktivní profily.
-- **Příspěvky** (Posts) – krátké aktuality, sezónní akce, nová reference. Max 1 500 znaků, lze přidat CTA „Více informací" odkazující na `/sluzby/...` nebo `/mesta/...`.
+- **Příspěvky** (Posts) – krátké aktuality, sezónní akce, nová reference. Max 1 500 znaků, lze přidat CTA „Více informací" odkazující na `/sluzby/...` nebo konkrétní referenci `/reference/...`.
 - **Otázky a odpovědi (Q&A)** – sledujte sekci „Otázky", odpovídejte do 24 h. Sami si můžete položit a zodpovědět nejčastější otázky (FAQ ze `src/data/faq.json`).
 - **Recenze** – reagujte na **každou** recenzi (i 5★) krátkým, zdvořilým, personalizovaným komentářem. Negativní recenzi nikdy nemažte konfliktně – odpovězte věcně, nabídněte řešení mimo platformu (telefon).
 - **Statistiky** (Insights) – jednou měsíčně se podívejte:

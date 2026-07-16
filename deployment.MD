@@ -15,8 +15,56 @@ Tento Worker:
 ### 2.1 Co potřebujete
 
 - **Firmy.cz profile URL** – odkaz na firemní profil (např. `https://www.firmy.cz/detail/13505805-izodiamant-...`).
-- **Google Place ID** – identifikátor firmy v Google Mapách. Získání viz `docs/google-business-profile.md`.
-- **Google API Key** s povolenou `Places API` (resp. „Place Details") – viz [Google Cloud Console](https://console.cloud.google.com/). Omezit API key na `Places API` a (volitelně) HTTP referrer / IP, aby nešel zneužít.
+- **Google Place ID** – identifikátor firmy v Google Mapách (`ChIJ...`). Získání níže.
+- **Google API Key** s povolenou `Places API` – získání níže.
+
+> **Předpoklad pro Google:** firemní profil (Google Business Profile) musí být **založený a ověřený** – dokud není profil veřejný, Place ID neexistuje a Places API nic nevrátí. Kompletní průvodce profilem je v [`docs/google-business-profile.md`](docs/google-business-profile.md).
+
+#### 2.1.1 Jak získat `GOOGLE_PLACE_ID`
+
+Place ID je stálý identifikátor firmy v Google Mapách (`ChIJ...`; mění se jen výjimečně).
+
+> **Pozor – Place ID NENÍ v URL profilu.** Odkaz z Google Maps obsahuje jen **CID** a **feature ID**, ne Place ID. Např. v `…!1s0x470d95c41287715b:0xa247d518cbaca940…!16s%2Fg%2F11zgw3dcgm…` je `0x…a247d518cbaca940` = CID a `/g/11zgw3dcgm` = feature ID. **Ani jedno není `ChIJ...`** – Place ID se musí dohledat jedním ze způsobů níže. (CID se používá jen pro `NEXT_PUBLIC_GOOGLE_MAPS_URL` / `sameAs`, což web už má.)
+
+**Způsob A – Place ID Finder (bez API klíče):**
+
+1. Otevřete <https://developers.google.com/maps/documentation/places/web-service/place-id>.
+2. **Odscrolujte k interaktivní mapě** níže na stránce – přímo v mapě je vyhledávací pole „Enter a location".
+3. Zadejte `IZODIAMANT Nové Hrady` a vyberte firmu.
+4. Nad špendlíkem vyskočí bublina s **`Place ID: ChIJ...`** – zkopírujte ho.
+
+**Způsob B – přes API klíč (jedna adresa v prohlížeči):** až budete mít `GOOGLE_API_KEY` (viz 2.1.2), otevřete:
+
+```
+https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=IZODIAMANT%20Nov%C3%A9%20Hrady&inputtype=textquery&fields=place_id&key=VAS_KLIC
+```
+
+Odpověď obsahuje `"place_id": "ChIJ..."`.
+
+Získané `ChIJ...` vložte do `worker/wrangler.toml` → `[vars]` → `GOOGLE_PLACE_ID = "ChIJ..."` a commitněte (Place ID není tajné).
+
+> **Firmu ve finderu nevidíte?** Nejčastější příčina je **neověřený profil** – Place ID Finder i Places API pracují jen s veřejnými (ověřenými) profily. Počkejte, až Google profil ověří a zveřejní; teprve pak se firma ve finderu objeví. Spěch nedává smysl – dokud profil není živý, nemá ani žádné Google recenze k načtení.
+
+#### 2.1.2 Jak získat `GOOGLE_API_KEY`
+
+Klíč s přístupem k Places API. Volání jsou zpoplatněná, proto klíč **omezte**.
+
+1. Otevřete [Google Cloud Console](https://console.cloud.google.com/) a přihlaste se firemním Google účtem.
+2. Nahoře vytvořte (nebo vyberte) projekt, např. `izodiamant-prod`.
+3. **APIs & Services → Library** → vyhledejte **Places API** a dejte **Enable**. (Pokud vidíte „Places API (New)" i starou „Places API", povolte tu, kterou worker volá – aktuální kód používá endpoint `maps/api/place/details/json`, tj. **Places API**.)
+4. **APIs & Services → Credentials → Create credentials → API key**. Klíč (`AIza...`) se zobrazí – zatím ho neuzavírejte.
+5. Klikněte na **Edit API key** a nastavte omezení:
+   - **API restrictions** → *Restrict key* → zaškrtněte pouze **Places API**.
+   - **Application restrictions** → *None* (klíč běží jen na serveru ve workeru, ne v prohlížeči, proto referrer/IP omezení není nutné; volitelně lze omezit na IP Cloudflare).
+6. **Uložte** a klíč zkopírujte.
+7. **Billing:** Places API vyžaduje aktivní fakturaci projektu. Nastavte si v **Billing → Budgets & alerts** upozornění (např. na $5), ať máte náklady pod kontrolou. Při 1h cache workeru vychází provoz na jednotky centů měsíčně (~$17 / 1000 volání).
+8. Klíč vložte jako **secret** (ne do repozitáře):
+   ```bash
+   cd worker && npx wrangler secret put GOOGLE_API_KEY
+   # vložte AIza... hodnotu; secret přežije další deploye
+   ```
+
+Po nastavení `GOOGLE_PLACE_ID` (`wrangler.toml`) a secretu `GOOGLE_API_KEY` se při příštím nasazení workeru (změna `worker/**` → CI, nebo `npx wrangler deploy`) začnou vracet i Google recenze.
 
 ### 2.2 Zdroj Workeru a automatické nasazení
 
