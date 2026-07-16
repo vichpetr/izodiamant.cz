@@ -131,8 +131,6 @@ Po dokončení bodů 1–4 doplňte tyto proměnné prostředí:
 
 Po nasazení worker vrací recenze ze **Seznam Firmy.cz** i **Google** ve sjednoceném tvaru (`source: 'firmy' | 'google'`) – komponenta `HomeReviews` je vykreslí v jednotném designu s odznakem zdroje.
 
-**Souhrnné skóre (badge):** v hero sekci i v patičce se vedle odznaku Mapy.com automaticky objeví i **odznak s Google skóre** (celkové hodnocení + počet recenzí), jakmile worker začne vracet `sources.google` s `rating > 0`. Odznak čte data z workeru (`NEXT_PUBLIC_REVIEWS_API_URL`) a odkazuje na `NEXT_PUBLIC_GOOGLE_MAPS_URL`. Dokud profil neexistuje / nemá recenze, odznak se nevykreslí (je „dormantní"). Není tedy potřeba nic ručně zapínat – stačí doplnit `GOOGLE_PLACE_ID` + `GOOGLE_API_KEY` ve workeru a `NEXT_PUBLIC_GOOGLE_MAPS_URL` v Pages.
-
 ---
 
 ## 6. Google Search Console (samostatně, ale související)
