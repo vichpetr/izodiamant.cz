@@ -27,7 +27,7 @@ Tento dokument popisuje, jak založit a spravovat firemní profil firmy IZODIAMA
    - **Logo** + **úvodní fotka** (banner).
    - **Fotografie realizací** (před/po). Min. 5–10 fotek, vysoké rozlišení, vlastní (ne stock).
    - **Popis firmy** (do 750 znaků): obsahuje „sanace vlhkého zdiva", „podřezávání diamantovým lanem / řetězovou pilou", „chemická injektáž", „Vracíme zdraví vaší stavbě.".
-   - **Otevírací doba**: Po–Pá 08:00–17:00 (musí odpovídat tomu, co máme v `LocalBusiness` JSON-LD v `src/app/layout.tsx`).
+   - **Otevírací doba**: firma nemá pevnou otevírací dobu (pracuje **po domluvě**). V GBP buď nechte hodiny nevyplněné, nebo použijte atribut/otevírací dobu „Po domluvě". **Nezadávejte smyšlené hodiny** – web proto záměrně neuvádí `openingHours` v `LocalBusiness` JSON-LD (`src/app/layout.tsx`) a GBP s tím musí být v souladu.
    - **Atributy**: „Bezplatný odhad ceny", „Vlastník působí v této firmě" apod.
    - **Produkty / služby**: jednotlivé položky (Diamantové lano, Řetězová pila, Chemická injektáž, Statické zajištění, …) s krátkým popisem a orientační cenou.
 
@@ -55,7 +55,7 @@ Po ověření a publikaci profilu:
 ## 2. Správa profilu (denní/měsíční rutina)
 
 - **Nové fotografie** (cca 1× měsíčně po realizaci) – Google odměňuje aktivní profily.
-- **Příspěvky** (Posts) – krátké aktuality, sezónní akce, nová reference. Max 1 500 znaků, lze přidat CTA „Více informací" odkazující na `/sluzby/...` nebo `/mesta/...`.
+- **Příspěvky** (Posts) – krátké aktuality, sezónní akce, nová reference. Max 1 500 znaků, lze přidat CTA „Více informací" odkazující na `/sluzby/...` nebo konkrétní referenci `/reference/...`.
 - **Otázky a odpovědi (Q&A)** – sledujte sekci „Otázky", odpovídejte do 24 h. Sami si můžete položit a zodpovědět nejčastější otázky (FAQ ze `src/data/faq.json`).
 - **Recenze** – reagujte na **každou** recenzi (i 5★) krátkým, zdvořilým, personalizovaným komentářem. Negativní recenzi nikdy nemažte konfliktně – odpovězte věcně, nabídněte řešení mimo platformu (telefon).
 - **Statistiky** (Insights) – jednou měsíčně se podívejte:
