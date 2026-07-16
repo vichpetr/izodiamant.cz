@@ -43,6 +43,8 @@ Odpověď obsahuje `"place_id": "ChIJ..."`.
 
 Získané `ChIJ...` vložte do `worker/wrangler.toml` → `[vars]` → `GOOGLE_PLACE_ID = "ChIJ..."` a commitněte (Place ID není tajné).
 
+> **Firmu ve finderu nevidíte?** Nejčastější příčina je **neověřený profil** – Place ID Finder i Places API pracují jen s veřejnými (ověřenými) profily. Počkejte, až Google profil ověří a zveřejní; teprve pak se firma ve finderu objeví. Spěch nedává smysl – dokud profil není živý, nemá ani žádné Google recenze k načtení.
+
 #### 2.1.2 Jak získat `GOOGLE_API_KEY`
 
 Klíč s přístupem k Places API. Volání jsou zpoplatněná, proto klíč **omezte**.
