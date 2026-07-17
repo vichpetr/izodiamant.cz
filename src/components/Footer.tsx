@@ -52,11 +52,11 @@ export default function Footer() {
               <FirmyBadge />
             </div>
             <div className="pt-4 space-y-3 border-t border-white/5">
-              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/40">
+              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/70">
                 <Icons.User className="w-3 h-3 text-primary" />
                 Václav Ropek
               </div>
-              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/40">
+              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/70">
                 <Icons.FileText className="w-3 h-3 text-primary" />
                 IČO: 74650726
               </div>
