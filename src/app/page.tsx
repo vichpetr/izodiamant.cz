@@ -92,15 +92,15 @@ function ProblemSection() {
           </p>
           <div className="grid md:grid-cols-3 gap-4">
             <div className="bg-white p-6 rounded-xl border border-neutral-light/50">
-              <h4 className="font-black text-primary-ink uppercase text-sm tracking-widest mb-2">Diamantové lano</h4>
+              <h4 className="font-black text-primary uppercase text-sm tracking-widest mb-2">Diamantové lano</h4>
               <p className="text-neutral-dark/70 font-medium text-sm leading-relaxed">Pro kámen, beton a smíšené zdivo. Milimetrová přesnost bez otřesů.</p>
             </div>
             <div className="bg-white p-6 rounded-xl border border-neutral-light/50">
-              <h4 className="font-black text-primary-ink uppercase text-sm tracking-widest mb-2">Řetězová pila</h4>
+              <h4 className="font-black text-primary uppercase text-sm tracking-widest mb-2">Řetězová pila</h4>
               <p className="text-neutral-dark/70 font-medium text-sm leading-relaxed">Nejrychlejší metoda pro cihelné zdivo. Okamžité vložení hydroizolace.</p>
             </div>
             <div className="bg-white p-6 rounded-xl border border-neutral-light/50">
-              <h4 className="font-black text-primary-ink uppercase text-sm tracking-widest mb-2">Chemická injektáž</h4>
+              <h4 className="font-black text-primary uppercase text-sm tracking-widest mb-2">Chemická injektáž</h4>
               <p className="text-neutral-dark/70 font-medium text-sm leading-relaxed">Bezhlučný proces. Vodoodpudivá bariéra přímo uvnitř zdiva.</p>
             </div>
           </div>
@@ -150,7 +150,7 @@ function AreasSection() {
 
         <div className="grid md:grid-cols-2 gap-6 mb-10">
           <div className="bg-white p-8 rounded-2xl border border-neutral-dark/5">
-            <h3 className="text-sm font-black text-primary-ink uppercase tracking-widest mb-4">Kraje, kde působíme</h3>
+            <h3 className="text-sm font-black text-primary uppercase tracking-widest mb-4">Kraje, kde působíme</h3>
             <ul className="grid grid-cols-2 gap-2">
               {regions.map((r) => (
                 <li key={r} className="flex items-center gap-2 text-neutral-dark/70 font-medium">
@@ -161,7 +161,7 @@ function AreasSection() {
             </ul>
           </div>
           <div className="bg-white p-8 rounded-2xl border border-neutral-dark/5">
-            <h3 className="text-sm font-black text-primary-ink uppercase tracking-widest mb-4">Vybraná města</h3>
+            <h3 className="text-sm font-black text-primary uppercase tracking-widest mb-4">Vybraná města</h3>
             <ul className="grid grid-cols-2 gap-2">
               {cities.map((c) => (
                 <li key={c} className="flex items-center gap-2 text-neutral-dark/70 font-medium">
@@ -176,11 +176,11 @@ function AreasSection() {
         <div className="text-center">
           <p className="text-neutral-dark/70 font-medium mb-6">
             Vyberte metodu podle typu zdiva:{" "}
-            <Link href="/sluzby/diamantove-lano" className="text-primary-ink font-bold hover:underline">diamantové lano</Link>{" "}
+            <Link href="/sluzby/diamantove-lano" className="text-primary font-bold hover:underline">diamantové lano</Link>{" "}
             (kámen, beton),{" "}
-            <Link href="/sluzby/retezova-pila" className="text-primary-ink font-bold hover:underline">řetězová pila</Link>{" "}
+            <Link href="/sluzby/retezova-pila" className="text-primary font-bold hover:underline">řetězová pila</Link>{" "}
             (cihla) nebo{" "}
-            <Link href="/sluzby/chemicka-injektaz" className="text-primary-ink font-bold hover:underline">chemická injektáž</Link>.
+            <Link href="/sluzby/chemicka-injektaz" className="text-primary font-bold hover:underline">chemická injektáž</Link>.
           </p>
           <Link
             href="/#calculator"
