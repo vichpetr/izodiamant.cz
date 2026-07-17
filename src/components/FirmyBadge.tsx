@@ -34,7 +34,7 @@ export default function FirmyBadge() {
         </div>
         <div>
           <Stars rating={summary.firmy.rating} />
-          <div className="text-[10px] font-black text-neutral-dark/40 uppercase tracking-widest group-hover:text-neutral-dark transition-colors">
+          <div className="text-[10px] font-black text-neutral-dark/60 uppercase tracking-widest group-hover:text-neutral-dark transition-colors">
             {summary.firmy.count} hodnocení na Mapy.com
           </div>
         </div>
@@ -52,7 +52,7 @@ export default function FirmyBadge() {
           </div>
           <div>
             <Stars rating={summary.google.rating} />
-            <div className="text-[10px] font-black text-neutral-dark/40 uppercase tracking-widest group-hover:text-neutral-dark transition-colors">
+            <div className="text-[10px] font-black text-neutral-dark/60 uppercase tracking-widest group-hover:text-neutral-dark transition-colors">
               {summary.google.count} hodnocení na Google
             </div>
           </div>

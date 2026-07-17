@@ -22,7 +22,7 @@ export default function Hero() {
         <div>
           <h1 className="text-3xl sm:text-7xl lg:text-8xl font-black text-neutral-dark tracking-tight sm:tracking-tighter mb-8 text-balance uppercase italic leading-[1.1] sm:leading-[0.95] px-4">
             {content.h1.split('. ')[0]}. <br className="hidden sm:block" />
-            <span className="text-primary">{content.h1.split('. ')[1]}</span>
+            <span className="text-primary-ink">{content.h1.split('. ')[1]}</span>
           </h1>
           
           {/* Bez vstupní framer-motion animace: tento blok obsahuje LCP prvek (popisek).
@@ -44,7 +44,7 @@ export default function Hero() {
                 href="/#reference"
                 className="w-full sm:w-auto btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center justify-center gap-3 group border-neutral-dark/20 text-neutral-dark hover:bg-neutral-dark hover:text-white"
               >
-                <Icons.PlayCircle className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                <Icons.PlayCircle className="w-5 h-5 text-primary-ink group-hover:scale-110 transition-transform" />
                 {content.cta_ref}
               </Link>
             </div>

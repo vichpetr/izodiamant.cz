@@ -104,7 +104,7 @@ export default async function ProjectPage({
             <div className="space-y-12">
               <div className="mb-16">
                 <div className="flex flex-wrap gap-3 mb-10">
-                  <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary font-black text-xs uppercase tracking-widest">
+                  <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary-ink font-black text-xs uppercase tracking-widest">
                     {project.technology.includes('lano') ? <Icons.Gem className="w-4 h-4" /> : <Icons.Zap className="w-4 h-4" />}
                     {project.technology}
                   </div>

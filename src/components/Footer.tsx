@@ -52,11 +52,11 @@ export default function Footer() {
               <FirmyBadge />
             </div>
             <div className="pt-4 space-y-3 border-t border-white/5">
-              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/40">
+              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/70">
                 <Icons.User className="w-3 h-3 text-primary" />
                 Václav Ropek
               </div>
-              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/40">
+              <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/70">
                 <Icons.FileText className="w-3 h-3 text-primary" />
                 IČO: 74650726
               </div>
@@ -121,7 +121,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
+        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">
           <p>&copy; {currentYear} IZODIAMANT. {content.rights} Nejsme plátci DPH.</p>
           <div className="flex gap-8">
             <Link href="/ochrana-udaju" className="hover:text-primary transition-colors">{content.privacy}</Link>
