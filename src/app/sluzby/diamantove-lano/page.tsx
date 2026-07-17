@@ -131,7 +131,7 @@ export default function DiamondWirePage() {
                     <div className="text-4xl font-black text-primary/20 italic shrink-0 leading-none">{s.step}</div>
                     <div>
                       <div className="text-lg font-black uppercase italic text-neutral-dark mb-1">{s.title}</div>
-                      <p className="text-neutral-dark/60 font-medium">{s.desc}</p>
+                      <p className="text-neutral-dark/70 font-medium">{s.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -169,17 +169,17 @@ export default function DiamondWirePage() {
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <Icons.Coins className="w-10 h-10 text-primary mb-6" />
               <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Cena</h3>
-              <p className="text-neutral-dark/60 font-medium">{data.priceRange}</p>
+              <p className="text-neutral-dark/70 font-medium">{data.priceRange}</p>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <Icons.Clock className="w-10 h-10 text-primary mb-6" />
               <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Rychlost</h3>
-              <p className="text-neutral-dark/60 font-medium">{data.duration}</p>
+              <p className="text-neutral-dark/70 font-medium">{data.duration}</p>
             </div>
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <Icons.ShieldCheck className="w-10 h-10 text-primary mb-6" />
               <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Záruka</h3>
-              <p className="text-neutral-dark/60 font-medium">Prodloužená záruka na vloženou hydroizolaci a funkčnost podřezání. Životnost sklolaminátových desek přesahuje 50 let.</p>
+              <p className="text-neutral-dark/70 font-medium">Prodloužená záruka na vloženou hydroizolaci a funkčnost podřezání. Životnost sklolaminátových desek přesahuje 50 let.</p>
             </div>
           </div>
 
@@ -272,7 +272,7 @@ export default function DiamondWirePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
             <h2 className="text-3xl font-black uppercase italic mb-2">Nedávné realizace</h2>
-            <p className="text-neutral-dark/60 font-medium">Prohlédněte si naše projekty, kde jsme využili diamantové lano.</p>
+            <p className="text-neutral-dark/70 font-medium">Prohlédněte si naše projekty, kde jsme využili diamantové lano.</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -318,7 +318,7 @@ export default function DiamondWirePage() {
               <Icons.ArrowRight className="w-5 h-5 text-primary shrink-0 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
-          <p className="text-center text-neutral-dark/60 font-medium mt-8">
+          <p className="text-center text-neutral-dark/70 font-medium mt-8">
             Nevíte, která metoda je pro vaše zdivo vhodná? <Link href="/#calculator" className="text-primary font-bold hover:underline">Spočítejte si cenu v kalkulačce</Link> nebo nám napište – poradíme.
           </p>
         </div>

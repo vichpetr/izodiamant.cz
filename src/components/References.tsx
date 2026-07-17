@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { m } from 'framer-motion';
 import Link from 'next/link';
 import { Icons } from './Icons';
 import { cn } from '@/lib/utils';
@@ -54,18 +53,15 @@ export default function References() {
           <h3 className="text-2xl md:text-3xl font-black text-primary uppercase tracking-tight italic mb-6">
             {content.h3}
           </h3>
-          <p className="text-lg text-neutral-dark/60 font-medium">
+          <p className="text-lg text-neutral-dark/70 font-medium">
             {content.sub}
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
           {visibleReferences.map((project, index) => (
-            <m.div
+            <div
               key={project.id}
-              initial={index < 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              animate={showAll || index < 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.4, delay: showAll && index >= 3 ? (index - 3) * 0.1 : 0 }}
               className={cn(
                 "group",
                 !showAll && index >= 3 && "hidden md:hidden lg:hidden" // Purely for visual hiding, but will be in DOM during SSR
@@ -112,19 +108,17 @@ export default function References() {
                     <Icons.ArrowUpRight className="w-6 h-6" />
                   </div>
                 </Link>
-              </m.div>
+              </div>
             ))}
         </div>
 
         {referencesData.length > 3 && (
-          <m.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+          <div 
             className="mt-16"
           >
             <button
               onClick={handleToggle}
-              className="btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center gap-3 mx-auto group border-neutral-dark/10 text-neutral-dark/60 hover:border-primary hover:text-primary transition-all"
+              className="btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center gap-3 mx-auto group border-neutral-dark/10 text-neutral-dark/70 hover:border-primary hover:text-primary transition-all"
             >
               {showAll ? content.cta_less : content.cta_more}
               {showAll ? (
@@ -133,7 +127,7 @@ export default function References() {
                 <Icons.ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
               )}
             </button>
-          </m.div>
+          </div>
         )}
       </div>
     </section>

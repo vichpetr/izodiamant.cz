@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { m, AnimatePresence } from 'framer-motion';
 import { Icons } from './Icons';
 import faqData from '@/data/faq.json';
 
@@ -35,7 +34,7 @@ export default function FAQ() {
           <h2 className="text-4xl md:text-5xl font-black text-neutral-dark mb-6 uppercase tracking-tight md:tracking-tighter italic px-2">
             {content.h2}
           </h2>
-          <p className="text-lg text-neutral-dark/60 font-medium">
+          <p className="text-lg text-neutral-dark/70 font-medium">
             {content.sub}
           </p>
         </div>
@@ -64,20 +63,17 @@ function FAQItem({ question, answer }: { question: string, answer: string }) {
           {isOpen ? <Icons.Minus className="w-5 h-5" /> : <Icons.Plus className="w-5 h-5" />}
         </div>
       </button>
-      <AnimatePresence>
-        {isOpen && (
-          <m.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-          >
-            <div className="px-8 pb-8 text-neutral-dark/70 font-medium leading-relaxed border-t border-neutral-light pt-6">
-              {answer}
-            </div>
-          </m.div>
-        )}
-      </AnimatePresence>
+      {/* CSS akordeon (grid-rows 0fr→1fr) místo framer-motion – bez JS knihovny. */}
+      <div
+        className="grid transition-[grid-template-rows] duration-300 ease-in-out"
+        style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+      >
+        <div className="overflow-hidden">
+          <div className="px-8 pb-8 text-neutral-dark/70 font-medium leading-relaxed border-t border-neutral-light pt-6">
+            {answer}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

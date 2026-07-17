@@ -6,9 +6,9 @@ Provozovatel: Václav Ropek, IČO 74650726, Mokrá Lhota 26, 539 44 Nové Hrady.
 Hodnocení: 5,0 z 5 (12 hodnocení na Firmy.cz).
 
 ## Hlavní Služby
-- **Podřezávání diamantovým lanem**: Ideální pro kamenné, betonové a silné smíšené zdivo. Šetrná metoda s minimem otřesů. Rozhodujícím kritériem je materiál zdiva, nikoli jeho tloušťka – lano zvládne tvrdý kámen i u tenkých stěn a zároveň nemá limit tloušťky (i přes dva metry). Orientační cena od 4 500 Kč/bm, realizace 3–5 pracovních dnů. https://izodiamant.cz/sluzby/diamantove-lano
-- **Podřezávání řetězovou pilou**: Nejrychlejší metoda pro cihelné zdivo s průběžnou ložnou spárou. Vkládání hydroizolační PE fólie o tloušťce 2 mm s životností přesahující 50 let. Orientační cena od 2 500 Kč/bm, realizace 2–3 pracovní dny. https://izodiamant.cz/sluzby/retezova-pila
-- **Chemická injektáž**: Vytvoření hydroizolační clony pomocí certifikovaných gelů nebo krémů na bázi silanů a siloxanů v místech, kde nelze řezat. Orientační cena od 2 500 Kč/bm, realizace 1–2 pracovní dny. https://izodiamant.cz/sluzby/chemicka-injektaz
+- [Podřezávání diamantovým lanem](https://izodiamant.cz/sluzby/diamantove-lano): Ideální pro kamenné, betonové a silné smíšené zdivo. Šetrná metoda s minimem otřesů. Rozhodujícím kritériem je materiál zdiva, nikoli jeho tloušťka – lano zvládne tvrdý kámen i u tenkých stěn a zároveň nemá limit tloušťky (i přes dva metry). Orientační cena od 4 500 Kč/bm, realizace 3–5 pracovních dnů.
+- [Podřezávání řetězovou pilou](https://izodiamant.cz/sluzby/retezova-pila): Nejrychlejší metoda pro cihelné zdivo s průběžnou ložnou spárou. Vkládání hydroizolační PE fólie o tloušťce 2 mm s životností přesahující 50 let. Orientační cena od 2 500 Kč/bm, realizace 2–3 pracovní dny.
+- [Chemická injektáž](https://izodiamant.cz/sluzby/chemicka-injektaz): Vytvoření hydroizolační clony pomocí certifikovaných gelů nebo krémů na bázi silanů a siloxanů v místech, kde nelze řezat. Orientační cena od 2 500 Kč/bm, realizace 1–2 pracovní dny.
 
 ## Ceny
 Ceny jsou uvedeny za běžný metr (bm) zdi a platí pro tloušťku zdiva 45 cm; u silnějšího zdiva se cena úměrně navyšuje. Nejsme plátci DPH, uvedené částky se tedy o daň dále nenavyšují. Jde o orientační ceny – závaznou nabídku zpracováváme až po prohlídce objektu. Nezávaznou kalkulaci lze spočítat na https://izodiamant.cz/#calculator
@@ -22,7 +22,15 @@ Ceny jsou uvedeny za běžný metr (bm) zdi a platí pro tloušťku zdiva 45 cm;
 - **Jak poznám vzlínající vlhkost?** Vlhké mapy a tmavší pás u paty zdi (do 0,5–1,5 m), opadávající omítka, solné výkvěty, plíseň v rozích, zatuchlý vzduch. Vlhkost stoupá z podloží kapilárami odspodu nahoru.
 - **Podřezání, nebo chemická injektáž?** Mechanické podřezání (pila/lano) je nejspolehlivější a nejtrvanlivější, vhodné všude, kde lze zdivo proříznout. Injektáž volíme tam, kde řezat nelze. Metodu doporučíme podle materiálu a stavu stavby.
 - **Dá se podřezání udělat svépomocí?** Nedoporučujeme – zasahuje do nosné konstrukce a vyžaduje profesionální techniku, postup „na střídačku“, statické klínování a tlakovou injektáž. Práce pro odbornou firmu se zárukou.
-- **Doporuč a získej odměnu:** Za tip na nového zákazníka náleží finanční odměna, pokud tip obdržíme dříve, než nás klient sám kontaktuje. Vyplácí se po dokončení a proplacení zakázky. https://izodiamant.cz/doporuc-a-ziskej-odmenu
+- **Doporuč a získej odměnu:** Za tip na nového zákazníka náleží finanční odměna, pokud tip obdržíme dříve, než nás klient sám kontaktuje. Vyplácí se po dokončení a proplacení zakázky. Viz [Doporuč a získej odměnu](https://izodiamant.cz/doporuc-a-ziskej-odmenu).
+
+## Klíčové stránky
+- [Úvodní stránka](https://izodiamant.cz): přehled služeb sanace vlhkého zdiva.
+- [Podřezávání diamantovým lanem](https://izodiamant.cz/sluzby/diamantove-lano): kámen, beton, silné zdivo.
+- [Podřezávání řetězovou pilou](https://izodiamant.cz/sluzby/retezova-pila): cihelné zdivo.
+- [Chemická injektáž](https://izodiamant.cz/sluzby/chemicka-injektaz): tam, kde nelze řezat.
+- [Kalkulačka ceny](https://izodiamant.cz/#calculator): orientační cena podřezání.
+- [Doporuč a získej odměnu](https://izodiamant.cz/doporuc-a-ziskej-odmenu): odměna za tip na zákazníka.
 
 ## Kontakt
 - **Telefon**: +420 737 017 012

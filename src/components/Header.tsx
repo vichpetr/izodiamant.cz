@@ -57,7 +57,7 @@ export default function Header() {
               <span className="font-black text-xl text-neutral-dark tracking-tighter uppercase">
                 IZO<span className="text-primary">DIAMANT</span>
               </span>
-              <span className="text-[10px] font-bold text-neutral-dark/60 tracking-[0.2em] uppercase pl-1">
+              <span className="text-[10px] font-bold text-neutral-dark/70 tracking-[0.2em] uppercase pl-1">
                 Sanace zdiva
               </span>
             </div>

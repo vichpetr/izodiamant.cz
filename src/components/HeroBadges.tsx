@@ -1,6 +1,5 @@
 'use client';
 
-import { m } from 'framer-motion';
 import Image from 'next/image';
 import { useReviewSummary } from '@/lib/useReviewSummary';
 
@@ -28,15 +27,12 @@ export default function HeroBadges() {
     <div className="flex flex-col items-center justify-center mt-16 gap-5">
       <div className="flex items-center justify-center gap-6">
         {badges.map((b, i) => (
-          <m.a
+          <a
             key={b.key}
             id={b.key === 'firmy' ? 'hero-badge' : undefined}
             href={b.url}
             target="_blank"
             rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 + i * 0.15 }}
             title={`${b.rating.toFixed(1)} z 5 – ${b.count} hodnocení na ${b.label}`}
             className="group flex flex-col items-center justify-center w-32 h-32 rounded-full border border-neutral-dark/10 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-xl hover:border-primary/30 transition-all duration-500"
           >
@@ -49,7 +45,7 @@ export default function HeroBadges() {
                 alt="Mapy.com"
                 width={96}
                 height={24}
-                priority
+                loading="lazy"
                 quality={60}
                 className="object-contain grayscale group-hover:grayscale-0 transition-all opacity-80 group-hover:opacity-100"
               />
@@ -58,24 +54,21 @@ export default function HeroBadges() {
                 Google
               </span>
             )}
-          </m.a>
+          </a>
         ))}
       </div>
 
-      <m.a
+      <a
         href={badges[0]?.url || '#'}
         target="_blank"
         rel="noopener noreferrer"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.9 }}
         className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-dark/40 italic hover:text-primary transition-colors group"
       >
         Ohodnoťte nás
         <span className="ml-2 opacity-50">
           ({badges.reduce((sum, b) => sum + b.count, 0)} hodnocení)
         </span>
-      </m.a>
+      </a>
     </div>
   );
 }

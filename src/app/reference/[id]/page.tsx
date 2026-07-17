@@ -94,7 +94,7 @@ export default async function ProjectPage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
             href="/#reference" 
-            className="inline-flex items-center gap-2 text-neutral-dark/60 hover:text-primary font-bold uppercase tracking-widest text-xs mb-12 transition-colors group"
+            className="inline-flex items-center gap-2 text-neutral-dark/70 hover:text-primary font-bold uppercase tracking-widest text-xs mb-12 transition-colors group"
           >
             <Icons.ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Zpět na přehled
@@ -108,12 +108,12 @@ export default async function ProjectPage({
                     {project.technology.includes('lano') ? <Icons.Gem className="w-4 h-4" /> : <Icons.Zap className="w-4 h-4" />}
                     {project.technology}
                   </div>
-                  <div className="inline-flex items-center gap-3 bg-neutral-dark/5 px-4 py-2 rounded-lg text-neutral-dark/60 font-black text-xs uppercase tracking-widest">
+                  <div className="inline-flex items-center gap-3 bg-neutral-dark/5 px-4 py-2 rounded-lg text-neutral-dark/70 font-black text-xs uppercase tracking-widest">
                     <Icons.Calendar className="w-4 h-4" />
                     {formatDate(project.date)}
                   </div>
                   {project.reviewId && (
-                    <div className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-lg text-neutral-dark/60 font-black text-xs uppercase tracking-widest border border-neutral-dark/5 shadow-sm">
+                    <div className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-lg text-neutral-dark/70 font-black text-xs uppercase tracking-widest border border-neutral-dark/5 shadow-sm">
                       <Icons.CheckCircle2 className="w-4 h-4 text-primary" />
                       Ověřená reference
                     </div>
@@ -129,7 +129,7 @@ export default async function ProjectPage({
                       ? project.title
                       : `Sanace objektu: ${project.title}`}
                   </h1>
-                  <div className="flex items-center gap-2 text-neutral-dark/60 font-bold uppercase tracking-widest text-sm ml-1 pt-4">
+                  <div className="flex items-center gap-2 text-neutral-dark/70 font-bold uppercase tracking-widest text-sm ml-1 pt-4">
                     <Icons.MapPin className="w-4 h-4 text-primary" />
                     {project.location}
                   </div>

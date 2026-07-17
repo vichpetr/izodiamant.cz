@@ -46,7 +46,7 @@ function ProblemSection() {
           <h2 className="text-3xl md:text-5xl font-black text-neutral-dark uppercase tracking-tighter italic mb-6">
             Trápí vás vlhké zdivo, plísně<br />nebo vzlínající vlhkost?
           </h2>
-          <p className="text-lg text-neutral-dark/60 font-medium leading-relaxed">
+          <p className="text-lg text-neutral-dark/70 font-medium leading-relaxed">
             Vlhké zdivo ničí omítky, způsobuje plísně a zvyšuje náklady na vytápění. Nabízíme trvalé odstranění vlhkosti zdiva pomocí moderních technologií.
           </p>
         </div>
@@ -76,7 +76,7 @@ function ProblemSection() {
               <h3 className="text-xl font-black text-neutral-dark uppercase mb-3 tracking-tight">
                 {item.title}
               </h3>
-              <p className="text-neutral-dark/60 font-medium leading-relaxed">
+              <p className="text-neutral-dark/70 font-medium leading-relaxed">
                 {item.text}
               </p>
             </div>
@@ -93,15 +93,15 @@ function ProblemSection() {
           <div className="grid md:grid-cols-3 gap-4">
             <div className="bg-white p-6 rounded-xl border border-neutral-light/50">
               <h4 className="font-black text-primary uppercase text-sm tracking-widest mb-2">Diamantové lano</h4>
-              <p className="text-neutral-dark/60 font-medium text-sm leading-relaxed">Pro kámen, beton a smíšené zdivo. Milimetrová přesnost bez otřesů.</p>
+              <p className="text-neutral-dark/70 font-medium text-sm leading-relaxed">Pro kámen, beton a smíšené zdivo. Milimetrová přesnost bez otřesů.</p>
             </div>
             <div className="bg-white p-6 rounded-xl border border-neutral-light/50">
               <h4 className="font-black text-primary uppercase text-sm tracking-widest mb-2">Řetězová pila</h4>
-              <p className="text-neutral-dark/60 font-medium text-sm leading-relaxed">Nejrychlejší metoda pro cihelné zdivo. Okamžité vložení hydroizolace.</p>
+              <p className="text-neutral-dark/70 font-medium text-sm leading-relaxed">Nejrychlejší metoda pro cihelné zdivo. Okamžité vložení hydroizolace.</p>
             </div>
             <div className="bg-white p-6 rounded-xl border border-neutral-light/50">
               <h4 className="font-black text-primary uppercase text-sm tracking-widest mb-2">Chemická injektáž</h4>
-              <p className="text-neutral-dark/60 font-medium text-sm leading-relaxed">Bezhlučný proces. Vodoodpudivá bariéra přímo uvnitř zdiva.</p>
+              <p className="text-neutral-dark/70 font-medium text-sm leading-relaxed">Bezhlučný proces. Vodoodpudivá bariéra přímo uvnitř zdiva.</p>
             </div>
           </div>
         </div>
@@ -141,7 +141,7 @@ function AreasSection() {
           <h2 className="text-3xl md:text-5xl font-black text-neutral-dark uppercase tracking-tighter italic mb-6">
             Kde podřezáváme a sanujeme vlhké zdivo
           </h2>
-          <p className="text-lg text-neutral-dark/60 font-medium leading-relaxed max-w-3xl mx-auto">
+          <p className="text-lg text-neutral-dark/70 font-medium leading-relaxed max-w-3xl mx-auto">
             Sídlíme ve východních Čechách a na sanaci vlhkého zdiva vyjíždíme po celé České republice.
             Nejčastěji podřezáváme domy v Pardubickém, Královéhradeckém a Středočeském kraji, pravidelně
             i v Praze a okolí. Doprava a prohlídka objektu s nezávaznou cenovou nabídkou jsou zdarma.
@@ -174,7 +174,7 @@ function AreasSection() {
         </div>
 
         <div className="text-center">
-          <p className="text-neutral-dark/60 font-medium mb-6">
+          <p className="text-neutral-dark/70 font-medium mb-6">
             Vyberte metodu podle typu zdiva:{" "}
             <Link href="/sluzby/diamantove-lano" className="text-primary font-bold hover:underline">diamantové lano</Link>{" "}
             (kámen, beton),{" "}

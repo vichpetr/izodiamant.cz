@@ -1,6 +1,3 @@
-'use client';
-
-import { m } from 'framer-motion';
 import { Icons } from './Icons';
 import Link from 'next/link';
 
@@ -64,19 +61,15 @@ export default function Technology() {
           <h3 className="text-2xl md:text-3xl font-black text-primary uppercase tracking-tight italic mb-6">
             {content.h3}
           </h3>
-          <p className="text-lg text-neutral-dark/60 font-medium">
+          <p className="text-lg text-neutral-dark/70 font-medium">
             {content.sub}
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 text-left">
           {technologies.map((tech, index) => (
-            <m.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ delay: index * 0.1, duration: 0.4 }}
               className="bg-neutral-light p-10 rounded-2xl border-2 border-transparent hover:border-primary transition-all group flex flex-col h-full"
             >
               <div className="w-16 h-16 bg-primary flex items-center justify-center rounded-xl mb-8 transform group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-lg shadow-primary/20">
@@ -98,16 +91,15 @@ export default function Technology() {
               </ul>
               
               <div className="mt-auto">
-                <Link 
+                <Link
                   href={tech.href}
                   className="inline-flex items-center gap-2 text-neutral-dark font-black uppercase tracking-widest text-xs hover:text-primary transition-colors group/link"
-                  aria-label={`Více o technologii ${tech.label}`}
                 >
                   Více o {tech.label}
                   <Icons.ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                 </Link>
               </div>
-            </m.div>
+            </div>
           ))}
         </div>
       </div>

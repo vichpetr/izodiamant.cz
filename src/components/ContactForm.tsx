@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { m, AnimatePresence } from 'framer-motion';
 import { Icons } from './Icons';
 import { cn } from '@/lib/utils';
 
@@ -71,7 +70,7 @@ export default function ContactForm() {
               <h2 className="text-4xl md:text-5xl font-black text-neutral-dark uppercase tracking-tighter italic mb-6 leading-tight">
                 Nezávazná <br /><span className="text-primary">poptávka</span>
               </h2>
-              <p className="text-lg text-neutral-dark/60 font-medium">
+              <p className="text-lg text-neutral-dark/70 font-medium">
                 Máte dotaz nebo chcete domluvit obhlídku? Napište nám.
               </p>
             </div>
@@ -115,7 +114,7 @@ export default function ContactForm() {
 
             <div className="p-8 bg-neutral-light rounded-3xl border-2 border-neutral-dark/5">
               <h3 className="font-black uppercase tracking-tight mb-4 italic text-neutral-dark">Konzultace zdarma</h3>
-              <p className="text-neutral-dark/60 text-sm font-medium leading-relaxed">
+              <p className="text-neutral-dark/70 text-sm font-medium leading-relaxed">
                 Náš odborný technik vás navštíví, provede přesné měření vlhkosti a navrhne nejvhodnější technologický postup přímo na míru vaší stavbě. Vše zcela zdarma a nezávazně.
               </p>
             </div>
@@ -123,9 +122,8 @@ export default function ContactForm() {
 
           {/* Form Side */}
           <div className="bg-neutral-dark rounded-3xl p-8 md:p-12 shadow-2xl relative">
-            <AnimatePresence mode="wait">
               {!isSubmitted ? (
-                <m.form key="contact-form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleSubmit} noValidate className="space-y-6">
+                <form key="contact-form" onSubmit={handleSubmit} noValidate className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label htmlFor="contact-name" className="block text-[10px] font-black text-primary uppercase tracking-[0.2em] ml-2 italic cursor-pointer">Jméno a příjmení *</label>
@@ -170,17 +168,17 @@ export default function ContactForm() {
                     {isSubmitting ? 'Odesílám...' : 'Odeslat zprávu'}
                     <Icons.Send className="w-6 h-6" />
                   </button>
-                </m.form>
+                </form>
               ) : (
-                <m.div key="success-contact" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center text-center py-20 text-white">
+                <div key="success-contact" className="flex flex-col items-center justify-center text-center py-20 text-white">
                   <div className="w-24 h-24 bg-primary text-neutral-dark rounded-full flex items-center justify-center mb-10 shadow-xl shadow-primary/20">
                     <Icons.CheckCircle2 className="w-12 h-12" />
                   </div>
                   <h3 className="text-4xl font-black uppercase tracking-tighter italic mb-6 leading-none">Zpráva <br /> odeslána!</h3>
                   <p className="text-xl text-white/60 font-medium max-w-md mx-auto leading-relaxed">Děkujeme. Budeme vás kontaktovat co nejdříve.</p>
-                </m.div>
+                </div>
               )}
-            </AnimatePresence>
+            
           </div>
         </div>
       </div>

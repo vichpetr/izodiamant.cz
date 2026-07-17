@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import DeferredAnalytics from "@/components/DeferredAnalytics";
 import MotionProvider from "@/components/MotionProvider";
 import WebMCP from "@/components/WebMCP";
 import firmyData from "@/data/firmy.json";
@@ -10,7 +10,9 @@ import "./globals.css";
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
   variable: "--font-inter",
-  display: "swap",
+  // "optional": text se vykreslí systémovým fallbackem hned (LCP = FCP) a nečeká
+  // na stažení Inter přes pomalou síť. next/font metrikami sladí fallback (bez CLS).
+  display: "optional",
 });
 
 export const metadata: Metadata = {
@@ -38,10 +40,6 @@ export const metadata: Metadata = {
     ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
       ? { 'google-site-verification': process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
       : {}),
-    'preconnect': [
-      'https://izodiamant-reviews-api.petr-c3c.workers.dev',
-      'https://www.google-analytics.com'
-    ]
   },
   creator: "IZODIAMANT",
   openGraph: {
@@ -166,6 +164,12 @@ export default function RootLayout({
   return (
     <html lang="cs" className="scroll-smooth">
       <head>
+        {/* Skutečné preconnect/dns-prefetch pro externí originy (recenze worker, GA).
+            Dřív byly v metadata.other, což renderuje neúčinný <meta name="preconnect">. */}
+        <link rel="preconnect" href="https://izodiamant-reviews-api.petr-c3c.workers.dev" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://izodiamant-reviews-api.petr-c3c.workers.dev" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="service-doc" href="/llms.txt" />
         <link rel="api-catalog" href="/.well-known/api-catalog" />
         <link rel="openid-configuration" href="/.well-known/openid-configuration" />
@@ -201,7 +205,7 @@ export default function RootLayout({
           {children}
         </MotionProvider>
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+          <DeferredAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
         )}
       </body>
     </html>
