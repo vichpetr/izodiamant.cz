@@ -71,12 +71,12 @@ export default function ChainSawPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
             <div>
-              <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary font-black text-xs uppercase tracking-widest mb-6">
+              <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary-ink font-black text-xs uppercase tracking-widest mb-6">
                 <Icons.Zap className="w-4 h-4" />
                 Rychlá realizace
               </div>
               <h1 className="text-5xl md:text-7xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.9] mb-8">
-                Podřezávání <br /><span className="text-primary">řetězovou pilou</span>
+                Podřezávání <br /><span className="text-primary-ink">řetězovou pilou</span>
               </h1>
               <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-10">
                 Strojní podřezání řetězovou pilou patří mezi nejefektivnější a nejrychlejší způsoby, jak trvale odizolovat cihelné zdivo. Pilou vytvoříme ve stěně přesný řez, do kterého obratem vložíme odolnou hydroizolační fólii a zdivo pečlivě zajistíme statickými klíny.
@@ -120,7 +120,7 @@ export default function ChainSawPage() {
                   { step: "04", title: "Zajištění a výplň", desc: "Statické vyklínování a následné tlakové vyplnění spáry cementovou směsí." }
                 ].map((s, i) => (
                   <div key={i} className="flex gap-6 items-start">
-                    <div className="text-4xl font-black text-primary/20 italic shrink-0 leading-none">{s.step}</div>
+                    <div aria-hidden="true" className="text-4xl font-black text-primary/20 italic shrink-0 leading-none">{s.step}</div>
                     <div>
                       <div className="text-lg font-black uppercase italic text-neutral-dark mb-1">{s.title}</div>
                       <p className="text-neutral-dark/70 font-medium">{s.desc}</p>
@@ -274,7 +274,7 @@ export default function ChainSawPage() {
                   </div>
                   <div className="p-6">
                     <h3 className="font-black uppercase italic text-sm mb-2 group-hover:text-primary transition-colors">{project.title}</h3>
-                    <div className="flex items-center gap-2 text-xs text-neutral-dark/40 font-bold uppercase">
+                    <div className="flex items-center gap-2 text-xs text-neutral-dark/60 font-bold uppercase">
                       <Icons.MapPin className="w-3 h-3 text-primary" />
                       {project.location}
                     </div>
@@ -285,7 +285,7 @@ export default function ChainSawPage() {
           </div>
           
           <div className="mt-12 text-center">
-            <Link href="/#reference" className="inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-neutral-dark transition-colors group">
+            <Link href="/#reference" className="inline-flex items-center gap-2 text-primary-ink font-black uppercase tracking-widest text-xs hover:text-neutral-dark transition-colors group">
               Všechny reference
               <Icons.ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -307,7 +307,7 @@ export default function ChainSawPage() {
             </Link>
           </div>
           <p className="text-center text-neutral-dark/70 font-medium mt-8">
-            Nevíte, která metoda je pro vaše zdivo vhodná? <Link href="/#calculator" className="text-primary font-bold hover:underline">Spočítejte si cenu v kalkulačce</Link> nebo nám napište – poradíme.
+            Nevíte, která metoda je pro vaše zdivo vhodná? <Link href="/#calculator" className="text-primary-ink font-bold hover:underline">Spočítejte si cenu v kalkulačce</Link> nebo nám napište – poradíme.
           </p>
         </div>
       </section>
