@@ -44,12 +44,12 @@ export default function ReferralProgramPage() {
 
       <section className="pt-32 pb-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary font-black text-xs uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary-ink font-black text-xs uppercase tracking-widest mb-6">
             <Icons.Coins className="w-4 h-4" />
             Program pro doporučitele
           </div>
           <h1 className="text-4xl md:text-6xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.95] mb-8">
-            Doporuč <span className="text-primary">a získej odměnu</span>
+            Doporuč <span className="text-primary-ink">a získej odměnu</span>
           </h1>
           <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-12">
             Znáte někoho, kdo řeší vlhké zdivo? Doporučte nás a získejte finanční odměnu. Stačí nám dát tip – o všechno ostatní se postaráme sami.
@@ -60,7 +60,7 @@ export default function ReferralProgramPage() {
             <div className="space-y-8">
               {steps.map((s) => (
                 <div key={s.step} className="flex gap-6 items-start">
-                  <div className="text-4xl font-black text-primary/20 italic shrink-0 leading-none">{s.step}</div>
+                  <div aria-hidden="true" className="text-4xl font-black text-primary/20 italic shrink-0 leading-none">{s.step}</div>
                   <div>
                     <h3 className="text-lg font-black uppercase italic text-neutral-dark mb-1">{s.title}</h3>
                     <p className="text-neutral-dark/70 font-medium leading-relaxed">{s.desc}</p>
