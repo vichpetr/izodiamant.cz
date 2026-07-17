@@ -60,7 +60,7 @@ export default function ReferralProgramPage() {
             <div className="space-y-8">
               {steps.map((s) => (
                 <div key={s.step} className="flex gap-6 items-start">
-                  <div aria-hidden="true" className="text-4xl font-black text-primary/20 italic shrink-0 leading-none">{s.step}</div>
+                  <div className="text-4xl font-black text-primary-ink/70 italic shrink-0 leading-none">{s.step}</div>
                   <div>
                     <h3 className="text-lg font-black uppercase italic text-neutral-dark mb-1">{s.title}</h3>
                     <p className="text-neutral-dark/70 font-medium leading-relaxed">{s.desc}</p>
