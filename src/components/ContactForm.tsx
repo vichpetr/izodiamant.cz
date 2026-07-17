@@ -68,7 +68,7 @@ export default function ContactForm() {
           <div className="space-y-12 text-foreground">
             <div>
               <h2 className="text-4xl md:text-5xl font-black text-neutral-dark uppercase tracking-tighter italic mb-6 leading-tight">
-                Nezávazná <br /><span className="text-primary">poptávka</span>
+                Nezávazná <br /><span className="text-primary-ink">poptávka</span>
               </h2>
               <p className="text-lg text-neutral-dark/70 font-medium">
                 Máte dotaz nebo chcete domluvit obhlídku? Napište nám.
@@ -81,7 +81,7 @@ export default function ContactForm() {
                   <Icons.Phone className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1 italic">Zavolejte nám</div>
+                  <div className="text-[10px] font-black text-primary-ink uppercase tracking-[0.2em] mb-1 italic">Zavolejte nám</div>
                   <div className="flex flex-col">
                     <a href="tel:+420737017012" className="text-xl font-black text-neutral-dark hover:text-primary transition-colors">+420 737 017 012</a>
                     <a href="tel:+420732902754" className="text-xl font-black text-neutral-dark hover:text-primary transition-colors">+420 732 902 754</a>
@@ -94,7 +94,7 @@ export default function ContactForm() {
                   <Icons.Mail className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1 italic">Napište nám</div>
+                  <div className="text-[10px] font-black text-primary-ink uppercase tracking-[0.2em] mb-1 italic">Napište nám</div>
                   <a href="mailto:info@izodiamant.cz" rel="nofollow" className="text-xl font-black text-neutral-dark hover:text-primary transition-colors">info@izodiamant.cz</a>
                 </div>
               </div>
@@ -104,7 +104,7 @@ export default function ContactForm() {
                   <Icons.MapPin className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1 italic">Sídlo firmy</div>
+                  <div className="text-[10px] font-black text-primary-ink uppercase tracking-[0.2em] mb-1 italic">Sídlo firmy</div>
                   <address className="text-xl font-black text-neutral-dark not-italic uppercase tracking-tight leading-tight">
                     Mokrá Lhota 26<br />539 44 Nové Hrady
                   </address>

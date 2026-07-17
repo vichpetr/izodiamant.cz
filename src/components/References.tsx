@@ -50,7 +50,7 @@ export default function References() {
           <h2 className="text-4xl md:text-6xl font-black text-neutral-dark mb-2 uppercase tracking-tighter italic">
             {content.h2}
           </h2>
-          <h3 className="text-2xl md:text-3xl font-black text-primary uppercase tracking-tight italic mb-6">
+          <h3 className="text-2xl md:text-3xl font-black text-primary-ink uppercase tracking-tight italic mb-6">
             {content.h3}
           </h3>
           <p className="text-lg text-neutral-dark/70 font-medium">
