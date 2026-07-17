@@ -120,7 +120,7 @@ export default function ChainSawPage() {
                   { step: "04", title: "Zajištění a výplň", desc: "Statické vyklínování a následné tlakové vyplnění spáry cementovou směsí." }
                 ].map((s, i) => (
                   <div key={i} className="flex gap-6 items-start">
-                    <div aria-hidden="true" className="text-4xl font-black text-primary/20 italic shrink-0 leading-none">{s.step}</div>
+                    <div className="text-4xl font-black text-primary-ink/70 italic shrink-0 leading-none">{s.step}</div>
                     <div>
                       <div className="text-lg font-black uppercase italic text-neutral-dark mb-1">{s.title}</div>
                       <p className="text-neutral-dark/70 font-medium">{s.desc}</p>
