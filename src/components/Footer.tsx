@@ -12,6 +12,11 @@ export default function Footer() {
   const googleReviewUrl =
     process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ||
     "https://g.page/r/CUCprMsY1UeiEBM/review";
+  // Odkaz na hodnocení na Firmy.cz (kotva rovnou na sekci recenzí).
+  // Override přes NEXT_PUBLIC_FIRMY_REVIEW_URL.
+  const firmyReviewUrl =
+    process.env.NEXT_PUBLIC_FIRMY_REVIEW_URL ||
+    "https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady.html#hodnoceni";
 
   if (!process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL) {
     console.warn("Varování: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
@@ -138,18 +143,16 @@ export default function Footer() {
                   Recenze na Google
                   <Icons.ExternalLink className="w-3.5 h-3.5 opacity-60" />
                 </a>
-                {profileUrl && (
-                  <a
-                    href={profileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-white/70 hover:text-primary transition-colors font-bold text-sm uppercase tracking-wider"
-                  >
-                    <Icons.Star className="w-4 h-4 text-primary shrink-0" />
-                    Recenze na Mapy.com
-                    <Icons.ExternalLink className="w-3.5 h-3.5 opacity-60" />
-                  </a>
-                )}
+                <a
+                  href={firmyReviewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-white/70 hover:text-primary transition-colors font-bold text-sm uppercase tracking-wider"
+                >
+                  <Icons.Star className="w-4 h-4 text-primary shrink-0" />
+                  Recenze na Mapy.com
+                  <Icons.ExternalLink className="w-3.5 h-3.5 opacity-60" />
+                </a>
               </div>
             </div>
           </div>
