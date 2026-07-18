@@ -20,6 +20,9 @@ Hodnocení: 5,0 z 5 (12 hodnocení na Firmy.cz).
 Ceny jsou uvedeny za běžný metr (bm) zdi a platí pro tloušťku zdiva 45 cm; u silnějšího zdiva se cena úměrně navyšuje. Nejsme plátci DPH, uvedené částky se tedy o daň dále nenavyšují. Jde o orientační ceny – závaznou nabídku zpracováváme až po prohlídce objektu. Nezávaznou kalkulaci lze spočítat na https://izodiamant.cz/#calculator
 
 ## Časté dotazy
+- **Co je sanace vlhkého zdiva?** Odstranění příčiny vlhkosti a návrat zdiva do suchého stavu. U vzlínající vlhkosti jádrem je nová hydroizolace – mechanickým podřezáním (pila/lano) a vložením izolace, nebo chemickou injektáží tam, kde nelze řezat.
+- **Rozdíl izolace vs. sanace vlhkého zdiva?** Izolace vlhkého zdiva = konkrétní krok (hydroizolační bariéra přeruší vzlínání). Sanace = širší ozdravení: diagnostika, izolace, statika, vysychání, sanační omítky.
+- **Elektroosmóza / vysoušení zdiva?** Neděláme – zaměřujeme se na mechanické podřezání a chemickou injektáž, které přeruší příčinu a mají dlouhou životnost. Vysoušení řeší jen následek.
 - **Jak dlouho trvá sanace rodinného domu?** Standardní rodinný dům podřežeme a izolujeme za 2–4 pracovní dny podle technologie, přístupnosti a tloušťky zdiva.
 - **Jakou záruku poskytujete?** Na vloženou hydroizolaci a funkčnost podřezání poskytujeme prodlouženou záruku nad rámec zákonné lhůty; délku uvádíme ve smlouvě. Životnost použitých PE fólií a sklolaminátových desek přesahuje 50 let.
 - **Naruší podřezání statiku domu?** Při dodržení postupu ne. Postupuje se po malých úsecích „na střídačku“, do spáry se ihned vkládá izolace a statické klíny a spára se tlakově vyplní cementovou směsí s plastifikátorem.
