@@ -1,5 +1,17 @@
 [
   {
+    "question": "Co je sanace vlhkého zdiva?",
+    "answer": "Sanace vlhkého zdiva je soubor opatření, který odstraní příčinu vlhkosti a vrátí zdivo do suchého stavu. U vzlínající zemní vlhkosti je jádrem sanace vytvoření nové vodorovné hydroizolace – nejčastěji mechanickým podřezáním (řetězovou pilou nebo diamantovým lanem) a vložením izolace, nebo chemickou injektáží tam, kde nelze řezat. Na podřezání navazuje statické zajištění, vysychání zdiva a případně sanační omítky."
+  },
+  {
+    "question": "Jaký je rozdíl mezi izolací a sanací vlhkého zdiva?",
+    "answer": "V praxi se pojmy překrývají. Izolace vlhkého zdiva je konkrétní krok – vytvoření hydroizolační bariéry, která přeruší vzlínající vlhkost (podřezání a vložení fólie/desek, nebo chemická injektáž). Sanace vlhkého zdiva je širší pojem pro celkové ozdravení stavby: diagnostika a měření vlhkosti, samotná izolace, statické zajištění, vysychání a navazující opatření (drenáž, sanační omítky)."
+  },
+  {
+    "question": "Provádíte i elektroosmózu nebo vysoušení zdiva?",
+    "answer": "Zaměřujeme se na mechanické podřezání (řetězová pila, diamantové lano) a chemickou injektáž, protože fyzicky přeruší vzlínající vlhkost a mají dlouhodobou životnost. Elektroosmózu a nucené vysoušení nenabízíme – vysoušení řeší následek (zbytkovou vlhkost), ne příčinu, a používá se spíš jako doplněk. Nejvhodnější postup pro váš objekt doporučíme po prohlídce a měření vlhkosti."
+  },
+  {
     "question": "Kolik stojí podřezání zdiva?",
     "answer": "Orientační ceny vycházejí ze sazby za běžný metr (bm) při tloušťce zdiva 45 cm: podřezání řetězovou pilou od 2 500 Kč/bm, chemická injektáž od 2 500 Kč/bm a podřezání diamantovým lanem od 4 500 Kč/bm. U silnějšího zdiva se cena úměrně navyšuje. Nejsme plátci DPH, uvedené částky se tedy o daň dále nenavyšují. Nezávazný odhad si můžete spočítat v naší kalkulačce, závaznou nabídku zpracujeme po prohlídce objektu."
   },

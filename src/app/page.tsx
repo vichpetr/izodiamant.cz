@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   // takže značku „| IZODIAMANT" musíme doplnit ručně. (Nezdvojí se: OG title si
   // pageMetadata staví z holého názvu, tady přepisujeme jen <title>.)
   title: "Podřezání a sanace vlhkého zdiva po celé ČR | IZODIAMANT",
-  keywords: ["sanace zdiva", "podřezávání zdiva", "podřezání zdiva", "podřezání domu cena", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "sanace vlhkého zdiva", "hydroizolace", "izolace zdi", "izolace domu", "vzlínající vlhkost", "plísně ve zdivu", "vlhké zdivo", "IZODIAMANT", "Nové Hrady"],
+  keywords: ["sanace zdiva", "sanace vlhkého zdiva", "izolace vlhkého zdiva", "podřezávání zdiva", "podřezání zdiva", "podřezání domu cena", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "hydroizolace", "sanační omítky", "vysoušení zdiva", "diagnostika vlhkosti", "izolace zdi", "izolace domu", "vzlínající vlhkost", "plísně ve zdivu", "vlhké zdivo", "IZODIAMANT", "Nové Hrady"],
 };
 
 // Components that are SSR by default for SEO
@@ -47,7 +47,7 @@ function ProblemSection() {
             Trápí vás vlhké zdivo, plísně<br />nebo vzlínající vlhkost?
           </h2>
           <p className="text-lg text-neutral-dark/70 font-medium leading-relaxed">
-            Vlhké zdivo ničí omítky, způsobuje plísně a zvyšuje náklady na vytápění. Nabízíme trvalé odstranění vlhkosti zdiva pomocí moderních technologií.
+            Vlhké zdivo ničí omítky, způsobuje plísně a zvyšuje náklady na vytápění. Zajišťujeme sanaci a izolaci vlhkého zdiva moderními technologiemi – od diagnostiky a měření vlhkosti až po trvalé odstranění příčiny.
           </p>
         </div>
 
@@ -88,7 +88,7 @@ function ProblemSection() {
             Jak trvale odstranit vlhkost zdiva?
           </h3>
           <p className="text-neutral-dark/70 font-medium leading-relaxed mb-6">
-            Jediný trvalý způsob, jak se zbavit vlhkého zdiva, je jeho podřezání a následné vložení hydroizolační bariéry. Nabízíme tři moderní technologie – podřezávání diamantovým lanem pro kámen a beton, řetězovou pilu pro cihelné zdivo a chemickou injektáž pro lokální problémy. Každou zakázku začínáme důkladnou diagnostikou a zakončujeme zárukou na provedené práce.
+            Nejspolehlivější izolace vlhkého zdiva je jeho podřezání a vložení souvislé hydroizolační bariéry. Nabízíme tři moderní technologie – podřezávání diamantovým lanem pro kámen a beton, řetězovou pilu pro cihelné zdivo a chemickou injektáž pro místa, kde nelze řezat. Každou zakázku začínáme diagnostikou a měřením vlhkosti zdiva a zakončujeme zárukou na provedené práce.
           </p>
           <div className="grid md:grid-cols-3 gap-4">
             <div className="bg-white p-6 rounded-xl border border-neutral-light/50">
@@ -142,9 +142,10 @@ function AreasSection() {
             Kde podřezáváme a sanujeme vlhké zdivo
           </h2>
           <p className="text-lg text-neutral-dark/70 font-medium leading-relaxed max-w-3xl mx-auto">
-            Sídlíme ve východních Čechách a na sanaci vlhkého zdiva vyjíždíme po celé České republice.
-            Nejčastěji podřezáváme domy v Pardubickém, Královéhradeckém a Středočeském kraji, pravidelně
-            i v Praze a okolí. Doprava a prohlídka objektu s nezávaznou cenovou nabídkou jsou zdarma.
+            Sídlíme ve východních Čechách a na sanaci a izolaci vlhkého zdiva vyjíždíme po celé České republice.
+            Podřezání a sanaci vlhkého zdiva realizujeme mimo jiné v Pardubicích, Chrudimi, Hradci Králové,
+            Ústí nad Orlicí, Vysokém Mýtě, Litomyšli, Poličce a Svitavách – a pravidelně i v Praze a okolí.
+            Doprava a prohlídka objektu s nezávaznou cenovou nabídkou jsou zdarma.
           </p>
         </div>
 
