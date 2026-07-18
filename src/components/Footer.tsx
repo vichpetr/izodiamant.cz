@@ -7,10 +7,11 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
   // Přímý odkaz na napsání Google recenze (rovnou otevře okno hodnocení).
-  // Override přes NEXT_PUBLIC_GOOGLE_REVIEW_URL; fallback používá Place ID firmy.
+  // Oficiální zkrácený odkaz z GBP („Získat více recenzí"). Override přes
+  // NEXT_PUBLIC_GOOGLE_REVIEW_URL.
   const googleReviewUrl =
     process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ||
-    "https://search.google.com/local/writereview?placeid=ChIJW3GHEsSVDUcRQKmsyxjVR6I";
+    "https://g.page/r/CUCprMsY1UeiEBM/review";
 
   if (!process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL) {
     console.warn("Varování: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
