@@ -6,6 +6,12 @@ import FirmyBadge from './FirmyBadge';
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
+  // Odkaz na napsání Google recenze. Ideálně přímé okno recenze:
+  // NEXT_PUBLIC_GOOGLE_REVIEW_URL = https://search.google.com/local/writereview?placeid=ChIJ...
+  // Fallback = profil na Mapách (přes CID), kde uživatel klikne „Napsat recenzi".
+  const googleReviewUrl =
+    process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ||
+    "https://www.google.com/maps?cid=11693549259963803968";
 
   if (!process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL) {
     console.warn("Varování: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
@@ -118,6 +124,34 @@ export default function Footer() {
                 </span>
               </li>
             </ul>
+
+            <div className="mt-8 pt-6 border-t border-white/5">
+              <span className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-3">Ohodnoťte nás</span>
+              <div className="flex flex-col gap-2">
+                <a
+                  href={googleReviewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-white/70 hover:text-primary transition-colors font-bold text-sm uppercase tracking-wider"
+                >
+                  <Icons.Star className="w-4 h-4 text-primary shrink-0" />
+                  Recenze na Google
+                  <Icons.ExternalLink className="w-3.5 h-3.5 opacity-60" />
+                </a>
+                {profileUrl && (
+                  <a
+                    href={profileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-white/70 hover:text-primary transition-colors font-bold text-sm uppercase tracking-wider"
+                  >
+                    <Icons.Star className="w-4 h-4 text-primary shrink-0" />
+                    Recenze na Mapy.com
+                    <Icons.ExternalLink className="w-3.5 h-3.5 opacity-60" />
+                  </a>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
