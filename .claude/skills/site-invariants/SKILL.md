@@ -58,8 +58,12 @@ as a constant. **Edit `public/llms.txt`, then run `npm run sync:llms`** to regen
   **Never** via `next/script` with `strategy="afterInteractive"` — that injects it only
   after hydration, so crawlers without JS (Seznam, many AI bots) never see it. This was
   the actual cause of an audit's "no schema.org markup found".
-- `LocalBusiness` in `layout.tsx` carries `aggregateRating` from `src/data/firmy.json`
-  (`firmyData.rating` / `.count`). If the rating source changes, keep both in step.
+- **No self-serving ratings in JSON-LD.** The site must **not** emit `aggregateRating`
+  on its own `LocalBusiness` (`layout.tsx`) nor `Review` about itself (`ProjectReview`).
+  Google forbids a business marking up its own ratings on its own site — it's invalid
+  and Search Console flags it ("Review has multiple aggregate ratings"). Ratings stay
+  as **visible content only** (Firmy.cz/Google badges via `useReviewSummary`), never as
+  schema.org markup. Enforced by the "self-serving Review/AggregateRating" test.
 - **No `openingHoursSpecification`.** The firm works **by appointment, with no fixed
   hours** — do not add opening hours (owner-confirmed). Publishing invented hours would
   turn customers away outside them.

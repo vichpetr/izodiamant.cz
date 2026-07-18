@@ -62,7 +62,7 @@ test.describe('Audit: titulky značky', () => {
 test.describe('Audit: JSON-LD musí být v serverovém HTML', () => {
   // Přes next/script se JSON-LD vloží až po hydrataci – crawleři bez JS ho neuvidí.
   // Proto testujeme surové HTML z requestu, ne vyrenderovaný DOM.
-  test('homepage obsahuje LocalBusiness s hodnocením', async ({ request }) => {
+  test('homepage obsahuje LocalBusiness (bez self-serving aggregateRating)', async ({ request }) => {
     const html = await (await request.get('/')).text();
     const blocks = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)]
       .map((m) => JSON.parse(m[1]));
@@ -72,8 +72,20 @@ test.describe('Audit: JSON-LD musí být v serverovém HTML', () => {
     expect(business.address.streetAddress).toBe('Mokrá Lhota 26');
     expect(business.telephone).toBe('+420737017012');
     expect(business.identifier).toBe('74650726');
-    expect(business.aggregateRating.ratingValue).toBeGreaterThan(0);
-    expect(business.aggregateRating.reviewCount).toBeGreaterThan(0);
+    // Google zakazuje self-serving hodnocení na vlastní LocalBusiness – nesmí se vrátit.
+    expect(business.aggregateRating, 'self-serving aggregateRating na LocalBusiness (zakázáno Googlem)').toBeUndefined();
+  });
+
+  test('nikde není self-serving Review/AggregateRating markup', async ({ request }) => {
+    for (const path of ['/', '/sluzby/retezova-pila', '/reference/zleby']) {
+      const html = await (await request.get(path)).text();
+      const blocks = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)]
+        .map((m) => JSON.parse(m[1]));
+      const hasReview = blocks.some((b) => b['@type'] === 'Review');
+      const hasAgg = blocks.some((b) => JSON.stringify(b).includes('AggregateRating'));
+      expect(hasReview, `${path} má Review JSON-LD (self-serving, zakázáno)`).toBe(false);
+      expect(hasAgg, `${path} má AggregateRating JSON-LD (self-serving, zakázáno)`).toBe(false);
+    }
   });
 
   test('homepage obsahuje FAQPage', async ({ request }) => {
