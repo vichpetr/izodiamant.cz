@@ -4,7 +4,6 @@ import Script from "next/script";
 import DeferredAnalytics from "@/components/DeferredAnalytics";
 import MotionProvider from "@/components/MotionProvider";
 import WebMCP from "@/components/WebMCP";
-import firmyData from "@/data/firmy.json";
 import "./globals.css";
 
 const inter = Inter({
@@ -121,13 +120,10 @@ export default function RootLayout({
     "priceRange": "$$",
     "currenciesAccepted": "CZK",
     // Otevírací doba se neuvádí – firma pracuje po domluvě, bez pevné otevírací doby.
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": firmyData.rating,
-      "reviewCount": firmyData.count,
-      "bestRating": 5,
-      "worstRating": 1
-    },
+    // POZOR: žádný aggregateRating/Review na vlastní LocalBusiness. Google zakazuje
+    // self-serving recenze (firma nesmí značkovat vlastní hodnocení na svém webu) –
+    // je to neplatné a Search Console to hlásí. Hodnocení zůstává jen jako viditelný
+    // obsah (badge z Firmy.cz/Google), ne ve strukturovaných datech.
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Sanace vlhkého zdiva",
