@@ -11,7 +11,7 @@ compatibility_date = "2024-11-06"
 [vars]
 FIRMY_PROFILE_URL = "https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html?widget&limit=150"
 # Doplňte Place ID (ChIJ...) z Google. Prázdné = Google se přeskočí (worker vrací jen Firmy.cz).
-GOOGLE_PLACE_ID = ""
+GOOGLE_PLACE_ID = "ChIJW3GHEsSVDUcRQKmsyxjVR6I"
 
 # GOOGLE_API_KEY je SECRET – NENÍ zde. Nastavte jednorázově:
 #   cd worker && npx wrangler secret put GOOGLE_API_KEY
