@@ -6,12 +6,17 @@ import FirmyBadge from './FirmyBadge';
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
-  // Odkaz na napsání Google recenze. Ideálně přímé okno recenze:
-  // NEXT_PUBLIC_GOOGLE_REVIEW_URL = https://search.google.com/local/writereview?placeid=ChIJ...
-  // Fallback = profil na Mapách (přes CID), kde uživatel klikne „Napsat recenzi".
+  // Přímý odkaz na napsání Google recenze (rovnou otevře okno hodnocení).
+  // Oficiální zkrácený odkaz z GBP („Získat více recenzí"). Override přes
+  // NEXT_PUBLIC_GOOGLE_REVIEW_URL.
   const googleReviewUrl =
     process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ||
-    "https://www.google.com/maps?cid=11693549259963803968";
+    "https://g.page/r/CUCprMsY1UeiEBM/review";
+  // Odkaz na hodnocení na Firmy.cz (kotva rovnou na sekci recenzí).
+  // Override přes NEXT_PUBLIC_FIRMY_REVIEW_URL.
+  const firmyReviewUrl =
+    process.env.NEXT_PUBLIC_FIRMY_REVIEW_URL ||
+    "https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady.html#hodnoceni";
 
   if (!process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL) {
     console.warn("Varování: NEXT_PUBLIC_FIRMY_PROFILE_URL není definována v .env");
@@ -138,18 +143,16 @@ export default function Footer() {
                   Recenze na Google
                   <Icons.ExternalLink className="w-3.5 h-3.5 opacity-60" />
                 </a>
-                {profileUrl && (
-                  <a
-                    href={profileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-white/70 hover:text-primary transition-colors font-bold text-sm uppercase tracking-wider"
-                  >
-                    <Icons.Star className="w-4 h-4 text-primary shrink-0" />
-                    Recenze na Mapy.com
-                    <Icons.ExternalLink className="w-3.5 h-3.5 opacity-60" />
-                  </a>
-                )}
+                <a
+                  href={firmyReviewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-white/70 hover:text-primary transition-colors font-bold text-sm uppercase tracking-wider"
+                >
+                  <Icons.Star className="w-4 h-4 text-primary shrink-0" />
+                  Recenze na Mapy.com
+                  <Icons.ExternalLink className="w-3.5 h-3.5 opacity-60" />
+                </a>
               </div>
             </div>
           </div>
