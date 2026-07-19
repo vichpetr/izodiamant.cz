@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   // takže značku „| IZODIAMANT" musíme doplnit ručně. (Nezdvojí se: OG title si
   // pageMetadata staví z holého názvu, tady přepisujeme jen <title>.)
   title: "Podřezání a sanace vlhkého zdiva po celé ČR | IZODIAMANT",
-  keywords: ["sanace zdiva", "sanace vlhkého zdiva", "izolace vlhkého zdiva", "podřezávání zdiva", "podřezání zdiva", "podřezání domu cena", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "hydroizolace", "sanační omítky", "vysoušení zdiva", "diagnostika vlhkosti", "izolace zdi", "izolace domu", "vzlínající vlhkost", "plísně ve zdivu", "vlhké zdivo", "IZODIAMANT", "Nové Hrady"],
+  keywords: ["sanace zdiva", "sanace vlhkého zdiva", "izolace vlhkého zdiva", "podřezávání zdiva", "podřezání zdiva", "podřezání domu cena", "diamantové lano", "řetězová pila", "chemická injektáž", "odvlhčení zdiva", "hydroizolace", "sanační omítky", "diagnostika vlhkosti", "izolace zdi", "izolace domu", "vzlínající vlhkost", "plísně ve zdivu", "vlhké zdivo", "IZODIAMANT", "Nové Hrady"],
 };
 
 // Components that are SSR by default for SEO
