@@ -186,6 +186,27 @@ test.describe('Audit: llms.txt', () => {
   });
 });
 
+test.describe('Audit: robots.txt a AI crawleři', () => {
+  // Pozn.: testuje se repo verze (lokální server). Na produkci Cloudflare navíc
+  // injektuje vlastní „Managed content“ blok – ten se spravuje v CF dashboardu.
+  test('Content-Signal povoluje ai-input (jinak se web nedostane do AI odpovědí)', async ({ request }) => {
+    const txt = await (await request.get('/robots.txt')).text();
+    const signal = txt.match(/^Content-Signal:\s*(.+)$/m)?.[1] ?? '';
+    expect(signal, 'Content-Signal chybí v robots.txt').toBeTruthy();
+    // ai-input=no by popřelo celou agent-discovery vrstvu (llms.txt, agent-card, auth.md).
+    expect(signal, 'ai-input=no blokuje použití obsahu v AI odpovědích').toContain('ai-input=yes');
+    expect(signal).toContain('search=yes');
+  });
+
+  test('robots.txt odkazuje na sitemapu a nezakazuje obsah', async ({ request }) => {
+    const txt = await (await request.get('/robots.txt')).text();
+    expect(txt).toContain('Sitemap: https://izodiamant.cz/sitemap.xml');
+    const disallows = [...txt.matchAll(/^Disallow:\s*(.+)$/gm)].map((m) => m[1].trim());
+    const contentBlocked = disallows.filter((d) => d !== '/cdn-cgi/' && d !== '');
+    expect(contentBlocked, `robots.txt blokuje obsah: ${contentBlocked.join(', ')}`).toEqual([]);
+  });
+});
+
 test.describe('Audit: nedoložitelná tvrzení', () => {
   const BANNED = [
     'vydrží navždy',
