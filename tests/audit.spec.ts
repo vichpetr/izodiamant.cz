@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { createHash } from 'crypto';
 
 /**
  * Regresní testy k auditu webu (2026-07).
@@ -204,6 +205,38 @@ test.describe('Audit: robots.txt a AI crawleři', () => {
     const disallows = [...txt.matchAll(/^Disallow:\s*(.+)$/gm)].map((m) => m[1].trim());
     const contentBlocked = disallows.filter((d) => d !== '/cdn-cgi/' && d !== '');
     expect(contentBlocked, `robots.txt blokuje obsah: ${contentBlocked.join(', ')}`).toEqual([]);
+  });
+});
+
+test.describe('Audit: nenabízíme vysoušení (konzistence napříč zdroji)', () => {
+  // Majitel potvrdil: vysoušení/elektroosmózu firma NEDĚLÁ. FAQ i llms.txt to
+  // uvádějí správně – agent-facing soubory to dřív tvrdily opačně („dewatering“).
+  const AGENT_FILES = [
+    '/.well-known/agent-card.json',
+    '/.well-known/agent-skills/index.json',
+    '/.well-known/agent-skills/get-services/SKILL.md',
+  ];
+
+  for (const path of AGENT_FILES) {
+    test(`${path} nenabízí vysoušení`, async ({ request }) => {
+      const body = (await (await request.get(path)).text()).toLowerCase();
+      expect(body, `${path} nabízí dewatering/vysoušení, které firma neposkytuje`)
+        .not.toMatch(/dewater|vysouš|vysuš/);
+    });
+  }
+
+  test('digest v agent-skills/index.json odpovídá skutečnému SKILL.md', () => {
+    // Vymyšlený digest = agent ověřující integritu skill odmítne. Hlídáme, aby
+    // se hash nerozešel s obsahem při každé úpravě SKILL.md.
+    const root = join(__dirname, '..');
+    const index = JSON.parse(
+      readFileSync(join(root, 'public/.well-known/agent-skills/index.json'), 'utf-8'),
+    );
+    const skill = readFileSync(
+      join(root, 'public/.well-known/agent-skills/get-services/SKILL.md'),
+    );
+    const real = `sha256:${createHash('sha256').update(skill).digest('hex')}`;
+    expect(index.skills[0].digest, 'digest se rozešel s obsahem SKILL.md').toBe(real);
   });
 });
 
