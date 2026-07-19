@@ -207,6 +207,40 @@ test.describe('Audit: robots.txt a AI crawleři', () => {
   });
 });
 
+test.describe('Audit: agent-discovery auth.md', () => {
+  test('/auth.md se servíruje s H1 „auth.md"', async ({ request }) => {
+    const res = await request.get('/auth.md');
+    expect(res.ok(), '/auth.md není dostupný').toBeTruthy();
+    const body = await res.text();
+    // Audit isitagentready vyžaduje H1 obsahující „auth.md".
+    expect(body).toMatch(/^#\s*auth\.md/m);
+  });
+
+  test('/auth.md není přebit markdown-negociací (nevrací llms summary)', async ({ request }) => {
+    // Middleware negociuje Accept: text/markdown na běžných stránkách a vrací LLMS_MD.
+    // Reálný statický .md soubor se ale musí servírovat sám za sebe – jinak by
+    // /auth.md ztratilo svůj heading a audit by spadl.
+    const res = await request.get('/auth.md', { headers: { Accept: 'text/markdown' } });
+    const body = await res.text();
+    expect(body).toMatch(/^#\s*auth\.md/m);
+    expect(body, '/auth.md vrací obsah llms.txt místo sebe').not.toContain('Sanace a podřezávání zdiva');
+  });
+
+  test('markdown-negociace stále funguje na běžných stránkách', async ({ request }) => {
+    const res = await request.get('/sluzby/diamantove-lano', { headers: { Accept: 'text/markdown' } });
+    expect(await res.text()).toContain('IZODIAMANT - Sanace a podřezávání zdiva');
+  });
+
+  test('oauth-protected-resource má povinná pole', async ({ request }) => {
+    const res = await request.get('/.well-known/oauth-protected-resource');
+    const json = await res.json();
+    expect(json.resource).toBe('https://izodiamant.cz');
+    expect(json).toHaveProperty('authorization_servers');
+    expect(json).toHaveProperty('scopes_supported');
+    expect(json.bearer_methods_supported).toContain('header');
+  });
+});
+
 test.describe('Audit: nedoložitelná tvrzení', () => {
   const BANNED = [
     'vydrží navždy',

@@ -8,8 +8,11 @@ export function middleware(request: NextRequest) {
   const acceptHeader = request.headers.get('accept') || '';
   
   // 1. Handle Markdown Negotiation for ANY page if requested
-  // This is a common requirement for agent-readiness scanners
-  if (acceptHeader.includes('text/markdown')) {
+  // This is a common requirement for agent-readiness scanners.
+  // Skip real static files (auth.md, llms.txt, robots.txt, …) – those must be
+  // served as-is, jinak by /auth.md vracelo obsah llms.txt a přišlo o svůj heading.
+  const isStaticFile = pathname.includes('.');
+  if (acceptHeader.includes('text/markdown') && !isStaticFile) {
     const response = new NextResponse(LLMS_MD);
     
     // Explicitly set headers for Markdown for Agents
