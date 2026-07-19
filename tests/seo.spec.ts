@@ -11,8 +11,13 @@ test.describe('SEO and Metadata', () => {
     expect(text.toLowerCase()).toContain('user-agent: *');
     expect(text).toContain('Sitemap: https://izodiamant.cz/sitemap.xml');
     
-    // Content-Signal should be present (Agent-Ready requirement)
-    expect(text).toContain('Content-Signal: ai-train=no, search=yes, ai-input=no');
+    // Content-Signal should be present (Agent-Ready requirement).
+    // Ověřuje se význam, ne přesný řetězec – pořadí direktiv se může měnit a
+    // natvrdo zadaná hodnota se rozešla s robots.txt (rozbitá CI po změně signálu).
+    // Konkrétní hodnoty hlídá „Audit: robots.txt a AI crawleři“ v audit.spec.ts.
+    const signal = text.match(/^Content-Signal:\s*(.+)$/m)?.[1] ?? '';
+    expect(signal, 'Content-Signal chybí v robots.txt').toBeTruthy();
+    expect(signal).toContain('search=yes');
     
     // AI bots should NOT be blocked anymore (based on Agent-Ready request)
     expect(text).not.toContain('User-agent: GPTBot\nDisallow: /');
