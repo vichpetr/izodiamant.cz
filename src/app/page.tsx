@@ -154,7 +154,7 @@ function AreasSection() {
             Sídlíme ve východních Čechách a na sanaci a izolaci vlhkého zdiva vyjíždíme po celé České republice.
             Podřezání a sanaci vlhkého zdiva realizujeme mimo jiné v Pardubicích, Chrudimi, Hradci Králové,
             Ústí nad Orlicí, Vysokém Mýtě, Litomyšli, Poličce a Svitavách – a pravidelně i v Praze a okolí.
-            Doprava a prohlídka objektu s nezávaznou cenovou nabídkou jsou zdarma.
+            Prohlídka objektu a zpracování nezávazné cenové nabídky jsou zdarma.
           </p>
         </div>
 
