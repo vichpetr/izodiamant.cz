@@ -8,6 +8,7 @@ import { Metadata } from 'next';
 import Link from "next/link";
 import { Icons } from "@/components/Icons";
 import { pageMetadata } from "@/lib/seo";
+import referencesData from "@/data/references.json";
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -132,7 +133,15 @@ function AreasSection() {
   const cities = [
     "Pardubice", "Chrudim", "Hradec Králové", "Ústí nad Orlicí",
     "Vysoké Mýto", "Litomyšl", "Polička", "Svitavy",
+    "Sloupnice", "Staré Ždánice",
   ];
+
+  // Kde máme doloženou realizaci, odkážeme na konkrétní referenci. Lokální
+  // relevance opřená o skutečnou zakázku – ne o šablonovou stránku města
+  // (proto byly /mesta zrušeny). Páruje se přes location, aby se seznamy
+  // nemohly rozejít.
+  const referenceFor = (city: string) =>
+    referencesData.find((r) => r.location.startsWith(city))?.id;
 
   return (
     <section className="py-20 bg-neutral-light" id="oblasti-pusobeni">
@@ -164,12 +173,24 @@ function AreasSection() {
           <div className="bg-white p-8 rounded-2xl border border-neutral-dark/5">
             <h3 className="text-sm font-black text-primary-ink uppercase tracking-widest mb-4">Vybraná města</h3>
             <ul className="grid grid-cols-2 gap-2">
-              {cities.map((c) => (
-                <li key={c} className="flex items-center gap-2 text-neutral-dark/70 font-medium">
-                  <Icons.MapPin className="w-4 h-4 text-primary-ink shrink-0" />
-                  {c}
-                </li>
-              ))}
+              {cities.map((c) => {
+                const refId = referenceFor(c);
+                return (
+                  <li key={c} className="flex items-center gap-2 text-neutral-dark/70 font-medium">
+                    <Icons.MapPin className="w-4 h-4 text-primary-ink shrink-0" />
+                    {refId ? (
+                      <Link
+                        href={`/reference/${refId}`}
+                        className="text-primary-ink font-bold hover:underline"
+                      >
+                        {c}
+                      </Link>
+                    ) : (
+                      c
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
