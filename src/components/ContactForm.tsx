@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Icons } from './Icons';
 import { cn } from '@/lib/utils';
+import { trackLead } from '@/lib/analytics';
 
 interface FormErrors {
   name?: string;
@@ -50,6 +51,7 @@ export default function ContactForm() {
 
       if (response.ok) {
         setIsSubmitted(true);
+        trackLead('kontaktni-formular');
       } else {
         alert('Něco se nepovedlo.');
       }

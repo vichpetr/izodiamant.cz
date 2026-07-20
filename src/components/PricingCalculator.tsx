@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import calculatorData from '@/data/calculator.json';
 import servicesData from '@/data/services.json';
+import { trackLead } from '@/lib/analytics';
 
 // Ceny v calculator.json jsou sazby za běžný metr při referenční tloušťce zdiva.
 // U silnějšího zdiva roste cena úměrně poměru skutečné a referenční tloušťky.
@@ -107,7 +108,7 @@ export default function PricingCalculator() {
     
     setIsSubmitting(true);
     try {
-      await fetch('/api/send', {
+      const response = await fetch('/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -119,7 +120,23 @@ export default function PricingCalculator() {
           price: `${range.min.toLocaleString('cs-CZ')} - ${range.max.toLocaleString('cs-CZ')} Kč`,
         }),
       });
+
+      // Bez kontroly stavu hlásila kalkulačka „odesláno“ i při chybě serveru –
+      // uživateli zmizela poptávka a jako konverze by se změřilo i selhání.
+      if (!response.ok) {
+        alert('Něco se nepovedlo.');
+        return;
+      }
+
       setIsSubmitted(true);
+      // Hodnota = spodní hranice odhadu, aby šlo v Ads později licitovat
+      // podle velikosti zakázky. Je to odhad, ne fakturovaná částka.
+      trackLead('kalkulacka', {
+        value: range.min,
+        currency: 'CZK',
+        service: selectedService?.label,
+        material: selectedMaterial?.label,
+      });
     } catch {
       alert('Chyba při odesílání.');
     } finally {
