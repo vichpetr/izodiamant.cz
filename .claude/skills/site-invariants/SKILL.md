@@ -38,6 +38,16 @@ about the couplings *between* those files and the code that consumes them.
 - **VAT:** the firm is **not a VAT payer**. Copy says **"Nejsme plátci DPH"**, never
   "Bez DPH" (which implies VAT gets added). Check `Footer.tsx`, `PricingCalculator.tsx`
   badge, `faq.json`, `llms.txt`.
+- **Prices also live outside the repo — no test can catch those.** The same rates are
+  published on **Firmy.cz** (product/offer items) and the **Google Business Profile**
+  (Services). Changing a rate here means updating both profiles **by hand**, or they
+  silently drift: Firmy.cz once showed `3 500`/`3 900` (the range *maxima*) while the
+  site advertised "od 2 500", and a visitor comparing the two saw a contradiction.
+  Neither platform's price field accepts a unit, so **"za běžný metr (bm) při tloušťce
+  45 cm" must be the opening words of each offer description** — otherwise the number
+  reads as the price for the whole job. Google's price field does support "Od"; Firmy.cz
+  needs an explicit range. Keep the basis consistent: quote the **minimum** everywhere,
+  matching the site's "od …".
 
 ## 2. `public/llms.txt` and `src/lib/llms.ts` are one source, two copies
 
@@ -122,6 +132,20 @@ components
   "nedoložitelná tvrzení" and slogan-count tests enforce both.
 - Place names and NAP (Name/Address/Phone) must be spelled identically everywhere
   (site, `llms.txt`, JSON-LD) and match Firmy.cz + Google Business Profile.
+- **The service list is a claim too, and it leaks into agent-facing files.** The firm
+  does **not** offer drying or electro-osmosis (`vysoušení`, elektroosmóza) — owner
+  confirmed; `faq.json` and `llms.txt` say so explicitly. That answer is the source of
+  truth, and every other surface must agree with it. It once didn't:
+  `.well-known/agent-card.json` and `.well-known/agent-skills/index.json` both advertised
+  "dewatering services" to agents, and Firmy.cz listed a drying product. When the service
+  offering changes, sweep **all** of it — `faq.json`, `llms.txt`, page `keywords`, both
+  `.well-known` agent files, plus Firmy.cz and the Google profile. The
+  "nenabízíme vysoušení" tests cover the in-repo half only. A *category* name on an
+  external portal ("Vysušování, odvlhčování a sanace zdiva" on Firmy.cz) is fixed
+  taxonomy, not a claim — leave it; it's where damp-wall customers actually browse.
+- **`.well-known/agent-skills/index.json` carries a `digest` of `SKILL.md`.** It was
+  once a made-up placeholder, so an agent verifying integrity would have rejected the
+  skill. Recompute it (`shasum -a 256`) whenever `SKILL.md` changes; a test compares them.
 
 ---
 
