@@ -101,7 +101,9 @@ export default async function ProjectPage({
           </Link>
 
           <div className="grid lg:grid-cols-2 gap-16 items-start">
-            <div className="space-y-12">
+            {/* min-w-0: bez něj má grid buňka min-width:auto a roztáhne se podle
+                nejširšího nelámatelného slova v titulku (přeteklo to do galerie). */}
+            <div className="space-y-12 min-w-0">
               <div className="mb-16">
                 <div className="flex flex-wrap gap-3 mb-10">
                   <div className="inline-flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-lg text-primary-ink font-black text-xs uppercase tracking-widest">
@@ -124,7 +126,7 @@ export default async function ProjectPage({
                   <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] italic ml-1">
                     Realizace sanace
                   </div>
-                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.85] -ml-1">
+                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.85] -ml-1 break-words hyphens-auto">
                     {/[Ss]anace|[Ii]zolace/.test(project.title)
                       ? project.title
                       : `Sanace objektu: ${project.title}`}
