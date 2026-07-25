@@ -56,7 +56,7 @@ export default function PrivacyPolicy() {
               <ul className="list-disc pl-6 space-y-2">
                 <li>Údaje z poptávkových formulářů uchováváme po dobu vyřizování nabídky, nejdéle však 2 roky, pokud nedojde k následné realizaci zakázky.</li>
                 <li>V případě realizované sanace uchováváme údaje po dobu 10 let z důvodu zákonných povinností (účetnictví, daně).</li>
-                <li>Vzhledem k tomu, že na naše hydroizolační práce poskytujeme dlouhodobé záruky, uchováváme nezbytné technické detaily realizace po dobu trvání této záruky, abychom mohli v budoucnu řádně dostát svým závazkům.</li>
+                <li>Vzhledem k tomu, že na naše hydroizolační práce poskytujeme záruku, uchováváme nezbytné technické detaily realizace po dobu jejího trvání, abychom mohli v budoucnu řádně dostát svým závazkům.</li>
               </ul>
             </section>
 

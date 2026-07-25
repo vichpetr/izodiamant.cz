@@ -17,7 +17,7 @@ export default function AboutSection() {
     },
     {
       title: "Záruka kvality",
-      text: "Za svou prací si stojíme. Používáme pouze certifikované izolační materiály s ověřenou životností a na vloženou hydroizolaci poskytujeme prodlouženou záruku. Naším cílem není jen 'oprava', ale trvalé odstranění příčiny vlhkosti."
+      text: "Za svou prací si stojíme. Používáme pouze certifikované izolační materiály s ověřenou životností a na vloženou hydroizolaci poskytujeme zákonnou záruku. Naším cílem není jen 'oprava', ale trvalé odstranění příčiny vlhkosti."
     }
   ];
 
