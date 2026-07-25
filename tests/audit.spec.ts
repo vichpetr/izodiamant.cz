@@ -32,14 +32,23 @@ test.describe('Audit: og:url na podstránkách', () => {
   }
 });
 
-test.describe('Audit: párování recenzí k referenci', () => {
-  // reviewId v referencích je prefixovaný (firmy-…); porovnání musí být odolné
-  // vůči prefixu, jinak se spárovaná recenze nezobrazí (bug z auditu).
-  test('/reference/zleby zobrazí spárovanou recenzi se zdrojem', async ({ page }) => {
+test.describe('Audit: recenze jen z živého workeru (bez fallbacku)', () => {
+  // Statický fallback (reviews.json) byl odstraněn – recenze se zobrazí jen
+  // tehdy, když ji vrátí živý worker. Raději nic než neaktuální/nereálná data.
+  // Lokálně/CI je nastavena placeholder worker URL (…vás-účet…), kterou
+  // komponenty přeskakují, takže se nesmí objevit žádná recenze.
+  test('/reference/zleby nezobrazí žádnou (záložní) recenzi bez workeru', async ({ page }) => {
     await page.goto('/reference/zleby');
-    // ProjectReview načítá klientsky; bez workeru padá na statický fallback.
-    await expect(page.getByText('Tomáš Bludička')).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(/Recenze z (Mapy\.com|Google)/)).toBeVisible();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByText(/Recenze z (Mapy\.com|Google)/)).toHaveCount(0);
+    await expect(page.getByText('Zákazník IZODIAMANT')).toHaveCount(0);
+  });
+
+  test('sekce hodnocení na homepage se bez workeru nevykreslí', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    // Nadpis sekce recenzí nesmí existovat, když nejsou živá data.
+    await expect(page.locator('#reviews')).toHaveCount(0);
   });
 });
 

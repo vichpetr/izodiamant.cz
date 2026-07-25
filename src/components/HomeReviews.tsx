@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Icons } from './Icons';
-import staticReviews from '@/data/reviews.json';
 import ExpandableText from './ExpandableText';
 
 type ReviewSource = 'firmy' | 'google';
@@ -47,7 +46,8 @@ function normalizeReview(r: unknown): Review | null {
 export default function HomeReviews() {
   const [showAll, setShowAll] = useState(false);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [status, setStatus] = useState<'loading' | 'live' | 'fallback'>('loading');
+  // 'empty' = worker nedostupný nebo bez recenzí → sekci schováme (žádný fallback).
+  const [status, setStatus] = useState<'loading' | 'live' | 'empty'>('loading');
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
@@ -57,14 +57,12 @@ export default function HomeReviews() {
     let cancelled = false;
 
     async function fetchLiveReviews() {
-      const fallback = (staticReviews as unknown[])
-        .map(normalizeReview)
-        .filter((r): r is Review => r !== null);
-
+      // Žádný statický fallback: bez živých recenzí z workeru se sekce nezobrazí.
+      // Raději nic než neaktuální/nereálná záložní data.
       if (!workerUrl || workerUrl.includes('vás-účet')) {
         if (!cancelled) {
-          setReviews(fallback);
-          setStatus('fallback');
+          setReviews([]);
+          setStatus('empty');
         }
         return;
       }
@@ -75,15 +73,14 @@ export default function HomeReviews() {
         const data = await res.json();
         const list = Array.isArray(data?.reviews) ? data.reviews : [];
         const mapped = list.map(normalizeReview).filter((r: Review | null): r is Review => r !== null);
-        if (mapped.length === 0) throw new Error('No reviews in data');
         if (!cancelled) {
           setReviews(mapped);
-          setStatus('live');
+          setStatus(mapped.length > 0 ? 'live' : 'empty');
         }
       } catch {
         if (!cancelled) {
-          setReviews(fallback);
-          setStatus('fallback');
+          setReviews([]);
+          setStatus('empty');
         }
       }
     }

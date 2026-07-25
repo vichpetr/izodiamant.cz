@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { Icons } from './Icons';
-import staticReviews from '@/data/reviews.json';
 import ExpandableText from './ExpandableText';
 
 type ReviewSource = 'firmy' | 'google';
@@ -71,15 +70,9 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
         }
       }
 
-      // 2. Fallback na statická data
-      const fallback = (staticReviews as unknown as Review[]).find((r) => normId(r.id) === target);
-      if (fallback) {
-        setReview({
-          ...fallback,
-          rating: Number(fallback.rating),
-          source: resolveSource(reviewId, fallback),
-        });
-      }
+      // Žádný statický fallback: recenzi zobrazujeme jen tehdy, když ji vrátí
+      // živý worker. Raději nic než neaktuální/nereálnou záložní recenzi.
+      // (Bez workeru – např. lokálně s placeholder URL – zůstane review null.)
     }
 
     fetchReview();

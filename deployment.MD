@@ -148,4 +148,4 @@ spustit i ručně: **Actions → Deploy Reviews Worker → Run workflow**.
 
 ### 2.6 Frontend integrace
 
-Frontend (`HomeReviews.tsx`) konzumuje `reviews[]`, řadí podle `date` a renderuje badge podle `source`. Fallback `src/data/reviews.json` musí obsahovat `source` na každé položce (`"firmy"` nebo `"google"`), aby UI fungovalo i bez Workeru.
+Frontend (`HomeReviews.tsx`) konzumuje `reviews[]`, řadí podle `date` a renderuje badge podle `source`. **Statický fallback `reviews.json` byl odstraněn** – bez dostupného Workeru (nebo když vrátí prázdno) se sekce hodnocení i recenze u referencí prostě nevykreslí. Raději nic než neaktuální/nereálná záložní data.
