@@ -32,14 +32,27 @@ test.describe('Audit: og:url na podstránkách', () => {
   }
 });
 
-test.describe('Audit: párování recenzí k referenci', () => {
-  // reviewId v referencích je prefixovaný (firmy-…); porovnání musí být odolné
-  // vůči prefixu, jinak se spárovaná recenze nezobrazí (bug z auditu).
-  test('/reference/zleby zobrazí spárovanou recenzi se zdrojem', async ({ page }) => {
+test.describe('Audit: recenze jen z živého workeru (bez fallbacku)', () => {
+  // Statický fallback (reviews.json) byl odstraněn – recenze se zobrazí jen
+  // tehdy, když ji vrátí živý worker. Raději nic než neaktuální/nereálná data.
+  // Lokálně/CI je nastavena placeholder worker URL (…vás-účet…), kterou
+  // komponenty přeskakují, takže se nesmí objevit žádná recenze.
+  test('/reference/zleby nezobrazí žádnou (záložní) recenzi bez workeru', async ({ page }) => {
     await page.goto('/reference/zleby');
-    // ProjectReview načítá klientsky; bez workeru padá na statický fallback.
-    await expect(page.getByText('Tomáš Bludička')).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText(/Recenze z (Mapy\.com|Google)/)).toBeVisible();
+    // Počkáme na vyrenderovaný nadpis reference – jistota, že klientský JS
+    // (ProjectReview) proběhl a měl šanci recenzi případně zobrazit.
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    // toHaveCount auto-retryuje; networkidle v CI nikdy nenastane (flaky).
+    await expect(page.getByText(/Recenze z (Mapy\.com|Google)/)).toHaveCount(0);
+    await expect(page.getByText('Zákazník IZODIAMANT')).toHaveCount(0);
+  });
+
+  test('sekce hodnocení na homepage se bez workeru nevykreslí', async ({ page }) => {
+    await page.goto('/');
+    // #reviews se v SSR vykreslí jako skeleton (status 'loading') a po dojití
+    // klientského efektu (placeholder worker → 'empty') zmizí. toHaveCount(0)
+    // retryuje přes tento přechod, takže žádný networkidle nepotřebujeme.
+    await expect(page.locator('#reviews')).toHaveCount(0, { timeout: 15000 });
   });
 });
 

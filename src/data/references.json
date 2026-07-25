@@ -143,5 +143,104 @@
     "gallery": [
       "/images/references/policka/after.jpg"
     ]
+  },
+  {
+    "id": "dalecin",
+    "title": "Sanace zdiva, Dalečín",
+    "location": "Dalečín",
+    "date": "2026-03",
+    "technology": "Diamantové lano",
+    "scope": "89 bm podřezání",
+    "duration": "4–5 pracovních dnů",
+    "description": "V Dalečíně jsme prováděli dodatečnou vodorovnou izolaci u objektu s tvrdým a nepravidelným zdivem. Vzhledem k materiálu jsme zvolili podřezání diamantovým lanem, které si poradí i s kamenem a betonem bez ohledu na tloušťku stěny.\n\nCelkem jsme prořízli 89 běžných metrů zdiva. Lano jsme vedli pod stálým chlazením vodou, čímž jsme udrželi prašnost na minimu. Do vzniklé spáry jsme průběžně vkládali hydroizolaci, zdivo staticky zajistili klíny a spáru tlakově vyplnili cementovou směsí.\n\nVzlínající vlhkost je přerušená a zdivo nad novou izolací může přirozeně vysychat. Majiteli jsme doporučili navazující otlučení zasažených omítek a aplikaci sanačních omítek pro odvod zbytkové vlhkosti a solí.",
+    "features": [
+      "Podřezání 89 bm tvrdého zdiva diamantovým lanem",
+      "Vodní chlazení lana – minimální prašnost",
+      "Statické zajištění klíny a tlaková injektáž spáry",
+      "Vhodné pro kámen, beton i silné smíšené zdivo"
+    ],
+    "image": "/images/references/03-2026_dalesin/1.jpeg",
+    "gallery": [
+      "/images/references/03-2026_dalesin/1.jpeg",
+      "/images/references/03-2026_dalesin/2.jpeg",
+      "/images/references/03-2026_dalesin/3.jpeg",
+      "/images/references/03-2026_dalesin/4.jpeg"
+    ]
+  },
+  {
+    "id": "most",
+    "title": "Sanace cihelného zdiva, Most",
+    "location": "Most",
+    "date": "2026-04",
+    "technology": "Řetězová pila",
+    "scope": "Podřezání obvodového cihelného zdiva",
+    "duration": "2–3 pracovní dny",
+    "description": "V Mostě jsme řešili vzlínající vlhkost u staršího cihelného domu s průběžnou ložnou spárou. Pro tento typ zdiva je nejrychlejší a nákladově nejefektivnější metodou podřezání řetězovou pilou.\n\nObvodové zdivo jsme prořízli v ložné spáře a do řezu vložili PE hydroizolační fólii o tloušťce 2 mm. Každý běžný metr jsme zajistili statickými klíny a spáru následně tlakově vyplnili cementovou směsí, takže únosnost zdiva zůstala po celou dobu zachována.\n\nDům je nyní chráněný před vzlínající zemní vlhkostí a zdivo může postupně vysychat. Pro dosažení plného výsledku jsme doporučili navazující sanaci vnitřních i vnějších omítek zasažených solemi.",
+    "features": [
+      "Podřezání cihelného zdiva řetězovou pilou",
+      "Vložení PE hydroizolační fólie o tloušťce 2 mm",
+      "Statické klínování a tlaková výplň spáry",
+      "Zachování únosnosti zdiva během celé realizace"
+    ],
+    "image": "/images/references/04-2026_most/1.jpeg",
+    "gallery": [
+      "/images/references/04-2026_most/1.jpeg",
+      "/images/references/04-2026_most/2.jpeg",
+      "/images/references/04-2026_most/3.jpeg",
+      "/images/references/04-2026_most/4.jpeg",
+      "/images/references/04-2026_most/5.jpeg",
+      "/images/references/04-2026_most/6.jpeg",
+      "/images/references/04-2026_most/7.jpeg",
+      "/images/references/04-2026_most/8.jpeg"
+    ]
+  },
+  {
+    "id": "ricany",
+    "title": "Sanace kamenného zdiva, Říčany",
+    "location": "Říčany",
+    "date": "2026-05",
+    "technology": "Diamantové lano",
+    "scope": "Přesné podřezání do roviny dle laseru",
+    "duration": "3–4 pracovní dny",
+    "reviewId": "firmy-2026-05-12-rumianova-l",
+    "description": "V Říčanech jsme podřezávali starší dům z nepravidelného kamenného a smíšeného zdiva. Požadavkem bylo vedení řezu přesně do vodorovné roviny, proto jsme celou trasu řezu vytyčili laserem a průběžně podle něj kontrolovali.\n\nDíky diamantovému lanu jsme zvládli i tvrdý a členitý materiál a udrželi jednotnou úroveň spáry po celé délce. Do řezu jsme vložili hydroizolaci, zdivo staticky zajistili klíny a spáru tlakově vyplnili cementovou směsí.\n\nVzlínající vlhkost je přerušená v přesné rovině a zdivo nad izolací může přirozeně vysychat. Celkovou cenu jsme stanovili po prohlídce a odsouhlasili předem, takže se ve výsledné faktuře nezměnila.",
+    "features": [
+      "Vedení řezu přesně do roviny podle laseru",
+      "Podřezání tvrdého kamenného zdiva diamantovým lanem",
+      "Vložení hydroizolace a statické zajištění klíny",
+      "Cena stanovená předem a dodržená ve faktuře"
+    ],
+    "image": "/images/references/05-2026_ricany/1.jpeg",
+    "gallery": [
+      "/images/references/05-2026_ricany/1.jpeg",
+      "/images/references/05-2026_ricany/2.jpeg"
+    ]
+  },
+  {
+    "id": "policka-2026",
+    "title": "Sanace cihelného zdiva, Polička",
+    "location": "Polička",
+    "date": "2026-05",
+    "technology": "Řetězová pila",
+    "scope": "68 bm podřezání",
+    "duration": "3–4 pracovní dny",
+    "description": "V Poličce jsme prováděli dodatečnou izolaci cihelného domu, u kterého se vlhkost projevovala vlhkými mapami a opadávající omítkou v interiéru. Vzhledem k cihelnému zdivu s pravidelnou ložnou spárou jsme zvolili podřezání řetězovou pilou.\n\nProřízli jsme 68 běžných metrů zdiva a do spáry vložili hydroizolační desky se statickými klíny. Spáru jsme tlakově vyplnili cementovou směsí. Zasažené omítky bylo nutné otlouct, aby zdivo mohlo vysychat a aby se odstranily nahromaděné soli.\n\nVzlínající vlhkost je přerušená a zdivo nad izolací postupně vysychá. Majiteli jsme navrhli navazující sanační omítky, které zajistí zdravé vnitřní klima bez plísní.",
+    "features": [
+      "Podřezání 68 bm cihelného zdiva řetězovou pilou",
+      "Vložení hydroizolace se statickými klíny",
+      "Tlaková výplň spáry cementovou směsí",
+      "Příprava zdiva pro navazující sanační omítky"
+    ],
+    "image": "/images/references/05-2026_policka/1.jpeg",
+    "gallery": [
+      "/images/references/05-2026_policka/1.jpeg",
+      "/images/references/05-2026_policka/2.jpeg",
+      "/images/references/05-2026_policka/3.jpeg",
+      "/images/references/05-2026_policka/4.jpeg",
+      "/images/references/05-2026_policka/5.jpeg",
+      "/images/references/05-2026_policka/6.jpeg",
+      "/images/references/05-2026_policka/7.jpeg",
+      "/images/references/05-2026_policka/8.jpeg"
+    ]
   }
 ]
