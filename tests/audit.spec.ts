@@ -39,16 +39,20 @@ test.describe('Audit: recenze jen z živého workeru (bez fallbacku)', () => {
   // komponenty přeskakují, takže se nesmí objevit žádná recenze.
   test('/reference/zleby nezobrazí žádnou (záložní) recenzi bez workeru', async ({ page }) => {
     await page.goto('/reference/zleby');
-    await page.waitForLoadState('networkidle');
+    // Počkáme na vyrenderovaný nadpis reference – jistota, že klientský JS
+    // (ProjectReview) proběhl a měl šanci recenzi případně zobrazit.
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    // toHaveCount auto-retryuje; networkidle v CI nikdy nenastane (flaky).
     await expect(page.getByText(/Recenze z (Mapy\.com|Google)/)).toHaveCount(0);
     await expect(page.getByText('Zákazník IZODIAMANT')).toHaveCount(0);
   });
 
   test('sekce hodnocení na homepage se bez workeru nevykreslí', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
-    // Nadpis sekce recenzí nesmí existovat, když nejsou živá data.
-    await expect(page.locator('#reviews')).toHaveCount(0);
+    // #reviews se v SSR vykreslí jako skeleton (status 'loading') a po dojití
+    // klientského efektu (placeholder worker → 'empty') zmizí. toHaveCount(0)
+    // retryuje přes tento přechod, takže žádný networkidle nepotřebujeme.
+    await expect(page.locator('#reviews')).toHaveCount(0, { timeout: 15000 });
   });
 });
 
