@@ -24,7 +24,7 @@ Ceny jsou uvedeny za běžný metr (bm) zdi a platí pro tloušťku zdiva 45 cm;
 - **Rozdíl izolace vs. sanace vlhkého zdiva?** Izolace vlhkého zdiva = konkrétní krok (hydroizolační bariéra přeruší vzlínání). Sanace = širší ozdravení: diagnostika, izolace, statika, vysychání, sanační omítky.
 - **Elektroosmóza / vysoušení zdiva?** Neděláme – zaměřujeme se na mechanické podřezání a chemickou injektáž, které přeruší příčinu a mají dlouhou životnost. Vysoušení řeší jen následek.
 - **Jak dlouho trvá sanace rodinného domu?** Standardní rodinný dům podřežeme a izolujeme za 2–4 pracovní dny podle technologie, přístupnosti a tloušťky zdiva.
-- **Jakou záruku poskytujete?** Na vloženou hydroizolaci a funkčnost podřezání poskytujeme prodlouženou záruku nad rámec zákonné lhůty; délku uvádíme ve smlouvě. Životnost použitých PE fólií a sklolaminátových desek přesahuje 50 let.
+- **Jakou záruku poskytujete?** Na provedené podřezání a vloženou hydroizolaci poskytujeme zákonnou záruku; rozsah uvádíme ve smlouvě. Životnost použitých PE fólií a sklolaminátových desek přesahuje 50 let, takže samotná izolace vydrží výrazně déle než záruční doba.
 - **Naruší podřezání statiku domu?** Při dodržení postupu ne. Postupuje se po malých úsecích „na střídačku“, do spáry se ihned vkládá izolace a statické klíny a spára se tlakově vyplní cementovou směsí s plastifikátorem.
 - **Práší se při podřezávání?** Prašnost je díky odsávání a vodnímu chlazení lana minimální. Většina prací probíhá bez nutnosti opustit nemovitost.
 - **Vyřeší podřezání vlhkost úplně?** Podřezání přeruší vzlínající zemní vlhkost. Zdivo nad izolací pak postupně vysychá (u silných stěn i několik měsíců). Při dalších zdrojích vlhkosti (zatékání, chybějící drenáž, kondenzace) doporučujeme navazující opatření.

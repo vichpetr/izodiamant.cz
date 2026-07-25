@@ -303,6 +303,17 @@ test.describe('Audit: nedoložitelná tvrzení', () => {
     }
   });
 
+  test('nikde neslibujeme prodlouženou záruku nad rámec zákona', async ({ page }) => {
+    // Majitel potvrdil: poskytuje jen zákonnou záruku. Web dřív tvrdil
+    // „prodloužená záruka nad rámec zákonné lhůty“ – nepravdivý slib.
+    for (const path of PAGES) {
+      await page.goto(path);
+      const body = (await page.locator('body').innerText()).toLowerCase();
+      expect(body, `${path} slibuje prodlouženou záruku`).not.toContain('prodloužen');
+      expect(body, `${path} slibuje záruku nad rámec zákona`).not.toContain('nad rámec zákon');
+    }
+  });
+
   test('slogan se v těle stránky služby neopakuje', async ({ page }) => {
     await page.goto('/sluzby/diamantove-lano');
     const body = await page.locator('body').innerText();

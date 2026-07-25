@@ -179,7 +179,7 @@ export default function DiamondWirePage() {
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-neutral-dark/5">
               <Icons.ShieldCheck className="w-10 h-10 text-primary mb-6" />
               <h3 className="text-xl font-black text-neutral-dark uppercase mb-2">Záruka</h3>
-              <p className="text-neutral-dark/70 font-medium">Prodloužená záruka na vloženou hydroizolaci a funkčnost podřezání. Životnost sklolaminátových desek přesahuje 50 let.</p>
+              <p className="text-neutral-dark/70 font-medium">Zákonná záruka na vloženou hydroizolaci a funkčnost podřezání. Deklarovaná životnost sklolaminátových desek přesahuje 50 let.</p>
             </div>
           </div>
 
