@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import SignOutButton from './SignOutButton';
+import { Toaster } from './toast';
 
 const TABS = [
   { href: '/sprava', label: 'Zákazníci' },
@@ -38,6 +39,7 @@ export default function SpravaNav({ active, email }: { active: '/sprava' | '/spr
           <SignOutButton />
         </div>
       </div>
+      <Toaster />
     </header>
   );
 }

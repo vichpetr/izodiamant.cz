@@ -4,6 +4,7 @@ import { safeAuth, isAllowed } from '@/auth';
 import { isDbAvailable, listCustomers } from '@/lib/db';
 import { addCustomerAction, deleteCustomerAction, sendThankYouAction, updateRealizedAtAction } from './actions';
 import SpravaNav from './SpravaNav';
+import ActionForm from './ActionForm';
 
 export const runtime = 'edge';
 export const metadata: Metadata = {
@@ -39,7 +40,7 @@ export default async function SpravaPage() {
         {/* Přidat zákazníka */}
         <section className="bg-white rounded-3xl shadow-sm border border-neutral-dark/5 p-6 sm:p-8">
           <h1 className="text-lg font-black uppercase italic text-neutral-dark mb-6">Přidat zákazníka</h1>
-          <form action={addCustomerAction} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <ActionForm action={addCustomerAction} resetOnSuccess className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <input name="name" required placeholder="Jméno a příjmení *" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
             <input name="email" type="email" placeholder="E-mail" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
             <input name="phone" placeholder="Telefon" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
@@ -52,7 +53,7 @@ export default async function SpravaPage() {
             <div className="sm:col-span-2 lg:col-span-3">
               <button type="submit" className="btn-primary py-3 px-8 uppercase tracking-widest">Uložit</button>
             </div>
-          </form>
+          </ActionForm>
         </section>
 
         {/* Seznam zákazníků */}
@@ -91,7 +92,7 @@ export default async function SpravaPage() {
                       <td className="py-4 pr-4 text-neutral-dark/70 whitespace-nowrap">{c.job_size || '—'}</td>
                       <td className="py-4 pr-4">
                         {/* Datum realizace lze doplnit/změnit i dodatečně (lead → hotová zakázka). */}
-                        <form action={updateRealizedAtAction} className="flex items-center gap-1">
+                        <ActionForm action={updateRealizedAtAction} className="flex items-center gap-1">
                           <input type="hidden" name="id" value={c.id} />
                           <input
                             type="date"
@@ -102,7 +103,7 @@ export default async function SpravaPage() {
                           <button type="submit" title="Uložit datum" className="text-[10px] font-black uppercase tracking-widest text-primary-ink hover:text-neutral-dark px-2 py-1">
                             OK
                           </button>
-                        </form>
+                        </ActionForm>
                       </td>
                       <td className="py-4 pr-4">
                         <span className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40">{c.source}</span>
@@ -124,19 +125,19 @@ export default async function SpravaPage() {
                           ) : !c.realized_at ? (
                             <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-dark/25 whitespace-nowrap" title="Nejdřív doplňte datum realizace">Čeká na realizaci</span>
                           ) : (
-                            <form action={sendThankYouAction}>
+                            <ActionForm action={sendThankYouAction}>
                               <input type="hidden" name="id" value={c.id} />
                               <button type="submit" className="text-[10px] font-black uppercase tracking-widest bg-primary/15 text-primary-ink px-3 py-2 rounded-lg hover:bg-primary/25 transition-colors whitespace-nowrap">
                                 Poslat poděkování
                               </button>
-                            </form>
+                            </ActionForm>
                           )}
-                          <form action={deleteCustomerAction}>
+                          <ActionForm action={deleteCustomerAction}>
                             <input type="hidden" name="id" value={c.id} />
                             <button type="submit" className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/30 hover:text-red-500 transition-colors px-2 py-2">
                               Smazat
                             </button>
-                          </form>
+                          </ActionForm>
                         </div>
                       </td>
                     </tr>
