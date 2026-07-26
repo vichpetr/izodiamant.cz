@@ -5,6 +5,7 @@ import { isDbAvailable, listCustomers } from '@/lib/db';
 import { addCustomerAction, deleteCustomerAction, sendThankYouAction, updateRealizedAtAction } from './actions';
 import SpravaNav from './SpravaNav';
 import ActionForm from './ActionForm';
+import ProjectCell from './ProjectCell';
 
 export const runtime = 'edge';
 export const metadata: Metadata = {
@@ -103,7 +104,7 @@ export default async function SpravaPage() {
                         {c.phone && <div>{c.phone}</div>}
                         {!c.email && !c.phone && '—'}
                       </td>
-                      <td className="py-4 pr-4 text-neutral-dark/70 max-w-[18rem] whitespace-pre-wrap">{c.project || '—'}</td>
+                      <td className="py-4 pr-4 text-neutral-dark/70 max-w-[18rem]"><ProjectCell text={c.project} /></td>
                       <td className="py-4 pr-4 text-neutral-dark/70 whitespace-nowrap">{c.job_size || '—'}</td>
                       <td className="py-4 pr-4">
                         {/* Datum realizace lze doplnit/změnit i dodatečně (lead → hotová zakázka). */}
