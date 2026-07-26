@@ -118,7 +118,12 @@ export default async function SpravaPage() {
                       </td>
                       <td className="py-4 pr-2">
                         <div className="flex items-center gap-2 justify-end">
-                          {c.email && (
+                          {/* Poděkování: jen s e-mailem, po realizaci a jen jednou. */}
+                          {c.last_email_status === 'sent' ? null : !c.email ? (
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-dark/25 whitespace-nowrap" title="Zákazník nemá e-mail">Bez e-mailu</span>
+                          ) : !c.realized_at ? (
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-dark/25 whitespace-nowrap" title="Nejdřív doplňte datum realizace">Čeká na realizaci</span>
+                          ) : (
                             <form action={sendThankYouAction}>
                               <input type="hidden" name="id" value={c.id} />
                               <button type="submit" className="text-[10px] font-black uppercase tracking-widest bg-primary/15 text-primary-ink px-3 py-2 rounded-lg hover:bg-primary/25 transition-colors whitespace-nowrap">

@@ -7,7 +7,7 @@
 import { revalidatePath } from 'next/cache';
 import { Resend } from 'resend';
 import { safeAuth, isAllowed } from '@/auth';
-import { addCustomer, deleteCustomer, getCustomer, logEmail, updateRealizedAt } from '@/lib/db';
+import { addCustomer, deleteCustomer, getCustomer, logEmail, thankYouAlreadySent, updateRealizedAt } from '@/lib/db';
 import { thankYouHtml, thankYouSubject } from '@/lib/thankYouEmail';
 
 async function requireAdmin(): Promise<string> {
@@ -62,6 +62,9 @@ export async function sendThankYouAction(formData: FormData): Promise<void> {
   const customer = await getCustomer(id);
   if (!customer) throw new Error('Zákazník nenalezen.');
   if (!customer.email) throw new Error('Zákazník nemá e-mail.');
+  // Poděkování se posílá až po realizaci a jen jednou.
+  if (!customer.realized_at) throw new Error('Nejdřív vyplňte datum realizace.');
+  if (await thankYouAlreadySent(id)) throw new Error('Poděkování už bylo tomuto zákazníkovi odesláno.');
 
   const apiKey = process.env.RESEND_API_KEY;
   const fromEmail = process.env.FROM_EMAIL || 'IZODIAMANT <onboarding@resend.dev>';

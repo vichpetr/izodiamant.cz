@@ -161,6 +161,18 @@ export async function updateRealizedAt(id: number, realizedAt: string | null): P
   await db.prepare(`UPDATE customers SET realized_at = ? WHERE id = ?`).bind(realizedAt, id).run();
 }
 
+/** Bylo už tomuto zákazníkovi úspěšně odesláno poděkování? (Z admin sekce se
+ *  posílá jen poděkování, takže status='sent' v email_log = poděkování odesláno.) */
+export async function thankYouAlreadySent(customerId: number): Promise<boolean> {
+  const db = getDB();
+  if (!db) return false;
+  const row = await db
+    .prepare(`SELECT 1 AS x FROM email_log WHERE customer_id = ? AND status = 'sent' LIMIT 1`)
+    .bind(customerId)
+    .first<{ x: number }>();
+  return !!row;
+}
+
 /** Zápis do audit logu odeslaných e-mailů. */
 export async function logEmail(input: {
   customerId: number | null;
