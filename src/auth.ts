@@ -28,7 +28,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [Google],
   session: { strategy: 'jwt' },
   trustHost: true,
-  pages: { signIn: '/sprava/prihlaseni' },
+  // I chybovou stránku (např. odmítnutý účet – AccessDenied) směrujeme na náš
+  // vlastní login v designu webu, ať uživatel nevidí generickou Auth.js stránku.
+  pages: { signIn: '/sprava/prihlaseni', error: '/sprava/prihlaseni' },
   callbacks: {
     // Do sekce pustíme jen účet z allowlistu; cizí přihlášení odmítneme.
     async signIn({ user }) {

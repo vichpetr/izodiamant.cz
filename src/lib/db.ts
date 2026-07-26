@@ -35,6 +35,7 @@ export interface Customer {
   created_by: string | null;
   last_email_at?: string | null;
   last_email_status?: string | null;
+  last_email_by?: string | null;   // kdo odeslal poslední poděkování
 }
 
 export interface EmailLogRow {
@@ -133,7 +134,8 @@ export async function listCustomers(): Promise<Customer[]> {
     .prepare(
       `SELECT c.*,
               (SELECT sent_at FROM email_log e WHERE e.customer_id = c.id ORDER BY e.sent_at DESC LIMIT 1) AS last_email_at,
-              (SELECT status  FROM email_log e WHERE e.customer_id = c.id ORDER BY e.sent_at DESC LIMIT 1) AS last_email_status
+              (SELECT status  FROM email_log e WHERE e.customer_id = c.id ORDER BY e.sent_at DESC LIMIT 1) AS last_email_status,
+              (SELECT sent_by FROM email_log e WHERE e.customer_id = c.id ORDER BY e.sent_at DESC LIMIT 1) AS last_email_by
        FROM customers c
        ORDER BY c.created_at DESC
        LIMIT 500`,

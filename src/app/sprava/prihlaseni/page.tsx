@@ -9,9 +9,31 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function LoginPage() {
+// Text chyby podle Auth.js `error` parametru. AccessDenied = účet není v allowlistu.
+function errorMessage(error?: string): string | null {
+  if (!error) return null;
+  switch (error) {
+    case 'AccessDenied':
+      return 'Tento účet nemá přístup do interní správy. Přihlaste se povoleným účtem.';
+    case 'Configuration':
+      return 'Přihlášení není správně nakonfigurováno. Kontaktujte správce.';
+    case 'Verification':
+      return 'Odkaz pro přihlášení vypršel nebo už byl použit. Zkuste to znovu.';
+    default:
+      return 'Přihlášení se nezdařilo. Zkuste to prosím znovu.';
+  }
+}
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
   const session = await safeAuth();
   if (session?.user) redirect('/sprava');
+
+  const { error } = await searchParams;
+  const message = errorMessage(error);
 
   return (
     <main className="min-h-screen bg-neutral-light flex items-center justify-center px-4">
@@ -22,6 +44,15 @@ export default async function LoginPage() {
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-dark/40 mb-8">
           Interní správa
         </p>
+
+        {message && (
+          <div className="mb-6 rounded-2xl bg-red-50 border border-red-100 px-4 py-3 text-left">
+            <p className="text-[11px] font-black uppercase tracking-widest text-red-500 mb-1">
+              Přístup odmítnut
+            </p>
+            <p className="text-xs text-red-700/80 font-medium leading-relaxed">{message}</p>
+          </div>
+        )}
 
         <GoogleSignInButton />
 

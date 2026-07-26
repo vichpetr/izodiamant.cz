@@ -13,6 +13,12 @@ function fmt(iso?: string | null): string {
   return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('cs-CZ');
 }
 
+// Kdo záznam vytvořil: 'system' = automaticky z webu, jinak e-mail admina.
+function createdByLabel(v?: string | null): string {
+  if (!v) return '—';
+  return v === 'system' ? 'Automaticky (web)' : v;
+}
+
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="py-3 border-b border-neutral-light/70 last:border-0">
@@ -66,9 +72,10 @@ export default function CustomerDetail({ customer: c }: { customer: Customer }) 
               <Row label="Datum zadání">{fmt(c.created_at)}</Row>
               <Row label="Datum realizace">{fmt(c.realized_at)}</Row>
               <Row label="Zdroj">{c.source}</Row>
+              <Row label="Zadal">{createdByLabel(c.created_by)}</Row>
               <Row label="Poděkování">
                 {c.last_email_at
-                  ? `${c.last_email_status === 'sent' ? 'Odesláno' : 'Chyba'} · ${fmt(c.last_email_at)}`
+                  ? `${c.last_email_status === 'sent' ? 'Odesláno' : 'Chyba'} · ${fmt(c.last_email_at)}${c.last_email_by ? ` · ${c.last_email_by}` : ''}`
                   : 'Neodesláno'}
               </Row>
             </dl>
