@@ -1,6 +1,12 @@
 /*
   X-Robots-Tag: index, follow
 
+# Skrytá admin sekce – nikdy neindexovat.
+/sprava
+  X-Robots-Tag: noindex, nofollow
+/sprava/*
+  X-Robots-Tag: noindex, nofollow
+
 /
   Link: </llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog", </.well-known/openid-configuration>; rel="openid-configuration", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource", </.well-known/agent-card.json>; rel="agent-card"
   Vary: Accept

@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /cdn-cgi/
+Disallow: /sprava
 
 # Content signals (https://contentsignals.org)
 # ai-input=yes – AI asistenti SMĚJÍ obsah použít jako podklad pro odpovědi

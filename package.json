@@ -15,7 +15,9 @@
     "start": "next start",
     "sync:llms": "node scripts/sync-llms.mjs",
     "lint": "eslint .",
-    "test": "playwright test"
+    "test": "playwright test",
+    "db:schema:local": "npx wrangler d1 execute izodiamant-db --local --file=db/schema.sql",
+    "db:schema:remote": "npx wrangler d1 execute izodiamant-db --remote --file=db/schema.sql"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -25,6 +27,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.2",
     "next": "16.2.3",
+    "next-auth": "^5.0.0-beta.32",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-hook-form": "^7.71.2",
@@ -43,6 +46,7 @@
     "eslint-config-next": "16.2.2",
     "postcss": "^8.5.6",
     "tailwindcss": "3.4",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wrangler": "^4.114.0"
   }
 }

@@ -216,7 +216,9 @@ test.describe('Audit: robots.txt a AI crawleři', () => {
     const txt = await (await request.get('/robots.txt')).text();
     expect(txt).toContain('Sitemap: https://izodiamant.cz/sitemap.xml');
     const disallows = [...txt.matchAll(/^Disallow:\s*(.+)$/gm)].map((m) => m[1].trim());
-    const contentBlocked = disallows.filter((d) => d !== '/cdn-cgi/' && d !== '');
+    // Povolené výjimky: /cdn-cgi/ (Cloudflare) a /sprava (skrytá admin sekce).
+    const allowed = new Set(['/cdn-cgi/', '/sprava', '']);
+    const contentBlocked = disallows.filter((d) => !allowed.has(d));
     expect(contentBlocked, `robots.txt blokuje obsah: ${contentBlocked.join(', ')}`).toEqual([]);
   });
 });

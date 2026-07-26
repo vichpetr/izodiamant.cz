@@ -108,6 +108,16 @@ are mapped there already — a new static page is not. Conversely, when you dele
 route, remove it from `sitemap.ts` too and add a 301 (rule 6), so the sitemap never
 lists a URL that 404s.
 
+- **Exception — `/sprava` (admin CRM) stays out of the index but IS linked.** Keep it
+  out of `sitemap.ts`, keep `Disallow: /sprava` in `public/robots.txt`, the `/sprava*`
+  `noindex` block in `public/_headers`, and `robots: { index:false }` in each
+  `/sprava/**` page's metadata. It **is** linked (discreetly) from `Footer.tsx` —
+  owner's call, acceptable because it's Google-SSO protected + noindex (the footer link
+  is for humans; crawlers are still blocked). A test in `tests/sprava.spec.ts` guards
+  the redirect + noindex + sitemap-absence. Its real security boundary is `safeAuth()`
+  + `isAllowed()` in the server components/actions (`src/auth.ts`), not the middleware
+  cookie check (which is only a UX redirect).
+
 ## 6. Old URLs get 301s — but never shadow a real page
 
 **File:** `next.config.ts` (`redirects()`)
