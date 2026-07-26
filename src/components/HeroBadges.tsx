@@ -6,6 +6,14 @@ import { useReviewSummary } from '@/lib/useReviewSummary';
 export default function HeroBadges() {
   const summary = useReviewSummary();
 
+  // Přímé odkazy na NAPSÁNÍ recenze (stejné jako v patičce) – „Ohodnoťte nás“
+  // k tomu vybízí. Kolečka výše vedou na profil (zobrazení), tyto na hodnocení.
+  const googleReviewUrl =
+    process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL || 'https://g.page/r/CUCprMsY1UeiEBM/review';
+  const firmyReviewUrl =
+    process.env.NEXT_PUBLIC_FIRMY_REVIEW_URL ||
+    'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady.html#hodnoceni';
+
   const badges = [
     summary.firmy.count > 0 && {
       key: 'firmy',
@@ -69,17 +77,29 @@ export default function HeroBadges() {
         ))}
       </div>
 
-      <a
-        href={badges[0]?.url || '#'}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-dark/40 italic hover:text-primary transition-colors group"
-      >
-        Ohodnoťte nás
-        <span className="ml-2 opacity-50">
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] font-black uppercase tracking-[0.2em] italic">
+        <span className="text-neutral-dark/40">Ohodnoťte nás</span>
+        <a
+          href={googleReviewUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-neutral-dark/60 hover:text-primary transition-colors"
+        >
+          Google
+        </a>
+        <span className="text-neutral-dark/20" aria-hidden="true">·</span>
+        <a
+          href={firmyReviewUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-neutral-dark/60 hover:text-primary transition-colors"
+        >
+          Mapy.com
+        </a>
+        <span className="text-neutral-dark/30">
           ({badges.reduce((sum, b) => sum + b.count, 0)} hodnocení)
         </span>
-      </a>
+      </div>
     </div>
   );
 }
