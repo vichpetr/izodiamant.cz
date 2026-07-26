@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { safeAuth, isAllowed, signOut } from '@/auth';
+import { safeAuth, isAllowed } from '@/auth';
 import { isDbAvailable, listCustomers } from '@/lib/db';
 import { addCustomerAction, deleteCustomerAction, sendThankYouAction } from './actions';
+import SignOutButton from './SignOutButton';
 
 export const runtime = 'edge';
 export const metadata: Metadata = {
@@ -39,11 +40,7 @@ export default async function SpravaPage() {
               Audit log
             </Link>
             <span className="text-xs text-white/40 hidden sm:inline">{session.user.email}</span>
-            <form action={async () => { 'use server'; await signOut({ redirectTo: '/sprava/prihlaseni' }); }}>
-              <button type="submit" className="text-xs font-black uppercase tracking-widest text-white/60 hover:text-white transition-colors">
-                Odhlásit
-              </button>
-            </form>
+            <SignOutButton />
           </div>
         </div>
       </header>
