@@ -52,6 +52,9 @@ export default function HomeReviews() {
 
   const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
   const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
+  // Profil na Google Mapách (přehled recenzí). Override přes env, fallback CID firmy.
+  const googleUrl =
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL || 'https://www.google.com/maps?cid=11693549259963803968';
 
   useEffect(() => {
     let cancelled = false;
@@ -152,17 +155,28 @@ export default function HomeReviews() {
               Přečtěte si zkušenosti lidí, kterým jsme pomohli k suchému a zdravému domovu.
             </p>
           </div>
-          {profileUrl && (
+          <div className="flex flex-col items-start md:items-end gap-3 shrink-0 mb-2">
             <a
-              href={profileUrl}
+              href={googleUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-white transition-colors shrink-0 mb-2"
+              className="group inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-white transition-colors"
             >
-              Všechny recenze na Mapy.com
+              Recenze na Google
               <Icons.ExternalLink className="w-4 h-4" />
             </a>
-          )}
+            {profileUrl && (
+              <a
+                href={profileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-white transition-colors"
+              >
+                Recenze na Mapy.com
+                <Icons.ExternalLink className="w-4 h-4" />
+              </a>
+            )}
+          </div>
         </div>
 
         {status === 'loading' ? (
@@ -209,12 +223,16 @@ export default function HomeReviews() {
                     </div>
 
                     <div className="mb-10 flex-grow">
-                      <ExpandableText
-                        text={`„${review.text}“`}
-                        clampLines={8}
-                        className="text-white/80 font-medium italic leading-relaxed"
-                        buttonClassName="text-[11px] text-primary hover:text-white"
-                      />
+                      {/* Hvězdičkové recenze bez textu (časté u Google) by jinak
+                          vykreslily prázdné uvozovky „“. Zobrazíme jen když text je. */}
+                      {review.text.trim() && (
+                        <ExpandableText
+                          text={`„${review.text}“`}
+                          clampLines={8}
+                          className="text-white/80 font-medium italic leading-relaxed"
+                          buttonClassName="text-[11px] text-primary hover:text-white"
+                        />
+                      )}
                     </div>
 
                     <div className="pt-6 border-t border-white/10 mt-auto">

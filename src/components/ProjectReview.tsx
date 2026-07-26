@@ -120,13 +120,16 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
         {renderStars(review.rating)}
       </div>
 
-      <ExpandableText
-        text={`„${review.text}“`}
-        clampLines={10}
-        charThreshold={450}
-        className="text-lg text-neutral-dark/80 font-medium italic leading-relaxed relative z-10"
-        buttonClassName="text-[11px] text-primary hover:text-neutral-dark"
-      />
+      {/* Recenze bez textu (jen hvězdičky) by vykreslila prázdné „“. */}
+      {review.text.trim() && (
+        <ExpandableText
+          text={`„${review.text}“`}
+          clampLines={10}
+          charThreshold={450}
+          className="text-lg text-neutral-dark/80 font-medium italic leading-relaxed relative z-10"
+          buttonClassName="text-[11px] text-primary hover:text-neutral-dark"
+        />
+      )}
 
       <div className="pt-6 mt-8 border-t border-neutral-light flex justify-between items-center">
         <div>
