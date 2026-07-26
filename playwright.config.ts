@@ -39,5 +39,8 @@ export default defineConfig({
     stdout: 'ignore',
     stderr: 'pipe',
     timeout: 120000,
+    // Testovací secret jen pro běh testů – aby auth() v produkčním režimu
+    // nehlásil MissingSecret. Reálné hodnoty jsou v Cloudflare Pages.
+    env: { AUTH_SECRET: process.env.AUTH_SECRET || 'test-secret-ci-only-not-real-0000000000' },
   },
 });

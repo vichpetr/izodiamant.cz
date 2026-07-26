@@ -22,6 +22,16 @@ Strict mode — the app throws on boot if these are missing:
 - `NEXT_PUBLIC_FIRMY_PROFILE_URL` — public Firmy.cz profile URL
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID` — optional; GA only mounts when set
 
+**Admin section `/sprava`** (hidden CRM — see `deployment.MD`). Only needed to run that
+feature; the public site works without them. `/sprava` degrades gracefully (shows login,
+no 500) when unset:
+
+- `AUTH_SECRET` — Auth.js JWT signing secret (random)
+- `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` — Google OAuth 2.0 web client
+- `AUTH_URL` — canonical origin, e.g. `https://izodiamant.cz`
+- `ADMIN_EMAILS` — comma-separated allowlist of Google accounts that may sign in
+- **Cloudflare D1 binding `DB`** — bound in the Pages project settings (not an env var); schema in `db/schema.sql`. Accessed via `getRequestContext().env.DB` (`src/lib/db.ts`, degrades to empty/no-op when absent).
+
 ## Coupled invariants
 
 Several facts (prices, SEO metadata, JSON-LD, marketing claims, redirects, `llms.txt`)

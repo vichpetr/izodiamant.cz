@@ -3,7 +3,36 @@
 Tento dokument popisuje proces nasazení aplikace IZODIAMANT.cz a nastavení pomocného Workeru pro živé recenze ze **Seznam Firmy.cz** a **Google Maps**.
 
 ## 1. Cloudflare Pages (Frontend)
-...
+
+Frontend se staví přes Cloudflare Pages (Git integrace v dashboardu, build `@cloudflare/next-on-pages`). Veřejný web žádné secrety navíc nepotřebuje.
+
+### 1.1 Skrytá admin sekce `/sprava` (evidence zákazníků + poděkování s prosbou o hodnocení)
+
+Sekce je nelinkovaná, `noindex` a chráněná přihlášením přes Google. Bez níže uvedené konfigurace se veřejný web chová normálně a `/sprava` slušně ukáže přihlášení (nespadne). Ke zprovoznění:
+
+**a) Google OAuth 2.0 klient** (Google Cloud Console → APIs & Services → Credentials → Create credentials → OAuth client ID → *Web application*):
+- Authorized redirect URIs: `https://izodiamant.cz/api/auth/callback/google` (+ `http://localhost:3000/api/auth/callback/google` pro dev).
+- Zkopírujte **Client ID** a **Client secret**.
+
+**b) Cloudflare D1 databáze:**
+```bash
+npx wrangler d1 create izodiamant-db           # vytvoří DB, vypíše database_id
+npm run db:schema:remote                        # aplikuje db/schema.sql (viz package.json)
+```
+V **Pages projektu → Settings → Functions → D1 database bindings** přidejte binding **Variable name `DB`** → vytvořená databáze. (Kód ji čte přes `getRequestContext().env.DB`.)
+
+**c) Environment variables / secrets** (Pages → Settings → Environment variables, Production):
+| Proměnná | Hodnota |
+|---|---|
+| `AUTH_SECRET` | náhodný řetězec (`openssl rand -base64 32`) |
+| `AUTH_GOOGLE_ID` | Client ID z kroku a) |
+| `AUTH_GOOGLE_SECRET` | Client secret z kroku a) |
+| `AUTH_URL` | `https://izodiamant.cz` |
+| `ADMIN_EMAILS` | povolené Google účty, čárkami: `vichpetr@gmail.com,...` |
+
+**d) Odesílání zákazníkům:** poděkování jde přes Resend (stejně jako potvrzení z formuláře). `FROM_EMAIL` musí být z **ověřené domény** v Resendu (web už zákazníkům potvrzení posílá, takže je pravděpodobně hotové).
+
+Po nastavení: `https://izodiamant.cz/sprava` → přihlášení Googlem → jen e-mail z `ADMIN_EMAILS` se dostane dovnitř. Přidání dalšího správce = doplnit `ADMIN_EMAILS` (bez zásahu do kódu). Lokální dev: `.env.local` s `AUTH_*`/`ADMIN_EMAILS` + `npm run db:schema:local` a `npx wrangler pages dev`.
 
 ## 2. Cloudflare Worker (Recenze API – Seznam + Google)
 

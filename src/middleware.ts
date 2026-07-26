@@ -6,7 +6,22 @@ import { LLMS_MD } from '@/lib/llms';
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const acceptHeader = request.headers.get('accept') || '';
-  
+
+  // 0. Skrytá admin sekce /sprava: rychlý UX redirect nepřihlášených na login.
+  //    (Skutečná bezpečnostní hranice je auth() v server komponentách/actions –
+  //    tady jen kontrolujeme přítomnost session cookie, ať se nepřihlášený uživatel
+  //    hned vrátí na přihlášení.) Musí být PŘED markdown negociací, aby ji
+  //    Accept: text/markdown nemohl obejít.
+  if (pathname.startsWith('/sprava') && pathname !== '/sprava/prihlaseni') {
+    const hasSession =
+      request.cookies.has('authjs.session-token') ||
+      request.cookies.has('__Secure-authjs.session-token');
+    if (!hasSession) {
+      return NextResponse.redirect(new URL('/sprava/prihlaseni', request.url));
+    }
+    return NextResponse.next();
+  }
+
   // 1. Handle Markdown Negotiation for ANY page if requested
   // This is a common requirement for agent-readiness scanners.
   // Skip real static files (auth.md, llms.txt, robots.txt, …) – those must be
