@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS customers (
   email TEXT,
   phone TEXT,
   project TEXT,               -- popis zakázky / poznámka
+  job_size TEXT,              -- velikost / hodnota zakázky (Kč nebo bm)
   source TEXT NOT NULL DEFAULT 'manual',  -- 'manual' | 'kontakt' | 'kalkulacka'
   realized_at TEXT,           -- datum realizace (volitelné, ISO)
   created_at TEXT NOT NULL,   -- ISO čas vzniku záznamu

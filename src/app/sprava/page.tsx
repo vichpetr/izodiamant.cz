@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { safeAuth, isAllowed } from '@/auth';
 import { isDbAvailable, listCustomers } from '@/lib/db';
-import { addCustomerAction, deleteCustomerAction, sendThankYouAction } from './actions';
-import SignOutButton from './SignOutButton';
+import { addCustomerAction, deleteCustomerAction, sendThankYouAction, updateRealizedAtAction } from './actions';
+import SpravaNav from './SpravaNav';
 
 export const runtime = 'edge';
 export const metadata: Metadata = {
@@ -27,23 +26,7 @@ export default async function SpravaPage() {
 
   return (
     <main className="min-h-screen bg-neutral-light">
-      <header className="bg-neutral-dark text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between gap-4">
-          <div>
-            <div className="font-black uppercase tracking-tighter">
-              IZO<span className="text-primary">DIAMANT</span>
-              <span className="text-white/40 font-bold text-xs ml-3 uppercase tracking-widest">Správa</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/sprava/log" className="text-xs font-black uppercase tracking-widest text-white/60 hover:text-primary transition-colors">
-              Audit log
-            </Link>
-            <span className="text-xs text-white/40 hidden sm:inline">{session.user.email}</span>
-            <SignOutButton />
-          </div>
-        </div>
-      </header>
+      <SpravaNav active="/sprava" email={session.user.email} />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10">
         {!dbReady && (
@@ -60,8 +43,12 @@ export default async function SpravaPage() {
             <input name="name" required placeholder="Jméno a příjmení *" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
             <input name="email" type="email" placeholder="E-mail" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
             <input name="phone" placeholder="Telefon" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
-            <input name="project" placeholder="Zakázka / poznámka" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary sm:col-span-2" />
-            <input name="realized_at" type="date" title="Datum realizace" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
+            <input name="job_size" placeholder="Velikost / hodnota zakázky (Kč nebo bm)" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary sm:col-span-2" />
+            <div className="flex flex-col gap-1">
+              <label htmlFor="add-realized" className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 ml-1">Datum realizace (lze doplnit i&nbsp;později)</label>
+              <input id="add-realized" name="realized_at" type="date" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
+            </div>
+            <textarea name="project" rows={2} placeholder="Zakázka / poznámka" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary resize-y sm:col-span-2 lg:col-span-3" />
             <div className="sm:col-span-2 lg:col-span-3">
               <button type="submit" className="btn-primary py-3 px-8 uppercase tracking-widest">Uložit</button>
             </div>
@@ -84,6 +71,8 @@ export default async function SpravaPage() {
                     <th className="py-3 pr-4">Zákazník</th>
                     <th className="py-3 pr-4">Kontakt</th>
                     <th className="py-3 pr-4">Zakázka</th>
+                    <th className="py-3 pr-4">Velikost</th>
+                    <th className="py-3 pr-4">Realizace</th>
                     <th className="py-3 pr-4">Zdroj</th>
                     <th className="py-3 pr-4">Poděkování</th>
                     <th className="py-3 pr-4"></th>
@@ -98,7 +87,23 @@ export default async function SpravaPage() {
                         {c.phone && <div>{c.phone}</div>}
                         {!c.email && !c.phone && '—'}
                       </td>
-                      <td className="py-4 pr-4 text-neutral-dark/70 max-w-[16rem]">{c.project || '—'}</td>
+                      <td className="py-4 pr-4 text-neutral-dark/70 max-w-[18rem] whitespace-pre-wrap">{c.project || '—'}</td>
+                      <td className="py-4 pr-4 text-neutral-dark/70 whitespace-nowrap">{c.job_size || '—'}</td>
+                      <td className="py-4 pr-4">
+                        {/* Datum realizace lze doplnit/změnit i dodatečně (lead → hotová zakázka). */}
+                        <form action={updateRealizedAtAction} className="flex items-center gap-1">
+                          <input type="hidden" name="id" value={c.id} />
+                          <input
+                            type="date"
+                            name="realized_at"
+                            defaultValue={c.realized_at ? c.realized_at.slice(0, 10) : ''}
+                            className="border border-neutral-light rounded-lg px-2 py-1 text-xs outline-none focus:border-primary"
+                          />
+                          <button type="submit" title="Uložit datum" className="text-[10px] font-black uppercase tracking-widest text-primary-ink hover:text-neutral-dark px-2 py-1">
+                            OK
+                          </button>
+                        </form>
+                      </td>
                       <td className="py-4 pr-4">
                         <span className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40">{c.source}</span>
                       </td>

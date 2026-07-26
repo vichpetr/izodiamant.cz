@@ -28,8 +28,9 @@ export interface Customer {
   email: string | null;
   phone: string | null;
   project: string | null;
+  job_size: string | null;       // velikost / hodnota zakázky (Kč nebo bm)
   source: string;
-  realized_at: string | null;
+  realized_at: string | null;    // datum realizace zakázky
   created_at: string;
   created_by: string | null;
   last_email_at?: string | null;
@@ -68,6 +69,7 @@ export async function insertLead(input: {
   email?: string | null;
   phone?: string | null;
   project?: string | null;
+  jobSize?: string | null;
   source: 'kontakt' | 'kalkulacka';
 }): Promise<void> {
   const db = getDB();
@@ -75,14 +77,15 @@ export async function insertLead(input: {
   try {
     await db
       .prepare(
-        `INSERT INTO customers (name, email, phone, project, source, created_at, created_by)
-         VALUES (?, ?, ?, ?, ?, ?, 'system')`,
+        `INSERT INTO customers (name, email, phone, project, job_size, source, created_at, created_by)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 'system')`,
       )
       .bind(
         input.name,
         input.email || null,
         input.phone || null,
         input.project || null,
+        input.jobSize || null,
         input.source,
         new Date().toISOString(),
       )
@@ -98,6 +101,7 @@ export async function addCustomer(input: {
   email?: string | null;
   phone?: string | null;
   project?: string | null;
+  jobSize?: string | null;
   realized_at?: string | null;
   createdBy: string;
 }): Promise<void> {
@@ -105,14 +109,15 @@ export async function addCustomer(input: {
   if (!db) throw new Error('Databáze není dostupná (chybí binding DB).');
   await db
     .prepare(
-      `INSERT INTO customers (name, email, phone, project, source, realized_at, created_at, created_by)
-       VALUES (?, ?, ?, ?, 'manual', ?, ?, ?)`,
+      `INSERT INTO customers (name, email, phone, project, job_size, source, realized_at, created_at, created_by)
+       VALUES (?, ?, ?, ?, ?, 'manual', ?, ?, ?)`,
     )
     .bind(
       input.name,
       input.email || null,
       input.phone || null,
       input.project || null,
+      input.jobSize || null,
       input.realized_at || null,
       new Date().toISOString(),
       input.createdBy,
@@ -147,6 +152,13 @@ export async function deleteCustomer(id: number): Promise<void> {
   const db = getDB();
   if (!db) throw new Error('Databáze není dostupná.');
   await db.prepare(`DELETE FROM customers WHERE id = ?`).bind(id).run();
+}
+
+/** Doplnění/změna data realizace u existujícího zákazníka (lead → hotová zakázka). */
+export async function updateRealizedAt(id: number, realizedAt: string | null): Promise<void> {
+  const db = getDB();
+  if (!db) throw new Error('Databáze není dostupná.');
+  await db.prepare(`UPDATE customers SET realized_at = ? WHERE id = ?`).bind(realizedAt, id).run();
 }
 
 /** Zápis do audit logu odeslaných e-mailů. */

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { safeAuth, isAllowed } from '@/auth';
 import { listEmailLog } from '@/lib/db';
+import SpravaNav from '../SpravaNav';
 
 export const runtime = 'edge';
 export const metadata: Metadata = {
@@ -23,17 +23,7 @@ export default async function LogPage() {
 
   return (
     <main className="min-h-screen bg-neutral-light">
-      <header className="bg-neutral-dark text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between">
-          <div className="font-black uppercase tracking-tighter">
-            IZO<span className="text-primary">DIAMANT</span>
-            <span className="text-white/40 font-bold text-xs ml-3 uppercase tracking-widest">Audit log</span>
-          </div>
-          <Link href="/sprava" className="text-xs font-black uppercase tracking-widest text-white/60 hover:text-primary transition-colors">
-            ← Zpět na správu
-          </Link>
-        </div>
-      </header>
+      <SpravaNav active="/sprava/log" email={session.user.email} />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
         <section className="bg-white rounded-3xl shadow-sm border border-neutral-dark/5 p-6 sm:p-8">

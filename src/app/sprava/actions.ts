@@ -7,7 +7,7 @@
 import { revalidatePath } from 'next/cache';
 import { Resend } from 'resend';
 import { safeAuth, isAllowed } from '@/auth';
-import { addCustomer, deleteCustomer, getCustomer, logEmail } from '@/lib/db';
+import { addCustomer, deleteCustomer, getCustomer, logEmail, updateRealizedAt } from '@/lib/db';
 import { thankYouHtml, thankYouSubject } from '@/lib/thankYouEmail';
 
 async function requireAdmin(): Promise<string> {
@@ -29,6 +29,7 @@ export async function addCustomerAction(formData: FormData): Promise<void> {
     email: String(formData.get('email') || '').trim() || null,
     phone: String(formData.get('phone') || '').trim() || null,
     project: String(formData.get('project') || '').trim() || null,
+    jobSize: String(formData.get('job_size') || '').trim() || null,
     realized_at: String(formData.get('realized_at') || '').trim() || null,
     createdBy: admin,
   });
@@ -40,6 +41,15 @@ export async function deleteCustomerAction(formData: FormData): Promise<void> {
   const id = Number(formData.get('id'));
   if (!Number.isFinite(id)) throw new Error('Neplatné id.');
   await deleteCustomer(id);
+  revalidatePath('/sprava');
+}
+
+/** Doplnění/změna data realizace u existujícího zákazníka (lze i dodatečně). */
+export async function updateRealizedAtAction(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const id = Number(formData.get('id'));
+  if (!Number.isFinite(id)) throw new Error('Neplatné id.');
+  await updateRealizedAt(id, String(formData.get('realized_at') || '').trim() || null);
   revalidatePath('/sprava');
 }
 
