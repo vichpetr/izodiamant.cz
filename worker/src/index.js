@@ -103,7 +103,11 @@ async function fetchGoogle(placeId, apiKey) {
     const res = await fetch(url);
     const data = await res.json();
     if (data.status !== 'OK') {
-      return { reviews: [], rating: null, count: 0, error: `google: ${data.status}` };
+      // Google k REQUEST_DENIED/INVALID_REQUEST vrací i error_message s přesným
+      // důvodem (restrikce klíče, nepovolené API…). Bez něj se chyba nedá
+      // diagnostikovat. Klíč v této hlášce není, takže je bezpečné ji vrátit.
+      const detail = data.error_message ? ` – ${data.error_message}` : '';
+      return { reviews: [], rating: null, count: 0, error: `google: ${data.status}${detail}` };
     }
     const place = data.result || {};
     const sourceUrl = place.url || `https://www.google.com/maps/place/?q=place_id:${placeId}`;
