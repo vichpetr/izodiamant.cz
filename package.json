@@ -16,8 +16,8 @@
     "sync:llms": "node scripts/sync-llms.mjs",
     "lint": "eslint .",
     "test": "playwright test",
-    "db:schema:local": "wrangler d1 execute izodiamant-db --local --file=db/schema.sql",
-    "db:schema:remote": "wrangler d1 execute izodiamant-db --remote --file=db/schema.sql"
+    "db:schema:local": "npx wrangler d1 execute izodiamant-db --local --file=db/schema.sql",
+    "db:schema:remote": "npx wrangler d1 execute izodiamant-db --remote --file=db/schema.sql"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -46,6 +46,7 @@
     "eslint-config-next": "16.2.2",
     "postcss": "^8.5.6",
     "tailwindcss": "3.4",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wrangler": "^4.114.0"
   }
 }
