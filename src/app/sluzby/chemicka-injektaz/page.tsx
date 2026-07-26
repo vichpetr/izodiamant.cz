@@ -11,11 +11,11 @@ import { pageMetadata, breadcrumbSchema } from "@/lib/seo";
 export const metadata: Metadata = {
   ...pageMetadata({
     path: '/sluzby/chemicka-injektaz',
-    title: "Chemická injektáž vlhkého zdiva",
-    description: "Dodatečná hydroizolace pomocí chemické injektáže. Šetrná metoda bez narušení statiky zdiva, vhodná tam, kde nelze mechanicky řezat.",
+    title: "Chemická injektáž zdiva – cena a postup",
+    description: "Chemická injektáž zdiva proti vzlínající vlhkosti. Orientační cena od 2 500 Kč/bm, šetrná metoda bez narušení statiky – vhodná tam, kde nelze řezat. Spočítejte si cenu online.",
     images: ['/images/sluzby/chemicka-injektaz.jpg'],
   }),
-  keywords: ["chemická injektáž", "injektáž zdiva", "injektáž zdiva proti vlhkosti", "krémová injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "odvlhčení", "Nové Hrady", "ČR"],
+  keywords: ["chemická injektáž zdiva", "chemická injektáž zdiva cena", "injektáž zdiva cena", "injektáž zdiva", "injektáž zdiva proti vlhkosti", "krémová injektáž zdiva", "kolik stojí injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "Nové Hrady", "ČR"],
 };
 
 export default function ChemicalInjectionPage() {
@@ -54,6 +54,32 @@ export default function ChemicalInjectionPage() {
     { name: "Chemická injektáž", path: "/sluzby/chemicka-injektaz" },
   ]);
 
+  // Cílené na dotazy „injektáž zdiva cena“ / „kolik stojí injektáž“ (dnes 2. strana).
+  const faqItems = [
+    {
+      q: "Kolik stojí chemická injektáž zdiva?",
+      a: `${data.priceRange} zdi při tloušťce 45 cm; u silnějšího zdiva se cena úměrně navyšuje. Nejsme plátci DPH, uvedená částka se tedy o daň dále nenavyšuje. Nezávaznou kalkulaci si spočítáte online, závaznou nabídku zpracujeme po prohlídce objektu.`,
+    },
+    {
+      q: "Jak dlouho vydrží chemická injektáž zdiva?",
+      a: "Používáme certifikované injektážní krémy a gely na bázi silanů a siloxanů s deklarovanou životností přesahující 50 let. Na provedené práce poskytujeme zákonnou záruku; její rozsah uvádíme ve smlouvě ke konkrétní zakázce.",
+    },
+    {
+      q: "Kdy zvolit injektáž místo podřezání zdiva?",
+      a: "Chemickou injektáž volíme tam, kde zdivo nelze mechanicky proříznout – u velmi silného, členitého nebo špatně přístupného zdivo, v rozích, u vnitřních příček nebo v blízkosti inženýrských sítí. Nejvhodnější metodu doporučíme podle materiálu a stavu konkrétní stavby.",
+    },
+  ];
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqItems.map((f) => ({
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a },
+    })),
+  };
+
   return (
     <main className="min-h-screen bg-neutral-light">
       {/* JSON-LD renderujeme jako běžný <script>, aby byl v serverovém HTML i pro crawlery bez JS. */}
@@ -64,6 +90,10 @@ export default function ChemicalInjectionPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <Header />
       
@@ -247,8 +277,35 @@ export default function ChemicalInjectionPage() {
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Maximální ohled na statiku objektu (nulové otřesy).</li>
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Možnost sanace i velmi nepravidelného a smíšeného zdiva.</li>
                 <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Minimální prašnost a nepořádek během realizace.</li>
-                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Trvale suché zdi se zárukou dlouhé životnosti.</li>
+                <li className="flex items-start gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-1" /> Trvale suché zdi díky dlouhé životnosti clony.</li>
               </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-neutral-light border-t border-neutral-dark/5">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Kolik stojí chemická injektáž zdiva?</h2>
+          <p className="text-lg text-neutral-dark/70 font-medium leading-relaxed mb-8">
+            {data.priceRange} zdi při tloušťce 45 cm; u silnějšího zdiva se cena úměrně navyšuje.
+            Nejsme plátci DPH, uvedená částka se tedy o daň dále nenavyšuje. Jde o orientační cenu –
+            závaznou nabídku zpracujeme po nezávazné prohlídce objektu.
+          </p>
+          <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20 inline-flex items-center gap-3">
+            Spočítat cenu injektáže
+            <Icons.Calculator className="w-5 h-5" />
+          </Link>
+
+          <div className="mt-16">
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-8">Časté dotazy k chemické injektáži</h2>
+            <div className="space-y-4">
+              {faqItems.map((f, i) => (
+                <div key={i} className="bg-white rounded-2xl p-6 border border-neutral-dark/5 shadow-sm">
+                  <h3 className="font-black uppercase italic text-neutral-dark mb-2">{f.q}</h3>
+                  <p className="text-neutral-dark/70 font-medium leading-relaxed">{f.a}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
