@@ -12,6 +12,7 @@ import { Resend } from 'resend';
 import { safeAuth, isAllowed } from '@/auth';
 import { addCustomer, deleteCustomer, getCustomer, logEmail, thankYouAlreadySent, updateRealizedAt } from '@/lib/db';
 import { thankYouHtml, thankYouSubject } from '@/lib/thankYouEmail';
+import { isValidEmail, isValidPhone, isValidDate } from '@/lib/validators';
 import type { ActionState } from './ActionForm';
 
 async function requireAdmin(): Promise<string> {
@@ -29,15 +30,26 @@ export async function addCustomerAction(_prev: ActionState, formData: FormData):
   try {
     const admin = await requireAdmin();
     const name = String(formData.get('name') || '').trim();
-    if (!name) return { ok: false, message: 'Jméno je povinné.' };
+    const email = String(formData.get('email') || '').trim();
+    const phone = String(formData.get('phone') || '').trim();
+    const realized = String(formData.get('realized_at') || '').trim();
+
+    // Povinná pole
+    if (!name) return { ok: false, message: 'Jméno a příjmení je povinné.' };
+    if (!email) return { ok: false, message: 'E-mail je povinný.' };
+    if (!phone) return { ok: false, message: 'Telefon je povinný.' };
+    // Formáty
+    if (!isValidEmail(email)) return { ok: false, message: 'E-mail nemá platný formát.' };
+    if (!isValidPhone(phone)) return { ok: false, message: 'Telefon musí mít 9 číslic, volitelně s předvolbou (např. +420).' };
+    if (realized && !isValidDate(realized)) return { ok: false, message: 'Datum realizace nemá platný formát.' };
 
     await addCustomer({
       name,
-      email: String(formData.get('email') || '').trim() || null,
-      phone: String(formData.get('phone') || '').trim() || null,
+      email,
+      phone,
       project: String(formData.get('project') || '').trim() || null,
       jobSize: String(formData.get('job_size') || '').trim() || null,
-      realized_at: String(formData.get('realized_at') || '').trim() || null,
+      realized_at: realized || null,
       createdBy: admin,
     });
     revalidatePath('/sprava');
@@ -66,7 +78,9 @@ export async function updateRealizedAtAction(_prev: ActionState, formData: FormD
     await requireAdmin();
     const id = Number(formData.get('id'));
     if (!Number.isFinite(id)) return { ok: false, message: 'Neplatné id.' };
-    await updateRealizedAt(id, String(formData.get('realized_at') || '').trim() || null);
+    const realized = String(formData.get('realized_at') || '').trim();
+    if (realized && !isValidDate(realized)) return { ok: false, message: 'Datum realizace nemá platný formát.' };
+    await updateRealizedAt(id, realized || null);
     revalidatePath('/sprava');
     return { ok: true, message: 'Datum realizace uloženo.' };
   } catch (err) {

@@ -14,11 +14,13 @@ export default function ActionForm({
   children,
   className,
   resetOnSuccess = false,
+  onSuccess,
 }: {
   action: (prev: ActionState, formData: FormData) => Promise<ActionState>;
   children: React.ReactNode;
   className?: string;
   resetOnSuccess?: boolean;
+  onSuccess?: () => void;
 }) {
   const [state, formAction] = useActionState(action, null);
   const ref = useRef<HTMLFormElement>(null);
@@ -26,8 +28,11 @@ export default function ActionForm({
   useEffect(() => {
     if (!state) return;
     toast(state.message, state.ok ? 'success' : 'error');
-    if (state.ok && resetOnSuccess) ref.current?.reset();
-  }, [state, resetOnSuccess]);
+    if (state.ok) {
+      if (resetOnSuccess) ref.current?.reset();
+      onSuccess?.();
+    }
+  }, [state, resetOnSuccess, onSuccess]);
 
   return (
     <form ref={ref} action={formAction} className={className}>
