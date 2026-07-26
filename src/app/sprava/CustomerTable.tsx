@@ -10,6 +10,8 @@ import ProjectCell from './ProjectCell';
 
 type Action = (prev: ActionState, formData: FormData) => Promise<ActionState>;
 
+const PAGE_SIZE = 20;
+
 function fmt(iso?: string | null): string {
   if (!iso) return '—';
   const d = new Date(iso);
@@ -61,6 +63,22 @@ export default function CustomerTable({
   }, [customers, createdFrom, createdTo, realizedFrom, realizedTo, thanks, realized]);
 
   const anyFilter = createdFrom || createdTo || realizedFrom || realizedTo || thanks !== 'all' || realized !== 'all';
+
+  // Stránkování nad vyfiltrovaným seznamem.
+  const [page, setPage] = useState(1);
+  // Při změně filtru zpět na první stranu (reset během renderu – React vzor,
+  // bez setState v effectu).
+  const filterKey = `${createdFrom}|${createdTo}|${realizedFrom}|${realizedTo}|${thanks}|${realized}`;
+  const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
+  if (filterKey !== prevFilterKey) {
+    setPrevFilterKey(filterKey);
+    setPage(1);
+  }
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  const rangeFrom = filtered.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+  const rangeTo = Math.min(currentPage * PAGE_SIZE, filtered.length);
 
   return (
     <section className="bg-white rounded-3xl shadow-sm border border-neutral-dark/5 p-6 sm:p-8">
@@ -136,7 +154,7 @@ export default function CustomerTable({
               </tr>
             </thead>
             <tbody>
-              {filtered.map((c) => (
+              {pageItems.map((c) => (
                 <tr key={c.id} className="border-b border-neutral-light/60 align-top">
                   <td className="py-4 pr-4 font-bold text-neutral-dark">{c.name}</td>
                   <td className="py-4 pr-4 text-neutral-dark/70">
@@ -151,8 +169,14 @@ export default function CustomerTable({
                     {/* Datum realizace lze doplnit/změnit i dodatečně (lead → hotová zakázka). */}
                     <ActionForm action={updateRealizedAtAction} className="flex items-center gap-1">
                       <input type="hidden" name="id" value={c.id} />
-                      <input type="date" name="realized_at" defaultValue={c.realized_at ? c.realized_at.slice(0, 10) : ''} className="border border-neutral-light rounded-lg px-2 py-1 text-xs outline-none focus:border-primary" />
-                      <button type="submit" title="Uložit datum" className="text-[10px] font-black uppercase tracking-widest text-primary-ink hover:text-neutral-dark px-2 py-1">OK</button>
+                      <input
+                        type="date"
+                        name="realized_at"
+                        defaultValue={c.realized_at ? c.realized_at.slice(0, 10) : ''}
+                        onChange={(e) => e.currentTarget.form?.requestSubmit()}
+                        title="Uloží se po změně data"
+                        className="border border-neutral-light rounded-lg px-2 py-1 text-xs outline-none focus:border-primary"
+                      />
                     </ActionForm>
                   </td>
                   <td className="py-4 pr-4">
@@ -160,8 +184,11 @@ export default function CustomerTable({
                   </td>
                   <td className="py-4 pr-4">
                     {c.last_email_at ? (
-                      <span className={c.last_email_status === 'sent' ? 'text-green-600 font-bold text-xs' : 'text-red-500 font-bold text-xs'}>
-                        {c.last_email_status === 'sent' ? 'Odesláno' : 'Chyba'} · {fmt(c.last_email_at)}
+                      <span
+                        className={c.last_email_status === 'sent' ? 'text-green-600 font-bold text-xs' : 'text-red-500 font-bold text-xs'}
+                        title={c.last_email_status === 'sent' ? 'Poděkování odesláno' : 'Odeslání selhalo'}
+                      >
+                        {fmt(c.last_email_at)}
                       </span>
                     ) : (
                       <span className="text-neutral-dark/30 text-xs">—</span>
@@ -190,6 +217,31 @@ export default function CustomerTable({
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {filtered.length > PAGE_SIZE && (
+        <div className="flex items-center justify-between gap-4 mt-6 pt-4 border-t border-neutral-light">
+          <span className="text-xs text-neutral-dark/50 font-medium">{rangeFrom}–{rangeTo} z {filtered.length}</span>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              disabled={currentPage <= 1}
+              onClick={() => setPage(currentPage - 1)}
+              className="text-[10px] font-black uppercase tracking-widest px-3 py-2 rounded-lg text-neutral-dark/60 hover:text-neutral-dark disabled:opacity-30 disabled:pointer-events-none"
+            >
+              ← Předchozí
+            </button>
+            <span className="text-xs font-bold text-neutral-dark/60 whitespace-nowrap">Strana {currentPage} / {totalPages}</span>
+            <button
+              type="button"
+              disabled={currentPage >= totalPages}
+              onClick={() => setPage(currentPage + 1)}
+              className="text-[10px] font-black uppercase tracking-widest px-3 py-2 rounded-lg text-neutral-dark/60 hover:text-neutral-dark disabled:opacity-30 disabled:pointer-events-none"
+            >
+              Další →
+            </button>
+          </div>
         </div>
       )}
     </section>
