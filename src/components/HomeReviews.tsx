@@ -1,8 +1,32 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { Icons } from './Icons';
 import ExpandableText from './ExpandableText';
+
+/** Logo zdroje recenze na bílém chipu – čitelné na tmavé kartě. */
+function SourceLogo({ source }: { source: ReviewSource }) {
+  const label = SOURCE_LABEL[source];
+  return (
+    <span
+      className="inline-flex items-center justify-center bg-white rounded-md px-2 h-6 shrink-0"
+      title={`Zdroj: ${label}`}
+      aria-label={`Zdroj: ${label}`}
+    >
+      {source === 'google' ? (
+        <svg viewBox="0 0 48 48" className="h-3.5 w-3.5" aria-hidden="true">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        </svg>
+      ) : (
+        <Image src="/images/mapy-com.jpeg" alt="Mapy.com" width={70} height={13} className="h-3 w-auto object-contain" />
+      )}
+    </span>
+  );
+}
 
 type ReviewSource = 'firmy' | 'google';
 
@@ -52,6 +76,9 @@ export default function HomeReviews() {
 
   const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
   const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
+  // Profil na Google Mapách (přehled recenzí). Override přes env, fallback CID firmy.
+  const googleUrl =
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL || 'https://www.google.com/maps?cid=11693549259963803968';
 
   useEffect(() => {
     let cancelled = false;
@@ -152,17 +179,28 @@ export default function HomeReviews() {
               Přečtěte si zkušenosti lidí, kterým jsme pomohli k suchému a zdravému domovu.
             </p>
           </div>
-          {profileUrl && (
+          <div className="flex flex-col items-start md:items-end gap-3 shrink-0 mb-2">
             <a
-              href={profileUrl}
+              href={googleUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-white transition-colors shrink-0 mb-2"
+              className="group inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-white transition-colors"
             >
-              Všechny recenze na Mapy.com
+              Recenze na Google
               <Icons.ExternalLink className="w-4 h-4" />
             </a>
-          )}
+            {profileUrl && (
+              <a
+                href={profileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:text-white transition-colors"
+              >
+                Recenze na Mapy.com
+                <Icons.ExternalLink className="w-4 h-4" />
+              </a>
+            )}
+          </div>
         </div>
 
         {status === 'loading' ? (
@@ -196,25 +234,26 @@ export default function HomeReviews() {
                           href={review.sourceUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-primary transition-colors"
-                          title={`Zdroj: ${SOURCE_LABEL[review.source]}`}
+                          className="hover:opacity-80 transition-opacity"
                         >
-                          {SOURCE_LABEL[review.source]}
+                          <SourceLogo source={review.source} />
                         </a>
                       ) : (
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">
-                          {SOURCE_LABEL[review.source]}
-                        </span>
+                        <SourceLogo source={review.source} />
                       )}
                     </div>
 
                     <div className="mb-10 flex-grow">
-                      <ExpandableText
-                        text={`„${review.text}“`}
-                        clampLines={8}
-                        className="text-white/80 font-medium italic leading-relaxed"
-                        buttonClassName="text-[11px] text-primary hover:text-white"
-                      />
+                      {/* Hvězdičkové recenze bez textu (časté u Google) by jinak
+                          vykreslily prázdné uvozovky „“. Zobrazíme jen když text je. */}
+                      {review.text.trim() && (
+                        <ExpandableText
+                          text={`„${review.text}“`}
+                          clampLines={8}
+                          className="text-white/80 font-medium italic leading-relaxed"
+                          buttonClassName="text-[11px] text-primary hover:text-white"
+                        />
+                      )}
                     </div>
 
                     <div className="pt-6 border-t border-white/10 mt-auto">
