@@ -6,7 +6,8 @@
 import { useMemo, useState } from 'react';
 import type { Customer } from '@/lib/db';
 import ActionForm, { type ActionState } from './ActionForm';
-import ProjectCell from './ProjectCell';
+import CustomerDetail from './CustomerDetail';
+import { Icons } from '@/components/Icons';
 
 type Action = (prev: ActionState, formData: FormData) => Promise<ActionState>;
 
@@ -144,7 +145,6 @@ export default function CustomerTable({
               <tr className="text-left text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 border-b border-neutral-light">
                 <th className="py-3 pr-4">Zákazník</th>
                 <th className="py-3 pr-4">Kontakt</th>
-                <th className="py-3 pr-4">Zakázka</th>
                 <th className="py-3 pr-4">Velikost</th>
                 <th className="py-3 pr-4">Zadáno</th>
                 <th className="py-3 pr-4">Realizace</th>
@@ -162,7 +162,6 @@ export default function CustomerTable({
                     {c.phone && <div>{c.phone}</div>}
                     {!c.email && !c.phone && '—'}
                   </td>
-                  <td className="py-4 pr-4 text-neutral-dark/70 max-w-[18rem]"><ProjectCell text={c.project} /></td>
                   <td className="py-4 pr-4 text-neutral-dark/70 whitespace-nowrap">{c.job_size || '—'}</td>
                   <td className="py-4 pr-4 text-neutral-dark/60 whitespace-nowrap">{fmt(c.created_at)}</td>
                   <td className="py-4 pr-4">
@@ -195,21 +194,22 @@ export default function CustomerTable({
                     )}
                   </td>
                   <td className="py-4 pr-2">
-                    <div className="flex items-center gap-2 justify-end">
+                    <div className="flex items-center gap-1 justify-end">
+                      <CustomerDetail customer={c} />
                       {/* Poděkování: jen s e-mailem, po realizaci a jen jednou. */}
                       {c.last_email_status === 'sent' ? null : !c.email ? (
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-dark/25 whitespace-nowrap" title="Zákazník nemá e-mail">Bez e-mailu</span>
+                        <span className="p-2 text-neutral-dark/20" title="Zákazník nemá e-mail"><Icons.Mail className="w-5 h-5" /></span>
                       ) : !c.realized_at ? (
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-dark/25 whitespace-nowrap" title="Nejdřív doplňte datum realizace">Čeká na realizaci</span>
+                        <span className="p-2 text-neutral-dark/20" title="Čeká na realizaci – nejdřív doplňte datum"><Icons.Clock className="w-5 h-5" /></span>
                       ) : (
                         <ActionForm action={sendThankYouAction}>
                           <input type="hidden" name="id" value={c.id} />
-                          <button type="submit" className="text-[10px] font-black uppercase tracking-widest bg-primary/15 text-primary-ink px-3 py-2 rounded-lg hover:bg-primary/25 transition-colors whitespace-nowrap">Poslat poděkování</button>
+                          <button type="submit" title="Poslat poděkování" aria-label="Poslat poděkování" className="p-2 rounded-lg text-primary-ink hover:bg-primary/15 transition-colors"><Icons.Send className="w-5 h-5" /></button>
                         </ActionForm>
                       )}
                       <ActionForm action={deleteCustomerAction}>
                         <input type="hidden" name="id" value={c.id} />
-                        <button type="submit" className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/30 hover:text-red-500 transition-colors px-2 py-2">Smazat</button>
+                        <button type="submit" title="Smazat" aria-label="Smazat" className="p-2 rounded-lg text-neutral-dark/30 hover:text-red-500 hover:bg-red-50 transition-colors"><Icons.Trash className="w-5 h-5" /></button>
                       </ActionForm>
                     </div>
                   </td>
