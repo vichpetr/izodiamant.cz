@@ -41,15 +41,30 @@ export default async function SpravaPage() {
         <section className="bg-white rounded-3xl shadow-sm border border-neutral-dark/5 p-6 sm:p-8">
           <h1 className="text-lg font-black uppercase italic text-neutral-dark mb-6">Přidat zákazníka</h1>
           <ActionForm action={addCustomerAction} resetOnSuccess className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <input name="name" required placeholder="Jméno a příjmení *" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
-            <input name="email" type="email" placeholder="E-mail" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
-            <input name="phone" placeholder="Telefon" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
-            <input name="job_size" placeholder="Velikost / hodnota zakázky (Kč nebo bm)" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary sm:col-span-2" />
             <div className="flex flex-col gap-1">
-              <label htmlFor="add-realized" className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 ml-1">Datum realizace (lze doplnit i&nbsp;později)</label>
+              <label htmlFor="add-name" className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 ml-1">Jméno a příjmení *</label>
+              <input id="add-name" name="name" required className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="add-email" className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 ml-1">E-mail</label>
+              <input id="add-email" name="email" type="email" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="add-phone" className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 ml-1">Telefon</label>
+              <input id="add-phone" name="phone" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
+            </div>
+            <div className="flex flex-col gap-1 sm:col-span-2">
+              <label htmlFor="add-jobsize" className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 ml-1">Velikost / hodnota zakázky</label>
+              <input id="add-jobsize" name="job_size" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="add-realized" className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 ml-1">Datum realizace</label>
               <input id="add-realized" name="realized_at" type="date" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary" />
             </div>
-            <textarea name="project" rows={2} placeholder="Zakázka / poznámka" className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary resize-y sm:col-span-2 lg:col-span-3" />
+            <div className="flex flex-col gap-1 sm:col-span-2 lg:col-span-3">
+              <label htmlFor="add-project" className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 ml-1">Zakázka / poznámka</label>
+              <textarea id="add-project" name="project" rows={2} className="border-2 border-neutral-light rounded-xl px-4 py-3 font-medium outline-none focus:border-primary resize-y" />
+            </div>
             <div className="sm:col-span-2 lg:col-span-3">
               <button type="submit" className="btn-primary py-3 px-8 uppercase tracking-widest">Uložit</button>
             </div>
