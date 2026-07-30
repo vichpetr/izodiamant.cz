@@ -223,11 +223,11 @@ export default function HomeReviews() {
                     </div>
 
                     <div className="mb-10 flex-grow">
-                      {/* Hvězdičkové recenze bez textu (časté u Google) by jinak
-                          vykreslily prázdné uvozovky „“. Zobrazíme jen když text je. */}
+                      {/* Hvězdičkové recenze bez textu (časté u Google)
+                          nezobrazujeme vůbec. */}
                       {review.text.trim() && (
                         <ExpandableText
-                          text={`„${review.text}“`}
+                          text={review.text}
                           clampLines={8}
                           className="text-white/80 font-medium italic leading-relaxed"
                           buttonClassName="text-[11px] text-primary hover:text-white"

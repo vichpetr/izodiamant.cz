@@ -120,10 +120,10 @@ export default function ProjectReview({ reviewId }: { reviewId: string }) {
         {renderStars(review.rating)}
       </div>
 
-      {/* Recenze bez textu (jen hvězdičky) by vykreslila prázdné „“. */}
+      {/* Recenze bez textu (jen hvězdičky) nerenderujeme vůbec. */}
       {review.text.trim() && (
         <ExpandableText
-          text={`„${review.text}“`}
+          text={review.text}
           clampLines={10}
           charThreshold={450}
           className="text-lg text-neutral-dark/80 font-medium italic leading-relaxed relative z-10"
