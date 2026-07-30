@@ -12,10 +12,10 @@ export const metadata: Metadata = {
   ...pageMetadata({
     path: '/sluzby/diamantove-lano',
     title: "Podřezání zdiva a betonu diamantovým lanem",
-    description: "Podřezání a řezání diamantovým lanem – vlhké zdivo, kámen i beton bez omezení tloušťky. Šetrná metoda s minimem otřesů. Orientační cena od 4 500 Kč/bm.",
+    description: "Podřezání diamantovým lanem – kamenné, betonové i silné smíšené zdivo bez omezení tloušťky. Šetrná metoda s minimem otřesů. Orientační cena od 4 500 Kč/bm.",
     images: ['/images/sluzby/diamantove-lano.jpg'],
   }),
-  keywords: ["diamantové lano", "podřezání zdiva diamantovým lanem", "podřezání betonu", "řezání betonu", "řezání železobetonu", "sanace kamenného zdiva", "izolace betonu", "podřezání zdiva cena", "Nové Hrady", "ČR"],
+  keywords: ["diamantové lano", "podřezání zdiva diamantovým lanem", "podřezání kamenného zdiva", "podřezání smíšeného zdiva", "podřezání betonu", "řezání betonu", "řezání železobetonu", "sanace kamenného zdiva", "izolace betonu", "podřezání zdiva cena", "Nové Hrady", "ČR"],
 };
 
 export default function DiamondWirePage() {
