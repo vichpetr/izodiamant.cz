@@ -149,6 +149,7 @@ test.describe('Audit: staré URL se přesměrovávají (duplicitní obsah)', () 
     ['/sluzby/sluzby-podrezani-retezovou-pilou', '/sluzby/retezova-pila'],
     ['/kontakt', '/'],
     ['/sluzby', '/'],
+    ['/services', '/'],
     ['/reference', '/'],
     ['/clanky', '/'],
     ['/clanky/vyuziti-sklepa', '/'],
@@ -174,6 +175,36 @@ test.describe('Audit: staré URL se přesměrovávají (duplicitní obsah)', () 
     for (const path of ['/sluzby/diamantove-lano', '/sluzby/retezova-pila', '/sluzby/chemicka-injektaz']) {
       const res = await request.get(path, { maxRedirects: 0 });
       expect(res.status(), `${path} je omylem přesměrována`).toBe(200);
+    }
+  });
+});
+
+/**
+ * Guard k hlášení Google Search Console „Stránka s přesměrováním".
+ * Sám o sobě je ten stav informativní (staré URL správně 301/308 mizí ve
+ * prospěch cílů), problém by ale nastal, kdyby do indexu poslaná URL (= je
+ * v sitemapě) sama přesměrovávala nebo vracela 404. Pak by ji Google
+ * nezaindexoval. Tenhle test hlídá, že každá URL ze sitemapy vrací 200
+ * a že cíl každého legacy přesměrování je také dostupný (žádný řetězec do 404).
+ */
+test.describe('Audit: indexovatelné URL nikdy nepřesměrovávají', () => {
+  test('každá URL v sitemap.xml vrací 200 (není redirect ani 404)', async ({ request }) => {
+    const xml = await (await request.get('/sitemap.xml')).text();
+    const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) =>
+      m[1].replace('https://izodiamant.cz', '') || '/',
+    );
+    expect(locs.length, 'sitemap je prázdná').toBeGreaterThan(5);
+
+    for (const path of locs) {
+      const res = await request.get(path, { maxRedirects: 0 });
+      expect(res.status(), `${path} je v sitemapě, ale nevrací 200 (${res.status()})`).toBe(200);
+    }
+  });
+
+  test('cíle legacy přesměrování jsou dostupné (žádný řetězec do 404)', async ({ request }) => {
+    for (const target of ['/', '/sluzby/diamantove-lano', '/sluzby/retezova-pila']) {
+      const res = await request.get(target, { maxRedirects: 0 });
+      expect(res.status(), `cíl ${target} není dostupný`).toBe(200);
     }
   });
 });
