@@ -242,5 +242,37 @@
       "/images/references/05-2026_policka/7.jpeg",
       "/images/references/05-2026_policka/8.jpeg"
     ]
+  },
+  {
+    "id": "sycina",
+    "title": "Sanace rodinného domu, Sýčina",
+    "location": "Sýčina (u Mladé Boleslavi)",
+    "date": "2026-07",
+    "technology": "Kombinovaná metoda",
+    "scope": "24 m² řezné plochy – lano, pila i injektáž",
+    "duration": "4–5 pracovních dnů",
+    "reviewId": "google-2026-07-29-ladislav-cerny",
+    "description": "U rodinného domu v Sýčině nedaleko Mladé Boleslavi jsme řešili vzlínající vlhkost po celém obvodu objektu. Zdivo bylo nesourodé – kombinace cihel, kamene a betonových partií – a v některých místech nebylo mechanické řezání možné. Proto jsme nasadili kombinaci všech tří technologií, které nabízíme, a pro každý úsek zvolili tu nejvhodnější.\n\nV pravidelném cihelném zdivu s průběžnou ložnou spárou jsme podřezávali řetězovou pilou, tvrdé kamenné a betonové úseky jsme prořízli diamantovým lanem pod stálým chlazením vodou a hůře přístupná místa – rohy a partie pod prahy – jsme ošetřili chemickou injektází. Do mechanicky proříznutých spár jsme průběžně vkládali hydroizolaci, zdivo staticky zajistili klíny a spáru tlakově vyplnili cementovou směsí. Celkem jsme takto ošetřili 24 m² řezné plochy.\n\nJednotlivé úseky na sebe navazují do souvislé vodorovné bariéry, takže vzlínající vlhkost je po celém obvodu přerušená a zdivo nad izolací může přirozeně vysychat. Majiteli jsme doporučili navazující otlučení zasolených omítek a aplikaci sanačních omítek pro odvedení zbytkové vlhkosti a solí.",
+    "features": [
+      "Kombinace diamantového lana, řetězové pily i chemické injektáže",
+      "Řešení nesourodého zdiva (cihla, kámen i beton) v jednom objektu",
+      "Injektáž hůře přístupných rohů a partií pod prahy",
+      "Souvislá vodorovná bariéra po celém obvodu domu"
+    ],
+    "image": "/images/references/07-2026_sycina/01.jpeg",
+    "gallery": [
+      "/images/references/07-2026_sycina/01.jpeg",
+      "/images/references/07-2026_sycina/02.jpeg",
+      "/images/references/07-2026_sycina/03.jpeg",
+      "/images/references/07-2026_sycina/04.jpeg",
+      "/images/references/07-2026_sycina/05.jpeg",
+      "/images/references/07-2026_sycina/06.jpeg",
+      "/images/references/07-2026_sycina/07.jpeg",
+      "/images/references/07-2026_sycina/08.jpeg",
+      "/images/references/07-2026_sycina/09.jpeg",
+      "/images/references/07-2026_sycina/10.jpeg",
+      "/images/references/07-2026_sycina/11.jpeg",
+      "/images/references/07-2026_sycina/14.jpg"
+    ]
   }
 ]
