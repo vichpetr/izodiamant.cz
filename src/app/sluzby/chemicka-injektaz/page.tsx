@@ -66,7 +66,7 @@ export default function ChemicalInjectionPage() {
     },
     {
       q: "Kdy zvolit injektáž místo podřezání zdiva?",
-      a: "Chemickou injektáž volíme tam, kde zdivo nelze mechanicky proříznout – u velmi silného, členitého nebo špatně přístupného zdivo, v rozích, u vnitřních příček nebo v blízkosti inženýrských sítí. Nejvhodnější metodu doporučíme podle materiálu a stavu konkrétní stavby.",
+      a: "Chemickou injektáž volíme tam, kde zdivo nelze mechanicky proříznout – u velmi silného, členitého nebo špatně přístupného zdiva, v rozích, u vnitřních příček nebo v blízkosti inženýrských sítí. Nejvhodnější metodu doporučíme podle materiálu a stavu konkrétní stavby.",
     },
   ];
 

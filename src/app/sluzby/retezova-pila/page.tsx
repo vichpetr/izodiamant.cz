@@ -12,10 +12,10 @@ export const metadata: Metadata = {
   ...pageMetadata({
     path: '/sluzby/retezova-pila',
     title: "Podřezávání zdiva řetězovou pilou",
-    description: "Sanace zdiva řetězovou pilou. Ideální pro cihelné stavby – rychlý postup a okamžité vložení hydroizolace s životností přes 50 let.",
+    description: "Podřezání zdiva řetězovou pilou – nejrychlejší metoda pro cihelné zdivo, vložení hydroizolace s životností přes 50 let. Orientační cena od 2 500 Kč/bm.",
     images: ['/images/sluzby/retezova-pila.jpg'],
   }),
-  keywords: ["řetězová pila", "podřezávání cihelného zdiva", "podřezání zdiva řetězovou pilou", "sanace vlhkého zdiva", "izolace proti vlhkosti", "podřezání domu cena", "Nové Hrady", "ČR"],
+  keywords: ["řetězová pila", "řetězová pila na zdivo", "pila na podřezání zdiva", "podřezávání cihelného zdiva", "podřezání zdiva řetězovou pilou", "sanace vlhkého zdiva", "izolace proti vlhkosti", "podřezání domu cena", "Nové Hrady", "ČR"],
 };
 
 export default function ChainSawPage() {
