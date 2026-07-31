@@ -23,13 +23,19 @@ export default function FAQ() {
     }))
   };
 
+  // Dva nezávislé sloupce (každý má vlastní space-y): rozbalení otázky posune jen
+  // svůj sloupec, ne druhý. Dělíme na půl po pořadí, aby se na mobilu (1 sloupec)
+  // otázky poskládaly ve správném sledu.
+  const half = Math.ceil(faqData.length / 2);
+  const columns = [faqData.slice(0, half), faqData.slice(half)];
+
   return (
     <section id="faq" className="py-24 bg-neutral-light">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl font-black text-neutral-dark mb-6 uppercase tracking-tight md:tracking-tighter italic px-2">
             {content.h2}
@@ -39,9 +45,13 @@ export default function FAQ() {
           </p>
         </div>
 
-        <div className="space-y-4">
-          {faqData.map((faq, index) => (
-            <FAQItem key={index} question={faq.question} answer={faq.answer} />
+        <div className="grid md:grid-cols-2 gap-4 items-start">
+          {columns.map((col, ci) => (
+            <div key={ci} className="space-y-4">
+              {col.map((faq, index) => (
+                <FAQItem key={index} question={faq.question} answer={faq.answer} />
+              ))}
+            </div>
           ))}
         </div>
       </div>
