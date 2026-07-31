@@ -28,6 +28,7 @@ const staticRoutes = [
   '/sluzby/diamantove-lano',
   '/sluzby/retezova-pila',
   '/sluzby/chemicka-injektaz',
+  '/sluzby/zednicke-a-obkladacske-prace',
 ];
 
 const urlList = [

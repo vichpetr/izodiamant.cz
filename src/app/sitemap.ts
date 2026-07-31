@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/sluzby/diamantove-lano',
     '/sluzby/retezova-pila',
     '/sluzby/chemicka-injektaz',
+    '/sluzby/zednicke-a-obkladacske-prace',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
