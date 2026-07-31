@@ -66,7 +66,7 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <Link href="/#sluzby" className="text-neutral-dark/80 hover:text-primary text-sm font-bold uppercase tracking-widest transition-colors">
-              Technologie
+              Služby
             </Link>
             <Link href="/#calculator" className="text-neutral-dark/80 hover:text-primary text-sm font-bold uppercase tracking-widest transition-colors">
               Ceník & Kalkulačka
@@ -111,7 +111,7 @@ export default function Header() {
         <div className="md:hidden bg-white border-t border-neutral-light absolute w-full left-0 shadow-lg">
           <div className="px-4 pt-2 pb-6 space-y-1">
             <Link href="/#sluzby" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-4 text-base font-bold text-neutral-dark uppercase tracking-widest hover:bg-neutral-light rounded-md">
-              Technologie
+              Služby
             </Link>
             <Link href="/#calculator" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-4 text-base font-bold text-neutral-dark uppercase tracking-widest hover:bg-neutral-light rounded-md">
               Ceník & Kalkulačka
