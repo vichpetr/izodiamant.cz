@@ -161,10 +161,13 @@ export default function PricingCalculator() {
     }
   };
 
+  // V tooltipu je titulek „Ceník", takže prefix „Orientační cena" je nadbytečný a
+  // dlouhý řetězec navíc přetékal z úzkého boxu. Zobrazujeme jen „od 4 500 Kč / bm".
+  const shortPrice = (p: string) => p.replace(/^Orientační cena\s*/i, '').trim();
   const priceListTooltip = [
-    { name: "Diamantové lano", price: servicesData["diamantove-lano"].priceRange, href: "/sluzby/diamantove-lano" },
-    { name: "Řetězová pila", price: servicesData["retezova-pila"].priceRange, href: "/sluzby/retezova-pila" },
-    { name: "Chemická injektáž", price: servicesData["chemicka-injektaz"].priceRange, href: "/sluzby/chemicka-injektaz" }
+    { name: "Diamantové lano", price: shortPrice(servicesData["diamantove-lano"].priceRange), href: "/sluzby/diamantove-lano" },
+    { name: "Řetězová pila", price: shortPrice(servicesData["retezova-pila"].priceRange), href: "/sluzby/retezova-pila" },
+    { name: "Chemická injektáž", price: shortPrice(servicesData["chemicka-injektaz"].priceRange), href: "/sluzby/chemicka-injektaz" }
   ];
 
   return (
@@ -184,17 +187,17 @@ export default function PricingCalculator() {
                 <Icons.Info className="w-3 h-3" />
               </div>
               
-              <div data-testid="price-tooltip" className="fixed md:absolute top-1/2 left-1/2 md:top-full -translate-x-1/2 md:translate-x-[-50%] -translate-y-1/2 md:translate-y-0 pt-4 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform w-[calc(100vw-2rem)] max-w-72 sm:w-72 z-50">
+              <div data-testid="price-tooltip" className="fixed md:absolute top-1/2 left-1/2 md:top-full -translate-x-1/2 md:translate-x-[-50%] -translate-y-1/2 md:translate-y-0 pt-4 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 transform w-[calc(100vw-2rem)] max-w-xs sm:w-80 z-50">
                 <div className="bg-neutral-dark border-2 border-primary/30 p-5 rounded-2xl shadow-2xl backdrop-blur-xl text-left mx-auto">
                   <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4 italic border-b border-white/10 pb-2">Ceník</h3>
                   <div className="space-y-4">
                     {priceListTooltip.map((item, i) => (
-                      <div key={i} className="flex justify-between items-center gap-4">
-                        <Link href={item.href} className="flex items-center gap-1.5 text-[10px] font-bold text-white/80 hover:text-primary uppercase leading-tight transition-colors">
-                          {item.name}
-                          <Icons.ExternalLink className="w-2.5 h-2.5" />
+                      <div key={i} className="flex justify-between items-center gap-3">
+                        <Link href={item.href} className="flex items-center gap-1.5 text-[10px] font-bold text-white/80 hover:text-primary uppercase leading-tight transition-colors min-w-0">
+                          <span className="truncate">{item.name}</span>
+                          <Icons.ExternalLink className="w-2.5 h-2.5 shrink-0" />
                         </Link>
-                        <span className="text-[10px] font-black text-primary uppercase whitespace-nowrap">{item.price}</span>
+                        <span className="text-[10px] font-black text-primary uppercase whitespace-nowrap shrink-0">{item.price}</span>
                       </div>
                     ))}
                   </div>
