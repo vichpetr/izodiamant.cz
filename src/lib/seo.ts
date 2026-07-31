@@ -24,7 +24,13 @@ export function pageMetadata({
   return {
     title,
     description,
-    alternates: { canonical: url },
+    // Kanonická URL i hreflang na úrovni stránky. `languages` musí být i tady –
+    // Next.js `alternates` nesluje hluboce, takže bez toho by se hreflang z layoutu
+    // na podstránkách ztratil (a homepage ho přepisuje také). cs-CZ web → self + x-default.
+    alternates: {
+      canonical: url,
+      languages: { 'cs-CZ': url, 'x-default': url },
+    },
     openGraph: {
       type: 'website',
       locale: 'cs_CZ',

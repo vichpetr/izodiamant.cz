@@ -100,7 +100,7 @@ export default function DiamondWirePage() {
           </div>
 
           <div className="prose prose-lg max-w-none mb-20 text-neutral-dark/80">
-            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Proč zvolit diamantové lano pro sanaci a podřezávání?</h2>
+            <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Podřezání kamenného, betonového i smíšeného zdiva diamantovým lanem</h2>
             <p>
               Podřezání zdiva diamantovým lanem je ideální a vysoce šetrnou volbou pro sanaci kamenného, smíšeného nebo velmi tvrdého zdiva, kde už běžná pila nestačí. Postup spočívá v mimořádně přesném proříznutí vodorovné spáry bez zbytečných otřesů. Do vzniklého řezu ihned vkládáme pevnou hydroizolační bariéru. Budova se tak staticky bezpečně odřízne od vzlínající zemní vlhkosti.
             </p>
