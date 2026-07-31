@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     path: '/sluzby/zednicke-a-obkladacske-prace',
     title: "Zednické a obkladačské práce",
     description: "Zednické a obkladačské práce – zdění, omítky, štuky, betonáž, výkopy, obklady a dlažby. Působíme do cca 60 km od Nových Hradů. Cena dohodou, nezávazná poptávka online.",
+    images: ['/og-zednicke.jpg'],
   }),
   keywords: ["zednické práce", "obkladačské práce", "zdění", "omítky", "štuky", "betonáž", "výkopové práce", "obklady a dlažba", "zedník", "Nové Hrady", "Pardubicko"],
 };
