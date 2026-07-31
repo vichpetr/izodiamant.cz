@@ -156,6 +156,14 @@ export default function RootLayout({
             "name": "Chemická injektáž vlhkého zdiva",
             "url": "https://izodiamant.cz/sluzby/chemicka-injektaz"
           }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Zednické a obkladačské práce",
+            "url": "https://izodiamant.cz/sluzby/zednicke-a-obkladacske-prace"
+          }
         }
       ]
     },

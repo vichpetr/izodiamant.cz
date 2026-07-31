@@ -104,6 +104,11 @@ export default function Footer() {
                   Chemická injektáž
                 </Link>
               </li>
+              <li>
+                <Link href="/sluzby/zednicke-a-obkladacske-prace" className="text-white/70 hover:text-primary transition-colors uppercase tracking-wider">
+                  Zednické a obkladačské práce
+                </Link>
+              </li>
             </ul>
           </div>
 

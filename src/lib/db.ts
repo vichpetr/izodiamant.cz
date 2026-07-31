@@ -71,7 +71,7 @@ export async function insertLead(input: {
   phone?: string | null;
   project?: string | null;
   jobSize?: string | null;
-  source: 'kontakt' | 'kalkulacka';
+  source: 'kontakt' | 'kalkulacka' | 'zednictvi';
 }): Promise<void> {
   const db = getDB();
   if (!db) return;

@@ -13,5 +13,10 @@
     "priceRange": "Orientační cena od 2 500 Kč / bm",
     "duration": "1–2 pracovní dny",
     "relatedIds": ["policka"]
+  },
+  "zednicke-a-obkladacske-prace": {
+    "priceRange": "Cena dohodou",
+    "duration": "Dle rozsahu prací",
+    "relatedIds": []
   }
 }

@@ -12,6 +12,12 @@ import { trackLead } from '@/lib/analytics';
 // U silnějšího zdiva roste cena úměrně poměru skutečné a referenční tloušťky.
 const REFERENCE_THICKNESS_CM = 45;
 
+// Doplňková služba „Zednické a obkladačské práce" – cena je dohodou, takže do
+// kalkulačky patří jen jako poptávkový (nepočítaný) mód. Záměrně NENÍ v
+// calculator.json, aby nenarušila cenový model za bm (viz skill site-invariants).
+const INQUIRY_ID = 'zednicke';
+const INQUIRY_LABEL = 'Zednické a obkladačské práce';
+
 interface Service {
   id: string;
   label: string;
@@ -56,9 +62,12 @@ export default function PricingCalculator() {
     materialId ? (calculatorData as Material[]).find(m => m.id === materialId) : null
   , [materialId]);
 
-  const selectedService = useMemo(() => 
+  const selectedService = useMemo(() =>
     selectedMaterial ? selectedMaterial.availableServices.find(s => s.id === serviceId) : null
   , [selectedMaterial, serviceId]);
+
+  // Poptávkový mód (cena dohodou) – bez výpočtu, rovnou sběr poptávky do /sprava.
+  const isInquiry = materialId === INQUIRY_ID;
 
   const handleMaterialChange = (id: string) => {
     setMaterialId(id);
@@ -108,17 +117,22 @@ export default function PricingCalculator() {
     
     setIsSubmitting(true);
     try {
+      // Poptávkový mód posílá jen kontakt + službu (bez rozměrů a ceny) – server
+      // to podle materiálu pozná a uloží jako poptávku zednických prací do /sprava.
+      const payload = isInquiry
+        ? { ...formData, material: INQUIRY_LABEL }
+        : {
+            ...formData,
+            material: selectedMaterial?.label || 'Nevybráno',
+            service: selectedService?.label || 'Nevybráno (rozpětí všech variant)',
+            thickness,
+            length,
+            price: `${range.min.toLocaleString('cs-CZ')} - ${range.max.toLocaleString('cs-CZ')} Kč`,
+          };
       const response = await fetch('/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          material: selectedMaterial?.label || 'Nevybráno',
-          service: selectedService?.label || 'Nevybráno (rozpětí všech variant)',
-          thickness,
-          length,
-          price: `${range.min.toLocaleString('cs-CZ')} - ${range.max.toLocaleString('cs-CZ')} Kč`,
-        }),
+        body: JSON.stringify(payload),
       });
 
       // Bez kontroly stavu hlásila kalkulačka „odesláno“ i při chybě serveru –
@@ -131,12 +145,15 @@ export default function PricingCalculator() {
       setIsSubmitted(true);
       // Hodnota = spodní hranice odhadu, aby šlo v Ads později licitovat
       // podle velikosti zakázky. Je to odhad, ne fakturovaná částka.
-      trackLead('kalkulacka', {
-        value: range.min,
-        currency: 'CZK',
-        service: selectedService?.label,
-        material: selectedMaterial?.label,
-      });
+      // Poptávka zednických prací nemá vypočtenou cenu → posíláme bez value.
+      trackLead('kalkulacka', isInquiry
+        ? { service: INQUIRY_LABEL }
+        : {
+            value: range.min,
+            currency: 'CZK',
+            service: selectedService?.label,
+            material: selectedMaterial?.label,
+          });
     } catch {
       alert('Chyba při odesílání.');
     } finally {
@@ -219,7 +236,8 @@ export default function PricingCalculator() {
                     <div className="grid lg:grid-cols-5 gap-10">
                       {/* Left Side: Inputs (60%) */}
                       <div className="lg:col-span-3 space-y-8">
-                        {/* Stacked Dimensions */}
+                        {/* Rozměry – u poptávky zednických prací (cena dohodou) nedávají smysl. */}
+                        {!isInquiry && (
                         <div className="space-y-6">
                           <div>
                             <div className="flex justify-between items-end mb-3">
@@ -236,6 +254,7 @@ export default function PricingCalculator() {
                             <input id="length-range" type="range" min="1" max="100" step="1" value={length} onChange={(e) => setLength(parseInt(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
                           </div>
                         </div>
+                        )}
 
                         {/* Selections side-by-side */}
                         <div className="grid md:grid-cols-2 gap-6 pt-6 border-t border-white/5">
@@ -255,13 +274,29 @@ export default function PricingCalculator() {
                                   <div className={cn("font-black text-xs uppercase tracking-tight leading-none", materialId === m.id ? "text-primary" : "text-white")}>{m.label}</div>
                                 </button>
                               ))}
+                              {/* Doplňková služba – cena dohodou, přepne kalkulačku do poptávkového módu. */}
+                              <button
+                                type="button"
+                                onClick={() => handleMaterialChange(INQUIRY_ID)}
+                                className={cn(
+                                  "p-2.5 rounded-xl border-2 border-dashed text-left transition-all",
+                                  isInquiry ? "border-primary bg-primary/10" : "border-white/10 hover:border-white/30"
+                                )}
+                              >
+                                <div className={cn("font-black text-xs uppercase tracking-tight leading-none", isInquiry ? "text-primary" : "text-white")}>{INQUIRY_LABEL}</div>
+                                <div className="text-[8px] font-bold uppercase tracking-widest text-white/40 mt-1">Cena dohodou</div>
+                              </button>
                             </div>
                           </div>
 
                           <div className="space-y-3 lg:border-l lg:border-white/5 lg:pl-6">
                             <h3 className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-2 italic">4. Technologie</h3>
                             <div className="flex flex-col gap-2">
-                              {!materialId ? (
+                              {isInquiry ? (
+                                <div className="p-3 rounded-xl border-2 border-dashed border-primary/30 text-white/70 text-[9px] font-bold uppercase tracking-widest leading-relaxed">
+                                  Cena dohodou – pokračujte k nezávazné poptávce a popište, o jaké práce jde.
+                                </div>
+                              ) : !materialId ? (
                                 <div className="p-3 rounded-xl border-2 border-dashed border-white/5 text-white/70 text-[9px] font-bold uppercase tracking-widest leading-tight">
                                   Vyberte zdivo
                                 </div>
@@ -287,6 +322,14 @@ export default function PricingCalculator() {
 
                       {/* Right Side: Result (40%) */}
                       <div className="lg:col-span-2 flex flex-col justify-center lg:border-l lg:border-white/5 lg:pl-10">
+                        {isInquiry ? (
+                        <div className="bg-primary/10 rounded-2xl p-8 border-2 border-primary/20 text-center relative overflow-hidden h-fit">
+                          <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-3 italic leading-none">Zednické a obkladačské práce</div>
+                          <div className="text-4xl md:text-5xl font-black text-white italic tracking-tighter leading-none mb-4">Cena dohodou</div>
+                          <div className="inline-block px-3 py-1 bg-white/5 rounded-full text-[9px] text-white/60 font-black uppercase tracking-widest leading-none">Nezávazná poptávka</div>
+                          <p className="mt-4 text-[9px] text-white/70 font-bold leading-relaxed">Rozsah i cenu domluvíme individuálně. Pokračujte k poptávce a popište, o jaké práce jde a kde (působíme do cca 60 km od Nových Hradů).</p>
+                        </div>
+                        ) : (
                         <div className="bg-primary/10 rounded-2xl p-8 border-2 border-primary/20 text-center relative overflow-hidden h-fit">
                           <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-3 italic leading-none">
                             {!materialId ? "Rozpětí všech technologií" : !serviceId ? "Rozpětí pro dané zdivo" : "Odhad ceny pro vaši volbu"}
@@ -307,6 +350,7 @@ export default function PricingCalculator() {
                             Orientační odhad pro {length} bm zdi o tloušťce {thickness} cm. Ceny vycházejí ze sazby za běžný metr při tloušťce {REFERENCE_THICKNESS_CM} cm; u silnějšího zdiva se cena úměrně navyšuje. Závaznou nabídku zpracujeme po prohlídce.
                           </p>
                         </div>
+                        )}
                       </div>
                     </div>
 

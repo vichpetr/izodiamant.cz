@@ -35,6 +35,12 @@ about the couplings *between* those files and the code that consumes them.
 - **`calculator.json` rows have no `unit` field.** All rates share the bm/45 cm model;
   a `unit` key would resurrect the old m²-vs-bm split that made injektáž cost more than
   diamond wire. Don't add it back.
+- **The calculator has one non-priced "inquiry" service — by design.** *Zednické a
+  obkladačské práce* is **cena dohodou**: it is **not** in `calculator.json` and has **no
+  rate**. It lives as a hardcoded tile in `PricingCalculator.tsx` (`INQUIRY_ID`) that
+  switches the calculator into an inquiry mode (no thickness/length/price) and posts a lead
+  to `/api/send`, which routes it to `/sprava` with `source='zednictvi'`. Don't "fix" it by
+  adding a price row — the missing price is intentional. The three service pages stay per-bm.
 - **VAT:** the firm is **not a VAT payer**. Copy says **"Nejsme plátci DPH"**, never
   "Bez DPH" (which implies VAT gets added). Check `Footer.tsx`, `PricingCalculator.tsx`
   badge, `faq.json`, `llms.txt`.
