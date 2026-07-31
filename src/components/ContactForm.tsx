@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Icons } from './Icons';
 import { cn } from '@/lib/utils';
 import { trackLead } from '@/lib/analytics';
+import Turnstile, { TURNSTILE_ENABLED } from './Turnstile';
 
 interface FormErrors {
   name?: string;
@@ -21,6 +22,8 @@ export default function ContactForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState('');
+  const handleVerify = useCallback((t: string) => setCaptchaToken(t), []);
 
   const validate = () => {
     const newErrors: FormErrors = {};
@@ -34,6 +37,10 @@ export default function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
+    if (TURNSTILE_ENABLED && !captchaToken) {
+      alert('Potvrďte prosím, že nejste robot.');
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -46,6 +53,7 @@ export default function ContactForm() {
           thickness: 0,
           length: 0,
           price: 0,
+          turnstileToken: captchaToken,
         }),
       });
 
@@ -166,6 +174,7 @@ export default function ContactForm() {
                     ></textarea>
                     {errors.message && <span className="text-[10px] text-red-500 font-bold uppercase tracking-widest ml-2">{errors.message}</span>}
                   </div>
+                  {TURNSTILE_ENABLED && <Turnstile onVerify={handleVerify} />}
                   <button type="submit" disabled={isSubmitting} className="w-full btn-primary py-6 text-xl uppercase tracking-[0.2em] flex items-center justify-center gap-3 disabled:opacity-50">
                     {isSubmitting ? 'Odesílám...' : 'Odeslat zprávu'}
                     <Icons.Send className="w-6 h-6" />

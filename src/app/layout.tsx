@@ -182,6 +182,8 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://izodiamant-reviews-api.petr-c3c.workers.dev" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        {/* Cloudflare Turnstile (CAPTCHA formulářů) – načítá se jen když je zapnutý. */}
+        <link rel="dns-prefetch" href="https://challenges.cloudflare.com" />
         <link rel="service-doc" href="/llms.txt" />
         <link rel="api-catalog" href="/.well-known/api-catalog" />
         <link rel="openid-configuration" href="/.well-known/openid-configuration" />

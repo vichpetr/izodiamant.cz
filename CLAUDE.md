@@ -22,6 +22,16 @@ Strict mode — the app throws on boot if these are missing:
 - `NEXT_PUBLIC_FIRMY_PROFILE_URL` — public Firmy.cz profile URL
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID` — optional; GA only mounts when set
 
+**CAPTCHA (Cloudflare Turnstile)** — optional, protects the contact form + calculator.
+Both are needed to actually enforce it; without them the forms work uncaptcha'd (graceful
+degradation). Set the pair together:
+
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY` — public site key; `Turnstile.tsx` renders the widget
+  only when set, and the two forms then require a token before submit.
+- `TURNSTILE_SECRET_KEY` — server secret; `/api/send` verifies the token via Cloudflare
+  `siteverify` only when set. If the widget is shown but this is unset, tokens aren't
+  checked, so keep the two in sync.
+
 **Admin section `/sprava`** (hidden CRM — see `deployment.MD`). Only needed to run that
 feature; the public site works without them. `/sprava` degrades gracefully (shows login,
 no 500) when unset:

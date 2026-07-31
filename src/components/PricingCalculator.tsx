@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useCallback } from 'react';
 import { Icons } from './Icons';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import calculatorData from '@/data/calculator.json';
 import servicesData from '@/data/services.json';
 import { trackLead } from '@/lib/analytics';
+import Turnstile, { TURNSTILE_ENABLED } from './Turnstile';
 
 // Ceny v calculator.json jsou sazby za běžný metr při referenční tloušťce zdiva.
 // U silnějšího zdiva roste cena úměrně poměru skutečné a referenční tloušťky.
@@ -54,6 +55,8 @@ export default function PricingCalculator() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState('');
+  const handleVerify = useCallback((t: string) => setCaptchaToken(t), []);
 
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -114,7 +117,11 @@ export default function PricingCalculator() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    
+    if (TURNSTILE_ENABLED && !captchaToken) {
+      alert('Potvrďte prosím, že nejste robot.');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       // Poptávkový mód posílá jen kontakt + službu (bez rozměrů a ceny) – server
@@ -132,7 +139,7 @@ export default function PricingCalculator() {
       const response = await fetch('/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, turnstileToken: captchaToken }),
       });
 
       // Bez kontroly stavu hlásila kalkulačka „odesláno“ i při chybě serveru –
@@ -416,6 +423,7 @@ export default function PricingCalculator() {
                       />
                     </div>
 
+                    {TURNSTILE_ENABLED && <Turnstile onVerify={handleVerify} />}
                     <button type="submit" disabled={isSubmitting} className="w-full btn-primary py-5 text-lg uppercase tracking-[0.2em] flex items-center justify-center gap-3 disabled:opacity-50 shadow-xl shadow-primary/10">
                       {isSubmitting ? 'Odesílám...' : 'Odeslat nezávaznou poptávku'}
                       <Icons.Send className="w-5 h-5" />
