@@ -120,7 +120,10 @@ export default function RootLayout({
       { "@type": "AdministrativeArea", "name": "Pardubický kraj" },
       { "@type": "AdministrativeArea", "name": "Královéhradecký kraj" },
       { "@type": "AdministrativeArea", "name": "Středočeský kraj" },
-      { "@type": "AdministrativeArea", "name": "Hlavní město Praha" }
+      { "@type": "AdministrativeArea", "name": "Hlavní město Praha" },
+      { "@type": "AdministrativeArea", "name": "Kraj Vysočina" },
+      { "@type": "AdministrativeArea", "name": "Ústecký kraj" },
+      { "@type": "AdministrativeArea", "name": "Jihomoravský kraj" }
     ],
     "priceRange": "$$",
     "currenciesAccepted": "CZK",
