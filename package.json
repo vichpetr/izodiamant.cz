@@ -14,10 +14,12 @@
     "build": "next build",
     "start": "next start",
     "sync:llms": "node scripts/sync-llms.mjs",
+    "indexnow": "node scripts/indexnow.mjs",
     "lint": "eslint .",
     "test": "playwright test",
     "db:schema:local": "npx wrangler d1 execute izodiamant-db --local --file=db/schema.sql",
-    "db:schema:remote": "npx wrangler d1 execute izodiamant-db --remote --file=db/schema.sql"
+    "db:schema:remote": "npx wrangler d1 execute izodiamant-db --remote --file=db/schema.sql",
+    "db:schema:preview:remote": "npx wrangler d1 execute izodiamant-preview-db --remote --file=db/schema.sql"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

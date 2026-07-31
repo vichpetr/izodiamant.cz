@@ -26,7 +26,7 @@ test.describe('SEO and Metadata', () => {
   test('homepage has correct Seznam Webmaster Tool meta tag', async ({ page }) => {
     await page.goto('/');
     const metaTag = await page.locator('meta[name="seznam-wmt"]');
-    await expect(metaTag).toHaveAttribute('content', 'Vz7SKZJRpsg1w5RIGrTU2589oyNqXmMf');
+    await expect(metaTag).toHaveAttribute('content', 'jBGItML1UXuDGvnSeGbBsYQ6hdrkMfeI');
   });
 
   test('sitemap.xml is accessible', async ({ request }) => {

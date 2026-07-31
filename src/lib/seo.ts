@@ -12,7 +12,7 @@ export function pageMetadata({
   path,
   title,
   description,
-  images = ['/logo.png'],
+  images = ['/og-image.jpg'],
 }: {
   path: string;
   title: string;

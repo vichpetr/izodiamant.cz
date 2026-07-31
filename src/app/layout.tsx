@@ -35,9 +35,14 @@ export const metadata: Metadata = {
     },
   },
   other: {
-    'seznam-wmt': 'Vz7SKZJRpsg1w5RIGrTU2589oyNqXmMf',
+    'seznam-wmt': 'jBGItML1UXuDGvnSeGbBsYQ6hdrkMfeI',
     ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
       ? { 'google-site-verification': process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : {}),
+    // Bing Webmaster Tools – lze ověřit i importem z Google Search Console (bez
+    // meta tagu). Pokud zvolíte ověření meta tagem, vložte kód do této env.
+    ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { 'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
       : {}),
   },
   creator: "IZODIAMANT",
@@ -50,10 +55,10 @@ export const metadata: Metadata = {
     description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě.",
     images: [
       {
-        url: "/logo.png",
-        width: 800,
-        height: 600,
-        alt: "IZODIAMANT Logo",
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "IZODIAMANT – podřezání a sanace vlhkého zdiva diamantovým lanem",
       },
     ],
   },
@@ -61,7 +66,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "IZODIAMANT | Sanace a podřezávání vlhkého zdiva",
     description: "Profesionální sanace a podřezávání zdiva nejmodernější technologií. Od cihel po tvrdý kámen – vracíme zdraví vaší stavbě.",
-    images: ["/logo.png"],
+    images: ["/og-image.jpg"],
   },
   icons: {
     icon: '/favicon.ico',
