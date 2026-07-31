@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     },
   },
   other: {
-    'seznam-wmt': 'Vz7SKZJRpsg1w5RIGrTU2589oyNqXmMf',
+    'seznam-wmt': 'jBGItML1UXuDGvnSeGbBsYQ6hdrkMfeI',
     ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
       ? { 'google-site-verification': process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
       : {}),
