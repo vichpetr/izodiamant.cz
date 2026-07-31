@@ -1,0 +1,28 @@
+name: IndexNow
+
+# Po pushi obsahu do master oznámí změněné URL vyhledávačům přes IndexNow
+# (Bing, Seznam, Yandex…). Lze spustit i ručně (workflow_dispatch).
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'src/data/references.json'
+      - 'src/app/**'
+      - 'public/**'
+      - 'next.config.ts'
+  workflow_dispatch:
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      # Dát Cloudflare Pages čas nasadit novou verzi, ať IndexNow crawler
+      # nenarazí na 404 (nová URL ještě není živá). Ověření se stejně opakuje.
+      - name: Wait for Cloudflare Pages deploy
+        run: sleep 120
+      - name: Submit URLs to IndexNow
+        run: node scripts/indexnow.mjs
