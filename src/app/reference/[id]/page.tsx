@@ -68,6 +68,16 @@ export default async function ProjectPage({
 
   if (!project) return <div>Projekt nenalezen</div>;
 
+  // Odkazy z reference (dobře rankující stránky) na stránky služeb – interní
+  // prolinkování s klíčovým textem. Službu poznáme z technologie i rozsahu prací,
+  // takže u kombinovaných zakázek odkážeme na víc služeb (i chemickou injektáž).
+  const SERVICE_LINKS = [
+    { kw: /lano/i, href: '/sluzby/diamantove-lano', label: 'Diamantové lano' },
+    { kw: /pila/i, href: '/sluzby/retezova-pila', label: 'Řetězová pila' },
+    { kw: /injekt/i, href: '/sluzby/chemicka-injektaz', label: 'Chemická injektáž' },
+  ];
+  const usedServices = SERVICE_LINKS.filter((s) => s.kw.test(`${project.technology} ${project.scope}`));
+
   const breadcrumb = breadcrumbSchema([
     { name: "Domů", path: "/" },
     { name: "Reference", path: "/#reference" },
@@ -148,6 +158,24 @@ export default async function ProjectPage({
                   <div className="text-xl font-black uppercase italic">{project.duration}</div>
                 </div>
               </div>
+
+              {usedServices.length > 0 && (
+                <div className="space-y-4">
+                  <h2 className="text-xs font-black text-neutral-dark uppercase tracking-[0.3em]">Použité technologie</h2>
+                  <div className="flex flex-wrap gap-3">
+                    {usedServices.map((s) => (
+                      <Link
+                        key={s.href}
+                        href={s.href}
+                        className="group inline-flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border border-neutral-dark/10 text-sm font-black uppercase tracking-tight text-neutral-dark hover:border-primary/40 hover:text-primary transition-all shadow-sm"
+                      >
+                        {s.label}
+                        <Icons.ArrowRight className="w-4 h-4 text-primary shrink-0 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-6">
                 <h2 className="text-xs font-black text-neutral-dark uppercase tracking-[0.3em]">Specifikace projektu</h2>
