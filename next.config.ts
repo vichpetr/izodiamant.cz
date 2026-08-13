@@ -1,13 +1,23 @@
 import type { NextConfig } from "next";
 
+// Na Cloudflare Pages (build nastavuje CF_PAGES) zapneme vlastní image loader přes
+// /cdn-cgi/image (viz src/lib/cfImageLoader.ts). Lokálně a v CI (Playwright běží
+// přes `npm run start` bez CF_PAGES) zůstává vypnutý, aby fungovaly testy i dev.
+// Ruční přepis přes NEXT_PUBLIC_CF_IMAGES má přednost.
+const cfImages = process.env.NEXT_PUBLIC_CF_IMAGES ?? (process.env.CF_PAGES ? 'true' : '');
+
 const nextConfig: NextConfig = {
   images: {
+    loaderFile: './src/lib/cfImageLoader.ts',
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       }
     ],
+  },
+  env: {
+    NEXT_PUBLIC_CF_IMAGES: cfImages,
   },
   experimental: {
     optimizePackageImports: ['framer-motion'],
