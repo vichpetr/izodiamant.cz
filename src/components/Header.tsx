@@ -33,7 +33,11 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'fixed top-0 w-full z-40 transition-all duration-300 border-b',
+        // Bez CSS transition: dřívější transition-all (i transition-colors) se na
+        // této hlavičce zasekával na startovních (průhledných) hodnotách, takže lišta
+        // zůstávala průhledná i po odscrollování a nadpisy sekcí přes ni prosvítaly.
+        // Přepnutí průhledná⇄bílá tak proběhne okamžitě při scrollu (běžný vzor).
+        'fixed top-0 w-full z-40 border-b',
         (isScrolled || !isHomepage)
           ? 'bg-white/95 backdrop-blur-md shadow-sm border-neutral-light/50 py-2'
           : 'bg-transparent border-transparent py-4'
