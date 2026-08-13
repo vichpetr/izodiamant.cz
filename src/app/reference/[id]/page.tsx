@@ -24,6 +24,9 @@ interface Project {
   image: string;
   gallery?: string[];
   reviewId?: string;
+  // "stavba" = obecné stavební/zednické zakázky (plot, dlažba, fasáda…), které
+  // nejsou sanací vlhkého zdiva. Bez pole = "sanace" (výchozí, zpětně kompatibilní).
+  category?: 'sanace' | 'stavba';
 }
 
 export async function generateMetadata({
@@ -40,9 +43,12 @@ export async function generateMetadata({
   const title = project.title;
   // Description pattern from GEMINI.md: "Sanace zdiva: [Title]. [Location]. Vracíme zdraví vaší stavbě."
   // Since project.title already contains location, we don't repeat it if unnecessary.
+  // U obecných stavebních zakázek (category "stavba") vynecháme prefix "Sanace zdiva:",
+  // aby popis nebyl zavádějící; brand promise ale zůstává (viz CLAUDE.md SEO).
+  const prefix = project.category === 'stavba' ? '' : 'Sanace zdiva: ';
   const description = project.title.includes(project.location)
-    ? `Sanace zdiva: ${project.title}. Vracíme zdraví vaší stavbě.`
-    : `Sanace zdiva: ${project.title}. ${project.location}. Vracíme zdraví vaší stavbě.`;
+    ? `${prefix}${project.title}. Vracíme zdraví vaší stavbě.`
+    : `${prefix}${project.title}. ${project.location}. Vracíme zdraví vaší stavbě.`;
 
   return pageMetadata({
     path: `/reference/${project.id}`,
@@ -67,6 +73,11 @@ export default async function ProjectPage({
   const project = (referencesData as Project[]).find(p => p.id === id);
 
   if (!project) return <div>Projekt nenalezen</div>;
+
+  // Obecné stavební zakázky (plot, dlažba, fasáda) nejsou sanací vlhkého zdiva –
+  // sanačně laděné texty (nadpisy, technický popis, FAQ o vlhkosti) by u nich byly
+  // nepravdivé, proto je podmiňujeme.
+  const isStavba = project.category === 'stavba';
 
   // Odkazy z reference (dobře rankující stránky) na stránky služeb – interní
   // prolinkování s klíčovým textem. Službu poznáme z technologie i rozsahu prací,
@@ -134,10 +145,10 @@ export default async function ProjectPage({
 
                 <div className="space-y-4">
                   <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] italic ml-1">
-                    Realizace sanace
+                    {isStavba ? 'Realizace' : 'Realizace sanace'}
                   </div>
                   <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.85] -ml-1 break-words hyphens-auto">
-                    {/[Ss]anace|[Ii]zolace/.test(project.title)
+                    {isStavba || /[Ss]anace|[Ii]zolace/.test(project.title)
                       ? project.title
                       : `Sanace objektu: ${project.title}`}
                   </h1>
@@ -199,16 +210,32 @@ export default async function ProjectPage({
               <div className="space-y-6 bg-neutral-dark/5 p-8 rounded-3xl border border-neutral-dark/10">
                 <h2 className="text-xs font-black text-neutral-dark uppercase tracking-[0.3em]">Technický popis a průběh</h2>
                 <div className="prose prose-sm text-neutral-dark/70 font-medium leading-relaxed">
-                  <p>
-                    Tato realizace sanace u projektu {project.title} byla provedena týmem IZODIAMANT s důrazem na maximální zachování integrity objektu. Celý proces zahrnoval diagnostiku vlhkosti, přípravu pracoviště a samotné strojní podřezávání zdiva nebo aplikaci chemické bariéry.
-                  </p>
-                  <p>
-                    Při práci využíváme výhradně profesionální vybavení a certifikované materiály s ověřenou životností. Každý krok realizace je pečlivě kontrolován, aby byl výsledek trvalý a plně funkční. Tímto přístupem vracíme zdraví vaší stavbě a chráníme ji před další degradací způsobenou vzlínající vlhkostí.
-                  </p>
+                  {isStavba ? (
+                    <>
+                      <p>
+                        Realizaci u projektu {project.title} provedl tým IZODIAMANT s důrazem na přesnost, čistou práci a kvalitní zpracování. Celý proces zahrnoval přípravu podkladu, samotné provedení a finální dokončovací práce.
+                      </p>
+                      <p>
+                        Při práci využíváme profesionální vybavení a certifikované materiály. Každý krok realizace je pečlivě kontrolován, aby byl výsledek trvanlivý, pohledově jednotný a plně funkční.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p>
+                        Tato realizace sanace u projektu {project.title} byla provedena týmem IZODIAMANT s důrazem na maximální zachování integrity objektu. Celý proces zahrnoval diagnostiku vlhkosti, přípravu pracoviště a samotné strojní podřezávání zdiva nebo aplikaci chemické bariéry.
+                      </p>
+                      <p>
+                        Při práci využíváme výhradně profesionální vybavení a certifikované materiály s ověřenou životností. Každý krok realizace je pečlivě kontrolován, aby byl výsledek trvalý a plně funkční. Tímto přístupem vracíme zdraví vaší stavbě a chráníme ji před další degradací způsobenou vzlínající vlhkostí.
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
 
-              {/* Detailed SEO Content Block */}
+              {/* Sanačně laděný SEO obsah (FAQ o vlhkosti, regionální působnost) –
+                  jen pro sanační reference; u obecných staveb by byl nepravdivý. */}
+              {!isStavba && (
+              <>
               <div className="space-y-8 pt-8">
                 <h2 className="text-2xl font-black text-neutral-dark uppercase tracking-tight italic">Časté otázky k sanaci v lokalitě {project.location}</h2>
                 <div className="grid gap-6">
@@ -247,6 +274,19 @@ export default async function ProjectPage({
                   </p>
                 </div>
               </div>
+              </>
+              )}
+
+              {isStavba && (
+                <div className="space-y-6 pt-8 border-t border-neutral-dark/5">
+                  <h2 className="text-xl font-black text-neutral-dark uppercase tracking-tight italic">O realizaci</h2>
+                  <div className="prose prose-sm text-neutral-dark/70 font-medium leading-relaxed">
+                    <p>
+                      Realizaci jsme provedli s důrazem na přesnost, čistou práci a kvalitní materiály. Kromě sanace vlhkého zdiva zajišťujeme i navazující zednické, obkladačské a dokončovací práce – od přípravy podkladu až po finální povrchy. Máte-li podobný záměr v lokalitě {project.location} a okolí, rádi vám připravíme nezávaznou nabídku.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Linked Review Section */}
               {project.reviewId && (
