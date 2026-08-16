@@ -40,6 +40,7 @@ Ceny jsou uvedeny za běžný metr (bm) zdi a platí pro tloušťku zdiva 45 cm;
 - [Podřezávání řetězovou pilou](https://izodiamant.cz/sluzby/retezova-pila): cihelné zdivo.
 - [Chemická injektáž](https://izodiamant.cz/sluzby/chemicka-injektaz): tam, kde nelze řezat.
 - [Zednické a obkladačské práce](https://izodiamant.cz/sluzby/zednicke-a-obkladacske-prace): zdění, omítky, obklady – cena dohodou, do cca 60 km.
+- [Reference realizací](https://izodiamant.cz/reference): archiv dokončených zakázek členěný po letech, s fotografiemi a rozsahem prací.
 - [Kalkulačka ceny](https://izodiamant.cz/#calculator): orientační cena podřezání.
 - [Doporuč a získej odměnu](https://izodiamant.cz/doporuc-a-ziskej-odmenu): odměna za tip na zákazníka.
 

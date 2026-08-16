@@ -11,7 +11,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-32 overflow-hidden bg-neutral-light">
+    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-10 sm:pt-32 sm:pb-0 overflow-hidden bg-neutral-light">
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-neutral-light z-10" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
@@ -20,7 +20,7 @@ export default function Hero() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div>
-          <h1 className="text-3xl sm:text-7xl lg:text-8xl font-black text-neutral-dark tracking-tight sm:tracking-tighter mb-8 text-balance uppercase italic leading-[1.1] sm:leading-[0.95] px-4">
+          <h1 className="text-3xl sm:text-7xl lg:text-8xl font-black text-neutral-dark tracking-tight sm:tracking-tighter mb-5 sm:mb-8 text-balance uppercase italic leading-[1.1] sm:leading-[0.95] px-4">
             {content.h1.split('. ')[0]}. <br className="hidden sm:block" />
             <span className="text-primary-ink">{content.h1.split('. ')[1]}</span>
           </h1>
@@ -28,21 +28,21 @@ export default function Hero() {
           {/* Bez vstupní framer-motion animace: tento blok obsahuje LCP prvek (popisek).
               Gating přes opacity:0 do hydratace posouval LCP na mobilu na ~10 s. */}
           <div>
-            <p className="max-w-2xl mx-auto text-lg md:text-xl text-neutral-dark/70 mb-12 text-balance font-medium leading-relaxed">
+            <p className="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-neutral-dark/70 mb-7 sm:mb-12 text-balance font-medium leading-relaxed">
               {content.desc}
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
               <Link
                 href="/#calculator"
-                className="w-full sm:w-auto btn-primary py-4 px-10 text-lg uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center justify-center gap-3 group"
+                className="w-full sm:w-auto btn-primary py-3.5 sm:py-4 px-6 sm:px-10 text-base sm:text-lg uppercase tracking-widest shadow-xl shadow-primary/20 flex items-center justify-center gap-3 group"
               >
                 {content.cta_calc}
                 <Icons.ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/#reference"
-                className="w-full sm:w-auto btn-outline py-4 px-10 text-lg uppercase tracking-widest flex items-center justify-center gap-3 group border-neutral-dark/20 text-neutral-dark hover:bg-neutral-dark hover:text-white"
+                className="w-full sm:w-auto btn-outline py-3.5 sm:py-4 px-6 sm:px-10 text-base sm:text-lg uppercase tracking-widest flex items-center justify-center gap-3 group border-neutral-dark/20 text-neutral-dark hover:bg-neutral-dark hover:text-white"
               >
                 <Icons.PlayCircle className="w-5 h-5 text-primary-ink group-hover:scale-110 transition-transform" />
                 {content.cta_ref}

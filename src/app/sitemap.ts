@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import referencesData from '@/data/references.json';
+import { referencePageCount, referencePagePath } from '@/lib/references';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://izodiamant.cz';
@@ -7,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Base pages
   const routes = [
     '',
+    '/reference',
     '/cookies',
     '/ochrana-udaju',
     '/doporuc-a-ziskej-odmenu',
@@ -21,6 +23,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === '' ? 1 : 0.8,
   }));
 
+  // Další strany archivu referencí (strana 1 = /reference, viz routes výše).
+  const archiveRoutes = Array.from({ length: referencePageCount - 1 }, (_, i) => ({
+    url: `${baseUrl}${referencePagePath(i + 2)}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.5,
+  }));
+
   // Reference pages
   const referenceRoutes = referencesData.map((project) => ({
     url: `${baseUrl}/reference/${project.id}`,
@@ -29,5 +39,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...routes, ...referenceRoutes];
+  return [...routes, ...archiveRoutes, ...referenceRoutes];
 }

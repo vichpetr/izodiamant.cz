@@ -68,7 +68,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-8">
             <Link href="/#sluzby" className="text-neutral-dark/80 hover:text-primary text-sm font-bold uppercase tracking-widest transition-colors">
               Služby
             </Link>
@@ -84,7 +84,7 @@ export default function Header() {
           </nav>
 
           {/* CTA */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4">
             <a href="tel:+420737017012" className="flex items-center gap-2 text-neutral-dark font-bold hover:text-primary transition-colors">
               <Icons.Phone className="w-4 h-4 text-primary" />
               <span>+420 737 017 012</span>
@@ -98,7 +98,7 @@ export default function Header() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-neutral-dark hover:text-primary transition-colors"
@@ -112,7 +112,7 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-neutral-light absolute w-full left-0 shadow-lg">
+        <div className="lg:hidden bg-white border-t border-neutral-light absolute w-full left-0 shadow-lg">
           <div className="px-4 pt-2 pb-6 space-y-1">
             <Link href="/#sluzby" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-4 text-base font-bold text-neutral-dark uppercase tracking-widest hover:bg-neutral-light rounded-md">
               Služby
