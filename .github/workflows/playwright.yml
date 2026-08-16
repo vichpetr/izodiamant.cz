@@ -33,17 +33,22 @@ jobs:
     - name: Install Playwright system dependencies
       if: steps.playwright-cache.outputs.cache-hit == 'true'
       run: npx playwright install-deps chromium
+    # Reviews worker: v CI se na něj ZÁMĚRNĚ nesahá – testy ověřují, že se bez
+    # živých recenzí nic nevykreslí (žádný statický fallback). Proto placeholder
+    # z README (vas-ucet), který komponenty přeskakují. Dřív tu byla skutečná
+    # adresa bez „https://“, kterou prohlížeč přeložil relativně a stahoval tak
+    # náhodnou URL vlastního webu.
     - name: Build project
       run: npm run build
       env:
         NEXT_PUBLIC_FIRMY_PROFILE_URL: https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html
-        NEXT_PUBLIC_REVIEWS_API_URL: izodiamant-reviews-api.petr-c3c.workers.dev
+        NEXT_PUBLIC_REVIEWS_API_URL: https://izodiamant-reviews-api.vas-ucet.workers.dev
         RESEND_API_KEY: re_test_key
     - name: Run Playwright tests
       run: npx playwright test
       env:
         NEXT_PUBLIC_FIRMY_PROFILE_URL: https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html
-        NEXT_PUBLIC_REVIEWS_API_URL: izodiamant-reviews-api.petr-c3c.workers.dev
+        NEXT_PUBLIC_REVIEWS_API_URL: https://izodiamant-reviews-api.vas-ucet.workers.dev
         RESEND_API_KEY: re_test_key
 
     - uses: actions/upload-artifact@v4

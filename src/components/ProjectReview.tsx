@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Icons } from './Icons';
 import ExpandableText from './ExpandableText';
+import { reviewsApiUrl } from '@/lib/reviewsApi';
 
 type ReviewSource = 'firmy' | 'google';
 
@@ -35,14 +36,14 @@ function resolveSource(reviewId: string, found?: Review): ReviewSource {
 
 export default function ProjectReview({ reviewId }: { reviewId: string }) {
   const [review, setReview] = useState<Review | null>(null);
-  const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
+  const workerUrl = reviewsApiUrl();
 
   useEffect(() => {
     async function fetchReview() {
       const target = normId(reviewId);
 
       // 1. Živé API, pokud je nastaveno
-      if (workerUrl && !workerUrl.includes('vás-účet')) {
+      if (workerUrl) {
         try {
           const res = await fetch(workerUrl, { headers: { Accept: 'application/json' } });
           if (res.ok) {

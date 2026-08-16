@@ -74,7 +74,8 @@ export default function ReferenceArchive({ page }: { page: number }) {
             </h1>
             <p className="text-lg text-neutral-dark/70 font-medium leading-relaxed mb-8">
               Přehled našich realizací – podřezání diamantovým lanem, řetězovou pilou i chemická
-              injektáž. U každé zakázky najdete technologii, rozsah prací a fotografie z průběhu.
+              injektáž, k tomu navazující zednické a obkladačské práce. U každé zakázky najdete
+              technologii, rozsah prací a fotografie z průběhu.
             </p>
           </div>
 

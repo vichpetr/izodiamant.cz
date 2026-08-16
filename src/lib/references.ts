@@ -6,6 +6,8 @@ export interface ReferenceProject {
   location: string;
   /** „RRRR-MM“ */
   date: string;
+  /** „stavba“ = obecná stavební zakázka (plot, dlažba, fasáda), ne sanace zdiva. */
+  category?: 'sanace' | 'stavba';
   technology: string;
   scope: string;
   duration: string;
