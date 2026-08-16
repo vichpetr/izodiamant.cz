@@ -1,15 +1,25 @@
 name: IndexNow
 
-# Po pushi obsahu do master oznámí změněné URL vyhledávačům přes IndexNow
-# (Bing, Seznam, Yandex…). Lze spustit i ručně (workflow_dispatch).
+# Oznámí změněné URL vyhledávačům přes IndexNow (Bing, Seznam, Yandex…).
+#
+# Dva režimy:
+#   push do master  – po nasazení pošle celou sitemapu (nové/změněné stránky).
+#   denní cron      – pošle jen článek, který se dnes zveřejnil. Naplánované
+#                     články jdou na web ranním rebuildem bez pushe, takže bez
+#                     tohohle běhu by se do IndexNow nikdy nedostaly. Posílá se
+#                     jen to nové – opakovaně ohlašovat nezměněné URL nemá smysl.
 on:
   push:
     branches: [master]
     paths:
-      - 'src/data/references.json'
+      - 'src/data/**'
       - 'src/app/**'
       - 'public/**'
       - 'next.config.ts'
+  schedule:
+    # 04:40 UTC – půl hodiny po scheduled-rebuild.yml (04:10), ať je nový článek
+    # už živý, než ho ohlásíme.
+    - cron: '40 4 * * *'
   workflow_dispatch:
 
 jobs:
@@ -23,6 +33,10 @@ jobs:
       # Dát Cloudflare Pages čas nasadit novou verzi, ať IndexNow crawler
       # nenarazí na 404 (nová URL ještě není živá). Ověření se stejně opakuje.
       - name: Wait for Cloudflare Pages deploy
+        if: github.event_name == 'push'
         run: sleep 120
       - name: Submit URLs to IndexNow
+        env:
+          TZ: Europe/Prague
+          INDEXNOW_TODAY_ONLY: ${{ github.event_name == 'schedule' && '1' || '0' }}
         run: node scripts/indexnow.mjs
