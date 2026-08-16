@@ -12,6 +12,7 @@ Sekce je nelinkovaná, `noindex` a chráněná přihlášením přes Google. Bez
 
 **a) Google OAuth 2.0 klient** (Google Cloud Console → APIs & Services → Credentials → Create credentials → OAuth client ID → *Web application*):
 - Authorized redirect URIs: `https://izodiamant.cz/api/auth/callback/google` (+ `http://localhost:3000/api/auth/callback/google` pro dev).
+- **Testujete-li admin na preview deploji** (Cloudflare Pages branch alias), přidejte i redirect URI té větve: `https://<branch>.izodiamant-cz.pages.dev/api/auth/callback/google` (název větve: tečky/lomítka → pomlčky, např. `feat/clanky-date-publish` → `feat-clanky-date-publish`). Google **nepodporuje wildcardy**, takže každou testovanou větev je nutné přidat zvlášť. Přihlašujte se přes **branch alias**, ne přes per-commit URL (`<hash>.…pages.dev`) – ta se mění každým buildem.
 - Zkopírujte **Client ID** a **Client secret**.
 
 **b) Cloudflare D1 databáze:**
@@ -31,6 +32,15 @@ V **Pages projektu → Settings → Functions → D1 database bindings** přidej
 | `ADMIN_EMAILS` | povolené Google účty, čárkami: `vichpetr@gmail.com,...` |
 
 **d) Odesílání zákazníkům:** poděkování jde přes Resend (stejně jako potvrzení z formuláře). `FROM_EMAIL` musí být z **ověřené domény** v Resendu (web už zákazníkům potvrzení posílá, takže je pravděpodobně hotové).
+
+> **`AUTH_URL` patří jen do Production, ne do Preview.** Cloudflare Pages sdílí env
+> proměnné napříč **všemi** preview deploji (jedno „Preview" prostředí). Pevná `AUTH_URL`
+> tam připíchne přihlášení na jedinou větev – po loginu vás to pak vrátí na cizí (starší)
+> preview bez ohledu na to, kde jste začali. Proto: nastavte `AUTH_URL` **výhradně ve
+> scope Production** (`https://izodiamant.cz`) a v **Preview scope ji nechte prázdnou**.
+> Kód má `trustHost: true` (`src/auth.ts`), takže si na previewu host odvodí z requestu a
+> každá větev funguje na své vlastní doméně. Změna env proměnných se projeví až **novým
+> buildem** – po úpravě větev znovu nasaďte (Deployments → Retry deployment).
 
 Po nastavení: `https://izodiamant.cz/sprava` → přihlášení Googlem → jen e-mail z `ADMIN_EMAILS` se dostane dovnitř. Přidání dalšího správce = doplnit `ADMIN_EMAILS` (bez zásahu do kódu). Lokální dev: `.env.local` s `AUTH_*`/`ADMIN_EMAILS` + `npm run db:schema:local` a `npx wrangler pages dev`.
 

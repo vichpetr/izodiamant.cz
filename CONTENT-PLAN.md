@@ -5,17 +5,32 @@ Search Console (dotazy se zobrazeními, ale bez cíleného obsahu) a podle služ
 🔥 = nejsilnější SEO poptávka. Slug = navrhovaná URL (`/clanky/<slug>`).
 
 Jak přidat článek: nová stránka `src/app/clanky/<slug>/page.tsx` (přes
-`ArticleLayout`), záznam do `src/data/articles.json` a řádek do `src/app/sitemap.ts`.
+`ArticleLayout`), záznam do `src/data/articles.json` (včetně pole `date` a `fbPost`).
+Sitemapa i výpisy se generují z `src/lib/articles.ts` automaticky.
 
-## Hotovo (nasazeno)
-- ✅ Skvělé využití sklepních prostor — `skvele-vyuziti-sklepnich-prostor`
-- ✅ Kolik stojí podřezání zdiva — `kolik-stoji-podrezani-zdiva`
+## Publikace podle data (varianta 2)
 
-## Naplánováno (každý ve své větvi, nasazení po týdnech)
-Napsané, čekají na merge v daný termín. Ke každému je FB post v `marketing/facebook/`.
-- 🗓️ **23. 8. 2026** — Podřezání zdiva, nebo chemická injektáž? — `podrezani-nebo-injektaz` — větev `feat/clanek-podrezani-nebo-injektaz`
-- 🗓️ **30. 8. 2026** — Podřezání kamenného zdiva — `podrezani-kamenneho-zdiva` — větev `feat/clanek-podrezani-kamenneho-zdiva`
-- 🗓️ **6. 9. 2026** — Podřezání betonu a základů — `podrezani-betonu` — větev `feat/clanek-podrezani-betonu`
+Všechny články jsou v `master`. Řídí je pole `date` v `src/data/articles.json`:
+
+- Článek se **zveřejní sám** v den `date` — do té doby se neukazuje na homepage,
+  v archivu `/clanky` ani v sitemapě (`publishedArticles` v `src/lib/articles.ts`).
+- **Přímý odkaz `/clanky/<slug>` funguje i před zveřejněním** jako náhled, ale je
+  `noindex` (nezaindexuje se). Přehled všech článků + FB post ke zkopírování je v
+  admin sekci **`/sprava/clanky`**.
+- Aby se článek objevil přesně v den `date` (statický build), přegenerovává se web
+  **denně** naplánovaným rebuildem (GitHub Actions cron → Cloudflare deploy hook,
+  `.github/workflows/scheduled-rebuild.yml`).
+
+Termín nasazení = jen změna `date` v `articles.json` (žádné mergování větví).
+
+## Hotovo (zveřejněno)
+- ✅ Skvělé využití sklepních prostor — `skvele-vyuziti-sklepnich-prostor` — 16. 8. 2026
+- ✅ Kolik stojí podřezání zdiva — `kolik-stoji-podrezani-zdiva` — 16. 8. 2026
+
+## Naplánováno (v master, zveřejní se v daný den)
+- 🗓️ **23. 8. 2026** — Podřezání zdiva, nebo chemická injektáž? — `podrezani-nebo-injektaz`
+- 🗓️ **30. 8. 2026** — Podřezání kamenného zdiva — `podrezani-kamenneho-zdiva`
+- 🗓️ **6. 9. 2026** — Podřezání betonu a základů — `podrezani-betonu`
 
 ## Backlog
 

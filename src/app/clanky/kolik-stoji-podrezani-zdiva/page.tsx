@@ -4,6 +4,7 @@ import { Icons } from "@/components/Icons";
 import ArticleLayout, { H2, P, ServiceLinks } from "@/components/ArticleLayout";
 import servicesData from "@/data/services.json";
 import { pageMetadata } from "@/lib/seo";
+import { isSlugPublished } from "@/lib/articles";
 
 const SLUG = "kolik-stoji-podrezani-zdiva";
 const TITLE = "Kolik stojí podřezání zdiva";
@@ -11,6 +12,7 @@ const DESC = "Ceny podřezání a sanace zdiva: řetězová pila a chemická inj
 
 export const metadata: Metadata = {
   ...pageMetadata({ path: `/clanky/${SLUG}`, title: TITLE, description: DESC }),
+  robots: { index: isSlugPublished(SLUG), follow: true },
   keywords: ["kolik stojí podřezání zdiva", "podřezání zdiva cena", "cena sanace vlhkého zdiva", "podřezání zdiva cena za m2", "podřezání domu cena", "ceník podřezání zdiva"],
 };
 

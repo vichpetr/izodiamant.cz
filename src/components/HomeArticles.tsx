@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Icons } from './Icons';
 import ArticleCard from './ArticleCard';
-import { allArticles } from '@/lib/articles';
+import { publishedArticles } from '@/lib/articles';
 
 const HOMEPAGE_COUNT = 3;
 
@@ -14,7 +14,7 @@ export default function HomeArticles() {
   };
 
   // Na homepage jen nejnovější výběr – kompletní přehled žije na /clanky.
-  const featured = allArticles.slice(0, HOMEPAGE_COUNT);
+  const featured = publishedArticles.slice(0, HOMEPAGE_COUNT);
 
   if (featured.length === 0) return null;
 
@@ -39,7 +39,7 @@ export default function HomeArticles() {
           ))}
         </div>
 
-        {allArticles.length > HOMEPAGE_COUNT && (
+        {publishedArticles.length > HOMEPAGE_COUNT && (
           <div className="mt-16">
             <Link
               href="/clanky"
@@ -47,7 +47,7 @@ export default function HomeArticles() {
             >
               {content.cta_more}
               <span className="text-neutral-dark/40 group-hover:text-primary transition-colors">
-                ({allArticles.length})
+                ({publishedArticles.length})
               </span>
               <Icons.ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
