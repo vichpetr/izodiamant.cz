@@ -20,6 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/clanky/skvele-vyuziti-sklepnich-prostor',
     '/clanky/kolik-stoji-podrezani-zdiva',
     '/clanky/podrezani-nebo-injektaz',
+    '/clanky/podrezani-kamenneho-zdiva',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
