@@ -54,17 +54,40 @@ if (due.length === 0) {
 const sched = new Date(y, m, d + OFFSET_DAYS, HOUR, MINUTE, 0, 0);
 const scheduledUnix = Math.floor(sched.getTime() / 1000);
 
-// Dedup: načteme už naplánované posty a přeskočíme ty, které daný odkaz už mají
-// (aby opakované spuštění workflow nevytvořilo duplicitu).
-let existingMessages = [];
+// Facebook vyžaduje pro publikování JMÉNEM STRÁNKY (a tím i pro naplánované posty)
+// Page access token. Zadaný token (typicky System User = uživatelský token) proto
+// vyměníme za token stránky přes /{page}?fields=access_token. Kdyby to selhalo,
+// zkusíme zadaný token napřímo (pro případ, že už jde o Page token).
+let pageToken = TOKEN;
 if (!DRY) {
   try {
     const res = await fetch(
-      `${GRAPH}/${PAGE_ID}/scheduled_posts?fields=message&limit=100&access_token=${encodeURIComponent(TOKEN)}`,
+      `${GRAPH}/${PAGE_ID}?fields=access_token&access_token=${encodeURIComponent(TOKEN)}`,
     );
     const json = await res.json();
-    if (Array.isArray(json.data)) existingMessages = json.data.map((p) => p.message || '');
-    else if (json.error) console.log('Varování: čtení scheduled_posts:', JSON.stringify(json.error));
+    if (json.access_token) pageToken = json.access_token;
+    else console.log('Varování: nezískán Page token (', JSON.stringify(json.error || json), '), zkouším zadaný token přímo.');
+  } catch (e) {
+    console.log('Varování: chyba při získávání Page tokenu (pokračuji se zadaným):', e.message);
+  }
+}
+
+// Dedup: načteme už naplánované posty a přeskočíme ty, které daný odkaz už mají
+// (aby opakované spuštění workflow nevytvořilo duplicitu).
+// Do "otisku" bereme text zprávy i přílohy (link se z textu může přesunout do
+// náhledové karty), ať dedup zachytí i ručně vytvořené posty s odkazem v kartě.
+let existingHaystacks = [];
+if (!DRY) {
+  try {
+    const res = await fetch(
+      `${GRAPH}/${PAGE_ID}/scheduled_posts?fields=message,attachments{unshimmed_url,target}&limit=200&access_token=${encodeURIComponent(pageToken)}`,
+    );
+    const json = await res.json();
+    if (Array.isArray(json.data)) {
+      existingHaystacks = json.data.map((p) => `${p.message || ''} ${JSON.stringify(p.attachments || '')}`);
+    } else if (json.error) {
+      console.log('Varování: čtení scheduled_posts:', JSON.stringify(json.error));
+    }
   } catch (e) {
     console.log('Varování: nepodařilo se načíst existující naplánované posty (pokračuji):', e.message);
   }
@@ -74,9 +97,10 @@ let failed = 0;
 let scheduled = 0;
 for (const a of due) {
   const url = `${BASE_URL}/clanky/${a.slug}`;
+  const marker = `/clanky/${a.slug}`;
 
-  if (existingMessages.some((msg) => msg.includes(url))) {
-    console.log(`Přeskakuji ${a.slug} – naplánovaný post s tímto odkazem už existuje.`);
+  if (existingHaystacks.some((h) => h.includes(marker))) {
+    console.log(`Přeskakuji ${a.slug} – post s tímto odkazem už je naplánovaný (ručně nebo dřív).`);
     continue;
   }
 
@@ -91,7 +115,7 @@ for (const a of due) {
     link: url,
     published: 'false',
     scheduled_publish_time: String(scheduledUnix),
-    access_token: TOKEN,
+    access_token: pageToken,
   });
 
   const res = await fetch(`${GRAPH}/${PAGE_ID}/feed`, { method: 'POST', body });
