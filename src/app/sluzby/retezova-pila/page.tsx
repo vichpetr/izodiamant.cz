@@ -7,6 +7,8 @@ import Image from "next/image";
 import servicesData from "@/data/services.json";
 import referencesData from '@/data/references.json';
 import { pageMetadata, breadcrumbSchema } from "@/lib/seo";
+import { serviceOffer } from "@/lib/pricing";
+import ServiceArticles from "@/components/ServiceArticles";
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
     description: "Podřezání zdiva řetězovou pilou – nejrychlejší metoda pro cihelné zdivo, vložení hydroizolace s životností přes 50 let. Orientační cena od 2 500 Kč/bm.",
     images: ['/images/sluzby/retezova-pila.jpg'],
   }),
-  keywords: ["řetězová pila", "řetězová pila na zdivo", "pila na podřezání zdiva", "podřezávání cihelného zdiva", "podřezání zdiva řetězovou pilou", "sanace vlhkého zdiva", "izolace proti vlhkosti", "podřezání domu cena", "Nové Hrady", "ČR"],
+  keywords: ["řetězová pila", "řetězová pila na zdivo", "pila na podřezání zdiva", "izolace vlhkého zdiva podřezáním", "podřezávání cihelného zdiva", "podřezání zdiva řetězovou pilou", "sanace vlhkého zdiva", "izolace proti vlhkosti", "podřezání domu cena", "Nové Hrady", "ČR"],
 };
 
 export default function ChainSawPage() {
@@ -30,13 +32,7 @@ export default function ChainSawPage() {
       "name": "IZODIAMANT"
     },
     "description": "Rychlá a efektivní metoda izolace vlhkého cihelného zdiva s vložením nové hydroizolační fólie.",
-    "offers": {
-      "@type": "Offer",
-      "priceSpecification": {
-        "@type": "PriceSpecification",
-        "description": data.priceRange
-      }
-    }
+    "offers": serviceOffer("retezova-pila", data.priceRange)
   };
 
   const features = [
@@ -240,7 +236,7 @@ export default function ChainSawPage() {
             
             <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Proč je tato metoda u cihel nejlepší?</h3>
             <p className="mb-10 leading-relaxed">
-              Díky mechanickému proříznutí spáry dojde k fyzickému přerušení vzlínající vlhkosti. Oproti chemickým metodám je hydroizolace prokazatelně vložena v celé šířce zdiva a v souvislé vrstvě. Po vyschnutí zbytkové vlhkosti nad izolací zdivo dlouhodobě vysychá, což pocítíte na lepším klimatu i nižších nákladech na vytápění.
+              Izolace vlhkého zdiva podřezáním stojí na jednoduchém principu: spára se prořízne a do řezu se vloží nová hydroizolace. Díky mechanickému proříznutí spáry dojde k fyzickému přerušení vzlínající vlhkosti. Oproti chemickým metodám je hydroizolace prokazatelně vložena v celé šířce zdiva a v souvislé vrstvě. Po vyschnutí zbytkové vlhkosti nad izolací zdivo dlouhodobě vysychá, což pocítíte na lepším klimatu i nižších nákladech na vytápění.
             </p>
 
             <div className="bg-neutral-light p-10 rounded-3xl border-2 border-primary/20">
@@ -311,6 +307,15 @@ export default function ChainSawPage() {
           </p>
         </div>
       </section>
+
+      <ServiceArticles
+        slugs={[
+          "lano-vs-retezova-pila",
+          "jak-probiha-podrezani-domu",
+          "vysychani-zdiva",
+          "kolik-stoji-podrezani-zdiva",
+        ]}
+      />
 
       <Footer />
     </main>

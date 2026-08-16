@@ -6,12 +6,14 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import calculatorData from '@/data/calculator.json';
 import servicesData from '@/data/services.json';
+import { REFERENCE_THICKNESS_CM } from '@/lib/pricing';
 import { trackLead } from '@/lib/analytics';
 import Turnstile, { TURNSTILE_ENABLED } from './Turnstile';
 
-// Ceny v calculator.json jsou sazby za běžný metr při referenční tloušťce zdiva.
-// U silnějšího zdiva roste cena úměrně poměru skutečné a referenční tloušťky.
-const REFERENCE_THICKNESS_CM = 45;
+// Ceny v calculator.json jsou sazby za běžný metr při referenční tloušťce zdiva
+// (REFERENCE_THICKNESS_CM v lib/pricing – stejnou konstantu používají i
+// strukturovaná data na stránkách služeb). U silnějšího zdiva roste cena úměrně
+// poměru skutečné a referenční tloušťky.
 
 // Doplňková služba „Zednické a obkladačské práce" – cena je dohodou, takže do
 // kalkulačky patří jen jako poptávkový (nepočítaný) mód. Záměrně NENÍ v

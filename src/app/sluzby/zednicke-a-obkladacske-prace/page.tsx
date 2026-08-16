@@ -5,6 +5,7 @@ import { Icons } from "@/components/Icons";
 import Link from "next/link";
 import servicesData from "@/data/services.json";
 import { pageMetadata, breadcrumbSchema } from "@/lib/seo";
+import ServiceArticles from "@/components/ServiceArticles";
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -157,6 +158,15 @@ export default function MasonryPage() {
           </div>
         </div>
       </section>
+
+      <ServiceArticles
+        slugs={[
+          "sanacni-omitky",
+          "pokladka-obkladu",
+          "ztracene-bedneni",
+          "betonaz-zakladu",
+        ]}
+      />
 
       <Footer />
     </main>
