@@ -136,8 +136,11 @@ const nextConfig: NextConfig = {
         destination: '/',
         permanent: true,
       },
+      // Staré články 301 na homepage – KROMĚ obnoveného článku o sklepích, který
+      // stále rankuje (~4. pozice v GSC) a má teď vlastní stránku. Negativní
+      // lookahead ten jeden slug z catch-all vyjme, ostatní /clanky/* dál míří na /.
       {
-        source: '/clanky/:slug*',
+        source: '/clanky/:slug((?!skvele-vyuziti-sklepnich-prostor$).*)',
         destination: '/',
         permanent: true,
       },
