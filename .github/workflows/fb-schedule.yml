@@ -1,0 +1,32 @@
+name: FB auto-poster
+
+# Denně zkontroluje, jestli se dnes zveřejňuje článek (date v articles.json),
+# a pokud ano, vytvoří na firemní FB stránce naplánovaný příspěvek na dnešek+3 dny
+# v 11:30 (Europe/Prague). Text bere z pole `fbPost`.
+#
+# Běží po ranním rebuildu (scheduled-rebuild.yml v 04:10 UTC), aby byl článek na
+# webu už zveřejněný a Facebook si při plánování stáhl správný náhled z OG tagů.
+#
+# Vyžaduje repo secrets:
+#   FB_PAGE_ID            – ID firemní FB stránky
+#   FB_PAGE_ACCESS_TOKEN  – Page/System User token s pages_manage_posts
+# Bez nich skript jen tiše doběhne (nic nenaplánuje), takže workflow nepadá.
+on:
+  schedule:
+    - cron: '20 6 * * *' # 06:20 UTC – po denním rebuildu, ještě dopoledne
+  workflow_dispatch:
+
+jobs:
+  schedule:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Schedule today's FB post
+        env:
+          TZ: Europe/Prague
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+        run: node scripts/fb-schedule.mjs

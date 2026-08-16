@@ -44,6 +44,39 @@ V **Pages projektu → Settings → Functions → D1 database bindings** přidej
 
 Po nastavení: `https://izodiamant.cz/sprava` → přihlášení Googlem → jen e-mail z `ADMIN_EMAILS` se dostane dovnitř. Přidání dalšího správce = doplnit `ADMIN_EMAILS` (bez zásahu do kódu). Lokální dev: `.env.local` s `AUTH_*`/`ADMIN_EMAILS` + `npm run db:schema:local` a `npx wrangler pages dev`.
 
+### 1.2 Automatické plánování FB postů k článkům
+
+Workflow `.github/workflows/fb-schedule.yml` běží **denně (06:20 UTC)** a když se
+ten den zveřejňuje článek (`date` v `src/data/articles.json` == dnešek), vytvoří na
+firemní Facebook stránce **naplánovaný příspěvek na dnešek + 3 dny v 11:30**
+(Europe/Prague). Text bere z pole `fbPost`, odkaz z URL článku (`scripts/fb-schedule.mjs`).
+
+Proč takhle: plánuje se vždy jen 3 dny dopředu programově → obchází 4týdenní limit
+ručního plánování a nemusíš na to myslet. Přesný čas 11:30 pohlídá sám Facebook a
+naplánovaný post je vidět (a jde upravit/zrušit) v Meta Business Suite. Job běží až po
+denním rebuildu (`scheduled-rebuild.yml` ve 04:10 UTC), takže je článek už zveřejněný
+a Facebook si stáhne správný náhled z OG tagů.
+
+**Co zřídit (jednorázově):**
+
+1. **Facebook stránka** (Page), kde jsi admin. Postovat přes API na osobní profil nejde.
+2. **Meta app** na [developers.facebook.com](https://developers.facebook.com) (typ *Business*).
+   Může zůstat v **Development módu** – pro postování na vlastní stránku, kde jsi admin,
+   **není potřeba App Review**.
+3. **Access token** s právy `pages_manage_posts` a `pages_read_engagement`:
+   - Nejodolnější je **System User** token: business.facebook.com → *Business settings*
+     → *Users → System users* → přidat, přiřadit stránku a vygenerovat token s těmi právy
+     (jde nastavit jako nevypršitelný). Alternativně jde Page token vytáhnout přes Graph
+     API Explorer (`/me/accounts`), ten ale kratší dobu vydrží.
+4. **Page ID** zjistíš v nastavení stránky (O stránce) nebo přes `/me/accounts`.
+5. V GitHubu (*Settings → Secrets and variables → Actions*) přidej repo secrets:
+   - `FB_PAGE_ID`
+   - `FB_PAGE_ACCESS_TOKEN`
+
+Bez těchto secrets job jen tiše doběhne (nic nenaplánuje), workflow nepadá. Ruční test:
+*Actions → FB auto-poster → Run workflow*. Lokální suchý běh bez tokenu:
+`TZ=Europe/Prague FB_DRY_RUN=1 node scripts/fb-schedule.mjs` (jen vypíše, co by naplánoval).
+
 ## 2. Cloudflare Worker (Recenze API – Seznam + Google)
 
 Tento Worker:
