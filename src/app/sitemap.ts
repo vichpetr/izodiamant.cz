@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     '',
     '/reference',
+    '/clanky',
     '/cookies',
     '/ochrana-udaju',
     '/doporuc-a-ziskej-odmenu',

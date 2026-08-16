@@ -151,7 +151,6 @@ test.describe('Audit: staré URL se přesměrovávají (duplicitní obsah)', () 
     ['/kontakt', '/'],
     ['/sluzby', '/'],
     ['/services', '/'],
-    ['/clanky', '/'],
     ['/clanky/vyuziti-sklepa', '/'],
     ['/reference/ref-1', '/reference'],
     ['/category/reference', '/reference'],

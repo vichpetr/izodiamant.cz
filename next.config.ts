@@ -131,14 +131,10 @@ const nextConfig: NextConfig = {
       // Staré URL z předchozí verze webu (WordPress), stále v indexu vyhledávačů.
       // Bez 301 vzniká duplicitní obsah a Google/Seznam si sám vybírá, kterou verzi zobrazí.
       // Pozor: žádný catch-all na /sluzby/:slug* – přepsal by skutečné stránky služeb.
-      {
-        source: '/clanky',
-        destination: '/',
-        permanent: true,
-      },
-      // Staré články 301 na homepage – KROMĚ obnoveného článku o sklepích, který
-      // stále rankuje (~4. pozice v GSC) a má teď vlastní stránku. Negativní
-      // lookahead ten jeden slug z catch-all vyjme, ostatní /clanky/* dál míří na /.
+      // /clanky je teď reálný přehled článků (ne redirect). Staré jednotlivé
+      // články 301 na homepage – KROMĚ obnoveného článku o sklepích, který stále
+      // rankuje (~4. pozice v GSC) a má vlastní stránku. Negativní lookahead ten
+      // jeden slug z catch-all vyjme, ostatní /clanky/* dál míří na /.
       {
         source: '/clanky/:slug((?!skvele-vyuziti-sklepnich-prostor$).*)',
         destination: '/',
