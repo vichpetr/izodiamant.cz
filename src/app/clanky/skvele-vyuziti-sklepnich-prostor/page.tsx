@@ -3,15 +3,15 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Icons } from "@/components/Icons";
 import Link from "next/link";
+import Image from "next/image";
 import { pageMetadata, breadcrumbSchema } from "@/lib/seo";
 
-// DRAFT – obsah k potvrzení majitelem. Stránka obnovuje starý článek na URL,
-// která stále rankuje na ~4. pozici (GSC), ale byla 301 přesměrovaná na homepage.
 export const metadata: Metadata = {
   ...pageMetadata({
     path: '/clanky/skvele-vyuziti-sklepnich-prostor',
     title: "Využití sklepních prostor: ze sklepa plnohodnotný prostor",
     description: "Jak z vlhkého a nevyužitého sklepa udělat suchou spíž, dílnu nebo vinný sklep. Podmínkou je odstranění vzlínající vlhkosti – sanace zdiva. Vracíme zdraví vaší stavbě.",
+    images: ['/images/clanky/sklep.jpg'],
   }),
   keywords: ["využití sklepních prostor", "vlhký sklep", "sanace sklepa", "suchý sklep", "vinný sklep", "sklep jako obytný prostor", "odvlhčení sklepa", "vzlínající vlhkost"],
 };
@@ -26,7 +26,7 @@ export default function CellarArticlePage() {
     "@type": "Article",
     "headline": "Skvělé využití sklepních prostor: ze sklepa plnohodnotný prostor",
     "description": "Jak z vlhkého a nevyužitého sklepa udělat suchou a využitelnou místnost. Klíčem je odstranění vzlínající vlhkosti sanací zdiva.",
-    "image": "https://izodiamant.cz/og-image.jpg",
+    "image": "https://izodiamant.cz/images/clanky/sklep.jpg",
     "datePublished": PUBLISHED,
     "dateModified": PUBLISHED,
     "author": { "@type": "Organization", "name": "IZODIAMANT" },
@@ -75,6 +75,20 @@ export default function CellarArticlePage() {
             sklep dokáže přidat cenné metry navíc: spíž, dílnu, vinný sklep i technickou místnost. Podmínka je ale
             jediná a zásadní – <strong className="text-neutral-dark">suché zdivo</strong>.
           </p>
+
+          <figure className="mt-8">
+            <div className="relative aspect-[3/2] rounded-3xl overflow-hidden shadow-xl">
+              <Image
+                src="/images/clanky/sklep.jpg"
+                alt="Kamenný klenutý sklep se schodištěm ven a dřevěnou lávkou"
+                fill
+                sizes="(max-width: 768px) 100vw, 768px"
+                className="object-cover"
+                priority
+              />
+            </div>
+            <figcaption className="text-[11px] text-neutral-dark/40 font-medium mt-2 text-right">Foto: Pixabay</figcaption>
+          </figure>
 
           <div className="prose prose-lg max-w-none text-neutral-dark/80 mt-12 space-y-6">
             <h2 className="text-2xl md:text-3xl font-black uppercase italic text-neutral-dark">Proč sklepy leží ladem</h2>

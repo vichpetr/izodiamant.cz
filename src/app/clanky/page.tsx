@@ -44,7 +44,7 @@ export default function ArticlesArchivePage() {
           <div className="max-w-3xl mb-16">
             <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] italic mb-4">Rádce · Sanace zdiva</div>
             <h1 className="text-4xl md:text-6xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.9] mb-6">
-              Články a rádce
+              Články a tipy
             </h1>
             <p className="text-lg text-neutral-dark/70 font-medium">
               Praktické tipy a návody kolem vlhkého zdiva, sklepů a sanace – ať se rozhodujete líp a víte, do čeho jdete.
