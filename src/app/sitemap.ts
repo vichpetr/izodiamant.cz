@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     '',
     '/reference',
+    '/clanky',
     '/cookies',
     '/ochrana-udaju',
     '/doporuc-a-ziskej-odmenu',
@@ -16,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/sluzby/retezova-pila',
     '/sluzby/chemicka-injektaz',
     '/sluzby/zednicke-a-obkladacske-prace',
+    '/clanky/skvele-vyuziti-sklepnich-prostor',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),

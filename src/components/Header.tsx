@@ -78,6 +78,9 @@ export default function Header() {
             <Link href="/#reference" className="text-neutral-dark/80 hover:text-primary text-sm font-bold uppercase tracking-widest transition-colors">
               Reference
             </Link>
+            <Link href="/#clanky" className="text-neutral-dark/80 hover:text-primary text-sm font-bold uppercase tracking-widest transition-colors">
+              Články
+            </Link>
             <Link href="/#faq" className="text-neutral-dark/80 hover:text-primary text-sm font-bold uppercase tracking-widest transition-colors">
               FAQ
             </Link>
@@ -122,6 +125,9 @@ export default function Header() {
             </Link>
             <Link href="/#reference" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-4 text-base font-bold text-neutral-dark uppercase tracking-widest hover:bg-neutral-light rounded-md">
               Reference
+            </Link>
+            <Link href="/#clanky" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-4 text-base font-bold text-neutral-dark uppercase tracking-widest hover:bg-neutral-light rounded-md">
+              Články
             </Link>
             <Link href="/#faq" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-4 text-base font-bold text-neutral-dark uppercase tracking-widest hover:bg-neutral-light rounded-md">
               FAQ

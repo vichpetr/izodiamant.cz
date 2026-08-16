@@ -25,6 +25,7 @@ export const metadata: Metadata = {
 
 // Components that are SSR by default for SEO
 const References = dynamic(() => import("@/components/References"));
+const HomeArticles = dynamic(() => import("@/components/HomeArticles"));
 const HomeReviews = dynamic(() => import("@/components/HomeReviews"));
 const FAQ = dynamic(() => import("@/components/FAQ"));
 
@@ -229,6 +230,7 @@ export default function Page() {
       <References />
       <AreasSection />
       <HomeReviews />
+      <HomeArticles />
       <FAQ />
       <ContactForm />
       <Footer />
