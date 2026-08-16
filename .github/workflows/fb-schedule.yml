@@ -1,11 +1,12 @@
 name: FB auto-poster
 
-# Denně zkontroluje, jestli se dnes zveřejňuje článek (date v articles.json),
-# a pokud ano, vytvoří na firemní FB stránce naplánovaný příspěvek na dnešek+3 dny
-# v 11:30 (Europe/Prague). Text bere z pole `fbPost`.
+# Běží denně; skript sám rozhodne podle dne v týdnu (Europe/Prague):
+#   pondělí → naplánuje FB post k další referenci,
+#   čtvrtek → naplánuje FB post k dalšímu (už zveřejněnému) článku,
+# oba na dnešek v 11:30. Text bere z pole `fbPost` v references.json / articles.json.
 #
-# Běží po ranním rebuildu (scheduled-rebuild.yml v 04:10 UTC), aby byl článek na
-# webu už zveřejněný a Facebook si při plánování stáhl správný náhled z OG tagů.
+# Běží po ranním rebuildu (scheduled-rebuild.yml v 04:10 UTC), aby byl obsah na
+# webu už aktuální a Facebook si stáhl správný náhled z OG tagů.
 #
 # Vyžaduje repo secrets:
 #   FB_PAGE_ID            – ID firemní FB stránky
