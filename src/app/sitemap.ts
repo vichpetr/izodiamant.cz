@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/clanky/kolik-stoji-podrezani-zdiva',
     '/clanky/podrezani-nebo-injektaz',
     '/clanky/podrezani-kamenneho-zdiva',
+    '/clanky/podrezani-betonu',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
