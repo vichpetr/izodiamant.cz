@@ -7,7 +7,7 @@ const HOMEPAGE_COUNT = 3;
 
 export default function HomeArticles() {
   const content = {
-    h2: "Rádce a články.",
+    h2: "Články a tipy.",
     h3: "Praktické tipy k vlhkému zdivu",
     sub: "Návody a rady kolem sanace, vlhkých sklepů a údržby stavby.",
     cta_more: "Zobrazit všechny články",

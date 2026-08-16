@@ -1,9 +1,16 @@
 [
   {
+    "slug": "kolik-stoji-podrezani-zdiva",
+    "title": "Kolik stojí podřezání zdiva",
+    "excerpt": "Orientační ceny podřezání a sanace zdiva za běžný metr, proč se nepočítá za m² a co konečnou cenu ovlivňuje.",
+    "image": "/images/sluzby/retezova-pila.jpg",
+    "date": "2026-08-16"
+  },
+  {
     "slug": "skvele-vyuziti-sklepnich-prostor",
     "title": "Skvělé využití sklepních prostor",
     "excerpt": "Jak z vlhkého a nevyužitého sklepa udělat suchou spíž, dílnu nebo vinný sklep – a proč je prvním krokem vždy odstranění vzlínající vlhkosti.",
-    "image": "/images/sluzby/chemicka-injektaz.jpg",
+    "image": "/images/clanky/sklep.jpg",
     "date": "2026-08-16"
   }
 ]

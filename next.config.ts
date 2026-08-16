@@ -1,4 +1,12 @@
 import type { NextConfig } from "next";
+import articlesData from "./src/data/articles.json";
+
+// Slugy reálných článků (mají vlastní stránku) – vyloučíme je z catch-all
+// redirectu /clanky/* na homepage. Generuje se z articles.json, takže přidání
+// článku výluku aktualizuje samo (žádné ruční udržování seznamu v redirectu).
+const articleSlugs = (articlesData as { slug: string }[]).map((a) => a.slug);
+// Non-capturing skupina (?:…) – Next.js v source nepovoluje capturing skupiny.
+const clankyKeepRegex = `(?!(?:${articleSlugs.join("|")})$).*`;
 
 // Vlastní image loader přes /cdn-cgi/image (viz src/lib/cfImageLoader.ts) zapneme
 // jen pro PRODUKČNÍ nasazení na custom doméně izodiamant.cz, kde jsou Cloudflare
@@ -132,11 +140,11 @@ const nextConfig: NextConfig = {
       // Bez 301 vzniká duplicitní obsah a Google/Seznam si sám vybírá, kterou verzi zobrazí.
       // Pozor: žádný catch-all na /sluzby/:slug* – přepsal by skutečné stránky služeb.
       // /clanky je teď reálný přehled článků (ne redirect). Staré jednotlivé
-      // články 301 na homepage – KROMĚ obnoveného článku o sklepích, který stále
-      // rankuje (~4. pozice v GSC) a má vlastní stránku. Negativní lookahead ten
-      // jeden slug z catch-all vyjme, ostatní /clanky/* dál míří na /.
+      // články 301 na homepage – KROMĚ reálných článků (mají vlastní stránku),
+      // které negativní lookahead z catch-all vyjme. Seznam slugů se generuje
+      // z articles.json (viz clankyKeepRegex nahoře).
       {
-        source: '/clanky/:slug((?!skvele-vyuziti-sklepnich-prostor$).*)',
+        source: `/clanky/:slug(${clankyKeepRegex})`,
         destination: '/',
         permanent: true,
       },
