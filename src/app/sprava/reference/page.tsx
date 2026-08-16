@@ -15,7 +15,7 @@ export default async function SpravaReferencePage() {
   const session = await safeAuth();
   if (!session?.user || !isAllowed(session.user.email)) redirect('/sprava/prihlaseni');
 
-  // Nejnovější první – ve stejném pořadí je i posílá auto-poster (pondělní fronta).
+  // Chronologicky (od nejstarší) – ve stejném pořadí je posílá i auto-poster (pondělní fronta).
   const items: AdminReference[] = (referencesData as AdminReference[])
     .map((r) => ({
       id: r.id,
@@ -25,7 +25,7 @@ export default async function SpravaReferencePage() {
       technology: r.technology,
       fbPost: r.fbPost,
     }))
-    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    .sort((a, b) => String(a.date).localeCompare(String(b.date)));
 
   return (
     <main className="min-h-screen bg-neutral-light">
@@ -36,7 +36,7 @@ export default async function SpravaReferencePage() {
           <h1 className="text-2xl font-black uppercase italic text-neutral-dark tracking-tight">Reference</h1>
           <p className="text-sm text-neutral-dark/60 mt-2 max-w-2xl">
             Ke každé referenci je připravený text pro Facebook ke zkopírování. Auto-poster je posílá
-            automaticky <strong>v pondělí v 11:30</strong> (od nejnovější). Odkaz vede na detail reference na webu.
+            automaticky <strong>v pondělí v 11:30</strong> (chronologicky, od nejstarší). Odkaz vede na detail reference na webu.
           </p>
         </div>
 

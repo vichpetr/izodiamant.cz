@@ -49,7 +49,7 @@ Po nastavení: `https://izodiamant.cz/sprava` → přihlášení Googlem → jen
 Workflow `.github/workflows/fb-schedule.yml` běží **denně (06:20 UTC)** a skript
 `scripts/fb-schedule.mjs` sám rozhodne podle dne v týdnu (Europe/Prague):
 
-- **pondělí** → naplánuje FB post k další **referenci** (od nejnovější),
+- **pondělí** → naplánuje FB post k další **referenci** (chronologicky, od nejstarší),
 - **čtvrtek** → naplánuje FB post k dalšímu už zveřejněnému **článku** (v pořadí zveřejnění),
 
 oba na **dnešek v 11:30**. Text bere z pole `fbPost` (v `references.json`, resp.

@@ -64,7 +64,7 @@ if (!kind) {
 let queue;
 if (kind === 'reference') {
   queue = [...references]
-    .sort((a, b) => String(b.date || '').localeCompare(String(a.date || ''))) // od nejnovější
+    .sort((a, b) => String(a.date || '').localeCompare(String(b.date || ''))) // chronologicky, od nejstarší
     .map((r) => ({ marker: `/reference/${r.id}`, url: `${BASE_URL}/reference/${r.id}`, message: r.fbPost, label: r.id }));
 } else {
   queue = articles
