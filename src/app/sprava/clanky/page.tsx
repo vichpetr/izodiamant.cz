@@ -15,14 +15,25 @@ export default async function SpravaClankyPage() {
   const session = await safeAuth();
   if (!session?.user || !isAllowed(session.user.email)) redirect('/sprava/prihlaseni');
 
-  const articles: AdminArticle[] = allArticles.map((a) => ({
-    slug: a.slug,
-    title: a.title,
-    excerpt: a.excerpt,
-    fbPost: a.fbPost,
-    published: isArticlePublished(a),
-    formattedDate: formatArticleDate(a.date),
-  }));
+  // Řazení pro admin přehled: nejdřív naplánované, pak zveřejněné; uvnitř každé
+  // skupiny podle data publikace vzestupně (nejbližší termín nahoře). Až se
+  // článek zveřejní, propadne do skupiny zveřejněných a v čele naplánovaných
+  // zůstane další v pořadí.
+  const articles: AdminArticle[] = [...allArticles]
+    .sort((a, b) => {
+      const pa = isArticlePublished(a) ? 1 : 0;
+      const pb = isArticlePublished(b) ? 1 : 0;
+      if (pa !== pb) return pa - pb;
+      return a.date.localeCompare(b.date);
+    })
+    .map((a) => ({
+      slug: a.slug,
+      title: a.title,
+      excerpt: a.excerpt,
+      fbPost: a.fbPost,
+      published: isArticlePublished(a),
+      formattedDate: formatArticleDate(a.date),
+    }));
 
   return (
     <main className="min-h-screen bg-neutral-light">

@@ -81,7 +81,7 @@ export default function ArticleLayout({
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
-                  Nezávazná kalkulace
+                  Nezávazná kalkulace zdarma
                 </Link>
                 <a href="tel:+420737017012" className="inline-flex items-center gap-2 py-4 px-8 rounded-xl border-2 border-white/15 font-black uppercase tracking-widest text-sm text-white hover:border-primary/40 transition-colors">
                   <Icons.Phone className="w-4 h-4 text-primary" /> +420 737 017 012
