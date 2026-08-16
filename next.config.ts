@@ -90,9 +90,12 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Pozn.: /reference už NENÍ přesměrování – je to skutečná stránka archivu
+      // referencí (se stránkováním a členěním po letech). Stránka 1 archivu je
+      // jen na /reference, proto sem míří i /reference/strana/1.
       {
-        source: '/reference',
-        destination: '/#reference',
+        source: '/reference/strana/1',
+        destination: '/reference',
         permanent: true,
       },
       {
@@ -122,7 +125,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/category/reference',
-        destination: '/#reference',
+        destination: '/reference',
         permanent: true,
       },
       // Staré URL z předchozí verze webu (WordPress), stále v indexu vyhledávačů.
@@ -145,7 +148,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/reference/ref-:id',
-        destination: '/#reference',
+        destination: '/reference',
         permanent: true,
       },
       // Zrušené landing pages měst (byly krátce živé a v sitemapě) → homepage.

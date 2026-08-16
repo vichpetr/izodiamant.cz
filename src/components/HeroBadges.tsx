@@ -1,10 +1,13 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useReviewSummary } from '@/lib/useReviewSummary';
+import { allReferences } from '@/lib/references';
 
 export default function HeroBadges() {
   const summary = useReviewSummary();
+  const referenceCount = allReferences.length;
 
   // Přímé odkazy na NAPSÁNÍ recenze (stejné jako v patičce) – „Ohodnoťte nás“
   // k tomu vybízí. Kolečka výše vedou na profil (zobrazení), tyto na hodnocení.
@@ -32,9 +35,46 @@ export default function HeroBadges() {
   ].filter(Boolean) as { key: string; label: string; rating: number; count: number; url: string }[];
 
   return (
-    <div className="flex flex-col items-center justify-center mt-16 gap-5">
-      <div className="flex items-center justify-center gap-6">
-        {badges.map((b, i) => (
+    <div className="flex flex-col items-center justify-center mt-8 sm:mt-10 desktop:mt-16 gap-4 sm:gap-5">
+      {/* Všude mimo velké a vysoké okno kompaktní pruh: kolečka 128 px níže by
+          na nižším displeji (tablet na šířku, 13" notebook) spadla pod ohyb,
+          takže by hodnocení ani počet referencí nikdo neviděl. */}
+      <div className="desktop:hidden w-full max-w-sm sm:max-w-md flex divide-x divide-neutral-dark/10 rounded-2xl border border-neutral-dark/10 bg-white/60 backdrop-blur-sm shadow-sm">
+        {badges.map((b) => (
+          <a
+            key={b.key}
+            href={b.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`${b.rating.toFixed(1)} z 5 – ${b.count} hodnocení na ${b.label}`}
+            className="flex-1 flex flex-col items-center justify-center py-3 sm:py-4 px-1"
+          >
+            <span className="text-xl sm:text-2xl font-black text-neutral-dark tracking-tighter leading-none">
+              {b.rating.toFixed(1)}
+            </span>
+            <span className="mt-1 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.15em] text-neutral-dark/50">
+              {b.label}
+            </span>
+          </a>
+        ))}
+        {/* Na sekci s referencemi, ne rovnou do archivu – ten je až za odkazem
+            uvnitř sekce (nejdřív ukázka, pak kompletní výpis). */}
+        <Link
+          href="/#reference"
+          title={`${referenceCount} zveřejněných referencí`}
+          className="flex-1 flex flex-col items-center justify-center py-3 sm:py-4 px-1"
+        >
+          <span className="text-xl sm:text-2xl font-black text-neutral-dark tracking-tighter leading-none">
+            {referenceCount}
+          </span>
+          <span className="mt-1 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.15em] text-neutral-dark/50">
+            Referencí
+          </span>
+        </Link>
+      </div>
+
+      <div className="hidden desktop:flex items-center justify-center gap-6">
+        {badges.map((b) => (
           <a
             key={b.key}
             id={b.key === 'firmy' ? 'hero-badge' : undefined}
@@ -75,6 +115,22 @@ export default function HeroBadges() {
             )}
           </a>
         ))}
+
+        {/* Třetí kolečko: počet zveřejněných referencí – vedle hodnocení je to
+            druhý důkaz „máme co ukázat“. Vede na sekci s ukázkou, kompletní
+            archiv je až za odkazem uvnitř té sekce. */}
+        <Link
+          href="/#reference"
+          title={`${referenceCount} zveřejněných referencí`}
+          className="group flex flex-col items-center justify-center w-32 h-32 rounded-full border border-neutral-dark/10 bg-white/50 backdrop-blur-sm shadow-sm hover:shadow-xl hover:border-primary/30 transition-all duration-500"
+        >
+          <span className="text-4xl font-black text-neutral-dark tracking-tighter mb-1 group-hover:scale-110 transition-transform duration-500">
+            {referenceCount}
+          </span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-dark/50 group-hover:text-primary-ink transition-colors">
+            Referencí
+          </span>
+        </Link>
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] font-black uppercase tracking-[0.2em] italic">

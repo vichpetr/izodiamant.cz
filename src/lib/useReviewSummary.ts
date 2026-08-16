@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import firmyFallback from '@/data/firmy.json';
+import { reviewsApiUrl } from './reviewsApi';
 
 export interface SourceSummary {
   rating: number;
@@ -29,7 +30,7 @@ const GOOGLE_URL =
  */
 export function useReviewSummary(): ReviewSummary {
   const firmyUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || '#';
-  const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
+  const workerUrl = reviewsApiUrl();
 
   const [summary, setSummary] = useState<ReviewSummary>({
     firmy: { rating: firmyFallback.rating, count: firmyFallback.count, url: firmyUrl },
@@ -37,7 +38,7 @@ export function useReviewSummary(): ReviewSummary {
   });
 
   useEffect(() => {
-    if (!workerUrl || workerUrl.includes('vás-účet')) return;
+    if (!workerUrl) return;
     let cancelled = false;
 
     (async () => {

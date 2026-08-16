@@ -6,7 +6,9 @@ import Link from "next/link";
 import Image from "next/image";
 import referencesData from '@/data/references.json';
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { pageMetadata, breadcrumbSchema } from '@/lib/seo';
+import { formatReferenceDate } from '@/lib/references';
 
 const ProjectReview = dynamic(() => import("@/components/ProjectReview"), { ssr: true });
 const ProjectGallery = dynamic(() => import("@/components/ProjectGallery"), { ssr: true });
@@ -72,7 +74,7 @@ export default async function ProjectPage({
   const { id } = await params;
   const project = (referencesData as Project[]).find(p => p.id === id);
 
-  if (!project) return <div>Projekt nenalezen</div>;
+  if (!project) notFound();
 
   // Obecné stavební zakázky (plot, dlažba, fasáda) nejsou sanací vlhkého zdiva –
   // sanačně laděné texty (nadpisy, technický popis, FAQ o vlhkosti) by u nich byly
@@ -91,17 +93,9 @@ export default async function ProjectPage({
 
   const breadcrumb = breadcrumbSchema([
     { name: "Domů", path: "/" },
-    { name: "Reference", path: "/#reference" },
+    { name: "Reference", path: "/reference" },
     { name: project.title, path: `/reference/${project.id}` },
   ]);
-
-  const formatDate = (dateStr: string) => {
-    const parts = dateStr.split('-');
-    if (parts.length < 2) return dateStr;
-    const months = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
-    const monthIndex = parseInt(parts[1]) - 1;
-    return `${months[monthIndex]} ${parts[0]}`;
-  };
 
   return (
     <main className="min-h-screen bg-neutral-light text-foreground">
@@ -113,12 +107,12 @@ export default async function ProjectPage({
       
       <section className="pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link 
-            href="/#reference" 
+          <Link
+            href="/reference"
             className="inline-flex items-center gap-2 text-neutral-dark/70 hover:text-primary font-bold uppercase tracking-widest text-xs mb-12 transition-colors group"
           >
             <Icons.ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Zpět na přehled
+            Zpět na přehled referencí
           </Link>
 
           <div className="grid lg:grid-cols-2 gap-16 items-start">
@@ -133,7 +127,7 @@ export default async function ProjectPage({
                   </div>
                   <div className="inline-flex items-center gap-3 bg-neutral-dark/5 px-4 py-2 rounded-lg text-neutral-dark/70 font-black text-xs uppercase tracking-widest">
                     <Icons.Calendar className="w-4 h-4" />
-                    {formatDate(project.date)}
+                    {formatReferenceDate(project.date)}
                   </div>
                   {project.reviewId && (
                     <div className="inline-flex items-center gap-3 bg-white px-4 py-2 rounded-lg text-neutral-dark/70 font-black text-xs uppercase tracking-widest border border-neutral-dark/5 shadow-sm">

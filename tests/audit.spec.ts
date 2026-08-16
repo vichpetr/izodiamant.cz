@@ -17,6 +17,7 @@ const PAGES = [
   '/cookies',
   '/ochrana-udaju',
   '/doporuc-a-ziskej-odmenu',
+  '/reference',
   '/reference/zleby',
 ];
 
@@ -150,11 +151,12 @@ test.describe('Audit: staré URL se přesměrovávají (duplicitní obsah)', () 
     ['/kontakt', '/'],
     ['/sluzby', '/'],
     ['/services', '/'],
-    ['/reference', '/'],
     ['/clanky', '/'],
     ['/clanky/vyuziti-sklepa', '/'],
-    ['/reference/ref-1', '/'],
-    ['/category/reference', '/'],
+    ['/reference/ref-1', '/reference'],
+    ['/category/reference', '/reference'],
+    // Strana 1 archivu má jedinou kanonickou URL (/reference).
+    ['/reference/strana/1', '/reference'],
     ['/mesta', '/'],
     ['/mesta/pardubice', '/'],
   ];
@@ -202,7 +204,7 @@ test.describe('Audit: indexovatelné URL nikdy nepřesměrovávají', () => {
   });
 
   test('cíle legacy přesměrování jsou dostupné (žádný řetězec do 404)', async ({ request }) => {
-    for (const target of ['/', '/sluzby/diamantove-lano', '/sluzby/retezova-pila']) {
+    for (const target of ['/', '/reference', '/sluzby/diamantove-lano', '/sluzby/retezova-pila']) {
       const res = await request.get(target, { maxRedirects: 0 });
       expect(res.status(), `cíl ${target} není dostupný`).toBe(200);
     }

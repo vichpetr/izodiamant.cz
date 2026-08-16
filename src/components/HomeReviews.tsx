@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Icons } from './Icons';
 import ExpandableText from './ExpandableText';
+import { reviewsApiUrl } from '@/lib/reviewsApi';
 
 type ReviewSource = 'firmy' | 'google';
 
@@ -51,7 +52,7 @@ export default function HomeReviews() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const profileUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL;
-  const workerUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
+  const workerUrl = reviewsApiUrl();
   // Profil na Google Mapách (přehled recenzí). Override přes env, fallback CID firmy.
   const googleUrl =
     process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL || 'https://www.google.com/maps?cid=11693549259963803968';
@@ -62,7 +63,7 @@ export default function HomeReviews() {
     async function fetchLiveReviews() {
       // Žádný statický fallback: bez živých recenzí z workeru se sekce nezobrazí.
       // Raději nic než neaktuální/nereálná záložní data.
-      if (!workerUrl || workerUrl.includes('vás-účet')) {
+      if (!workerUrl) {
         if (!cancelled) {
           setReviews([]);
           setStatus('empty');

@@ -59,9 +59,17 @@ enforces them.
 **Routing:**
 - `/` (`src/app/page.tsx`) is the long scroll: Hero, About, Technology, Services, References, Reviews, Calculator, FAQ, Contact.
 - `/sluzby/{diamantove-lano,retezova-pila,chemicka-injektaz}` — per-service detail pages.
+- `/reference` — archive of all references, grouped by year, paginated. Page 1 lives at
+  `/reference`, further pages at `/reference/strana/[cislo]` (SSG). Page size, sorting and
+  the year grouping come from `src/lib/references.ts` — change them there, not in the pages;
+  `sitemap.ts` derives the paginated URLs from the same helpers. The homepage `#reference`
+  section only shows the 3 newest cards and links here.
 - `/reference/[id]` — single project detail, ID matches `references.json`.
 - `/doporuc-a-ziskej-odmenu` — referral program page.
-- `next.config.ts` declares legacy redirects (`/reference`, `/sluzby`, `/kontakt`, old service slugs, `/category/reference`, `/clanky`, `/mesta`) — preserve them when restructuring URLs.
+- `next.config.ts` declares legacy redirects (`/sluzby`, `/kontakt`, old service slugs,
+  `/category/reference` → `/reference`, `/reference/strana/1` → `/reference`, `/clanky`,
+  `/mesta`) — preserve them when restructuring URLs. Note `/reference` is a real page now,
+  not a redirect to `/#reference`.
 
 **Reviews integration ("Proxy API" pattern):** Components `HeroBadges`, `FirmyBadge`, `HomeReviews` and `ProjectReview` fetch live data from the Cloudflare Worker at `NEXT_PUBLIC_REVIEWS_API_URL`. Worker source is in `deployment.MD`. **There is no per-review static fallback** — `HomeReviews`/`ProjectReview` render **nothing** when the worker is unavailable or has no matching review (owner's call: better empty than stale/unreal data). Locally the placeholder URL (`…vás-účet…`) is skipped, so reviews only appear on production with a real worker URL. (The aggregate rating/count badge is separate — `useReviewSummary` still degrades to `firmy.json`.)
 

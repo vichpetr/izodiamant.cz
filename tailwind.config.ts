@@ -8,6 +8,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        // „Velké A vysoké okno“ – jen tam má hero plnou desktopovou podobu
+        // (nadpis 8xl, kolečka s hodnocením). Samotná šířka nestačí: tablet na
+        // šířku i 13" notebook mají přes 1000 px šířky, ale sotva 700 px výšky,
+        // takže by hodnocení a počet referencí spadly pod ohyb.
+        desktop: { raw: "(min-width: 1280px) and (min-height: 900px)" },
+      },
       colors: {
         background: "#f8f9fa",
         foreground: "#1a1a1a",
