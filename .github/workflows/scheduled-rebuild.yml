@@ -1,0 +1,29 @@
+name: Scheduled rebuild
+
+# Denní přegenerování webu, aby se články naplánované v src/data/articles.json
+# zveřejnily přesně v den `date`. Statický build se jinak nemění sám – tenhle
+# cron proto zavolá Cloudflare Pages deploy hook a vynutí čerstvý build.
+#
+# Vyžaduje repo secret CLOUDFLARE_DEPLOY_HOOK_URL:
+#   Cloudflare Pages → projekt → Settings → Builds & deployments → Deploy hooks
+#   → vytvořit hook pro branch `master`, zkopírovat URL a uložit jako repo secret.
+# Bez secretu job jen tiše doběhne (nic nenasadí), ať cron nepadá.
+on:
+  schedule:
+    # 04:10 UTC = ~06:10 SELČ – ráno, v klidovém provozu
+    - cron: '10 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cloudflare Pages deploy hook
+        env:
+          HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "CLOUDFLARE_DEPLOY_HOOK_URL není nastavený – přeskakuji rebuild."
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK" && echo "Deploy hook spuštěn."

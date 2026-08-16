@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import ArticleCard from '@/components/ArticleCard';
-import { allArticles } from '@/lib/articles';
+import { publishedArticles } from '@/lib/articles';
 import { pageMetadata, breadcrumbSchema } from '@/lib/seo';
 
 const Footer = dynamic(() => import('@/components/Footer'));
@@ -21,7 +21,7 @@ export default function ArticlesArchivePage() {
   const itemList = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    itemListElement: allArticles.map((a, i) => ({
+    itemListElement: publishedArticles.map((a, i) => ({
       '@type': 'ListItem',
       position: i + 1,
       url: `https://izodiamant.cz/clanky/${a.slug}`,
@@ -52,7 +52,7 @@ export default function ArticlesArchivePage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {allArticles.map((article) => (
+            {publishedArticles.map((article) => (
               <ArticleCard key={article.slug} article={article} />
             ))}
           </div>

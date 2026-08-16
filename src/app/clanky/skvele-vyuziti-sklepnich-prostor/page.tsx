@@ -5,6 +5,7 @@ import { Icons } from "@/components/Icons";
 import Link from "next/link";
 import Image from "next/image";
 import { pageMetadata, breadcrumbSchema } from "@/lib/seo";
+import { isSlugPublished } from "@/lib/articles";
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     description: "Jak z vlhkého a nevyužitého sklepa udělat suchou spíž, dílnu nebo vinný sklep. Podmínkou je odstranění vzlínající vlhkosti – sanace zdiva. Vracíme zdraví vaší stavbě.",
     images: ['/images/clanky/sklep.jpg'],
   }),
+  robots: { index: isSlugPublished('skvele-vyuziti-sklepnich-prostor'), follow: true },
   keywords: ["využití sklepních prostor", "vlhký sklep", "sanace sklepa", "suchý sklep", "vinný sklep", "sklep jako obytný prostor", "odvlhčení sklepa", "vzlínající vlhkost"],
 };
 
