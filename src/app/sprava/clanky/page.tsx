@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { safeAuth, isAllowed } from '@/auth';
 import { allArticles, isArticlePublished, formatArticleDate } from '@/lib/articles';
 import SpravaNav from '../SpravaNav';
-import CopyBox from '../CopyBox';
+import ArticlesAdminList, { type AdminArticle } from '../ArticlesAdminList';
 
 export const runtime = 'edge';
 export const metadata: Metadata = {
@@ -14,6 +14,15 @@ export const metadata: Metadata = {
 export default async function SpravaClankyPage() {
   const session = await safeAuth();
   if (!session?.user || !isAllowed(session.user.email)) redirect('/sprava/prihlaseni');
+
+  const articles: AdminArticle[] = allArticles.map((a) => ({
+    slug: a.slug,
+    title: a.title,
+    excerpt: a.excerpt,
+    fbPost: a.fbPost,
+    published: isArticlePublished(a),
+    formattedDate: formatArticleDate(a.date),
+  }));
 
   return (
     <main className="min-h-screen bg-neutral-light">
@@ -29,43 +38,7 @@ export default async function SpravaClankyPage() {
           </p>
         </div>
 
-        <div className="space-y-5">
-          {allArticles.map((a) => {
-            const published = isArticlePublished(a);
-            return (
-              <section key={a.slug} className="bg-white rounded-3xl border border-neutral-dark/5 shadow-sm p-6">
-                <div className="flex items-start justify-between gap-4 flex-wrap">
-                  <div className="min-w-0">
-                    <h2 className="font-black uppercase italic text-neutral-dark tracking-tight leading-tight">{a.title}</h2>
-                    <p className="text-sm text-neutral-dark/60 mt-1">{a.excerpt}</p>
-                  </div>
-                  <span
-                    className={
-                      'shrink-0 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full ' +
-                      (published ? 'bg-primary/15 text-primary-ink' : 'bg-amber-100 text-amber-800')
-                    }
-                  >
-                    {published ? 'Zveřejněno' : 'Naplánováno'} · {formatArticleDate(a.date)}
-                  </span>
-                </div>
-
-                <div className="mt-4 flex flex-wrap items-center gap-4">
-                  <a
-                    href={`/clanky/${a.slug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary-ink hover:underline"
-                  >
-                    Náhled článku ↗
-                  </a>
-                  <span className="text-[11px] text-neutral-dark/40 font-mono">/clanky/{a.slug}</span>
-                </div>
-
-                <CopyBox text={a.fbPost} />
-              </section>
-            );
-          })}
-        </div>
+        <ArticlesAdminList articles={articles} />
       </div>
     </main>
   );
