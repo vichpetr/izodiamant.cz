@@ -19,9 +19,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/sluzby/zednicke-a-obkladacske-prace',
     '/clanky/skvele-vyuziti-sklepnich-prostor',
     '/clanky/kolik-stoji-podrezani-zdiva',
-    '/clanky/podrezani-nebo-injektaz',
-    '/clanky/podrezani-kamenneho-zdiva',
-    '/clanky/podrezani-betonu',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),

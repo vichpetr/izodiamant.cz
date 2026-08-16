@@ -7,12 +7,15 @@ Search Console (dotazy se zobrazeními, ale bez cíleného obsahu) a podle služ
 Jak přidat článek: nová stránka `src/app/clanky/<slug>/page.tsx` (přes
 `ArticleLayout`), záznam do `src/data/articles.json` a řádek do `src/app/sitemap.ts`.
 
-## Hotovo
+## Hotovo (nasazeno)
 - ✅ Skvělé využití sklepních prostor — `skvele-vyuziti-sklepnich-prostor`
 - ✅ Kolik stojí podřezání zdiva — `kolik-stoji-podrezani-zdiva`
-- ✅ Podřezání zdiva, nebo chemická injektáž? — `podrezani-nebo-injektaz`
-- ✅ Podřezání kamenného zdiva — `podrezani-kamenneho-zdiva`
-- ✅ Podřezání betonu a základů — `podrezani-betonu`
+
+## Naplánováno (každý ve své větvi, nasazení po týdnech)
+Napsané, čekají na merge v daný termín. Ke každému je FB post v `marketing/facebook/`.
+- 🗓️ **23. 8. 2026** — Podřezání zdiva, nebo chemická injektáž? — `podrezani-nebo-injektaz` — větev `feat/clanek-podrezani-nebo-injektaz`
+- 🗓️ **30. 8. 2026** — Podřezání kamenného zdiva — `podrezani-kamenneho-zdiva` — větev `feat/clanek-podrezani-kamenneho-zdiva`
+- 🗓️ **6. 9. 2026** — Podřezání betonu a základů — `podrezani-betonu` — větev `feat/clanek-podrezani-betonu`
 
 ## Backlog
 
