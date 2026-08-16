@@ -16,6 +16,16 @@ on:
   schedule:
     - cron: '20 6 * * *' # 06:20 UTC – po denním rebuildu, ještě dopoledne
   workflow_dispatch:
+    inputs:
+      force_kind:
+        description: 'Ruční test: vynutit typ postu bez ohledu na den (prázdné = podle dne)'
+        required: false
+        default: ''
+        type: choice
+        options:
+          - ''
+          - reference
+          - article
 
 jobs:
   schedule:
@@ -30,4 +40,5 @@ jobs:
           TZ: Europe/Prague
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          FB_FORCE_KIND: ${{ github.event.inputs.force_kind }}
         run: node scripts/fb-schedule.mjs
