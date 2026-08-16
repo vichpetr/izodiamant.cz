@@ -1,6 +1,11 @@
 User-agent: *
 Allow: /
 Disallow: /cdn-cgi/
+# Obrázky jdou přes Cloudflare Image Resizing (/cdn-cgi/image/…). Bez tohoto
+# Allow by je Disallow: /cdn-cgi/ zablokoval pro crawlery → žádná indexace
+# obrázků (Google Images). Allow je specifičtější, takže ostatní /cdn-cgi/
+# endpointy zůstávají blokované.
+Allow: /cdn-cgi/image/
 Disallow: /sprava
 
 # Content signals (https://contentsignals.org)
