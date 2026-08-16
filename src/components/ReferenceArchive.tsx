@@ -184,7 +184,7 @@ export default function ReferenceArchive({ page }: { page: number }) {
                 href="/#calculator"
                 className="w-full sm:w-auto btn-primary py-4 px-10 uppercase tracking-widest inline-flex items-center justify-center gap-3"
               >
-                Nezávazná kalkulace
+                Nezávazná kalkulace zdarma
                 <Icons.Calculator className="w-5 h-5" />
               </Link>
               <a

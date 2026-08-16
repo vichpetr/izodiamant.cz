@@ -83,7 +83,7 @@ export default function DiamondWirePage() {
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
-                  Nezávazná kalkulace
+                  Nezávazná kalkulace zdarma
                 </Link>
               </div>
             </div>

@@ -28,39 +28,32 @@ Termín nasazení = jen změna `date` v `articles.json` (žádné mergování v�
 - ✅ Kolik stojí podřezání zdiva — `kolik-stoji-podrezani-zdiva` — 16. 8. 2026
 
 ## Naplánováno (v master, zveřejní se v daný den)
+
+Napsané, čekají na svůj `date` v `articles.json`. Řazeno podle důležitosti
+(🔥 = nejsilnější SEO poptávka), vždy jeden článek týdně (neděle).
+
 - 🗓️ **23. 8. 2026** — Podřezání zdiva, nebo chemická injektáž? — `podrezani-nebo-injektaz`
 - 🗓️ **30. 8. 2026** — Podřezání kamenného zdiva — `podrezani-kamenneho-zdiva`
 - 🗓️ **6. 9. 2026** — Podřezání betonu a základů — `podrezani-betonu`
+- 🗓️ **13. 9. 2026** — 🔥 Jak poznat vzlínající vlhkost — `jak-poznat-vzlinajici-vlhkost`
+- 🗓️ **20. 9. 2026** — 🔥 Bílé výkvěty (salpetr) na zdivu — `bile-vykvety-salpetr`
+- 🗓️ **27. 9. 2026** — 🔥 Plíseň na zdech: příčiny a trvalé řešení — `plisen-na-zdech`
+- 🗓️ **4. 10. 2026** — 🔥 Sanační omítky: proč běžná omítka nestačí — `sanacni-omitky`
+- 🗓️ **11. 10. 2026** — 5 nejčastějších příčin vlhkého zdiva — `priciny-vlhkeho-zdiva`
+- 🗓️ **18. 10. 2026** — Jak probíhá podřezání domu krok za krokem — `jak-probiha-podrezani-domu`
+- 🗓️ **25. 10. 2026** — Diamantové lano, nebo řetězová pila? — `lano-vs-retezova-pila`
+- 🗓️ **1. 11. 2026** — Cena sanace zdiva: z čeho se skládá — `cena-sanace-vlhkeho-zdiva`
+- 🗓️ **8. 11. 2026** — Vyplatí se sanace vlhkého zdiva? — `vyplati-se-sanace`
+- 🗓️ **15. 11. 2026** — Jak vysušit vlhký sklep a udržet ho suchý — `jak-vysusit-vlhky-sklep`
+- 🗓️ **22. 11. 2026** — Vinný sklep: jaké podmínky potřebuje — `vinny-sklep-podminky`
+- 🗓️ **29. 11. 2026** — Jak dlouho zdivo vysychá po podřezání — `vysychani-zdiva`
+- 🗓️ **6. 12. 2026** — Kupujete starší dům? Pozor na skrytou vlhkost — `skryta-vlhkost-pred-koupi`
+- 🗓️ **13. 12. 2026** — Vlhkost v domě v zimě: kondenzace a plíseň — `vlhkost-v-dome-v-zime`
+- 🗓️ **20. 12. 2026** — Betonáž základů a desek: na co si dát pozor — `betonaz-zakladu`
+- 🗓️ **27. 12. 2026** — Pokládka obkladů a dlažby: příprava podkladu — `pokladka-obkladu`
+- 🗓️ **3. 1. 2027** — Ztracené bednění: kdy a proč ho použít — `ztracene-bedneni`
 
 ## Backlog
 
-### Vlhkost — příčiny a diagnostika (top-of-funnel, největší objem)
-- 🔥 Jak poznat vzlínající vlhkost (a odlišit od kondenzace/zatékání) — `jak-poznat-vzlinajici-vlhkost`
-- 🔥 Bílé výkvěty (salpetr) na zdivu — co to je a jak se jich zbavit — `bile-vykvety-salpetr`
-- 🔥 Plíseň na zdech — proč vzniká a jak ji trvale odstranit — `plisen-na-zdech`
-- 5 nejčastějších příčin vlhkého zdiva — `priciny-vlhkeho-zdiva`
-
-### Metody sanace (podpoří stránky služeb)
-- Jak probíhá podřezání domu krok za krokem — `jak-probiha-podrezani-domu`
-- Diamantové lano vs. řetězová pila — rozdíly a kdy co — `lano-vs-retezova-pila`
-
-### Cena a rozhodování
-- Cena sanace: z čeho se skládá a co ji ovlivňuje — `cena-sanace-vlhkeho-zdiva`
-- Vyplatí se sanace? Návratnost a rizika odkládání — `vyplati-se-sanace`
-
-### Sklep a konkrétní prostory
-- Jak vysušit vlhký sklep a udržet ho suchý — `jak-vysusit-vlhky-sklep`
-- Vinný sklep: jaké podmínky potřebuje — `vinny-sklep-podminky`
-
-### Po sanaci / navazující
-- 🔥 Sanační omítky: proč běžná omítka nestačí — `sanacni-omitky`
-- Jak dlouho zdivo vysychá po podřezání — `vysychani-zdiva`
-
-### Zednické a obkladačské (podpora nové služby)
-- Betonáž základů a desek: na co si dát pozor — `betonaz-zakladu`
-- Pokládka obkladů a dlažby: příprava podkladu — `pokladka-obkladu`
-- Ztracené bednění: kdy a proč — `ztracene-bedneni`
-
-### Sezónní / praktické
-- Vlhkost v domě v zimě (kondenzace, plíseň, prevence) — `vlhkost-v-dome-v-zime`
-- Kupujete starší dům? Jak poznat skrytou vlhkost — `skryta-vlhkost-pred-koupi`
+Momentálně prázdný — všechna původní témata z backlogu jsou napsaná a naplánovaná
+výše. Další nápady přidávej sem.

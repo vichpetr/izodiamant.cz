@@ -13,24 +13,36 @@ export interface AdminArticle {
   formattedDate: string;
 }
 
-type Filter = 'all' | 'scheduled' | 'published';
+type Filter = 'scheduled' | 'published' | 'all';
 
-/** Výpis článků v adminu se záložkami Vše / Naplánované / Zveřejněné. */
+const PAGE_SIZE = 8;
+
+/** Výpis článků v adminu se záložkami (default Naplánované) a stránkováním. */
 export default function ArticlesAdminList({ articles }: { articles: AdminArticle[] }) {
-  const [filter, setFilter] = useState<Filter>('all');
+  const [filter, setFilter] = useState<Filter>('scheduled');
+  const [page, setPage] = useState(1);
 
   const scheduledCount = articles.filter((a) => !a.published).length;
   const publishedCount = articles.length - scheduledCount;
 
   const tabs: { key: Filter; label: string; count: number }[] = [
-    { key: 'all', label: 'Vše', count: articles.length },
     { key: 'scheduled', label: 'Naplánované', count: scheduledCount },
     { key: 'published', label: 'Zveřejněné', count: publishedCount },
+    { key: 'all', label: 'Vše', count: articles.length },
   ];
 
-  const visible = articles.filter((a) =>
+  const filtered = articles.filter((a) =>
     filter === 'all' ? true : filter === 'scheduled' ? !a.published : a.published,
   );
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  const selectFilter = (f: Filter) => {
+    setFilter(f);
+    setPage(1);
+  };
 
   return (
     <div className="space-y-6">
@@ -39,7 +51,7 @@ export default function ArticlesAdminList({ articles }: { articles: AdminArticle
           <button
             key={t.key}
             type="button"
-            onClick={() => setFilter(t.key)}
+            onClick={() => selectFilter(t.key)}
             className={cn(
               'inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full transition-colors',
               filter === t.key
@@ -61,10 +73,10 @@ export default function ArticlesAdminList({ articles }: { articles: AdminArticle
       </div>
 
       <div className="space-y-5">
-        {visible.length === 0 && (
+        {filtered.length === 0 && (
           <p className="text-sm text-neutral-dark/50 italic">V této kategorii nejsou žádné články.</p>
         )}
-        {visible.map((a) => (
+        {pageItems.map((a) => (
           <section key={a.slug} className="bg-white rounded-3xl border border-neutral-dark/5 shadow-sm p-6">
             <div className="flex items-start justify-between gap-4 flex-wrap">
               <div className="min-w-0">
@@ -97,6 +109,30 @@ export default function ArticlesAdminList({ articles }: { articles: AdminArticle
           </section>
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between gap-4 pt-2">
+          <button
+            type="button"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage <= 1}
+            className="text-xs font-black uppercase tracking-widest px-4 py-2 rounded-lg bg-white border border-neutral-dark/10 text-neutral-dark disabled:opacity-40 disabled:cursor-not-allowed hover:enabled:border-primary/40 transition-colors"
+          >
+            ← Předchozí
+          </button>
+          <span className="text-xs font-black uppercase tracking-widest text-neutral-dark/50">
+            Strana {currentPage} z {totalPages}
+          </span>
+          <button
+            type="button"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage >= totalPages}
+            className="text-xs font-black uppercase tracking-widest px-4 py-2 rounded-lg bg-white border border-neutral-dark/10 text-neutral-dark disabled:opacity-40 disabled:cursor-not-allowed hover:enabled:border-primary/40 transition-colors"
+          >
+            Další →
+          </button>
+        </div>
+      )}
     </div>
   );
 }
