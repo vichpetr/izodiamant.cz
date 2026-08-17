@@ -158,6 +158,34 @@ const nextConfig: NextConfig = {
         destination: '/reference',
         permanent: true,
       },
+      // Staré WordPress URL jednotlivých referencí → nové (kratší) slugy.
+      // Konkrétní slugy, ne catch-all – catch-all by zastínil reálné /reference/*.
+      {
+        source: '/reference/dum-stare-zdanice',
+        destination: '/reference/stare-zdanice',
+        permanent: true,
+      },
+      {
+        source: '/reference/dum-bernartice-u-trutnova',
+        destination: '/reference/bernartice',
+        permanent: true,
+      },
+      {
+        source: '/reference/baracek-pardubice-65-cm-sire-zdi-delka-15bm',
+        destination: '/reference/pardubice-diamant',
+        permanent: true,
+      },
+      {
+        source: '/reference/pila-s-diamantovym-lanem-a-chemicka-injektaz',
+        destination: '/reference/policka',
+        permanent: true,
+      },
+      // Neplatná URL zachycená v indexu (pravděpodobně rozbitý odkaz `href="&"`).
+      {
+        source: '/&',
+        destination: '/',
+        permanent: true,
+      },
       // Zrušené landing pages měst (byly krátce živé a v sitemapě) → homepage.
       {
         source: '/mesta',
