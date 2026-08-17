@@ -108,7 +108,7 @@ try {
 async function fetchHaystacks(edge) {
   try {
     const res = await fetch(
-      `${GRAPH}/${PAGE_ID}/${edge}?fields=message,attachments{unshimmed_url,target}&limit=200&access_token=${encodeURIComponent(pageToken)}`,
+      `${GRAPH}/${PAGE_ID}/${edge}?fields=message,attachments{unshimmed_url,target}&limit=100&access_token=${encodeURIComponent(pageToken)}`,
     );
     const json = await res.json();
     if (Array.isArray(json.data)) return json.data.map((p) => `${p.message || ''} ${JSON.stringify(p.attachments || '')}`);
