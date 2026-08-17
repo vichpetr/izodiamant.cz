@@ -44,18 +44,28 @@ V **Pages projektu → Settings → Functions → D1 database bindings** přidej
 
 Po nastavení: `https://izodiamant.cz/sprava` → přihlášení Googlem → jen e-mail z `ADMIN_EMAILS` se dostane dovnitř. Přidání dalšího správce = doplnit `ADMIN_EMAILS` (bez zásahu do kódu). Lokální dev: `.env.local` s `AUTH_*`/`ADMIN_EMAILS` + `npm run db:schema:local` a `npx wrangler pages dev`.
 
-### 1.2 Automatické plánování FB postů k článkům
+### 1.2 Automatické plánování FB postů (články + reference)
 
-Workflow `.github/workflows/fb-schedule.yml` běží **denně (06:20 UTC)** a když se
-ten den zveřejňuje článek (`date` v `src/data/articles.json` == dnešek), vytvoří na
-firemní Facebook stránce **naplánovaný příspěvek na dnešek + 3 dny v 11:30**
-(Europe/Prague). Text bere z pole `fbPost`, odkaz z URL článku (`scripts/fb-schedule.mjs`).
+Workflow `.github/workflows/fb-schedule.yml` běží **denně (06:20 UTC)** a skript
+`scripts/fb-schedule.mjs` sám rozhodne podle dne v týdnu (Europe/Prague):
 
-Proč takhle: plánuje se vždy jen 3 dny dopředu programově → obchází 4týdenní limit
-ručního plánování a nemusíš na to myslet. Přesný čas 11:30 pohlídá sám Facebook a
-naplánovaný post je vidět (a jde upravit/zrušit) v Meta Business Suite. Job běží až po
-denním rebuildu (`scheduled-rebuild.yml` ve 04:10 UTC), takže je článek už zveřejněný
-a Facebook si stáhne správný náhled z OG tagů.
+- **pondělí** → naplánuje FB post k další **referenci** (chronologicky, od nejstarší),
+- **čtvrtek** → naplánuje FB post k dalšímu už zveřejněnému **článku** (v pořadí zveřejnění),
+
+oba na **dnešek v 11:30**. Text bere z pole `fbPost` (v `references.json`, resp.
+`articles.json`), odkaz z URL detailu (`/reference/<id>`, `/clanky/<slug>`).
+
+„Další" = první v kanonickém pořadí, jehož odkaz ještě není mezi FB posty stránky
+(naplánovanými ani zveřejněnými). Fronta se tak drží **stateless přes samotný FB** –
+skript čte `scheduled_posts` i `feed`, takže nevytvoří duplicitu ani k ručně
+naplánovaným postům. Přesný čas 11:30 pohlídá Facebook; post je vidět (a jde
+upravit/zrušit) v Meta Business Suite. Přehled textů je i v adminu na `/sprava/clanky`
+(záložky **Články** a **Reference**).
+
+Job běží po denním rebuildu (`scheduled-rebuild.yml` ve 04:10 UTC), takže je obsah na
+webu aktuální a Facebook si stáhne správný náhled z OG tagů. Ruční test bez odeslání:
+`TZ=Europe/Prague FB_DRY_RUN=1 FB_FORCE_KIND=reference node scripts/fb-schedule.mjs`
+(nebo `FB_FORCE_KIND=article`).
 
 **Co zřídit (jednorázově):**
 

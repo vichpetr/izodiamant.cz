@@ -5,7 +5,7 @@ import { Toaster } from './toast';
 
 const TABS = [
   { href: '/sprava', label: 'Zákazníci' },
-  { href: '/sprava/clanky', label: 'Články' },
+  { href: '/sprava/clanky', label: 'Obsah pro FB' },
   { href: '/sprava/log', label: 'Audit log' },
 ] as const;
 
