@@ -41,6 +41,7 @@ Ceny jsou uvedeny za běžný metr (bm) zdi a platí pro tloušťku zdiva 45 cm;
 - [Chemická injektáž](https://izodiamant.cz/sluzby/chemicka-injektaz): tam, kde nelze řezat.
 - [Zednické a obkladačské práce](https://izodiamant.cz/sluzby/zednicke-a-obkladacske-prace): zdění, omítky, obklady – cena dohodou, do cca 60 km.
 - [Reference realizací](https://izodiamant.cz/reference): archiv dokončených zakázek členěný po letech, s fotografiemi a rozsahem prací.
+- [Kde působíme](https://izodiamant.cz/kde-pusobime): kraje, kam vyjíždíme, a přehled realizací podle lokality.
 - [Kalkulačka ceny](https://izodiamant.cz/#calculator): orientační cena podřezání.
 - [Doporuč a získej odměnu](https://izodiamant.cz/doporuc-a-ziskej-odmenu): odměna za tip na zákazníka.
 
@@ -51,7 +52,7 @@ Ceny jsou uvedeny za běžný metr (bm) zdi a platí pro tloušťku zdiva 45 cm;
 - **Web**: https://izodiamant.cz
 
 ## Regionální působnost
-Poskytujeme služby po celé České republice. Naše týmy pravidelně realizují zakázky v lokalitách: Pardubice, Chrudim, Hradec Králové, Ústí nad Orlicí, Vysoké Mýto, Litomyšl, Polička, Svitavy, Praha a Brno.
+Poskytujeme služby po celé České republice. Naše týmy pravidelně realizují zakázky v lokalitách: Pardubice, Chrudim, Hradec Králové, Ústí nad Orlicí, Vysoké Mýto, Litomyšl, Polička, Svitavy, Praha a Brno. Přehled krajů i konkrétních realizací podle lokality: https://izodiamant.cz/kde-pusobime
 
 ## Proč IZODIAMANT?
 - Používáme moderní technologie pro maximální šetrnost k objektu.

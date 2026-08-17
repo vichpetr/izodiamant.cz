@@ -198,6 +198,13 @@ function AreasSection() {
 
         <div className="text-center">
           <p className="text-neutral-dark/70 font-medium mb-6">
+            Kompletní přehled krajů a realizací podle lokality najdete na stránce{" "}
+            <Link href="/kde-pusobime" className="text-primary-ink font-bold hover:underline">
+              kde působíme
+            </Link>
+            .
+          </p>
+          <p className="text-neutral-dark/70 font-medium mb-6">
             Vyberte metodu podle typu zdiva:{" "}
             <Link href="/sluzby/diamantove-lano" className="text-primary-ink font-bold hover:underline">diamantové lano</Link>{" "}
             (kámen, beton),{" "}

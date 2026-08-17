@@ -4,6 +4,7 @@ import Script from "next/script";
 import DeferredAnalytics from "@/components/DeferredAnalytics";
 import MotionProvider from "@/components/MotionProvider";
 import WebMCP from "@/components/WebMCP";
+import regionsData from "@/data/regions.json";
 import "./globals.css";
 
 const inter = Inter({
@@ -115,15 +116,11 @@ export default function RootLayout({
       "latitude": "49.8517231",
       "longitude": "16.1432100"
     },
+    // Kraje ze src/data/regions.json – stejný seznam ukazuje i stránka
+    // /kde-pusobime, ať se strukturovaná data a text nemohou rozejít.
     "areaServed": [
-      { "@type": "Country", "name": "Česká republika" },
-      { "@type": "AdministrativeArea", "name": "Pardubický kraj" },
-      { "@type": "AdministrativeArea", "name": "Královéhradecký kraj" },
-      { "@type": "AdministrativeArea", "name": "Středočeský kraj" },
-      { "@type": "AdministrativeArea", "name": "Hlavní město Praha" },
-      { "@type": "AdministrativeArea", "name": "Kraj Vysočina" },
-      { "@type": "AdministrativeArea", "name": "Ústecký kraj" },
-      { "@type": "AdministrativeArea", "name": "Jihomoravský kraj" }
+      { "@type": "Country", "name": regionsData.country },
+      ...regionsData.regions.map((name) => ({ "@type": "AdministrativeArea", name })),
     ],
     "priceRange": "$$",
     "currenciesAccepted": "CZK",
