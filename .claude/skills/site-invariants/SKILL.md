@@ -25,13 +25,19 @@ about the couplings *between* those files and the code that consumes them.
 ## 1. Prices are per **bm** at a 45 cm reference thickness
 
 **Files:** `src/data/services.json` · `src/data/calculator.json` ·
-`src/components/PricingCalculator.tsx` · `src/data/faq.json` · `public/llms.txt`
+`src/lib/pricing.ts` · `src/components/PricingCalculator.tsx` · `src/data/faq.json` ·
+`public/llms.txt`
 
 - Every price is quoted **per běžný metr (bm)**, never per m². The calculator rate is
-  the price at **`REFERENCE_THICKNESS_CM = 45`** (`PricingCalculator.tsx`); it scales
+  the price at **`REFERENCE_THICKNESS_CM = 45`** (`src/lib/pricing.ts`, imported by
+  `PricingCalculator.tsx` and by the service pages' JSON-LD); it scales
   `× (thickness / 45) × length`. So `services.json` "od 4 500 Kč / bm" must equal what
   the calculator shows for 1 bm at 45 cm. If you change a rate in `calculator.json`,
   change the matching `services.json` string and the FAQ price answer and `llms.txt`.
+- **The Service JSON-LD price is derived, not typed twice.** `serviceOffer()` in
+  `src/lib/pricing.ts` reads the numeric `minPrice` straight from `calculator.json`, so
+  structured data follows a rate change on its own. Don't hardcode a number into a
+  page's `offers` — that's exactly the drift this helper removes.
 - **`calculator.json` rows have no `unit` field.** All rates share the bm/45 cm model;
   a `unit` key would resurrect the old m²-vs-bm split that made injektáž cost more than
   diamond wire. Don't add it back.

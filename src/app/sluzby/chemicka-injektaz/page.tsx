@@ -7,6 +7,8 @@ import Image from "next/image";
 import servicesData from "@/data/services.json";
 import referencesData from '@/data/references.json';
 import { pageMetadata, breadcrumbSchema } from "@/lib/seo";
+import { serviceOffer } from "@/lib/pricing";
+import ServiceArticles from "@/components/ServiceArticles";
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -30,13 +32,7 @@ export default function ChemicalInjectionPage() {
       "name": "IZODIAMANT"
     },
     "description": "Šetrná metoda vytvoření dodatečné izolace proti vlhkosti pomocí infuzní nebo nízkotlaké injektáže.",
-    "offers": {
-      "@type": "Offer",
-      "priceSpecification": {
-        "@type": "PriceSpecification",
-        "description": data.priceRange
-      }
-    }
+    "offers": serviceOffer("chemicka-injektaz", data.priceRange)
   };
 
   const features = [
@@ -366,6 +362,15 @@ export default function ChemicalInjectionPage() {
           </p>
         </div>
       </section>
+
+      <ServiceArticles
+        slugs={[
+          "podrezani-nebo-injektaz",
+          "jak-poznat-vzlinajici-vlhkost",
+          "cena-sanace-vlhkeho-zdiva",
+          "priciny-vlhkeho-zdiva",
+        ]}
+      />
 
       <Footer />
     </main>

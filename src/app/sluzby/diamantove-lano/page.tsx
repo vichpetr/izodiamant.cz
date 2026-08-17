@@ -7,6 +7,8 @@ import Image from "next/image";
 import servicesData from "@/data/services.json";
 import referencesData from '@/data/references.json';
 import { pageMetadata, breadcrumbSchema } from "@/lib/seo";
+import { serviceOffer } from "@/lib/pricing";
+import ServiceArticles from "@/components/ServiceArticles";
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
     description: "Podřezání diamantovým lanem – kamenné, betonové i silné smíšené zdivo bez omezení tloušťky. Šetrná metoda s minimem otřesů. Orientační cena od 4 500 Kč/bm.",
     images: ['/images/sluzby/diamantove-lano.jpg'],
   }),
-  keywords: ["diamantové lano", "podřezání zdiva diamantovým lanem", "podřezání kamenného zdiva", "podřezání smíšeného zdiva", "podřezání betonu", "řezání betonu", "řezání železobetonu", "sanace kamenného zdiva", "izolace betonu", "podřezání zdiva cena", "Nové Hrady", "ČR"],
+  keywords: ["diamantové lano", "podřezání zdiva diamantovým lanem", "izolace vlhkého zdiva diamantovým lanem", "podřezání kamenného zdiva", "podřezání smíšeného zdiva", "podřezání betonu", "řezání betonu", "řezání železobetonu", "sanace kamenného zdiva", "izolace betonu", "podřezání zdiva cena", "Nové Hrady", "ČR"],
 };
 
 export default function DiamondWirePage() {
@@ -30,13 +32,7 @@ export default function DiamondWirePage() {
       "name": "IZODIAMANT"
     },
     "description": "Univerzální metoda sanace vlhkého zdiva. Poradí si s tvrdými materiály od smíšeného zdiva až po kámen či železobeton, bez praktického omezení tloušťky.",
-    "offers": {
-      "@type": "Offer",
-      "priceSpecification": {
-        "@type": "PriceSpecification",
-        "description": data.priceRange
-      }
-    }
+    "offers": serviceOffer("diamantove-lano", data.priceRange)
   };
   
   const features = [
@@ -109,6 +105,9 @@ export default function DiamondWirePage() {
             </p>
             <p>
               Po provedení řezu do spáry okamžitě vkládáme novou, vysoce odolnou hydroizolaci, která tvoří souvislou bariéru proti vzlínající vlhkosti. Celý proces je zakončen statickým zajištěním a tlakovou injektáží. Tato komplexní sanace zdiva spolehlivě přeruší vzlínání zemní vlhkosti a při správně navazujících opatřeních (odvodnění, sanační omítky) zůstane zdivo dlouhodobě suché.
+            </p>
+            <p>
+              Izolace vlhkého zdiva diamantovým lanem má oproti ostatním metodám jednu zásadní přednost: funguje bez ohledu na materiál i tloušťku stěny. Tam, kde je izolace vlhkého zdiva podřezáním u kamene nebo betonu jinou technikou neproveditelná, lano řez zvládne – a dům dostane celistvou hydroizolační vrstvu, ne jen chemicky ošetřený pás zdiva.
             </p>
 
             <h3 className="text-2xl font-black uppercase italic text-neutral-dark mt-12 mb-6">Šetrnější než metoda pomocí řetězové pily</h3>
@@ -323,6 +322,15 @@ export default function DiamondWirePage() {
           </p>
         </div>
       </section>
+
+      <ServiceArticles
+        slugs={[
+          "podrezani-kamenneho-zdiva",
+          "podrezani-betonu",
+          "lano-vs-retezova-pila",
+          "kolik-stoji-podrezani-zdiva",
+        ]}
+      />
 
       <Footer />
     </main>
