@@ -59,8 +59,8 @@ oba na **dnešek v 11:30**. Text bere z pole `fbPost` (v `references.json`, resp
 (naplánovanými ani zveřejněnými). Fronta se tak drží **stateless přes samotný FB** –
 skript čte `scheduled_posts` i `feed`, takže nevytvoří duplicitu ani k ručně
 naplánovaným postům. Přesný čas 11:30 pohlídá Facebook; post je vidět (a jde
-upravit/zrušit) v Meta Business Suite. Přehled textů je i v adminu: `/sprava/clanky`
-a `/sprava/reference`.
+upravit/zrušit) v Meta Business Suite. Přehled textů je i v adminu na `/sprava/clanky`
+(záložky **Články** a **Reference**).
 
 Job běží po denním rebuildu (`scheduled-rebuild.yml` ve 04:10 UTC), takže je obsah na
 webu aktuální a Facebook si stáhne správný náhled z OG tagů. Ruční test bez odeslání:

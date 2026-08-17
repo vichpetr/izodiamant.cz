@@ -5,13 +5,12 @@ import { Toaster } from './toast';
 
 const TABS = [
   { href: '/sprava', label: 'Zákazníci' },
-  { href: '/sprava/clanky', label: 'Články' },
-  { href: '/sprava/reference', label: 'Reference' },
+  { href: '/sprava/clanky', label: 'Obsah pro FB' },
   { href: '/sprava/log', label: 'Audit log' },
 ] as const;
 
 /** Horní lišta admin sekce se záložkami a odhlášením. */
-export default function SpravaNav({ active, email }: { active: '/sprava' | '/sprava/clanky' | '/sprava/reference' | '/sprava/log'; email?: string | null }) {
+export default function SpravaNav({ active, email }: { active: '/sprava' | '/sprava/clanky' | '/sprava/log'; email?: string | null }) {
   return (
     <header className="bg-neutral-dark text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
