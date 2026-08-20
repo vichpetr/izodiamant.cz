@@ -31,7 +31,7 @@ NEXT_PUBLIC_FIRMY_PROFILE_URL=https://www.firmy.cz/detail/13505805-izodiamant-no
 
 Většina obsahu webu je oddělena od kódu a nachází se v adresáři `src/data/`. To umožňuje úpravy bez nutnosti programování:
 
-- `calculator.json`: Definice materiálů pro kalkulačku, jejich popisy a základní ceny (`basePrice`) za m².
+- `calculator.json`: Definice materiálů pro kalkulačku, jejich popisy a sazby (`minPrice`/`maxPrice`) za m² řezné plochy.
 - `services.json`: Textové ceníky a doby realizace zobrazené na podstránkách služeb.
 - `references.json`: Seznam realizací. Obsahuje ID, titul, lokalitu, datum (YYYY-MM), technologii a cesty k obrázkům. Podporuje interaktivní "Před/Po" posuvník (pokud jsou `before` a `after` rozdílné).
 - `faq.json`: Seznam otázek a odpovědí pro sekci Časté dotazy.

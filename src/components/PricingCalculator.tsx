@@ -6,18 +6,18 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import calculatorData from '@/data/calculator.json';
 import servicesData from '@/data/services.json';
-import { REFERENCE_THICKNESS_CM } from '@/lib/pricing';
+import { cutAreaM2 } from '@/lib/pricing';
 import { trackLead } from '@/lib/analytics';
 import Turnstile, { TURNSTILE_ENABLED } from './Turnstile';
 
-// Ceny v calculator.json jsou sazby za běžný metr při referenční tloušťce zdiva
-// (REFERENCE_THICKNESS_CM v lib/pricing – stejnou konstantu používají i
-// strukturovaná data na stránkách služeb). U silnějšího zdiva roste cena úměrně
-// poměru skutečné a referenční tloušťky.
+// Ceny v calculator.json jsou sazby za m² řezné plochy (cutAreaM2 v lib/pricing –
+// stejný model používají i strukturovaná data na stránkách služeb). Plocha se
+// počítá jako délka zdi × tloušťka, takže u silnějšího zdiva roste cena úměrně
+// tloušťce.
 
 // Doplňková služba „Zednické a obkladačské práce" – cena je dohodou, takže do
 // kalkulačky patří jen jako poptávkový (nepočítaný) mód. Záměrně NENÍ v
-// calculator.json, aby nenarušila cenový model za bm (viz skill site-invariants).
+// calculator.json, aby nenarušila cenový model za m² (viz skill site-invariants).
 const INQUIRY_ID = 'zednicke';
 const INQUIRY_LABEL = 'Zednické a obkladačské práce';
 
@@ -93,7 +93,7 @@ export default function PricingCalculator() {
     }
 
     const prices: number[] = [];
-    const factor = (thickness / REFERENCE_THICKNESS_CM) * length;
+    const factor = cutAreaM2(length, thickness);
     candidates.forEach(s => {
       prices.push(s.minPrice * factor);
       prices.push(s.maxPrice * factor);
@@ -107,6 +107,11 @@ export default function PricingCalculator() {
   };
 
   const range = calculateRange();
+
+  // Plocha, ze které se cena počítá. Zobrazujeme ji u posuvníků i u výsledku,
+  // aby bylo z čeho odhad vznikl vidět a nemusel se dopočítávat z hlavy.
+  const areaM2 = cutAreaM2(length, thickness);
+  const areaLabel = areaM2.toLocaleString('cs-CZ', { maximumFractionDigits: 2 });
 
   const validate = () => {
     const newErrors: FormErrors = {};
@@ -171,7 +176,7 @@ export default function PricingCalculator() {
   };
 
   // V tooltipu je titulek „Ceník", takže prefix „Orientační cena" je nadbytečný a
-  // dlouhý řetězec navíc přetékal z úzkého boxu. Zobrazujeme jen „od 4 500 Kč / bm".
+  // dlouhý řetězec navíc přetékal z úzkého boxu. Zobrazujeme jen „od 4 500 Kč / m²".
   const shortPrice = (p: string) => p.replace(/^Orientační cena\s*/i, '').trim();
   const priceListTooltip = [
     { name: "Diamantové lano", price: shortPrice(servicesData["diamantove-lano"].priceRange), href: "/sluzby/diamantove-lano" },
@@ -211,7 +216,7 @@ export default function PricingCalculator() {
                     ))}
                   </div>
                   <div className="mt-4 pt-2 border-t border-white/10 text-[8px] text-white/70 font-bold uppercase tracking-widest leading-relaxed">
-                    Ceny jsou orientační pro tloušťku zdiva {REFERENCE_THICKNESS_CM} cm; u silnějšího zdiva se cena úměrně navyšuje.
+                    Sazby platí za m² řezné plochy (délka zdi × tloušťka); u silnějšího zdiva se cena úměrně navyšuje.
                   </div>
                 </div>
               </div>
@@ -264,6 +269,10 @@ export default function PricingCalculator() {
                               <span className="text-2xl font-black text-white italic leading-none">{length} <span className="text-xs font-bold text-white/60 not-italic uppercase tracking-widest ml-1">m</span></span>
                             </div>
                             <input id="length-range" type="range" min="1" max="100" step="1" value={length} onChange={(e) => setLength(parseInt(e.target.value))} className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary" />
+                          </div>
+                          <div className="flex justify-between items-center pt-1 text-[10px] font-black uppercase tracking-[0.2em] italic">
+                            <span className="text-white/40">Řezná plocha</span>
+                            <span className="text-primary not-italic tracking-widest">{areaLabel} m²</span>
                           </div>
                         </div>
                         )}
@@ -359,7 +368,7 @@ export default function PricingCalculator() {
                             Nejsme plátci DPH | {selectedService?.label || (selectedMaterial ? "Všechny dostupné metody" : "Všechny varianty")}
                           </div>
                           <p className="mt-4 text-[9px] text-white/70 font-bold leading-relaxed">
-                            Orientační odhad pro {length} bm zdi o tloušťce {thickness} cm. Ceny vycházejí ze sazby za běžný metr při tloušťce {REFERENCE_THICKNESS_CM} cm; u silnějšího zdiva se cena úměrně navyšuje. Závaznou nabídku zpracujeme po prohlídce.
+                            Orientační odhad pro {length} m zdi o tloušťce {thickness} cm, tedy {areaLabel} m² řezné plochy. Ceny vycházejí ze sazby za m² řezné plochy; u silnějšího zdiva se cena úměrně navyšuje. Závaznou nabídku zpracujeme po prohlídce.
                           </p>
                         </div>
                         )}

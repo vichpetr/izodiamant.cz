@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   ...pageMetadata({
     path: '/sluzby/chemicka-injektaz',
     title: "Chemická injektáž zdiva – cena a postup",
-    description: "Chemická injektáž zdiva proti vzlínající vlhkosti. Orientační cena od 2 500 Kč/bm, šetrná metoda bez narušení statiky – vhodná tam, kde nelze řezat. Spočítejte si cenu online.",
+    description: "Chemická injektáž zdiva proti vzlínající vlhkosti. Orientační cena od 2 500 Kč/m², šetrná metoda bez narušení statiky – vhodná tam, kde nelze řezat. Spočítejte si cenu online.",
     images: ['/images/sluzby/chemicka-injektaz.jpg'],
   }),
   keywords: ["chemická injektáž zdiva", "chemická injektáž zdiva cena", "injektáž zdiva cena", "injektáž zdiva", "injektáž zdiva proti vlhkosti", "krémová injektáž zdiva", "kolik stojí injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "Nové Hrady", "ČR"],

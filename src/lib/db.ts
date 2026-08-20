@@ -28,7 +28,7 @@ export interface Customer {
   email: string | null;
   phone: string | null;
   project: string | null;
-  job_size: string | null;       // velikost / hodnota zakázky (Kč nebo bm)
+  job_size: string | null;       // velikost / hodnota zakázky (Kč nebo m²)
   source: string;
   realized_at: string | null;    // datum realizace zakázky
   created_at: string;

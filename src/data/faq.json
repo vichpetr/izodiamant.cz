@@ -13,11 +13,11 @@
   },
   {
     "question": "Kolik stojí podřezání zdiva?",
-    "answer": "Orientační ceny vycházejí ze sazby za běžný metr (bm) při tloušťce zdiva 45 cm: podřezání řetězovou pilou od 2 500 Kč/bm, chemická injektáž od 2 500 Kč/bm a podřezání diamantovým lanem od 4 500 Kč/bm. U silnějšího zdiva se cena úměrně navyšuje. Nejsme plátci DPH, uvedené částky se tedy o daň dále nenavyšují. Nezávazný odhad si můžete spočítat v naší kalkulačce, závaznou nabídku zpracujeme po prohlídce objektu."
+    "answer": "Orientační ceny vycházejí ze sazby za metr čtvereční (m²) řezné plochy: podřezání řetězovou pilou od 2 500 Kč/m², chemická injektáž od 2 500 Kč/m² a podřezání diamantovým lanem od 4 500 Kč/m². Řezná plocha se spočítá jako délka zdi vynásobená její tloušťkou, takže u silnějšího zdiva se cena úměrně navyšuje. Nejsme plátci DPH, uvedené částky se tedy o daň dále nenavyšují. Nezávazný odhad si můžete spočítat v naší kalkulačce, závaznou nabídku zpracujeme po prohlídce objektu."
   },
   {
     "question": "Máte ceník? Kolik stojí podřezání zdiva za m²?",
-    "answer": "Ceník vychází ze sazby za běžný metr (bm) délky zdi, nikoli za m² plochy – u vodorovné izolace se řeže spára po délce stěny, na její ploše nezáleží. Sazby při tloušťce zdiva 45 cm: podřezání řetězovou pilou a chemická injektáž od 2 500 Kč/bm, podřezání diamantovým lanem od 4 500 Kč/bm; u silnějšího zdiva cena úměrně roste. Cenu za m² proto neuvádíme – rozhodující je počet běžných metrů podřezávané stěny a její tloušťka. Nejsme plátci DPH. Orientační cenu vám spočítá naše online kalkulačka, závaznou nabídku zpracujeme po prohlídce objektu."
+    "answer": "Ceník vychází ze sazby za metr čtvereční (m²) řezné plochy, tedy plochy, kterou je nutné zdivem prořezat nebo proinjektovat. Spočítá se jako délka zdi × tloušťka zdiva: u 10 m dlouhé stěny silné 45 cm jde o 4,5 m². Sazby: podřezání řetězovou pilou a chemická injektáž od 2 500 Kč/m², podřezání diamantovým lanem od 4 500 Kč/m². Tloušťka zdiva tak vstupuje do ceny přímo – u silnější stěny je řezná plocha větší a cena úměrně roste. Nejsme plátci DPH. Orientační cenu vám spočítá naše online kalkulačka, závaznou nabídku zpracujeme po prohlídce objektu."
   },
   {
     "question": "Jak dlouho trvá sanace průměrného rodinného domu?",

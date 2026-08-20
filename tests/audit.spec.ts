@@ -121,25 +121,25 @@ test.describe('Audit: JSON-LD musí být v serverovém HTML', () => {
 
       const service = blocks.find((b) => b['@type'] === 'Service');
       expect(service, 'Service JSON-LD chybí v serverovém HTML').toBeTruthy();
-      expect(service.offers.priceSpecification.description).toContain('bm');
+      expect(service.offers.priceSpecification.description).toContain('m²');
     });
   }
 });
 
-test.describe('Audit: jednotky cen jsou všude bm', () => {
-  test('nikde se neobjeví cena za m²', async ({ request }) => {
+test.describe('Audit: jednotky cen jsou všude m²', () => {
+  test('nikde se neobjeví cena za bm', async ({ request }) => {
     for (const path of PAGES) {
       const html = await (await request.get(path)).text();
-      // Plocha řezu v referencích (např. "32 m² řezné plochy") je v pořádku;
-      // zakázaná je jen cena za m².
-      expect(html, `${path} uvádí cenu za m²`).not.toMatch(/Kč\s*\/\s*m²/);
+      // Rozsah realizace v referencích (např. "52 bm podřezání") je v pořádku –
+      // popisuje délku podřezaného úseku. Zakázaná je jen cena za bm.
+      expect(html, `${path} uvádí cenu za bm`).not.toMatch(/Kč\s*\/?\s*bm/);
     }
   });
 
-  test('ceníkové stránky uvádějí Kč / bm', async ({ request }) => {
+  test('ceníkové stránky uvádějí Kč / m²', async ({ request }) => {
     for (const path of ['/sluzby/diamantove-lano', '/sluzby/retezova-pila', '/sluzby/chemicka-injektaz']) {
       const html = await (await request.get(path)).text();
-      expect(html, `${path} neuvádí cenu za bm`).toMatch(/Kč\s*\/\s*bm/);
+      expect(html, `${path} neuvádí cenu za m²`).toMatch(/Kč\s*\/\s*m²/);
     }
   });
 });
@@ -223,11 +223,11 @@ test.describe('Audit: llms.txt', () => {
     expect(fromTs, 'public/llms.txt a src/lib/llms.ts se rozešly').toBe(staticFile);
   });
 
-  test('llms.txt je dostupný a uvádí ceny za bm', async ({ request }) => {
+  test('llms.txt je dostupný a uvádí ceny za m²', async ({ request }) => {
     const res = await request.get('/llms.txt');
     expect(res.ok()).toBeTruthy();
     const text = await res.text();
-    expect(text).toContain('Kč/bm');
+    expect(text).toContain('Kč/m²');
     expect(text).not.toContain('100% ochranu');
   });
 });
