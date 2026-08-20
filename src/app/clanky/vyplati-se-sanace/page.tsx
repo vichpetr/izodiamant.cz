@@ -57,7 +57,7 @@ export default function Page() {
       <P>V tomto srovnání zpravidla vychází dřívější řešení výhodněji než čekání. Investice se navíc neztrácí: promítá se do nižších provozních nákladů, zdravějšího prostředí a udržené hodnoty nemovitosti.</P>
 
       <H2>Jak začít</H2>
-      <P>Prvním krokem je získat představu o rozsahu a orientačních nákladech. Nezávazný odhad ceny za přerušení vlhkosti si spočítáte v naší online kalkulačce po zadání metody, délky zdiva v běžných metrech a tloušťky.</P>
+      <P>Prvním krokem je získat představu o rozsahu a orientačních nákladech. Nezávazný odhad ceny za přerušení vlhkosti si spočítáte v naší online kalkulačce po zadání metody, délky zdiva a jeho tloušťky.</P>
       <P>Závaznou nabídku připravíme až po prohlídce na místě, kde posoudíme příčinu vlhkosti, materiál zdiva i rozsah potřebných prací. Prohlídka i kalkulace jsou zdarma.</P>
 
       <H2>Spočítejte si nezávaznou cenu</H2>

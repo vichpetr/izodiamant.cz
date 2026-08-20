@@ -22,31 +22,47 @@ about the couplings *between* those files and the code that consumes them.
 
 ---
 
-## 1. Prices are per **bm** at a 45 cm reference thickness
+## 1. Prices are per **m² of cut area**
 
 **Files:** `src/data/services.json` · `src/data/calculator.json` ·
 `src/lib/pricing.ts` · `src/components/PricingCalculator.tsx` · `src/data/faq.json` ·
-`public/llms.txt`
+`public/llms.txt` · `src/app/api/send/route.ts`
 
-- Every price is quoted **per běžný metr (bm)**, never per m². The calculator rate is
-  the price at **`REFERENCE_THICKNESS_CM = 45`** (`src/lib/pricing.ts`, imported by
-  `PricingCalculator.tsx` and by the service pages' JSON-LD); it scales
-  `× (thickness / 45) × length`. So `services.json` "od 4 500 Kč / bm" must equal what
-  the calculator shows for 1 bm at 45 cm. If you change a rate in `calculator.json`,
-  change the matching `services.json` string and the FAQ price answer and `llms.txt`.
+- Every price is quoted **per m² of cut area (řezná plocha)**, never per bm. Cut area is
+  **not** the wall's face area: it is `length (m) × thickness (cm) / 100`, i.e. the
+  horizontal plane the saw or the injection line has to get through. `cutAreaM2()` in
+  `src/lib/pricing.ts` is the single implementation — the calculator imports it, don't
+  re-derive the formula inline. So `services.json` "od 4 500 Kč / m²" must equal what the
+  calculator shows for 1 m² of cut area. If you change a rate in `calculator.json`, change
+  the matching `services.json` string, the FAQ price answers, `llms.txt`, and the two
+  pricing articles (`/clanky/kolik-stoji-podrezani-zdiva`,
+  `/clanky/cena-sanace-vlhkeho-zdiva`).
+- **Thickness is inside the unit, not a surcharge.** There is deliberately **no reference
+  thickness** any more. The old model priced per bm at a fixed 45 cm and scaled
+  `× (thickness / 45)`; when the site switched to that model the numbers were relabelled
+  without being recomputed, which silently multiplied every quote by ~2.2× at 45 cm — the
+  bug the owner reported. Don't reintroduce a `REFERENCE_THICKNESS_CM`: if a rate is per
+  m², the thickness is already counted.
 - **The Service JSON-LD price is derived, not typed twice.** `serviceOffer()` in
   `src/lib/pricing.ts` reads the numeric `minPrice` straight from `calculator.json`, so
   structured data follows a rate change on its own. Don't hardcode a number into a
-  page's `offers` — that's exactly the drift this helper removes.
-- **`calculator.json` rows have no `unit` field.** All rates share the bm/45 cm model;
-  a `unit` key would resurrect the old m²-vs-bm split that made injektáž cost more than
-  diamond wire. Don't add it back.
+  page's `offers` — that's exactly the drift this helper removes. `unitCode` is **MTK**
+  (square metre); `MTR` would claim a per-length price again.
+- **`calculator.json` rows have no `unit` field.** All rates share the per-m² model,
+  injektáž included; a `unit` key would resurrect the old m²-vs-bm split that made
+  injektáž cost more than diamond wire. Don't add it back.
 - **The calculator has one non-priced "inquiry" service — by design.** *Zednické a
   obkladačské práce* is **cena dohodou**: it is **not** in `calculator.json` and has **no
   rate**. It lives as a hardcoded tile in `PricingCalculator.tsx` (`INQUIRY_ID`) that
   switches the calculator into an inquiry mode (no thickness/length/price) and posts a lead
   to `/api/send`, which routes it to `/sprava` with `source='zednictvi'`. Don't "fix" it by
-  adding a price row — the missing price is intentional. The three service pages stay per-bm.
+  adding a price row — the missing price is intentional. The three service pages stay per-m².
+- **The lead e-mail and the CRM record carry the cut area too** (`/api/send`), so the
+  owner can see what the estimate was computed from without redoing the arithmetic. Keep
+  that field in step with `cutAreaM2()`.
+- **"bm" is still legitimate as a *scope* word.** `references.json` says things like
+  "52 bm podřezání" — that describes how much wall was cut, not a price. Leave it. Only
+  `Kč/bm` is forbidden, and that's what the audit test matches on.
 - **VAT:** the firm is **not a VAT payer**. Copy says **"Nejsme plátci DPH"**, never
   "Bez DPH" (which implies VAT gets added). Check `Footer.tsx`, `PricingCalculator.tsx`
   badge, `faq.json`, `llms.txt`.
@@ -55,11 +71,11 @@ about the couplings *between* those files and the code that consumes them.
   (Services). Changing a rate here means updating both profiles **by hand**, or they
   silently drift: Firmy.cz once showed `3 500`/`3 900` (the range *maxima*) while the
   site advertised "od 2 500", and a visitor comparing the two saw a contradiction.
-  Neither platform's price field accepts a unit, so **"za běžný metr (bm) při tloušťce
-  45 cm" must be the opening words of each offer description** — otherwise the number
-  reads as the price for the whole job. Google's price field does support "Od"; Firmy.cz
-  needs an explicit range. Keep the basis consistent: quote the **minimum** everywhere,
-  matching the site's "od …".
+  Neither platform's price field accepts a unit, so **"za m² řezné plochy (délka zdi ×
+  tloušťka)" must be the opening words of each offer description** — otherwise the number
+  reads as the price for the whole job, or as a price per metre of length. Google's price
+  field does support "Od"; Firmy.cz needs an explicit range. Keep the basis consistent:
+  quote the **minimum** everywhere, matching the site's "od …".
 
 ## 2. `public/llms.txt` and `src/lib/llms.ts` are one source, two copies
 

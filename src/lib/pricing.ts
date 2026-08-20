@@ -1,19 +1,25 @@
 import calculatorData from '@/data/calculator.json';
 
 /**
- * Sazby v `calculator.json` jsou cenou za **běžný metr (bm)** při této tloušťce
- * zdiva; kalkulačka je škáluje `× (tloušťka / 45) × délka`. Konstanta žije tady,
- * aby ji vedle kalkulačky mohla použít i strukturovaná data na stránkách služeb
- * a obě čísla se nemohla rozejít (viz skill site-invariants, pravidlo 1).
+ * Sazby v `calculator.json` jsou cenou za **metr čtvereční (m²) řezné plochy** –
+ * tedy za plochu, kterou je nutné zdivem prořezat nebo proinjektovat. Kalkulačka
+ * ji spočítá jako `délka zdi × (tloušťka / 100)`; konstanta žije tady, aby ji
+ * vedle kalkulačky mohla použít i strukturovaná data na stránkách služeb a obě
+ * čísla se nemohla rozejít (viz skill site-invariants, pravidlo 1).
  */
-export const REFERENCE_THICKNESS_CM = 45;
+export const CM_PER_METER = 100;
+
+/** Řezná plocha v m² pro zeď dané délky (m) a tloušťky (cm). */
+export function cutAreaM2(lengthM: number, thicknessCm: number): number {
+  return lengthM * (thicknessCm / CM_PER_METER);
+}
 
 /**
- * Nejnižší sazba za bm pro danou službu napříč typy zdiva – tedy to „od“, které
+ * Nejnižší sazba za m² pro danou službu napříč typy zdiva – tedy to „od“, které
  * web uvádí v `services.json`. `null` u služby bez ceníkové sazby (zednické
  * práce jsou cena dohodou a v `calculator.json` schválně nejsou).
  */
-export function minPricePerBm(serviceId: string): number | null {
+export function minPricePerM2(serviceId: string): number | null {
   const rates = calculatorData
     .flatMap((material) => material.availableServices)
     .filter((service) => service.id === serviceId)
@@ -28,24 +34,24 @@ export function minPricePerBm(serviceId: string): number | null {
  * nemohla objevit ve výsledku vyhledávání.
  *
  * `minPrice` je správně místo `price`: ceny jsou „od“, konečná se odvíjí od
- * tloušťky zdiva. Firma není plátcem DPH, uvedená částka je konečná.
+ * řezné plochy. Firma není plátcem DPH, uvedená částka je konečná.
  */
 export function serviceOffer(serviceId: string, priceRangeText: string) {
-  const minPrice = minPricePerBm(serviceId);
+  const minPrice = minPricePerM2(serviceId);
 
   const priceSpecification = minPrice
     ? {
         '@type': 'UnitPriceSpecification',
         priceCurrency: 'CZK',
         minPrice,
-        unitText: 'bm',
+        unitText: 'm²',
         referenceQuantity: {
           '@type': 'QuantitativeValue',
           value: 1,
-          unitCode: 'MTR',
-          unitText: 'bm',
+          unitCode: 'MTK',
+          unitText: 'm²',
         },
-        description: `${priceRangeText}; sazba platí při tloušťce zdiva ${REFERENCE_THICKNESS_CM} cm, u silnějšího zdiva se cena úměrně navyšuje.`,
+        description: `${priceRangeText}; sazba platí za m² řezné plochy, tedy délku zdi vynásobenou její tloušťkou.`,
       }
     : { '@type': 'PriceSpecification', description: priceRangeText };
 
