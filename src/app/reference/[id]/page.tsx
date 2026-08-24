@@ -8,7 +8,7 @@ import referencesData from '@/data/references.json';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { pageMetadata, breadcrumbSchema } from '@/lib/seo';
-import { formatReferenceDate } from '@/lib/references';
+import { formatReferenceDate, referenceMetaDescription } from '@/lib/references';
 
 const ProjectReview = dynamic(() => import("@/components/ProjectReview"), { ssr: true });
 const ProjectGallery = dynamic(() => import("@/components/ProjectGallery"), { ssr: true });
@@ -43,14 +43,10 @@ export async function generateMetadata({
 
   // Titles in references.json are already optimized: "Sanace [type] zdiva, [Location]"
   const title = project.title;
-  // Description pattern from GEMINI.md: "Sanace zdiva: [Title]. [Location]. Vracíme zdraví vaší stavbě."
-  // Since project.title already contains location, we don't repeat it if unnecessary.
-  // U obecných stavebních zakázek (category "stavba") vynecháme prefix "Sanace zdiva:",
-  // aby popis nebyl zavádějící; brand promise ale zůstává (viz CLAUDE.md SEO).
-  const prefix = project.category === 'stavba' ? '' : 'Sanace zdiva: ';
-  const description = project.title.includes(project.location)
-    ? `${prefix}${project.title}. Vracíme zdraví vaší stavbě.`
-    : `${prefix}${project.title}. ${project.location}. Vracíme zdraví vaší stavbě.`;
+  // Popis skládá referenceMetaDescription() – vzorec z GEMINI.md doplněný
+  // o technologii, rozsah a délku realizace, aby popis nebyl příliš krátký
+  // (nález Bing Webmaster Tools). Detaily viz src/lib/references.ts.
+  const description = referenceMetaDescription(project);
 
   return pageMetadata({
     path: `/reference/${project.id}`,

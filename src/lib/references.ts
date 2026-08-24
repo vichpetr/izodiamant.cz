@@ -78,3 +78,59 @@ export function formatReferenceDate(dateStr: string): string {
   const name = MONTHS[parseInt(month, 10) - 1];
   return name ? `${name} ${year}` : dateStr;
 }
+
+/**
+ * Meta description detailu reference.
+ *
+ * Bing Webmaster Tools hlásil „Meta descriptions on many of your pages are too
+ * short“ – původní vzorec „Sanace zdiva: [Titulek]. [Lokalita]. [slogan]“ dával
+ * jen ~60–80 znaků. Skládáme proto ještě technologii, rozsah a délku realizace
+ * a cílíme na 130–160 znaků, aby se popis nezkracoval ve výsledcích hledání.
+ *
+ * Vzorec z GEMINI.md zůstává zachovaný: prefix „Sanace zdiva: “, titulek,
+ * lokalita a povinná brand promise na konci (viz CLAUDE.md → SEO conventions).
+ */
+const META_DESCRIPTION_MAX = 160;
+const BRAND_PROMISE = 'Vracíme zdraví vaší stavbě.';
+
+function lowerFirst(text: string): string {
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
+
+export function referenceMetaDescription(project: ReferenceProject): string {
+  const isStavba = project.category === 'stavba';
+  // U obecných stavebních zakázek by prefix „Sanace zdiva“ byl zavádějící;
+  // u titulků, které už slovem „Sanace“ začínají, by se zdvojil
+  // („Sanace zdiva: Sanace zdiva, Dalečín“).
+  const prefix = isStavba || /^sanace/i.test(project.title) ? '' : 'Sanace zdiva: ';
+  const location = project.title.includes(project.location) ? '' : `. ${project.location}`;
+  let description = `${prefix}${project.title}${location}.`;
+
+  const tech = project.technology;
+  const scope = lowerFirst(project.scope);
+  const duration = lowerFirst(project.duration);
+  // Varianty od nejdelší po nejkratší – vezmeme první, která se vejde do limitu.
+  const details = [
+    `${tech}: ${scope}, ${duration}.`,
+    `${tech}: ${scope}.`,
+    `${tech}, ${duration}.`,
+    `${tech}.`,
+  ];
+  const tails = isStavba
+    ? ['Stavební a zednické práce na klíč.', 'Zednické práce na klíč.']
+    : [
+        'Dodatečná izolace proti vzlínající vlhkosti.',
+        'Izolace proti vzlínající vlhkosti.',
+        'Sanace vlhkého zdiva na klíč.',
+      ];
+
+  const fits = (part: string) =>
+    `${description} ${part} ${BRAND_PROMISE}`.length <= META_DESCRIPTION_MAX;
+
+  const detail = details.find(fits);
+  if (detail) description += ` ${detail}`;
+  const tail = tails.find(fits);
+  if (tail) description += ` ${tail}`;
+
+  return `${description} ${BRAND_PROMISE}`;
+}
