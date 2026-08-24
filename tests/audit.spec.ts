@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { createHash } from 'crypto';
+import { allReferences, referenceMetaDescription } from '../src/lib/references';
 
 /**
  * Regresní testy k auditu webu (2026-07).
@@ -367,5 +368,32 @@ test.describe('Audit: nedoložitelná tvrzení', () => {
     const occurrences = (body.match(/vracíme zdraví vaší stavbě/gi) || []).length;
     // Slogan patří do hlavičky/patičky, ne do technických kolonek a odstavců.
     expect(occurrences, 'slogan se v těle stránky opakuje').toBeLessThanOrEqual(1);
+  });
+});
+
+/**
+ * Bing Webmaster Tools: „Meta descriptions on many of your pages are too short."
+ * Nálezem bylo 7 detailů referencí (~60–80 znaků). Popis se skládá v
+ * referenceMetaDescription(); test hlídá délku i povinnou brand promise.
+ */
+test.describe('Audit: délka meta description u referencí', () => {
+  test('každý detail reference má popis 110–160 znaků se sloganem', () => {
+    for (const project of allReferences) {
+      const description = referenceMetaDescription(project);
+      expect(description.length, `${project.id}: „${description}"`).toBeGreaterThanOrEqual(110);
+      expect(description.length, `${project.id}: „${description}"`).toBeLessThanOrEqual(160);
+      expect(description, `${project.id} nemá brand promise`).toContain('Vracíme zdraví vaší stavbě.');
+      // „Sanace zdiva: Sanace zdiva, Dalečín" – zdvojený prefix.
+      expect(description, `${project.id} má zdvojený prefix`).not.toMatch(/Sanace zdiva: Sanace/i);
+    }
+  });
+
+  test('detail reference servíruje složený popis v HTML', async ({ request }) => {
+    const project = allReferences.find((r) => r.id === 'zleby')!;
+    const html = await (await request.get('/reference/zleby')).text();
+    const match = html.match(/<meta name="description" content="([^"]+)"/);
+    expect(match, 'chybí meta description').not.toBeNull();
+    const description = match![1].replace(/&#x27;/g, "'").replace(/&amp;/g, '&');
+    expect(description).toBe(referenceMetaDescription(project));
   });
 });
