@@ -117,7 +117,7 @@ export default function Technology() {
                 <div className="text-[10px] font-black text-primary uppercase tracking-[0.25em] italic mb-2">Doplňková služba</div>
                 <div className="text-2xl font-black text-white uppercase tracking-tight leading-tight mb-2">Zednické a obkladačské práce</div>
                 <p className="text-white/70 font-medium leading-relaxed max-w-2xl">
-                  Zdění, omítky a štuky, betonáž, výkopy i pokládka obkladů a dlažby. Cena dohodou, působnost do cca 60 km od Nových Hradů.
+                  Zdění, omítky a štuky, betonáž, výkopy i pokládka obkladů a dlažby. Cena dohodou, působnost do cca 50 km od Nových Hradů.
                 </p>
               </div>
               <span className="inline-flex items-center gap-2 text-white font-black uppercase tracking-widest text-xs group-hover:text-primary transition-colors shrink-0">

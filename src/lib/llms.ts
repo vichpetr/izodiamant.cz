@@ -15,7 +15,7 @@ Hodnocení: 5,0 z 5 (12 hodnocení na Firmy.cz).
 - [Podřezávání diamantovým lanem](https://izodiamant.cz/sluzby/diamantove-lano): Ideální pro kamenné, betonové a silné smíšené zdivo. Šetrná metoda s minimem otřesů. Rozhodujícím kritériem je materiál zdiva, nikoli jeho tloušťka – lano zvládne tvrdý kámen i u tenkých stěn a zároveň nemá limit tloušťky (i přes dva metry). Orientační cena od 4 500 Kč/m², realizace 3–5 pracovních dnů.
 - [Podřezávání řetězovou pilou](https://izodiamant.cz/sluzby/retezova-pila): Nejrychlejší metoda pro cihelné zdivo s průběžnou ložnou spárou. Vkládání hydroizolační PE fólie o tloušťce 2 mm s životností přesahující 50 let. Orientační cena od 2 500 Kč/m², realizace 2–3 pracovní dny.
 - [Chemická injektáž](https://izodiamant.cz/sluzby/chemicka-injektaz): Vytvoření hydroizolační clony pomocí certifikovaných gelů nebo krémů na bázi silanů a siloxanů v místech, kde nelze řezat. Orientační cena od 2 500 Kč/m², realizace 1–2 pracovní dny.
-- [Zednické a obkladačské práce](https://izodiamant.cz/sluzby/zednicke-a-obkladacske-prace): Doplňková služba – zdění, omítky a štuky, betonáž, výkopy a pokládka obkladů a dlažby. Cena dohodou podle rozsahu prací. Působnost do cca 60 km od Nových Hradů (sanaci vlhkého zdiva naopak provádíme po celé ČR).
+- [Zednické a obkladačské práce](https://izodiamant.cz/sluzby/zednicke-a-obkladacske-prace): Doplňková služba – zdění, omítky a štuky, betonáž, výkopy a pokládka obkladů a dlažby. Cena dohodou podle rozsahu prací. Působnost do cca 50 km od Nových Hradů (sanaci vlhkého zdiva naopak provádíme po celé ČR).
 
 ## Ceny
 Ceny jsou uvedeny za metr čtvereční (m²) řezné plochy – tedy plochy, kterou je nutné zdivem prořezat nebo proinjektovat. Spočítá se jako délka zdi × tloušťka zdiva: u 10 m dlouhé stěny silné 45 cm jde o 4,5 m². Tloušťka zdiva tak vstupuje do ceny přímo, u silnější stěny cena úměrně roste. Nejsme plátci DPH, uvedené částky se tedy o daň dále nenavyšují. Jde o orientační ceny – závaznou nabídku zpracováváme až po prohlídce objektu. Nezávaznou kalkulaci lze spočítat na https://izodiamant.cz/#calculator
@@ -39,7 +39,7 @@ Ceny jsou uvedeny za metr čtvereční (m²) řezné plochy – tedy plochy, kte
 - [Podřezávání diamantovým lanem](https://izodiamant.cz/sluzby/diamantove-lano): kámen, beton, silné zdivo.
 - [Podřezávání řetězovou pilou](https://izodiamant.cz/sluzby/retezova-pila): cihelné zdivo.
 - [Chemická injektáž](https://izodiamant.cz/sluzby/chemicka-injektaz): tam, kde nelze řezat.
-- [Zednické a obkladačské práce](https://izodiamant.cz/sluzby/zednicke-a-obkladacske-prace): zdění, omítky, obklady – cena dohodou, do cca 60 km.
+- [Zednické a obkladačské práce](https://izodiamant.cz/sluzby/zednicke-a-obkladacske-prace): zdění, omítky, obklady – cena dohodou, do cca 50 km.
 - [Reference realizací](https://izodiamant.cz/reference): archiv dokončených zakázek členěný po letech, s fotografiemi a rozsahem prací.
 - [Kde působíme](https://izodiamant.cz/kde-pusobime): kraje, kam vyjíždíme, a přehled realizací podle lokality.
 - [Kalkulačka ceny](https://izodiamant.cz/#calculator): orientační cena podřezání.

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   ...pageMetadata({
     path: '/sluzby/zednicke-a-obkladacske-prace',
     title: "Zednické a obkladačské práce",
-    description: "Zednické a obkladačské práce – zdění, omítky, štuky, betonáž, výkopy, obklady a dlažby. Působíme do cca 60 km od Nových Hradů. Cena dohodou, nezávazná poptávka online.",
+    description: "Zednické a obkladačské práce – zdění, omítky, štuky, betonáž, výkopy, obklady a dlažby. Působíme do cca 50 km od Nových Hradů. Cena dohodou, nezávazná poptávka online.",
     images: ['/og-zednicke.jpg'],
   }),
   keywords: ["zednické práce", "obkladačské práce", "zdění", "omítky", "štuky", "betonáž", "výkopové práce", "obklady a dlažba", "zedník", "Nové Hrady", "Pardubicko"],
@@ -106,7 +106,7 @@ export default function MasonryPage() {
               <Icons.MapPin className="w-10 h-10 text-primary mb-5 relative z-10" />
               <h2 className="text-xl font-black uppercase mb-2 relative z-10">Kde pracujeme</h2>
               <p className="text-white/70 font-medium leading-relaxed relative z-10">
-                Zednické a obkladačské práce provádíme <strong className="text-white">do cca 60 km od Nových Hradů</strong>
+                Zednické a obkladačské práce provádíme <strong className="text-white">do cca 50 km od Nových Hradů</strong>
                 {" "}(Pardubicko a okolí). Sanaci vlhkého zdiva naopak realizujeme po celé ČR.
               </p>
             </div>
