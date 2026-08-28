@@ -26,9 +26,10 @@ interface Project {
   image: string;
   gallery?: string[];
   reviewId?: string;
-  // "stavba" = obecné stavební/zednické zakázky (plot, dlažba, fasáda…), které
-  // nejsou sanací vlhkého zdiva. Bez pole = "sanace" (výchozí, zpětně kompatibilní).
-  category?: 'sanace' | 'stavba';
+  // "stavba" = obecné stavební/zednické zakázky (plot, dlažba, fasáda…),
+  // "rezani" = řezání betonu a konstrukcí (skruže, podstavce, prostupy) – ani
+  // jedno není sanace vlhkého zdiva. Bez pole = "sanace" (zpětně kompatibilní).
+  category?: 'sanace' | 'stavba' | 'rezani';
 }
 
 export async function generateMetadata({
@@ -72,10 +73,12 @@ export default async function ProjectPage({
 
   if (!project) notFound();
 
-  // Obecné stavební zakázky (plot, dlažba, fasáda) nejsou sanací vlhkého zdiva –
-  // sanačně laděné texty (nadpisy, technický popis, FAQ o vlhkosti) by u nich byly
-  // nepravdivé, proto je podmiňujeme.
+  // Obecné stavební zakázky (plot, dlažba, fasáda) ani řezání betonu (skruže,
+  // podstavce) nejsou sanací vlhkého zdiva – sanačně laděné texty (nadpisy,
+  // technický popis, FAQ o vlhkosti) by u nich byly nepravdivé, proto je podmiňujeme.
   const isStavba = project.category === 'stavba';
+  const isRezani = project.category === 'rezani';
+  const isSanace = !isStavba && !isRezani;
 
   // Odkazy z reference (dobře rankující stránky) na stránky služeb – interní
   // prolinkování s klíčovým textem. Službu poznáme z technologie i rozsahu prací,
@@ -135,12 +138,12 @@ export default async function ProjectPage({
 
                 <div className="space-y-4">
                   <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] italic ml-1">
-                    {isStavba ? 'Realizace' : 'Realizace sanace'}
+                    {isSanace ? 'Realizace sanace' : 'Realizace'}
                   </div>
                   <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-neutral-dark uppercase tracking-tighter italic leading-[0.85] -ml-1 break-words hyphens-auto">
-                    {isStavba || /[Ss]anace|[Ii]zolace/.test(project.title)
-                      ? project.title
-                      : `Sanace objektu: ${project.title}`}
+                    {isSanace && !/[Ss]anace|[Ii]zolace/.test(project.title)
+                      ? `Sanace objektu: ${project.title}`
+                      : project.title}
                   </h1>
                   <div className="flex items-center gap-2 text-neutral-dark/70 font-bold uppercase tracking-widest text-sm ml-1 pt-4">
                     <Icons.MapPin className="w-4 h-4 text-primary" />
@@ -200,7 +203,16 @@ export default async function ProjectPage({
               <div className="space-y-6 bg-neutral-dark/5 p-8 rounded-3xl border border-neutral-dark/10">
                 <h2 className="text-xs font-black text-neutral-dark uppercase tracking-[0.3em]">Technický popis a průběh</h2>
                 <div className="prose prose-sm text-neutral-dark/70 font-medium leading-relaxed">
-                  {isStavba ? (
+                  {isRezani ? (
+                    <>
+                      <p>
+                        Řezání u projektu {project.title} provedl tým IZODIAMANT stejnou technikou, jakou používáme při podřezávání zdiva – diamantovým lanem s vodním chlazením. Lano vede řez přesně v naměřené rovině, bez rázů a otřesů, takže zůstane nedotčená i konstrukce těsně vedle řezu.
+                      </p>
+                      <p>
+                        Práce začíná zaměřením a rozvržením kladek, které lano vedou, následuje samotný řez a odebrání oddělené části. Řezání probíhá pod stálým chlazením vodou, takže na místě nevzniká prašnost – to je zásadní všude, kde se pracuje v blízkosti provozu, zeleně nebo hotových povrchů.
+                      </p>
+                    </>
+                  ) : isStavba ? (
                     <>
                       <p>
                         Realizaci u projektu {project.title} provedl tým IZODIAMANT s důrazem na přesnost, čistou práci a kvalitní zpracování. Celý proces zahrnoval přípravu podkladu, samotné provedení a finální dokončovací práce.
@@ -223,8 +235,8 @@ export default async function ProjectPage({
               </div>
 
               {/* Sanačně laděný SEO obsah (FAQ o vlhkosti, regionální působnost) –
-                  jen pro sanační reference; u obecných staveb by byl nepravdivý. */}
-              {!isStavba && (
+                  jen pro sanační reference; u staveb a řezání by byl nepravdivý. */}
+              {isSanace && (
               <>
               <div className="space-y-8 pt-8">
                 <h2 className="text-2xl font-black text-neutral-dark uppercase tracking-tight italic">Časté otázky k sanaci v lokalitě {project.location}</h2>
@@ -278,6 +290,17 @@ export default async function ProjectPage({
                 </div>
               )}
 
+              {isRezani && (
+                <div className="space-y-6 pt-8 border-t border-neutral-dark/5">
+                  <h2 className="text-xl font-black text-neutral-dark uppercase tracking-tight italic">O realizaci</h2>
+                  <div className="prose prose-sm text-neutral-dark/70 font-medium leading-relaxed">
+                    <p>
+                      Diamantové lano neřeže jen zdivo. Stejnou technologií, jakou podřezáváme domy proti vzlínající vlhkosti, oddělíme i beton, železobeton nebo kámen – betonové skruže, podstavce, schodiště, základy či prostupy. Řez je přesný, bez otřesů a díky vodnímu chlazení bez prachu, takže se dá pracovat i v běžném provozu. Máte-li podobný záměr v lokalitě {project.location} a okolí, rádi vám připravíme nezávaznou nabídku.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {/* Linked Review Section */}
               {project.reviewId && (
                 <ProjectReview reviewId={project.reviewId} />
@@ -285,9 +308,10 @@ export default async function ProjectPage({
             </div>
 
             <div className="sticky top-32 space-y-8">
-              <ProjectGallery 
-                images={project.gallery && project.gallery.length > 0 ? project.gallery : [project.image]} 
-                title={project.title} 
+              <ProjectGallery
+                media={project.gallery && project.gallery.length > 0 ? project.gallery : [project.image]}
+                title={project.title}
+                technology={project.technology}
               />
               
               <div className="bg-neutral-dark rounded-3xl p-10 text-white shadow-2xl relative overflow-hidden group">
