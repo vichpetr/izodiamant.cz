@@ -6,8 +6,12 @@ export interface ReferenceProject {
   location: string;
   /** „RRRR-MM“ */
   date: string;
-  /** „stavba“ = obecná stavební zakázka (plot, dlažba, fasáda), ne sanace zdiva. */
-  category?: 'sanace' | 'stavba';
+  /**
+   * „stavba“ = obecná stavební zakázka (plot, dlažba, fasáda),
+   * „rezani“ = řezání betonu a konstrukcí (skruže, podstavce, prostupy).
+   * Ani jedno není sanace zdiva; bez pole = „sanace“.
+   */
+  category?: 'sanace' | 'stavba' | 'rezani';
   technology: string;
   scope: string;
   duration: string;
@@ -99,10 +103,12 @@ function lowerFirst(text: string): string {
 
 export function referenceMetaDescription(project: ReferenceProject): string {
   const isStavba = project.category === 'stavba';
-  // U obecných stavebních zakázek by prefix „Sanace zdiva“ byl zavádějící;
-  // u titulků, které už slovem „Sanace“ začínají, by se zdvojil
+  const isRezani = project.category === 'rezani';
+  const isSanace = !isStavba && !isRezani;
+  // U nesanačních zakázek (stavba, řezání betonu) by prefix „Sanace zdiva“ byl
+  // zavádějící; u titulků, které už slovem „Sanace“ začínají, by se zdvojil
   // („Sanace zdiva: Sanace zdiva, Dalečín“).
-  const prefix = isStavba || /^sanace/i.test(project.title) ? '' : 'Sanace zdiva: ';
+  const prefix = isSanace && !/^sanace/i.test(project.title) ? 'Sanace zdiva: ' : '';
   const location = project.title.includes(project.location) ? '' : `. ${project.location}`;
   let description = `${prefix}${project.title}${location}.`;
 
@@ -118,6 +124,8 @@ export function referenceMetaDescription(project: ReferenceProject): string {
   ];
   const tails = isStavba
     ? ['Stavební a zednické práce na klíč.', 'Zednické práce na klíč.']
+    : isRezani
+    ? ['Řezání betonu bez otřesů a bez prachu.', 'Řezání betonu diamantovým lanem.']
     : [
         'Dodatečná izolace proti vzlínající vlhkosti.',
         'Izolace proti vzlínající vlhkosti.',
