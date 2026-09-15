@@ -96,7 +96,7 @@ export default function AreasPage() {
             <Link href="/sluzby/zednicke-a-obkladacske-prace" className="text-primary-ink font-bold hover:underline">
               zednické a obkladačské práce
             </Link>
-            , které jako doplňkovou službu děláme zhruba do 60 km od Nových Hradů.
+            , které jako doplňkovou službu děláme zhruba do 50 km od Nových Hradů.
           </p>
         </div>
       </section>
