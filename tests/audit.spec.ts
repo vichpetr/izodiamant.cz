@@ -397,3 +397,45 @@ test.describe('Audit: délka meta description u referencí', () => {
     expect(description).toBe(referenceMetaDescription(project));
   });
 });
+
+/**
+ * Re-audit 2026-09: PR #85 sjednotil dojezd zednických prací na 50 km v textech,
+ * ale Service JSON-LD zůstal na geoRadius 60000 – člověk četl 50 km, Google 60 km.
+ * Test váže strojově čitelný poloměr na všechna „X km od Nových Hradů" v HTML
+ * i na llms.txt, takže příští změna dojezdu musí projít všemi povrchy.
+ */
+test.describe('Audit: dojezd zednických prací souhlasí napříč povrchy', () => {
+  test('geoRadius v Service JSON-LD = km uváděné v textu a llms.txt', async ({ request }) => {
+    const html = await (await request.get('/sluzby/zednicke-a-obkladacske-prace')).text();
+    const service = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)]
+      .map((m) => JSON.parse(m[1]))
+      .find((b) => b['@type'] === 'Service');
+    expect(service, 'Service JSON-LD chybí').toBeTruthy();
+    const radiusKm = Number(service.areaServed.geoRadius) / 1000;
+
+    const found: string[] = [];
+    for (const path of ['/sluzby/zednicke-a-obkladacske-prace', '/kde-pusobime', '/']) {
+      const pageHtml = await (await request.get(path)).text();
+      for (const m of pageHtml.matchAll(/(\d+)\s*km od Nových Hradů/g)) found.push(`${path}: ${m[1]} km`);
+    }
+    const llms = readFileSync(join(process.cwd(), 'public/llms.txt'), 'utf-8');
+    for (const m of llms.matchAll(/do cca (\d+)\s*km/g)) found.push(`llms.txt: ${m[1]} km`);
+
+    expect(found.length, 'nenalezen žádný údaj o dojezdu v textu').toBeGreaterThanOrEqual(3);
+    for (const entry of found) {
+      expect(entry, `nesouhlasí s geoRadius (${radiusKm} km)`).toMatch(new RegExp(`: ${radiusKm} km$`));
+    }
+  });
+});
+
+/** Google popis nad ~160 znaků utne – slogan na konci by z výpisu vypadl. */
+test.describe('Audit: délka meta description homepage', () => {
+  test('homepage má popis ≤ 160 znaků se sloganem', async ({ request }) => {
+    const html = await (await request.get('/')).text();
+    const match = html.match(/<meta name="description" content="([^"]+)"/);
+    expect(match, 'chybí meta description').not.toBeNull();
+    const description = match![1].replace(/&#x27;/g, "'").replace(/&amp;/g, '&');
+    expect(description.length, `„${description}"`).toBeLessThanOrEqual(160);
+    expect(description).toContain('Vracíme zdraví vaší stavbě.');
+  });
+});
