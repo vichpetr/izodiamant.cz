@@ -439,3 +439,21 @@ test.describe('Audit: délka meta description homepage', () => {
     expect(description).toContain('Vracíme zdraví vaší stavbě.');
   });
 });
+
+/**
+ * GSC 2026-09: /.well-known/oauth-protected-resource skončil v „Procházeno –
+ * momentálně neindexováno". Soubory pro agenty do výsledků hledání nepatří.
+ * _headers aplikuje až Cloudflare Pages (ne `next start`), proto se testuje
+ * přímo soubor.
+ */
+test.describe('Audit: public/_headers', () => {
+  const headers = readFileSync(join(process.cwd(), 'public/_headers'), 'utf-8');
+
+  test('/.well-known/* má noindex', () => {
+    expect(headers).toMatch(/^\/\.well-known\/\*\n\s+X-Robots-Tag:\s*noindex/m);
+  });
+
+  test('žádné globální X-Robots-Tag: index (spojilo by se s noindex čárkou)', () => {
+    expect(headers).not.toMatch(/^\/\*\n\s+X-Robots-Tag:\s*index/m);
+  });
+});

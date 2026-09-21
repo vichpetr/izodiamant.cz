@@ -1,5 +1,12 @@
-/*
-  X-Robots-Tag: index, follow
+# Pozn.: žádné globální „/* X-Robots-Tag: index, follow" – indexace je výchozí
+# a Cloudflare při shodě více pravidel hodnoty spojuje čárkou („index, follow,
+# noindex"), takže by noindex níže byl v rozporu s globálním pravidlem.
+
+# Strojově čitelné soubory pro agenty – nemají co dělat ve výsledcích hledání
+# (GSC hlásilo oauth-protected-resource jako „Procházeno – neindexováno").
+# Agenti je čtou dál, noindex jim nebrání.
+/.well-known/*
+  X-Robots-Tag: noindex
 
 # Skrytá admin sekce – nikdy neindexovat.
 /sprava
