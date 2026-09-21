@@ -26,7 +26,7 @@ export default function MasonryPage() {
     "serviceType": "Zednické a obkladačské práce",
     "provider": { "@type": "LocalBusiness", "name": "IZODIAMANT" },
     "description": "Zednické a obkladačské práce – zdění, omítky, štuky, betonáž, výkopy a pokládka obkladů a dlažby.",
-    "areaServed": { "@type": "GeoCircle", "geoMidpoint": { "@type": "GeoCoordinates", "latitude": "49.8517231", "longitude": "16.1432100" }, "geoRadius": "60000" },
+    "areaServed": { "@type": "GeoCircle", "geoMidpoint": { "@type": "GeoCoordinates", "latitude": "49.8517231", "longitude": "16.1432100" }, "geoRadius": "50000" },
     "offers": {
       "@type": "Offer",
       "priceSpecification": { "@type": "PriceSpecification", "description": "Cena dohodou podle rozsahu prací" }
