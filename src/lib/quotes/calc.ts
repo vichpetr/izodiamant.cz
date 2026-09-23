@@ -4,6 +4,20 @@
 import calculatorData from '../../data/calculator.json';
 import type { Quote, QuoteItem, TechnologyId } from './model';
 
+/** Tloušťka zdiva, od které řetězová pila nestačí a nasazuje se diamantové lano. */
+export const LANO_THICKNESS_CM = 50;
+
+/**
+ * Navržená technologie podle materiálu a tloušťky: kámen, smíšené zdivo a beton
+ * jdou vždy lanem, cihla pilou – ale od {@link LANO_THICKNESS_CM} i u cihly na
+ * lano (pila tak silnou zeď neprořízne). Jen návrh, uživatel ho může přepsat.
+ */
+export function recommendedTechnology(material: string | null, thicknessCm: number | null): TechnologyId {
+  if (material === 'kamen' || material === 'beton') return 'diamantove-lano';
+  if (thicknessCm !== null && thicknessCm >= LANO_THICKNESS_CM) return 'diamantove-lano';
+  return 'retezova-pila';
+}
+
 /**
  * Předvyplněná cena za m²: střed ceníkového rozpětí z calculator.json (stejná data
  * jako kalkulačka na webu), zaokrouhlený na stovky. Když technologie pro daný

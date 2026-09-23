@@ -8,7 +8,7 @@
 // do formuláře propíšou až po kliknutí na „Použít“.
 
 import { useState } from 'react';
-import { computeTotals, cutArea, formatArea, formatCzk, suggestedPricePerM2 } from '@/lib/quotes/calc';
+import { computeTotals, cutArea, formatArea, formatCzk, recommendedTechnology, suggestedPricePerM2 } from '@/lib/quotes/calc';
 import {
   DEFAULT_CONDITIONS,
   MATERIALS,
@@ -39,10 +39,6 @@ const toNum = (v: string) => {
 const toStr = (v: number | null | undefined) => (v === null || v === undefined ? '' : String(v).replace('.', ','));
 
 let nextKey = 1;
-
-function defaultTechnology(material: string): TechnologyId {
-  return material === 'cihla' ? 'retezova-pila' : material === 'kamen' || material === 'beton' ? 'diamantove-lano' : 'retezova-pila';
-}
 
 export default function QuoteEditor({
   quote,
@@ -93,7 +89,7 @@ export default function QuoteEditor({
   const totals = computeTotals({ mode, transport_price: Math.round(toNum(f.transport_price)) }, parsedItems);
 
   const addItem = () => {
-    const technology = defaultTechnology(f.material);
+    const technology = recommendedTechnology(f.material || null, toNum(f.thickness_cm) || null);
     setItems((prev) => [
       ...prev,
       { key: nextKey++, technology, area: toStr(computedArea), price: String(suggestedPricePerM2(technology, f.material || null)) },
@@ -117,7 +113,7 @@ export default function QuoteEditor({
         if (prev.length > 1 && mode === 'kombinace') return prev;
         if (prev.length) return prev.map((i) => ({ ...i, area }));
         const material = f.material || a.material || '';
-        const technology = defaultTechnology(material);
+        const technology = recommendedTechnology(material || null, a.thicknessCm ?? (toNum(f.thickness_cm) || null));
         return [{ key: nextKey++, technology, area, price: String(suggestedPricePerM2(technology, material || null)) }];
       });
     }

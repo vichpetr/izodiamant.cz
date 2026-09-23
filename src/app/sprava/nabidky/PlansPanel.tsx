@@ -4,8 +4,8 @@
 // návrh rozměrů s tlačítkem „Použít“. AI jen navrhuje – nic se nepropíše samo.
 
 import { useRef, useState } from 'react';
-import { formatArea, formatNumber } from '@/lib/quotes/calc';
-import { materialLabel, type PlanAnalysis, type QuoteFile } from '@/lib/quotes/model';
+import { LANO_THICKNESS_CM, formatArea, formatNumber, recommendedTechnology } from '@/lib/quotes/calc';
+import { materialLabel, technologyLabel, type PlanAnalysis, type QuoteFile } from '@/lib/quotes/model';
 import { cardCls, fileUrl, ghostBtn, headingCls, inputCls, labelCls } from './ui';
 import { useToastAction, type Action } from './useToastAction';
 
@@ -70,7 +70,7 @@ export default function PlansPanel({
   return (
     <section className={cardCls}>
       <h2 className={`${headingCls} mb-1`}>Plánky a výkresy</h2>
-      <p className="text-sm text-neutral-dark/50 mb-4">AI z plánku navrhne délku řezu, tloušťku a m². Návrh vždy zkontrolujte – do nabídky se propíše až tlačítkem „Použít“. U PDF se stránky nejdřív vykreslí na obrázky, proto to trvá déle než u fotky.</p>
+      <p className="text-sm text-neutral-dark/50 mb-4">AI z plánku navrhne délku obvodových zdí, tloušťku a m². Návrh vždy zkontrolujte – do nabídky se propíše až tlačítkem „Použít“. U PDF se stránky nejdřív vykreslí na obrázky, proto to trvá déle než u fotky.</p>
 
       {files.length > 0 && (
         <ul className="space-y-3 mb-5">
@@ -101,6 +101,17 @@ export default function PlansPanel({
                         <span className="text-neutral-dark/50">jistota: {CONFIDENCE[a.confidence] ?? a.confidence}</span>
                       </div>
                       {a.reasoning && <p className="text-neutral-dark/60 mt-1">{a.reasoning}</p>}
+                      {(a.material || a.thicknessCm !== null) && (
+                        <p className="text-neutral-dark/60 mt-1">
+                          Vychází z toho <strong className="text-neutral-dark">{technologyLabel(recommendedTechnology(a.material, a.thicknessCm))}</strong>
+                          {a.material === 'kamen' || a.material === 'beton'
+                            ? ' (podle materiálu)'
+                            : a.thicknessCm !== null && a.thicknessCm >= LANO_THICKNESS_CM
+                              ? ` (zeď od ${LANO_THICKNESS_CM} cm)`
+                              : ''}
+                          .
+                        </p>
+                      )}
                     </div>
                     {(a.lengthM !== null || a.thicknessCm !== null || a.areaM2 !== null) && (
                       <button type="button" onClick={() => onApply(a)} className="text-[11px] font-black uppercase tracking-widest px-3 py-2 rounded-lg bg-primary/15 text-primary-ink hover:bg-primary/25">

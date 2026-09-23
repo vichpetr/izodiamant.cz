@@ -10,8 +10,7 @@
 
 import PostalMime, { type Email as ParsedEmail } from 'postal-mime';
 import type { ImapFlow } from 'imapflow';
-import calculatorData from '../../src/data/calculator.json';
-import { cutArea, missingInputs, suggestedPricePerM2 } from '../../src/lib/quotes/calc';
+import { cutArea, missingInputs, recommendedTechnology, suggestedPricePerM2 } from '../../src/lib/quotes/calc';
 import { DEFAULT_CONDITIONS, isTechnology, type QuoteItem, type TechnologyId } from '../../src/lib/quotes/model';
 import { num, runJson, str } from './ai';
 import { acquireLock, logQuoteMessage, releaseLock, setState } from './db';
@@ -338,9 +337,9 @@ async function createQuoteFromEmail(
   const thicknessCm = num(x.thicknessCm, 5, 250);
   const area = cutArea(lengthM, thicknessCm) ?? num(x.areaM2, 0.1, 5000);
   const technologies = (Array.isArray(x.technologies) ? x.technologies : []).filter(isTechnology) as TechnologyId[];
-  // Klient technologii nejmenoval → navrhneme podle materiálu první řeznou metodu z ceníku
-  // (cihla → pila, kámen/beton → lano). Rozhoduje stejně jako kalkulačka na webu.
-  const uniqueTech = technologies.length ? [...new Set(technologies)] : defaultTechnology(material);
+  // Klient technologii nejmenoval → navrhneme ji podle materiálu a tloušťky
+  // (kámen/beton nebo zeď od 50 cm → lano, jinak pila).
+  const uniqueTech = technologies.length ? [...new Set(technologies)] : [recommendedTechnology(material, thicknessCm)];
   const now = nowIso();
 
   // Zákazník do CRM (stejná tabulka jako /sprava), existující podle e-mailu použijeme.
@@ -404,12 +403,6 @@ async function createQuoteFromEmail(
       .run();
   }
   return quoteId;
-}
-
-function defaultTechnology(material: string | null): TechnologyId[] {
-  const services = calculatorData.find((m) => m.id === material)?.availableServices ?? [];
-  const cutting = services.find((svc) => svc.id !== 'chemicka-injektaz' && isTechnology(svc.id));
-  return cutting ? [cutting.id as TechnologyId] : [];
 }
 
 function byteLength(content: ArrayBuffer | Uint8Array | string): number {

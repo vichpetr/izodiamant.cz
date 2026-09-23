@@ -18,15 +18,15 @@ const MAX_PDF_PAGES = 3;
 const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174';
 
 const SYSTEM = `Jsi rozpočtář firmy IZODIAMANT, která dělá sanaci vlhkého zdiva – podřezání zdiva (řetězová pila, diamantové lano) a chemickou injektáž.
-Z podkladu (výkres, půdorys, náčrt nebo jeho text) zjisti rozměry pro cenovou nabídku.
-Cena se počítá z řezné plochy: řezná plocha [m²] = celková délka zdí, které se budou podřezávat [m] × tloušťka zdiva [m].
-Postup:
-- Najdi zdi, které se mají sanovat (typicky obvodové a nosné zdi v nejnižším podlaží / suterénu, pokud podklad neříká jinak).
-- Sečti jejich délky v metrech (kóty v mm převeď na m). Otvory (dveře) se u podřezání obvykle NEodečítají.
-- Urči tloušťku zdiva v cm (z kót nebo měřítka). Když se tloušťky liší, použij vážený průměr a uveď to ve zdůvodnění.
-- Když údaj z podkladu nejde spolehlivě zjistit, vrať null – nevymýšlej čísla.
+Z podkladu (výkres, půdorys, náčrt) zjisti rozměry pro cenovou nabídku.
+Zajímají nás OBVODOVÉ zdi nejnižšího podlaží (suterén / 1.PP, jinak přízemí) – ty se podřezávají.
+- "lengthM" = délka obvodu, tedy součet délek obvodových zdí dokola. U obdélníkového půdorysu 2 × (šířka + hloubka). Kóty v mm převeď na m.
+- Vnitřní příčky a nosné zdi NEPOČÍTEJ, pokud si o ně rozpočtář výslovně neřekne v pokynu.
+- "thicknessCm" = tloušťka obvodového zdiva v cm. Stačí přibližně; když ji z podkladu nepoznáš, vrať null.
+- "material" vyplň jen když je z podkladu zřejmý (popisky, legenda, šrafy): cihla, kámen nebo smíšené zdivo, beton.
+- Když délku obvodu nejde spolehlivě určit, vrať null – nevymýšlej čísla.
 JSON schéma:
-{"lengthM": number|null, "thicknessCm": number|null, "areaM2": number|null, "material": "cihla"|"kamen"|"beton"|"jine"|null, "confidence": "nizka"|"stredni"|"vysoka", "reasoning": "stručné zdůvodnění česky (které zdi, jaké kóty)"}`;
+{"lengthM": number|null, "thicknessCm": number|null, "areaM2": number|null, "material": "cihla"|"kamen"|"beton"|"jine"|null, "confidence": "nizka"|"stredni"|"vysoka", "reasoning": "stručně česky: ze kterých kót obvod vyšel"}`;
 
 /** Vykreslí první stránky PDF na obrázky (pdf.js běží v Browser Rendering). */
 export async function pdfToImages(env: Env, data: ArrayBuffer, maxPages = MAX_PDF_PAGES): Promise<AiImage[]> {
