@@ -6,10 +6,12 @@
 // U každého souboru je náhled (u PDF první vykreslená stránka) a poznámky, odkud
 // AI který údaj vzala, ať se návrh dá rychle ověřit proti výkresu.
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { LANO_THICKNESS_CM, formatArea, formatNumber, recommendedTechnology } from '@/lib/quotes/calc';
 import { materialLabel, technologyLabel, type PlanAnalysis, type QuoteFile } from '@/lib/quotes/model';
 import { cardCls, fileUrl, ghostBtn, headingCls, inputCls, labelCls, previewUrl } from './ui';
+import Working from './Working';
 import { useToastAction, type Action } from './useToastAction';
 
 const MAX_SIDE = 2400;
@@ -29,7 +31,7 @@ async function shrinkImage(file: File): Promise<File> {
 
 const CONFIDENCE: Record<PlanAnalysis['confidence'], string> = { nizka: 'nízká', stredni: 'střední', vysoka: 'vysoká' };
 
-function parseAnalysis(raw: string | null): (PlanAnalysis & { error?: string }) | null {
+function parseAnalysis(raw: string | null): (PlanAnalysis & { error?: string; pending?: boolean; startedAt?: string }) | null {
   if (!raw) return null;
   try {
     return JSON.parse(raw);
@@ -63,6 +65,16 @@ export default function PlansPanel({
   const [reanalyzeFormAction, reanalyzing] = useToastAction(reanalyzeAction);
   const [preparing, setPreparing] = useState(false);
   const [zoom, setZoom] = useState<QuoteFile | null>(null);
+  const router = useRouter();
+
+  // Čtení plánku běží ve frontě na pozadí – dokud není hotové, obnovujeme data,
+  // aby se výsledek objevil sám, bez ručního refreshe.
+  const pending = files.some((f) => parseAnalysis(f.analysis)?.pending);
+  useEffect(() => {
+    if (!pending) return;
+    const id = setInterval(() => router.refresh(), 5000);
+    return () => clearInterval(id);
+  }, [pending, router]);
 
   useEffect(() => {
     if (!zoom) return;
@@ -90,7 +102,7 @@ export default function PlansPanel({
       <h2 className={`${headingCls} mb-1`}>Plánky a výkresy</h2>
       <p className="text-sm text-neutral-dark/50 mb-4">
         AI z plánku navrhne délku obvodových zdí, tloušťku a m². Návrh zkontrolujte podle náhledu – do nabídky se propíše až tlačítkem „Použít“.
-        U PDF se stránky nejdřív vykreslí na obrázky, proto to trvá déle než u fotky.
+        Rozbor běží na pozadí – u PDF se stránky nejdřív vykreslí na obrázky, takže to trvá déle než u fotky.
       </p>
 
       {files.length > 0 && (
@@ -106,7 +118,9 @@ export default function PlansPanel({
                   <form action={reanalyzeFormAction} className="flex items-center gap-2">
                     <input type="hidden" name="file_id" value={file.id} />
                     <input name="hint" placeholder="Pokyn pro AI (volitelné)" className="border-2 border-neutral-light rounded-lg px-2 py-1 text-xs w-48 outline-none focus:border-primary" />
-                    <button type="submit" disabled={reanalyzing} className={ghostBtn}>{reanalyzing ? 'Čtu…' : a ? 'Přečíst znovu' : 'Přečíst (AI)'}</button>
+                    <button type="submit" disabled={reanalyzing || Boolean(a?.pending)} className={ghostBtn}>
+                      {a?.pending ? 'Zpracovává se…' : reanalyzing ? 'Zařazuji…' : a ? 'Přečíst znovu' : 'Přečíst (AI)'}
+                    </button>
                   </form>
                 </div>
 
@@ -124,7 +138,9 @@ export default function PlansPanel({
                   </button>
 
                   <div className="flex-1 min-w-[16rem] text-sm">
-                    {a?.error ? (
+                    {a?.pending ? (
+                      <Working label="AI čte plánek…" hint="Obvykle 30 s u fotky, u PDF i přes 2 minuty. Výsledek se objeví sám." since={a.startedAt} />
+                    ) : a?.error ? (
                       <p className="text-red-700">Plánek se nepodařilo přečíst: {a.error}</p>
                     ) : a ? (
                       <>
@@ -182,10 +198,10 @@ export default function PlansPanel({
           <input name="hint" placeholder="např. započítej i vnitřní nosné zdi" className={inputCls} />
         </label>
         <button type="submit" disabled={uploading || preparing} className="btn-primary py-2.5 px-6 uppercase tracking-widest text-xs disabled:opacity-60">
-          {uploading ? 'Čtu plánek…' : 'Nahrát a přečíst'}
+          {preparing ? 'Připravuji soubor…' : uploading ? 'Nahrávám…' : 'Nahrát a přečíst'}
         </button>
       </form>
-      {uploading && <p className="text-[11px] text-neutral-dark/50 mt-2">Čtení plánku trvá obvykle 30 s (obrázek) až 90 s (PDF).</p>}
+      {uploading && <Working label="Nahrávám plánek…" hint="Po nahrání se rozbor spustí na pozadí." className="mt-3" />}
 
       {zoom && (
         <div className="fixed inset-0 z-[120] bg-black/80 p-4 flex items-center justify-center" onClick={() => setZoom(null)} role="presentation">

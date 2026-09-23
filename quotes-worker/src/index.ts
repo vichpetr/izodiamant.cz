@@ -6,11 +6,11 @@
 
 import type { QuoteFile } from '../../src/lib/quotes/model';
 import { getFile, getItems, getQuote, getState, logQuoteMessage, updateQuote } from './db';
-import { flag, mailboxConfigured, nowIso, type Env } from './env';
+import { flag, mailboxConfigured, nowIso, type Env, type PlanJob } from './env';
 import { UserError, draftEmailText, generateQuote } from './generate';
 import { pollInbox } from './inbox';
 import { saveDraft, sendMail, type OutgoingMail } from './mailbox';
-import { analyzePlan, pdfToImages } from './plans';
+import { pdfToImages, queueAnalysis, runPlanJob } from './plans';
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 const ALLOWED_UPLOADS = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
@@ -94,16 +94,13 @@ async function handle(request: Request, env: Env): Promise<Response> {
     return new Response(firstPage.data, { headers: { 'Content-Type': 'image/jpeg' } });
   }
 
-  // POST /files/:id/analyze – znovu přečíst uložený plánek (volitelně s pokynem).
+  // POST /files/:id/analyze – zařadí čtení plánku do fronty a hned se vrátí.
   if (method === 'POST' && parts[0] === 'files' && parts[2] === 'analyze') {
     const file = await getFile(env, Number(parts[1]));
     if (!file) return json({ error: 'Soubor neexistuje.' }, 404);
     const body = (await request.json().catch(() => ({}))) as { hint?: string };
-    const object = await env.BUCKET.get(file.r2_key);
-    if (!object) return json({ error: 'Soubor v úložišti chybí.' }, 404);
-    const analysis = await analyzePlan(env, { name: file.filename, type: file.content_type, data: await object.arrayBuffer() }, body.hint?.slice(0, 500) || null);
-    await env.DB.prepare('UPDATE quote_files SET analysis = ? WHERE id = ?').bind(JSON.stringify(analysis), file.id).run();
-    return json({ ok: true, analysis });
+    await queueAnalysis(env, file.id, body.hint?.slice(0, 500) || null);
+    return json({ ok: true, pending: true }, 202);
   }
 
   if (parts[0] !== 'quotes' || !parts[1]) return json({ error: 'Nenalezeno.' }, 404);
@@ -139,19 +136,14 @@ async function handle(request: Request, env: Env): Promise<Response> {
       const filename = upload.name.replace(/[/\\]/g, '_').slice(0, 120);
       const key = `prilohy/${quoteId}/${crypto.randomUUID()}-${filename}`;
       await env.BUCKET.put(key, data, { httpMetadata: { contentType: upload.type } });
-      let analysis: string | null = null;
-      let analysisError: string | null = null;
-      try {
-        analysis = JSON.stringify(await analyzePlan(env, { name: filename, type: upload.type, data }, hint));
-      } catch (err) {
-        analysisError = err instanceof Error ? err.message : String(err);
-      }
       const res = await env.DB.prepare(
-        `INSERT INTO quote_files (quote_id, r2_key, filename, content_type, size, kind, analysis, created_at) VALUES (?, ?, ?, ?, ?, 'plan', ?, ?)`,
+        `INSERT INTO quote_files (quote_id, r2_key, filename, content_type, size, kind, analysis, created_at) VALUES (?, ?, ?, ?, ?, 'plan', NULL, ?)`,
       )
-        .bind(quoteId, key, filename, upload.type, data.byteLength, analysis, nowIso())
+        .bind(quoteId, key, filename, upload.type, data.byteLength, nowIso())
         .run();
-      saved.push({ id: Number(res.meta.last_row_id), filename, analysis: analysis ?? JSON.stringify({ error: analysisError }) });
+      const fileId = Number(res.meta.last_row_id);
+      await queueAnalysis(env, fileId, hint);
+      saved.push({ id: fileId, filename, analysis: null });
     }
     return json({ ok: true, files: saved });
   }
@@ -210,6 +202,19 @@ export default {
     }
   },
 
+  // Consumer fronty: dlouhé čtení plánků (limit 15 min na dávku).
+  async queue(batch, env): Promise<void> {
+    for (const message of batch.messages) {
+      try {
+        if (message.body?.type === 'plan') await runPlanJob(env, message.body);
+        message.ack();
+      } catch (err) {
+        console.error('Úloha z fronty selhala:', err);
+        message.retry();
+      }
+    }
+  },
+
   async scheduled(_event, env, ctx): Promise<void> {
     ctx.waitUntil(
       pollInbox(env, { manual: false }).then(
@@ -218,4 +223,4 @@ export default {
       ),
     );
   },
-} satisfies ExportedHandler<Env>;
+} satisfies ExportedHandler<Env, PlanJob>;

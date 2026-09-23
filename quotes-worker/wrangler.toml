@@ -29,6 +29,19 @@ enabled = true
 [triggers]
 crons = ["*/15 * * * *"]
 
+# Fronta na čtení plánků. Rozbor výkresu trvá i přes 2 minuty – do HTTP požadavku
+# z administrace se to nevejde (edge ho po ~100 s ukončí) a waitUntil má jen 30 s.
+# Producent (fetch) úlohu zařadí, consumer (queue) ji v klidu dopočítá (limit 15 min).
+[[queues.producers]]
+binding = "JOBS"
+queue = "izodiamant-quotes-jobs"
+
+[[queues.consumers]]
+queue = "izodiamant-quotes-jobs"
+max_batch_size = 1
+max_concurrency = 2
+max_retries = 1
+
 [ai]
 binding = "AI"
 
@@ -77,6 +90,16 @@ preview_urls = false
 
 [env.preview.triggers]
 crons = ["*/15 * * * *"]
+
+[[env.preview.queues.producers]]
+binding = "JOBS"
+queue = "izodiamant-quotes-jobs-preview"
+
+[[env.preview.queues.consumers]]
+queue = "izodiamant-quotes-jobs-preview"
+max_batch_size = 1
+max_concurrency = 2
+max_retries = 1
 
 [env.preview.ai]
 binding = "AI"

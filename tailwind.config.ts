@@ -15,6 +15,17 @@ const config: Config = {
         // takže by hodnocení a počet referencí spadly pod ohyb.
         desktop: { raw: "(min-width: 1280px) and (min-height: 900px)" },
       },
+      keyframes: {
+        // Neurčitý ukazatel průběhu v adminu (čtení plánku, generování PDF) –
+        // model průběh nehlásí, pruh jen ukazuje, že se pracuje.
+        "quote-progress": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(300%)" },
+        },
+      },
+      animation: {
+        "quote-progress": "quote-progress 1.4s ease-in-out infinite",
+      },
       colors: {
         background: "#f8f9fa",
         foreground: "#1a1a1a",

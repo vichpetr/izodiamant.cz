@@ -22,6 +22,7 @@ import {
   type TechnologyId,
 } from '@/lib/quotes/model';
 import PlansPanel from './PlansPanel';
+import Working from './Working';
 import { cardCls, headingCls, inputCls, labelCls } from './ui';
 import { submitWithoutReset, useToastAction, type Action } from './useToastAction';
 
@@ -316,7 +317,7 @@ export default function QuoteEditor({
           <button type="submit" form="quote-form" name="intent" value="save" disabled={pending} className="py-3 px-6 rounded-xl border-2 border-neutral-dark/10 text-xs font-black uppercase tracking-widest text-neutral-dark/70 hover:border-primary/40 disabled:opacity-60">
             Jen uložit
           </button>
-          {pending && <p className="text-[11px] text-neutral-dark/50 text-center">Generování PDF trvá obvykle 5–20 s.</p>}
+          {pending && <Working label="Generuji PDF…" hint="Obvykle 5–20 s; poprvé i s návrhem textu e-mailu." />}
         </div>
       </aside>
     </div>

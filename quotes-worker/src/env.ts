@@ -1,8 +1,17 @@
+/** Úloha ve frontě: přečíst uložený plánek. */
+export interface PlanJob {
+  type: 'plan';
+  fileId: number;
+  hint: string | null;
+}
+
 export interface Env {
   DB: D1Database;
   BUCKET: R2Bucket;
   AI: Ai;
   BROWSER: Fetcher;
+  /** Fronta úloh, které se nevejdou do HTTP požadavku (čtení plánků). */
+  JOBS: Queue<PlanJob>;
 
   ENVIRONMENT: string;
   AI_TEXT_MODEL: string;
