@@ -231,3 +231,92 @@ spustit i ručně: **Actions → Deploy Reviews Worker → Run workflow**.
 ### 2.6 Frontend integrace
 
 Frontend (`HomeReviews.tsx`) konzumuje `reviews[]`, řadí podle `date` a renderuje badge podle `source`. **Statický fallback `reviews.json` byl odstraněn** – bez dostupného Workeru (nebo když vrátí prázdno) se sekce hodnocení i recenze u referencí prostě nevykreslí. Raději nic než neaktuální/nereálná záložní data.
+
+## 3. Cenové nabídky (`/sprava/nabidky` + Worker `quotes-worker`)
+
+Admin sekce pro přípravu cenových nabídek: formulář → PDF (vzhled podle ruční nabídky) →
+návrh průvodního e-mailu → koncept do schránky / odeslání. Volitelně čte poptávky ze
+schránky `info@izodiamant.cz` a zakládá z nich nabídky ve stavu *čeká na údaje*.
+
+```
+Pages /sprava/nabidky ──service binding QUOTES──▶ quotes-worker ──▶ D1 (DB), R2 (BUCKET)
+   (UI, D1 čtení/zápis formuláře)                   │  Workers AI (text, plánky)
+                                                    │  Browser Rendering (HTML → PDF)
+                                                    └─ IMAP/SMTP Seznam (cron každých 15 min)
+```
+
+- **Ceny počítá kód** (`src/lib/quotes/calc.ts`), AI jen navrhuje rozměry z plánku a text
+  e-mailu – vše potvrzuje člověk. Předvyplněná cena za m² = střed ceníku z `calculator.json`.
+- **Dvě prostředí se samostatnými daty:** `izodiamant-quotes` (D1 `izodiamant-db`, R2
+  `izodiamant-nabidky`) a `izodiamant-quotes-preview` (D1 `izodiamant-preview-db`, R2
+  `izodiamant-nabidky-preview`). Vše je v `quotes-worker/wrangler.toml`.
+- Worker **není na internetu** (`workers_dev = false`, bez rout) – volá ho jen Pages přes
+  service binding; autorizaci (Google + `ADMIN_EMAILS`) řeší Pages.
+- Sdílený kód (model, výpočty, HTML šablona PDF) je v `src/lib/quotes/` a worker ho bundluje
+  relativní cestou – proto tam nesmí být importy přes `@/`.
+
+### 3.1 Jednorázové nastavení
+
+1. **Workers Paid** ($5/měs.) – nutné: Pages worker má s touto sekcí ~3,4 MiB gzip (limit free
+   plánu je 3 MiB, Paid 10 MiB).
+2. **R2 buckety** `izodiamant-nabidky` a `izodiamant-nabidky-preview` (už vytvořené).
+3. **Schéma D1** – nové tabulky jsou v `db/schema.sql` (idempotentní). Aplikuje je CI při
+   nasazení workeru, ručně: `npm run db:schema:remote` / `npm run db:schema:preview:remote`.
+4. **Service binding v Pages** – musí to být **Service binding**, ne proměnná prostředí
+   (textová proměnná `QUOTES` nepomůže – kód na ní volá `.fetch()`). Pages projekt →
+   Settings → Bindings → Add → *Service binding*:
+   - Production: `QUOTES` → `izodiamant-quotes`
+   - Preview: `QUOTES` → `izodiamant-quotes-preview`
+
+   Pak znovu nasaďte (Retry deployment). Bez bindingu sekce funguje jen jako formulář a ukáže
+   hlášku „Služba nabídek není připojená“.
+5. **API token pro CI** (`CLOUDFLARE_API_TOKEN`, viz 2.4) musí mít navíc práva
+   *D1: Edit*, *Workers R2 Storage: Edit*, *Workers AI: Read* a *Browser Rendering: Edit*.
+
+### 3.2 Schránka (fáze 2 a 3)
+
+Konfigurace je ve `quotes-worker/wrangler.toml` zvlášť pro produkci a `[env.preview]`:
+
+| Proměnná | Význam |
+| --- | --- |
+| `MAILBOX_USER` | adresa schránky (produkce `info@izodiamant.cz`; **na preview zadejte testovací schránku**) |
+| `MAILBOX_PASSWORD` | **secret** – heslo (při zapnutém dvoufázovém ověření heslo pro aplikace) |
+| `INBOX_ENABLED` | `true` = cron každých 15 min čte schránku; ruční „Zkontrolovat schránku“ funguje vždy |
+| `INBOX_ARCHIVE_FOLDER` | kam se přesunou zpracované poptávky (složka se sama založí); zpráva se předtím označí jako přečtená |
+| `INBOX_LABEL` | štítek (IMAP keyword); nastaví se jen když ho server povolí (`PERMANENTFLAGS \*`) |
+| `INBOX_LOOKBACK_DAYS`, `INBOX_MAX_PER_RUN` | kolik dní zpět a kolik zpráv na jeden běh |
+| `DRAFTS_FOLDER`, `SENT_FOLDER` | prázdné = najde se podle IMAP special-use |
+| `SEND_ENABLED` | `true` = tlačítko „Odeslat klientovi“ (SMTP); jinak jen koncepty do schránky |
+
+```bash
+cd quotes-worker
+npx wrangler secret put MAILBOX_PASSWORD --env preview   # testovací schránka
+npx wrangler secret put MAILBOX_PASSWORD                  # produkce info@
+```
+
+Doporučený postup: na preview nastavit testovací schránku → poslat do ní pár poptávek →
+v adminu „Zkontrolovat schránku“ → ověřit nabídky, archivaci a koncepty → pak `INBOX_ENABLED`
+a teprve nakonec `SEND_ENABLED` v produkci.
+
+Zpracované e-maily se evidují v `inbox_messages` (klíč Message-ID) – nic se nezpracuje dvakrát.
+Nepoptávky zůstávají ve schránce netknuté. Obsah e-mailu je pro AI nedůvěryhodný vstup: smí z něj
+jen vyplnit pole nabídky, nikdy nic neodešle.
+
+### 3.3 Lokální vývoj
+
+```bash
+cd quotes-worker && npm ci
+npx wrangler d1 execute izodiamant-preview-db --local --env preview --persist-to ../.wrangler/state --file=../db/schema.sql
+npx wrangler dev --env preview --persist-to ../.wrangler/state      # AI volá vzdálený Workers AI, PDF lokální Chromium
+# v kořeni: npx @cloudflare/next-on-pages && npx wrangler pages dev .vercel/output/static \
+#   --compatibility-flag nodejs_compat --persist-to .wrangler/state \
+#   --d1 DB=fb43aba4-c91a-4d90-8758-e473815ddee1 --service QUOTES=izodiamant-quotes-preview --binding AUTH_SECRET=…
+```
+
+### 3.4 Náklady (orientačně, 40 nabídek + 300 e-mailů měsíčně)
+
+- Workers AI (Gemma 4): e-mail/třídění ~5 s a pár setin haléře za kus, čtení plánku ~30 s;
+  prakticky v rámci 10 000 neuronů denně zdarma.
+- R2: PDF ~0,4 MB → stovky nabídek ročně jsou hluboko ve free tieru (10 GB).
+- Browser Rendering: ~5–10 s na PDF, v rámci 10 h/měs. zahrnutých v Paid plánu.
+- Přechod na Claude (lepší čtení plánků): změna jen v `quotes-worker/src/ai.ts`, odhad $5–15/měs.

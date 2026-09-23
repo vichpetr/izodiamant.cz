@@ -1,0 +1,22 @@
+{
+  "name": "izodiamant-quotes-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --env preview",
+    "deploy:preview": "wrangler deploy --env preview",
+    "deploy:production": "wrangler deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cloudflare/puppeteer": "^1.4.0",
+    "imapflow": "^2.0.5",
+    "postal-mime": "^3.0.0",
+    "worker-mailer": "^1.2.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260922.1",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.114.0"
+  }
+}

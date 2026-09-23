@@ -1,0 +1,115 @@
+# Cloudflare Worker – izodiamant-quotes (cenové nabídky: PDF, AI, schránka info@).
+#
+# Není veřejně dostupný (workers_dev = false, žádné routy). Volá ho jen admin
+# /sprava přes service binding `QUOTES` v Pages projektu a cron (čtení schránky).
+#
+# Dvě oddělená prostředí se samostatnou D1 i R2:
+#   production → izodiamant-quotes          (izodiamant-db,         izodiamant-nabidky)
+#   preview    → izodiamant-quotes-preview  (izodiamant-preview-db, izodiamant-nabidky-preview)
+#
+# Secret (není tady, nastavuje se zvlášť pro každé prostředí):
+#   npx wrangler secret put MAILBOX_PASSWORD               # produkce
+#   npx wrangler secret put MAILBOX_PASSWORD --env preview # preview (testovací schránka)
+#
+# Bindingy a vars se NEDĚDÍ do [env.preview] – při změně je upravte v obou blocích.
+
+name = "izodiamant-quotes"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = false
+preview_urls = false
+
+[limits]
+cpu_ms = 60000
+
+[observability]
+enabled = true
+
+[triggers]
+crons = ["*/15 * * * *"]
+
+[ai]
+binding = "AI"
+
+[browser]
+binding = "BROWSER"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "izodiamant-db"
+database_id = "ab044201-17db-44d4-8826-adfc65a4c18d"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "izodiamant-nabidky"
+
+[vars]
+ENVIRONMENT = "production"
+# Workers AI modely (lze přepnout bez zásahu do kódu). Gemma 4 umí text i obrázky.
+AI_TEXT_MODEL = "@cf/google/gemma-4-26b-a4b-it"
+AI_VISION_MODEL = "@cf/google/gemma-4-26b-a4b-it"
+# Schránka, ze které se čtou poptávky a do které se ukládají koncepty odpovědí.
+MAILBOX_USER = "info@izodiamant.cz"
+MAILBOX_SENDER_NAME = "Václav Ropek – IZODIAMANT"
+IMAP_HOST = "imap.seznam.cz"
+IMAP_PORT = "993"
+SMTP_HOST = "smtp.seznam.cz"
+SMTP_PORT = "465"
+# Fáze 2 – automatické čtení schránky (cron). Bez secretu MAILBOX_PASSWORD se běh
+# rovnou ukončí, takže se schránky nic nedotkne, dokud heslo nenastavíte.
+INBOX_ENABLED = "true"
+INBOX_FOLDER = "INBOX"
+INBOX_ARCHIVE_FOLDER = "Zpracované poptávky"
+INBOX_LABEL = "nabidka"
+INBOX_LOOKBACK_DAYS = "3"
+INBOX_MAX_PER_RUN = "10"
+# Prázdné = složka se najde podle IMAP special-use (\Drafts, \Sent).
+DRAFTS_FOLDER = ""
+SENT_FOLDER = ""
+# Fáze 3b – přímé odeslání z aplikace. Do té doby jen koncepty do schránky.
+SEND_ENABLED = "false"
+
+[env.preview]
+name = "izodiamant-quotes-preview"
+workers_dev = false
+preview_urls = false
+
+[env.preview.triggers]
+crons = ["*/15 * * * *"]
+
+[env.preview.ai]
+binding = "AI"
+
+[env.preview.browser]
+binding = "BROWSER"
+
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "izodiamant-preview-db"
+database_id = "fb43aba4-c91a-4d90-8758-e473815ddee1"
+
+[[env.preview.r2_buckets]]
+binding = "BUCKET"
+bucket_name = "izodiamant-nabidky-preview"
+
+[env.preview.vars]
+ENVIRONMENT = "preview"
+AI_TEXT_MODEL = "@cf/google/gemma-4-26b-a4b-it"
+AI_VISION_MODEL = "@cf/google/gemma-4-26b-a4b-it"
+# TESTOVACÍ schránka (heslo: wrangler secret put MAILBOX_PASSWORD --env preview).
+MAILBOX_USER = "tesquotes-test@izodiamant.cz"
+MAILBOX_SENDER_NAME = "Václav Ropek – IZODIAMANT (TEST)"
+IMAP_HOST = "imap.seznam.cz"
+IMAP_PORT = "993"
+SMTP_HOST = "smtp.seznam.cz"
+SMTP_PORT = "465"
+INBOX_ENABLED = "true"
+INBOX_FOLDER = "INBOX"
+INBOX_ARCHIVE_FOLDER = "Zpracované poptávky"
+INBOX_LABEL = "nabidka"
+INBOX_LOOKBACK_DAYS = "3"
+INBOX_MAX_PER_RUN = "10"
+DRAFTS_FOLDER = ""
+SENT_FOLDER = ""
+SEND_ENABLED = "false"

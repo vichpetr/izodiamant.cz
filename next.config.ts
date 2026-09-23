@@ -33,6 +33,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ['framer-motion'],
+    // Nahrávání plánků k cenové nabídce (/sprava/nabidky) jde přes server action.
+    // Obrázky se v prohlížeči zmenší, ale PDF výkresy mohou mít pár MB.
+    serverActions: { bodySizeLimit: '12mb' },
   },
   // This helps with modern JS output
   compiler: {

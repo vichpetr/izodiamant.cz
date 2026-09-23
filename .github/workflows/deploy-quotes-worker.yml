@@ -1,0 +1,68 @@
+name: Deploy Quotes Worker
+
+# Nasadí quotes-worker (cenové nabídky: PDF, AI, schránka) a aplikuje schéma D1.
+#   push na master      → produkce  (izodiamant-quotes,         izodiamant-db)
+#   push na jinou větev → preview   (izodiamant-quotes-preview, izodiamant-preview-db)
+# Preview worker je jeden sdílený pro všechny větve – nasazuje se poslední push.
+# Schéma je idempotentní (CREATE … IF NOT EXISTS), opakované spuštění nic nerozbije.
+on:
+  push:
+    paths:
+      - 'quotes-worker/**'
+      - 'src/lib/quotes/**'
+      - 'src/data/calculator.json'
+      - 'db/schema.sql'
+      - '.github/workflows/deploy-quotes-worker.yml'
+  workflow_dispatch: {}
+
+concurrency:
+  group: quotes-worker-${{ github.ref == 'refs/heads/master' && 'production' || 'preview' }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      TARGET: ${{ github.ref == 'refs/heads/master' && 'production' || 'preview' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Chybí secrets – přeskočeno
+        if: env.CF_TOKEN == ''
+        run: echo "CLOUDFLARE_API_TOKEN není nastaven → deploy přeskočen (viz deployment.MD)."
+
+      - uses: actions/setup-node@v4
+        if: env.CF_TOKEN != ''
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: quotes-worker/package-lock.json
+
+      - name: Instalace závislostí
+        if: env.CF_TOKEN != ''
+        working-directory: quotes-worker
+        run: npm ci
+
+      - name: Schéma D1 (${{ env.TARGET }})
+        if: env.CF_TOKEN != ''
+        working-directory: quotes-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ "$TARGET" = production ]; then
+            npx wrangler d1 execute izodiamant-db --remote --file=../db/schema.sql
+          else
+            npx wrangler d1 execute izodiamant-preview-db --remote --env preview --file=../db/schema.sql
+          fi
+
+      - name: Deploy (${{ env.TARGET }})
+        if: env.CF_TOKEN != ''
+        working-directory: quotes-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        # Secret MAILBOX_PASSWORD je uložený v Cloudflare, deploy ho zachová.
+        run: |
+          if [ "$TARGET" = production ]; then npx wrangler deploy; else npx wrangler deploy --env preview; fi
