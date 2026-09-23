@@ -34,3 +34,8 @@ export function fmtDateTime(iso?: string | null): string {
 export function fileUrl(key: string): string {
   return `/sprava/nabidky/soubor?key=${encodeURIComponent(key)}`;
 }
+
+/** Obrázkový náhled přílohy (u PDF první vykreslená stránka). */
+export function previewUrl(fileId: number): string {
+  return `/sprava/nabidky/soubor?preview=${fileId}`;
+}

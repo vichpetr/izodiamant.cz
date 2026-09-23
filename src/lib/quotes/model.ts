@@ -121,6 +121,8 @@ export interface PlanAnalysis {
   material: string | null;
   confidence: 'nizka' | 'stredni' | 'vysoka';
   reasoning: string;
+  /** Stručně odkud se co vyčetlo – ať si uživatel návrh snadno ověří v náhledu. */
+  sources?: string[];
 }
 
 export function technologyLabel(id: string): string {

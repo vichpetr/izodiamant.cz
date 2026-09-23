@@ -25,8 +25,10 @@ Zajímají nás OBVODOVÉ zdi nejnižšího podlaží (suterén / 1.PP, jinak p�
 - "thicknessCm" = tloušťka obvodového zdiva v cm. Stačí přibližně; když ji z podkladu nepoznáš, vrať null.
 - "material" vyplň jen když je z podkladu zřejmý (popisky, legenda, šrafy): cihla, kámen nebo smíšené zdivo, beton.
 - Když délku obvodu nejde spolehlivě určit, vrať null – nevymýšlej čísla.
+- "sources" = 2 až 5 krátkých poznámek (každá do 100 znaků), odkud jsi který údaj vzal, ať si to člověk najde v podkladu:
+  kde to na výkresu bylo a co tam stálo, např. "kóta 10 500 mm nad půdorysem", "popis pod výkresem: cihla tl. 450 mm", "strana 2, řez A-A".
 JSON schéma:
-{"lengthM": number|null, "thicknessCm": number|null, "areaM2": number|null, "material": "cihla"|"kamen"|"beton"|"jine"|null, "confidence": "nizka"|"stredni"|"vysoka", "reasoning": "stručně česky: ze kterých kót obvod vyšel"}`;
+{"lengthM": number|null, "thicknessCm": number|null, "areaM2": number|null, "material": "cihla"|"kamen"|"beton"|"jine"|null, "confidence": "nizka"|"stredni"|"vysoka", "reasoning": "stručně česky: jak obvod vyšel", "sources": ["…", "…"]}`;
 
 /** Vykreslí první stránky PDF na obrázky (pdf.js běží v Browser Rendering). */
 export async function pdfToImages(env: Env, data: ArrayBuffer, maxPages = MAX_PDF_PAGES): Promise<AiImage[]> {
@@ -130,9 +132,13 @@ export async function analyzePlan(
   const areaM2 = cutArea(lengthM, thicknessCm) ?? num(raw.areaM2, 0.1, 5000);
   const material = typeof raw.material === 'string' && ['cihla', 'kamen', 'beton', 'jine'].includes(raw.material) ? raw.material : null;
   const confidence = raw.confidence === 'vysoka' || raw.confidence === 'stredni' ? raw.confidence : 'nizka';
-  return { lengthM, thicknessCm, areaM2, material, confidence, reasoning: str(raw.reasoning, 1200) ?? '' };
+  const sources = (Array.isArray(raw.sources) ? raw.sources : [])
+    .map((v) => str(v, 120))
+    .filter((v): v is string => Boolean(v))
+    .slice(0, 5);
+  return { lengthM, thicknessCm, areaM2, material, confidence, reasoning: str(raw.reasoning, 1200) ?? '', sources };
 }
 
 function empty(reasoning: string): PlanAnalysis {
-  return { lengthM: null, thicknessCm: null, areaM2: null, material: null, confidence: 'nizka', reasoning };
+  return { lengthM: null, thicknessCm: null, areaM2: null, material: null, confidence: 'nizka', reasoning, sources: [] };
 }

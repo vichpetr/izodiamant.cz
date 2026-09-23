@@ -157,7 +157,8 @@ export async function deleteQuote(id: number): Promise<string[]> {
     db.prepare('UPDATE inbox_messages SET quote_id = NULL WHERE quote_id = ?').bind(id),
     db.prepare('DELETE FROM quotes WHERE id = ?').bind(id),
   ]);
-  return keys.results.map((r) => r.k);
+  // K PDF přílohám patří i vygenerovaný náhled (stejný klíč + .nahled.jpg).
+  return keys.results.flatMap((r) => [r.k, `${r.k}.nahled.jpg`]);
 }
 
 export async function listInbox(limit = 30): Promise<InboxRow[]> {

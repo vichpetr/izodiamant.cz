@@ -23,9 +23,31 @@ export async function GET(request: Request) {
   const session = await safeAuth();
   if (!session?.user || !isAllowed(session.user.email)) return new Response('Nemáte oprávnění.', { status: 403 });
 
-  const key = new URL(request.url).searchParams.get('key') ?? '';
+  const params = new URL(request.url).searchParams;
+  const preview = params.get('preview');
+  const key = params.get('key') ?? '';
   const isGeneratedPdf = key.startsWith('nabidky/');
   try {
+    // Náhled: worker vrací obrázek (u PDF vykreslenou první stránku), takže se
+    // dá zobrazit rovnou na stránce. Obsah je vždy obrázek pod naší kontrolou.
+    if (preview) {
+      if (!/^\d+$/.test(preview)) return new Response('Neplatné id.', { status: 400 });
+      const res = await rawQuotesWorker(`/files/${preview}/preview`);
+      if (!res.ok) return new Response('Náhled není k dispozici.', { status: res.status });
+      const type = res.headers.get('Content-Type') ?? '';
+      if (!SAFE_TYPES.includes(type) || type === 'application/pdf') {
+        return new Response('Náhled není k dispozici.', { status: 415 });
+      }
+      return new Response(res.body, {
+        headers: {
+          'Content-Type': type,
+          'Cache-Control': 'private, max-age=300',
+          'X-Content-Type-Options': 'nosniff',
+          'Content-Security-Policy': "sandbox; default-src 'none'",
+        },
+      });
+    }
+
     const res = await rawQuotesWorker(`/files?key=${encodeURIComponent(key)}`);
     if (!res.ok) return new Response('Soubor nenalezen.', { status: res.status });
 

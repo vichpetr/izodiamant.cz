@@ -10,7 +10,7 @@ import { flag, mailboxConfigured, nowIso, type Env } from './env';
 import { UserError, draftEmailText, generateQuote } from './generate';
 import { pollInbox } from './inbox';
 import { saveDraft, sendMail, type OutgoingMail } from './mailbox';
-import { analyzePlan } from './plans';
+import { analyzePlan, pdfToImages } from './plans';
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 const ALLOWED_UPLOADS = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
@@ -66,6 +66,32 @@ async function handle(request: Request, env: Env): Promise<Response> {
     const valid = (Array.isArray(keys) ? keys : []).filter((k): k is string => typeof k === 'string' && /^(nabidky|prilohy)\//.test(k));
     if (valid.length) await env.BUCKET.delete(valid);
     return json({ ok: true, deleted: valid.length });
+  }
+
+  // GET /files/:id/preview – náhled přílohy k rychlé kontrole v adminu.
+  // Obrázek se vrátí rovnou, u PDF se vykreslí první stránka a uloží do R2,
+  // takže druhé otevření už je okamžité.
+  if (method === 'GET' && parts[0] === 'files' && parts[2] === 'preview') {
+    const file = await getFile(env, Number(parts[1]));
+    if (!file) return json({ error: 'Soubor neexistuje.' }, 404);
+
+    if (file.content_type.startsWith('image/')) {
+      const object = await env.BUCKET.get(file.r2_key);
+      if (!object) return json({ error: 'Soubor v úložišti chybí.' }, 404);
+      return new Response(object.body, { headers: { 'Content-Type': file.content_type } });
+    }
+    if (file.content_type !== 'application/pdf') return json({ error: 'Náhled není k dispozici.' }, 415);
+
+    const previewKey = `${file.r2_key}.nahled.jpg`;
+    const cached = await env.BUCKET.get(previewKey);
+    if (cached) return new Response(cached.body, { headers: { 'Content-Type': 'image/jpeg' } });
+
+    const source = await env.BUCKET.get(file.r2_key);
+    if (!source) return json({ error: 'Soubor v úložišti chybí.' }, 404);
+    const [firstPage] = await pdfToImages(env, await source.arrayBuffer(), 1);
+    if (!firstPage) throw new UserError('Náhled PDF se nepodařilo vykreslit.');
+    await env.BUCKET.put(previewKey, firstPage.data, { httpMetadata: { contentType: 'image/jpeg' } });
+    return new Response(firstPage.data, { headers: { 'Content-Type': 'image/jpeg' } });
   }
 
   // POST /files/:id/analyze – znovu přečíst uložený plánek (volitelně s pokynem).
