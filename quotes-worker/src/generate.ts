@@ -94,7 +94,7 @@ export function fallbackEmail(quote: Quote, items: QuoteItem[]): { email_subject
       '',
       priceSummary(quote, items),
       '',
-      'Nejsme plátci DPH, uvedené ceny jsou konečné. Konečná cena se stanoví podle skutečně provedeného rozsahu prací.',
+      'Nejsme plátci DPH, uvedené ceny jsou konečné. Výslednou cenu potvrdíme po osobní prohlídce objektu; konečná částka se stanoví podle skutečně provedeného rozsahu prací.',
       '',
       'V případě zájmu nebo jakýchkoli dotazů se mi prosím ozvěte.',
       '',
@@ -120,7 +120,7 @@ Pravidla:
 - Oslovení vždy neutrálně „Dobrý den,“ (klient může být i firma nebo SVJ).
 - Nevymýšlej nic, co v podkladu není (schůzky, prohlídky, termíny, předchozí jednání).
 - Ceny přepiš PŘESNĚ z podkladu, nic nepřepočítávej a nepřidávej jiná čísla.
-- Zmiň, že nejsme plátci DPH a konečná cena se stanoví podle skutečného rozsahu.
+- Zmiň, že nejsme plátci DPH, že výslednou cenu potvrdíme po osobní prohlídce objektu a že konečná částka se stanoví podle skutečného rozsahu.
 - Podpis: ${QUOTE_AUTHOR.name}, IZODIAMANT – sanace zdiva, +420 737 017 012, info@izodiamant.cz.
 JSON schéma: {"subject": "předmět", "body": "text e-mailu s \\n pro nové řádky"}`,
       user: `Klient: ${quote.client_name}

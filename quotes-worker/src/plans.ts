@@ -22,11 +22,15 @@ Z podkladu (výkres, půdorys, náčrt) zjisti rozměry pro cenovou nabídku.
 Zajímají nás OBVODOVÉ zdi nejnižšího podlaží (suterén / 1.PP, jinak přízemí) – ty se podřezávají.
 - "lengthM" = délka obvodu, tedy součet délek obvodových zdí dokola. U obdélníkového půdorysu 2 × (šířka + hloubka). Kóty v mm převeď na m.
 - Vnitřní příčky a nosné zdi NEPOČÍTEJ, pokud si o ně rozpočtář výslovně neřekne v pokynu.
-- "thicknessCm" = tloušťka obvodového zdiva v cm. Stačí přibližně; když ji z podkladu nepoznáš, vrať null.
+- "thicknessCm" = tloušťka obvodového zdiva v cm. Když je tlouštěk víc, vezmi NEJVĚTŠÍ (neprůměruj).
 - "material" vyplň jen když je z podkladu zřejmý (popisky, legenda, šrafy): cihla, kámen nebo smíšené zdivo, beton.
-- Když délku obvodu nejde spolehlivě určit, vrať null – nevymýšlej čísla.
-- "sources" = 2 až 5 krátkých poznámek (každá do 100 znaků), odkud jsi který údaj vzal, ať si to člověk najde v podkladu:
-  kde to na výkresu bylo a co tam stálo, např. "kóta 10 500 mm nad půdorysem", "popis pod výkresem: cihla tl. 450 mm", "strana 2, řez A-A".
+DŮLEŽITÉ – vždy se pokus číslo dát:
+- Když si kóty odporují (součet dílčích kót ≠ celková kóta, levá strana ≠ pravá), použij VĚTŠÍ hodnotu, sniž "confidence" a rozpor popiš v "sources". Nevracej kvůli tomu null.
+- Když některé úseky nejsou okótované, odhadni je podle měřítka a napiš to do poznámek.
+- null vrať jen tehdy, když z podkladu nejdou přečíst vůbec žádné použitelné rozměry.
+- Nabídka se stejně potvrzuje až po osobní prohlídce, takže raději mírně nadhodnoť než ať chybí číslo.
+- "sources" = 2 až 5 krátkých poznámek (každá do 100 znaků), odkud jsi který údaj vzal a kde byl případný rozpor,
+  např. "kóta 10 500 mm nahoře", "spodní kóta 9 650 mm vs. součet 11 150 mm – použito 11 150", "popis: cihla tl. 450 mm".
 JSON schéma:
 {"lengthM": number|null, "thicknessCm": number|null, "areaM2": number|null, "material": "cihla"|"kamen"|"beton"|"jine"|null, "confidence": "nizka"|"stredni"|"vysoka", "reasoning": "stručně česky: jak obvod vyšel", "sources": ["…", "…"]}`;
 

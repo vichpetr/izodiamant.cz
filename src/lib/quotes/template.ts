@@ -71,7 +71,7 @@ export function renderQuoteHtml(quote: Quote, items: QuoteItem[], issuedAt: Date
             )
             .join('')}
         </div>
-        <div class="callout"><strong>Výsledná cena bude odpovídat jedné z uvedených variant, případně jejich kombinaci</strong> podle toho, kterou technologii bude možné na místě reálně použít. Cena za m² zůstává v obou případech neměnná – konečná cena bude stanovena po dokončení prací a následném přeměření skutečně provedeného rozsahu.</div>`
+        <div class="callout"><strong>Výsledná cena bude odpovídat jedné z uvedených variant, případně jejich kombinaci</strong> podle toho, kterou technologii bude možné na místě reálně použít. Cena za m² zůstává v obou případech neměnná. <strong>Výsledná cena bude potvrzena po osobní prohlídce objektu</strong> a konečná částka se stanoví po dokončení prací podle skutečně provedeného rozsahu.</div>`
       : `<div class="card wide">
           <table class="items">
             <thead><tr><th>Technologie</th><th>Plocha</th><th>Cena za m²</th><th>Cena za práce</th></tr></thead>
@@ -91,7 +91,7 @@ export function renderQuoteHtml(quote: Quote, items: QuoteItem[], issuedAt: Date
           </table>
           <div class="total"><span>Cena celkem</span><strong>${formatCzk(totals.total)}</strong></div>
         </div>
-        <div class="callout">Konečná cena bude stanovena po dokončení prací a přeměření skutečně provedeného rozsahu. Cena za m² u jednotlivých technologií zůstává neměnná.</div>`;
+        <div class="callout"><strong>Výsledná cena bude potvrzena po osobní prohlídce objektu</strong> – rozměry v této nabídce vycházejí z dosud dodaných podkladů. Konečná částka se stanoví po dokončení prací podle skutečně provedeného rozsahu; cena za m² u jednotlivých technologií zůstává neměnná.</div>`;
 
   return `<!doctype html>
 <html lang="cs">
