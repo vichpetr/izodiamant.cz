@@ -282,7 +282,7 @@ Konfigurace je ve `quotes-worker/wrangler.toml` zvlášť pro produkci a `[env.p
 | `MAILBOX_USER` | adresa schránky (produkce `info@izodiamant.cz`; **na preview zadejte testovací schránku**) |
 | `MAILBOX_PASSWORD` | **secret** – heslo (při zapnutém dvoufázovém ověření heslo pro aplikace) |
 | `INBOX_ENABLED` | `true` = cron každých 15 min čte schránku; ruční „Zkontrolovat schránku“ funguje vždy |
-| `INBOX_ARCHIVE_FOLDER` | kam se přesunou zpracované poptávky (složka se sama založí) |
+| `INBOX_ARCHIVE_FOLDER` | kam se přesunou zpracované poptávky (složka se sama založí); zpráva se předtím označí jako přečtená |
 | `INBOX_LABEL` | štítek (IMAP keyword); nastaví se jen když ho server povolí (`PERMANENTFLAGS \*`) |
 | `INBOX_LOOKBACK_DAYS`, `INBOX_MAX_PER_RUN` | kolik dní zpět a kolik zpráv na jeden běh |
 | `DRAFTS_FOLDER`, `SENT_FOLDER` | prázdné = najde se podle IMAP special-use |

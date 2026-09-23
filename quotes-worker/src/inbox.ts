@@ -2,7 +2,7 @@
 //
 // Každá nová zpráva se zapíše do inbox_messages (klíč Message-ID), takže se nikdy
 // nezpracuje dvakrát. Poptávka → zákazník + nabídka ve stavu „čeká na údaje“,
-// přílohy do R2, zpráva se označí štítkem a přesune do archivní složky.
+// přílohy do R2, zpráva se označí jako přečtená i štítkem a přesune do archivu.
 // Ostatní zprávy zůstávají ve schránce netknuté.
 //
 // Obsah e-mailu je NEDŮVĚRYHODNÝ vstup: AI z něj smí jen vyplnit strukturovaná
@@ -210,13 +210,16 @@ async function processMessage(
   const outcome = await handleEmail(env, full.source, inboxId, analyzeAttachments);
   if (outcome !== 'nabidka') return outcome;
 
-  // Štítek + archiv. Selhání tady nesmí zneplatnit už založenou nabídku.
+  // Přečteno + štítek + archiv. Příznaky se nastavují PŘED přesunem – MOVE je
+  // přenese s sebou a po přesunu už zpráva má v cílové složce jiné UID.
+  // Selhání tady nesmí zneplatnit už založenou nabídku.
   try {
     await prepareArchive();
+    const flags = ['\\Seen'];
     const keyword = imapKeyword(env.INBOX_LABEL || '');
-    if (keyword && client.mailbox && client.mailbox.permanentFlags?.has('\\*')) {
-      await client.messageFlagsAdd(String(uid), [keyword], { uid: true });
-    }
+    // Vlastní štítek jen tam, kde server uživatelské příznaky dovolí.
+    if (keyword && client.mailbox && client.mailbox.permanentFlags?.has('\\*')) flags.push(keyword);
+    await client.messageFlagsAdd(String(uid), flags, { uid: true });
     await client.messageMove(String(uid), env.INBOX_ARCHIVE_FOLDER, { uid: true });
   } catch (err) {
     console.warn('Archivace zprávy selhala:', err instanceof Error ? err.message : err);
