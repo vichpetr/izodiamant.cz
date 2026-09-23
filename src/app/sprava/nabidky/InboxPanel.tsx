@@ -7,6 +7,7 @@ import Link from 'next/link';
 import type { InboxRow } from '@/lib/quotesDb';
 import type { WorkerStatus } from '@/lib/quotesWorker';
 import { cardCls, fmtDateTime, ghostBtn, headingCls } from './ui';
+import Working from './Working';
 import { useToastAction, type Action } from './useToastAction';
 
 const STATUS_LABEL: Record<string, string> = {
@@ -62,6 +63,8 @@ export default function InboxPanel({
           </button>
         </form>
       </div>
+
+      {polling && <Working label="Kontroluji schránku…" hint="Ruční kontrola bere až 3 nové zprávy; plánky se čtou na pozadí." className="mt-4" />}
 
       {inbox.length > 0 && (
         <details className="mt-4">

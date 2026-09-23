@@ -9,6 +9,7 @@ import type { Quote } from '@/lib/quotes/model';
 import { Icons } from '@/components/Icons';
 import { cardCls, fileUrl, fmtDateTime, ghostBtn, headingCls, inputCls, labelCls, primarySmall } from './ui';
 import { submitWithoutReset, useToastAction, type Action } from './useToastAction';
+import Working from './Working';
 
 export default function OutputPanel({
   quote,
@@ -78,6 +79,7 @@ export default function OutputPanel({
             <span className={labelCls}>Text e-mailu {quote.client_email ? `(pro ${quote.client_email})` : ''}</span>
             <textarea name="email_body" rows={12} value={body} onChange={(e) => setBody(e.target.value)} className={`${inputCls} resize-y text-sm leading-relaxed`} />
           </label>
+          {regenerating && <Working label="AI píše návrh e-mailu…" hint="Obvykle do 15 s." />}
           <div className="flex flex-wrap gap-2">
             <button type="submit" disabled={saving || !dirty} className={primarySmall}>{saving ? 'Ukládám…' : 'Uložit text'}</button>
             <button type="button" onClick={copy} className={ghostBtn}>{copied ? 'Zkopírováno' : 'Kopírovat'}</button>
@@ -113,6 +115,7 @@ export default function OutputPanel({
                   </button>
                 </form>
               )}
+              {(drafting || sending) && <Working label={drafting ? 'Ukládám koncept do schránky…' : 'Odesílám e-mail…'} hint="Připojuji se k poštovnímu serveru." className="w-full" />}
               {!canMail && (
                 <span className="text-[11px] text-neutral-dark/40">
                   {!quote.client_email ? 'Chybí e-mail klienta.' : dirty ? 'Nejdřív uložte text.' : 'Chybí PDF nebo text e-mailu.'}

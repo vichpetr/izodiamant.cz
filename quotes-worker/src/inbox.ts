@@ -16,7 +16,7 @@ import { num, runJson, str } from './ai';
 import { acquireLock, logQuoteMessage, releaseLock, setState } from './db';
 import { flag, mailboxConfigured, nowIso, type Env } from './env';
 import { ensureFolder, withImap } from './mailbox';
-import { analyzePlan } from './plans';
+import { queueAnalysis } from './plans';
 
 const LOCK_KEY = 'inbox_lock';
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
@@ -130,8 +130,8 @@ export async function pollInbox(env: Env, opts: { manual: boolean }): Promise<Po
         const fresh = candidates
           .filter((c) => !known.has(c.messageId))
           .sort((a, b) => a.date.getTime() - b.date.getTime())
-          // Ruční spuštění čeká admin v prohlížeči → méně zpráv a bez čtení plánků (to jde
-          // dodatečně tlačítkem u nabídky). Cron zpracuje plnou dávku.
+          // Ruční spuštění čeká admin v prohlížeči, proto menší dávka; cron bere plnou.
+          // Čtení plánků běží v obou případech ve frontě, takže nezdržuje.
           .slice(0, opts.manual ? Math.min(3, Number(env.INBOX_MAX_PER_RUN) || 10) : Number(env.INBOX_MAX_PER_RUN) || 10);
 
         let archiveReady = false;
@@ -139,7 +139,7 @@ export async function pollInbox(env: Env, opts: { manual: boolean }): Promise<Po
           result.checked++;
           const inboxId = await startRecord(env, mailbox, msg.messageId);
           try {
-            const outcome = await processMessage(env, client, msg.uid, inboxId, !opts.manual, async () => {
+            const outcome = await processMessage(env, client, msg.uid, inboxId, async () => {
               if (!archiveReady) {
                 await ensureFolder(client, env.INBOX_ARCHIVE_FOLDER);
                 archiveReady = true;
@@ -203,12 +203,11 @@ async function processMessage(
   client: ImapFlow,
   uid: number,
   inboxId: number,
-  analyzeAttachments: boolean,
   prepareArchive: () => Promise<void>,
 ): Promise<'nabidka' | 'odpoved' | 'ignorovano'> {
   const full = await client.fetchOne(String(uid), { source: true }, { uid: true });
   if (!full || !full.source) throw new Error('Zprávu se nepodařilo stáhnout.');
-  const outcome = await handleEmail(env, full.source, inboxId, analyzeAttachments);
+  const outcome = await handleEmail(env, full.source, inboxId);
   if (outcome !== 'nabidka') return outcome;
 
   // Přečteno + štítek + archiv. Příznaky se nastavují PŘED přesunem – MOVE je
@@ -233,7 +232,6 @@ export async function handleEmail(
   env: Env,
   source: ArrayBuffer | Uint8Array | string,
   inboxId: number,
-  analyzeAttachments = true,
 ): Promise<'nabidka' | 'odpoved' | 'ignorovano'> {
   const parsed = await PostalMime.parse(source);
 
@@ -286,19 +284,14 @@ export async function handleEmail(
     const filename = (att.filename || `priloha-${idx + 1}`).replace(/[^\w.\-áčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ ]/g, '_');
     const key = `prilohy/${quoteId}/${crypto.randomUUID()}-${filename}`;
     await env.BUCKET.put(key, data, { httpMetadata: { contentType: att.mimeType } });
-    let analysis: string | null = null;
-    if (analyzeAttachments && idx < 2) {
-      try {
-        analysis = JSON.stringify(await analyzePlan(env, { name: filename, type: att.mimeType, data }, null));
-      } catch (err) {
-        console.warn('Analýza přílohy selhala:', err instanceof Error ? err.message : err);
-      }
-    }
-    await env.DB.prepare(
-      `INSERT INTO quote_files (quote_id, r2_key, filename, content_type, size, kind, analysis, created_at) VALUES (?, ?, ?, ?, ?, 'plan', ?, ?)`,
+    const res = await env.DB.prepare(
+      `INSERT INTO quote_files (quote_id, r2_key, filename, content_type, size, kind, analysis, created_at) VALUES (?, ?, ?, ?, ?, 'plan', NULL, ?)`,
     )
-      .bind(quoteId, key, filename, att.mimeType, data.byteLength, analysis, nowIso())
+      .bind(quoteId, key, filename, att.mimeType, data.byteLength, nowIso())
       .run();
+    // Čtení plánku běží ve frontě – u ručního spuštění se tak nečeká v prohlížeči
+    // a u cronu se dávka nezdrží dlouhými rozbory.
+    if (idx < 2) await queueAnalysis(env, Number(res.meta.last_row_id), null);
   }
 
   await finishRecord(env, inboxId, { ...base, status: 'nabidka', extracted, quoteId });

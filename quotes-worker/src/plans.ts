@@ -11,7 +11,7 @@ import puppeteer from '@cloudflare/puppeteer';
 import type { PlanAnalysis } from '../../src/lib/quotes/model';
 import { cutArea } from '../../src/lib/quotes/calc';
 import { num, pdfToText, runJson, str, type AiImage } from './ai';
-import type { Env } from './env';
+import { nowIso, type Env, type PlanJob } from './env';
 import { toBase64 } from './util';
 
 const MAX_PDF_PAGES = 3;
@@ -145,4 +145,46 @@ export async function analyzePlan(
 
 function empty(reasoning: string): PlanAnalysis {
   return { lengthM: null, thicknessCm: null, areaM2: null, material: null, confidence: 'nizka', reasoning, sources: [] };
+}
+
+// ─── Čtení plánku na pozadí ──────────────────────────────────────────────────
+// Rozbor reálného výkresu trvá i přes 2 minuty, takže se nedá dělat v požadavku
+// z administrace (edge ho po ~100 s ukončí). Úloha se zařadí do fronty a UI mezitím
+// ukazuje „zpracovává se“; consumer má na doběhnutí 15 minut.
+
+/** Zapíše k souboru značku, že se pracuje – UI podle ní ukáže průběh. */
+export async function markPending(env: Env, fileId: number): Promise<void> {
+  await env.DB.prepare('UPDATE quote_files SET analysis = ? WHERE id = ?')
+    .bind(JSON.stringify({ pending: true, startedAt: nowIso() }), fileId)
+    .run();
+}
+
+/** Zařadí čtení plánku do fronty (a rovnou označí soubor jako rozpracovaný). */
+export async function queueAnalysis(env: Env, fileId: number, hint: string | null): Promise<void> {
+  await markPending(env, fileId);
+  const job: PlanJob = { type: 'plan', fileId, hint };
+  await env.JOBS.send(job);
+}
+
+/** Spuštění úlohy z fronty: přečte plánek a výsledek (i případnou chybu) uloží k souboru. */
+export async function runPlanJob(env: Env, job: PlanJob): Promise<void> {
+  const file = await env.DB.prepare('SELECT * FROM quote_files WHERE id = ?')
+    .bind(job.fileId)
+    .first<{ id: number; r2_key: string; filename: string; content_type: string }>();
+  if (!file) return;
+
+  let result: string;
+  try {
+    const object = await env.BUCKET.get(file.r2_key);
+    if (!object) throw new Error('Soubor v úložišti chybí.');
+    const analysis = await analyzePlan(
+      env,
+      { name: file.filename, type: file.content_type, data: await object.arrayBuffer() },
+      job.hint,
+    );
+    result = JSON.stringify(analysis);
+  } catch (err) {
+    result = JSON.stringify({ error: err instanceof Error ? err.message : String(err) });
+  }
+  await env.DB.prepare('UPDATE quote_files SET analysis = ? WHERE id = ?').bind(result, file.id).run();
 }
