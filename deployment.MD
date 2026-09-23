@@ -262,7 +262,9 @@ Pages /sprava/nabidky ──service binding QUOTES──▶ quotes-worker ──
 2. **R2 buckety** `izodiamant-nabidky` a `izodiamant-nabidky-preview` (už vytvořené).
 3. **Schéma D1** – nové tabulky jsou v `db/schema.sql` (idempotentní). Aplikuje je CI při
    nasazení workeru, ručně: `npm run db:schema:remote` / `npm run db:schema:preview:remote`.
-4. **Service binding v Pages** – Pages projekt → Settings → Bindings → Add → *Service binding*:
+4. **Service binding v Pages** – musí to být **Service binding**, ne proměnná prostředí
+   (textová proměnná `QUOTES` nepomůže – kód na ní volá `.fetch()`). Pages projekt →
+   Settings → Bindings → Add → *Service binding*:
    - Production: `QUOTES` → `izodiamant-quotes`
    - Preview: `QUOTES` → `izodiamant-quotes-preview`
 

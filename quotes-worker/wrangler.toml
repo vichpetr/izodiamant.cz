@@ -96,8 +96,8 @@ bucket_name = "izodiamant-nabidky-preview"
 ENVIRONMENT = "preview"
 AI_TEXT_MODEL = "@cf/google/gemma-4-26b-a4b-it"
 AI_VISION_MODEL = "@cf/google/gemma-4-26b-a4b-it"
-# Sem doplňte TESTOVACÍ schránku (heslo: wrangler secret put MAILBOX_PASSWORD --env preview).
-MAILBOX_USER = ""
+# TESTOVACÍ schránka (heslo: wrangler secret put MAILBOX_PASSWORD --env preview).
+MAILBOX_USER = "tesquotes-test@izodiamant.cz"
 MAILBOX_SENDER_NAME = "Václav Ropek – IZODIAMANT (TEST)"
 IMAP_HOST = "imap.seznam.cz"
 IMAP_PORT = "993"

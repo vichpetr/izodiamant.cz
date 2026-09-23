@@ -23,7 +23,11 @@ export interface WorkerStatus {
 
 function getService(): Fetcher | null {
   try {
-    return (getRequestContext().env as { QUOTES?: Fetcher }).QUOTES ?? null;
+    const binding = (getRequestContext().env as { QUOTES?: unknown }).QUOTES;
+    // Pozor: `QUOTES` musí být **service binding**, ne obyčejná proměnná prostředí –
+    // jako text by sem přišel řetězec a volání .fetch() by spadlo na TypeError.
+    if (!binding || typeof (binding as Fetcher).fetch !== 'function') return null;
+    return binding as Fetcher;
   } catch {
     return null;
   }
@@ -46,7 +50,11 @@ export async function callQuotesWorker<T = Record<string, unknown>>(
 
 export async function rawQuotesWorker(path: string, init: RequestInit & { admin?: string } = {}): Promise<Response> {
   const service = getService();
-  if (!service) throw new Error('Služba nabídek není připojená (chybí service binding QUOTES v Pages).');
+  if (!service) {
+    throw new Error(
+      'Služba nabídek není připojená. V Pages → Settings → Bindings musí být QUOTES jako Service binding (ne proměnná prostředí) na izodiamant-quotes, resp. izodiamant-quotes-preview.',
+    );
+  }
   const { admin, ...rest } = init;
   const headers = new Headers(rest.headers);
   if (admin) headers.set('X-Admin-Email', admin);
