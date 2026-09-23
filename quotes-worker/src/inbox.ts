@@ -22,6 +22,10 @@ import { analyzePlan } from './plans';
 const LOCK_KEY = 'inbox_lock';
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 const OPEN_STATUSES = ['koncept', 'ceka_na_udaje', 'vygenerovano', 'odeslano'];
+// Přílohy chodí od cizích odesílatelů – bereme jen neaktivní formáty. Hlavně NE
+// `image/*` paušálně: image/svg+xml umí spustit skript, a soubor se pak servíruje
+// ze stejné domény jako admin (viz i ochrana v /sprava/nabidky/soubor).
+const ALLOWED_ATTACHMENTS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
 
 export interface PollResult {
   skipped?: string;
@@ -253,7 +257,7 @@ export async function handleEmail(
 
   const text = (parsed.text || htmlToText(parsed.html ?? '')).slice(0, 8000);
   const attachments = (parsed.attachments ?? []).filter(
-    (a) => (a.mimeType.startsWith('image/') || a.mimeType === 'application/pdf') && byteLength(a.content) <= MAX_ATTACHMENT_BYTES,
+    (a) => ALLOWED_ATTACHMENTS.includes(a.mimeType) && byteLength(a.content) <= MAX_ATTACHMENT_BYTES,
   );
 
   const extracted = await runJson<Extracted>(env, {

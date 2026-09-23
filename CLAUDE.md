@@ -113,6 +113,8 @@ From `GEMINI.md` — apply when editing any metadata or page copy:
 
 Cloudflare Pages (frontend) + a separate Cloudflare Worker (reviews API). `@cloudflare/next-on-pages` is in devDependencies.
 
+**`vercel` is pinned to an exact version (`59.25.0`) in devDependencies — do not widen it.** `next-on-pages` shells out to `vercel build`; without a local copy it pulls the latest CLI, and 59.25.4 broke the build (every prerendered route is reported as "not configured to run with the Edge Runtime" and the deploy fails). Pinning it also makes Pages builds reproducible. Before bumping, run `rm -rf .next .vercel && npx @cloudflare/next-on-pages` and check it ends with `Generated '.vercel/output/static/_worker.js/index.js'`.
+
 **Quotes Worker** lives in `quotes-worker/` (TypeScript, `wrangler.toml` with `production` + `[env.preview]`, each with its own D1 + R2). Does PDF (Browser Rendering), Workers AI (plans, e-mail text, inbox triage) and IMAP/SMTP to the Seznam mailbox (cron). Deployed by `.github/workflows/deploy-quotes-worker.yml` (master → production, other branches → preview; also applies `db/schema.sql`). Setup and mailbox config: `deployment.MD` §3.
 
 **Reviews Worker** lives in `worker/` (`worker/src/index.js` is the single source of truth, `worker/wrangler.toml` the config) and **auto-deploys** via `.github/workflows/deploy-worker.yml` on any push to `master` under `worker/**`. Non-secret config (`FIRMY_PROFILE_URL`, `GOOGLE_PLACE_ID`) is in `wrangler.toml [vars]`; `GOOGLE_API_KEY` is a Cloudflare secret (persists across deploys). CI needs repo secrets `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`. Full procedure in `deployment.MD`.
