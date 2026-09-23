@@ -70,7 +70,7 @@ export default function PlansPanel({
   return (
     <section className={cardCls}>
       <h2 className={`${headingCls} mb-1`}>Plánky a výkresy</h2>
-      <p className="text-sm text-neutral-dark/50 mb-4">AI z plánku navrhne délku řezu, tloušťku a m². Návrh vždy zkontrolujte – do nabídky se propíše až tlačítkem „Použít“.</p>
+      <p className="text-sm text-neutral-dark/50 mb-4">AI z plánku navrhne délku řezu, tloušťku a m². Návrh vždy zkontrolujte – do nabídky se propíše až tlačítkem „Použít“. U PDF se stránky nejdřív vykreslí na obrázky, proto to trvá déle než u fotky.</p>
 
       {files.length > 0 && (
         <ul className="space-y-3 mb-5">
@@ -131,7 +131,7 @@ export default function PlansPanel({
           {uploading ? 'Čtu plánek…' : 'Nahrát a přečíst'}
         </button>
       </form>
-      {uploading && <p className="text-[11px] text-neutral-dark/50 mt-2">Čtení plánku trvá obvykle 20–60 s.</p>}
+      {uploading && <p className="text-[11px] text-neutral-dark/50 mt-2">Čtení plánku trvá obvykle 30 s (obrázek) až 90 s (PDF).</p>}
     </section>
   );
 }

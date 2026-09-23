@@ -126,6 +126,10 @@ export default function QuoteEditor({
   return (
     <div className="grid lg:grid-cols-3 gap-6 items-start">
       <div className="lg:col-span-2 space-y-6">
+        {/* Plánky jsou první: u nabídek z e-mailu bývá příloha nejrychlejší cesta
+            k rozměrům, teprve z nich se doplní specifikace a položky. */}
+        <PlansPanel quoteId={quote.id} files={files} uploadAction={uploadAction} reanalyzeAction={reanalyzeAction} onApply={applyAnalysis} />
+
         <form id="quote-form" onSubmit={submitWithoutReset(formAction)} className="space-y-6">
           <input type="hidden" name="id" value={quote.id} />
           <input type="hidden" name="mode" value={mode} />
@@ -271,8 +275,6 @@ export default function QuoteEditor({
             </div>
           </section>
         </form>
-
-        <PlansPanel quoteId={quote.id} files={files} uploadAction={uploadAction} reanalyzeAction={reanalyzeAction} onApply={applyAnalysis} />
       </div>
 
       <aside className="lg:sticky lg:top-6 space-y-4">
