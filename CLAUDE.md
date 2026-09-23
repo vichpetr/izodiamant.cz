@@ -41,6 +41,7 @@ no 500) when unset:
 - `AUTH_URL` — canonical origin, e.g. `https://izodiamant.cz`
 - `ADMIN_EMAILS` — comma-separated allowlist of Google accounts that may sign in
 - **Cloudflare D1 binding `DB`** — bound in the Pages project settings (not an env var); schema in `db/schema.sql`. Accessed via `getRequestContext().env.DB` (`src/lib/db.ts`, degrades to empty/no-op when absent).
+- **Service binding `QUOTES`** — Pages → `izodiamant-quotes` (Production) / `izodiamant-quotes-preview` (Preview). Needed by `/sprava/nabidky` for PDF, AI and mailbox; without it the section degrades to a plain form (`src/lib/quotesWorker.ts`).
 
 ## Coupled invariants
 
@@ -66,6 +67,11 @@ enforces them.
   section only shows the 3 newest cards and links here.
 - `/reference/[id]` — single project detail, ID matches `references.json`.
 - `/doporuc-a-ziskej-odmenu` — referral program page.
+- `/sprava/nabidky` — admin: price quotes (list, and editor via `?id=`; kept as ONE route on
+  purpose – every `/sprava/*` route is a separate ~0.5 MiB gz edge function). Domain logic
+  (model, price math, PDF HTML template) lives in `src/lib/quotes/` and is shared with
+  `quotes-worker/` via relative imports — **no `@/` aliases there**. Prices are always computed
+  by `computeTotals()`, never by AI.
 - `next.config.ts` declares legacy redirects (`/sluzby`, `/kontakt`, old service slugs,
   `/category/reference` → `/reference`, `/reference/strana/1` → `/reference`, `/clanky`,
   `/mesta`) — preserve them when restructuring URLs. Note `/reference` is a real page now,
@@ -106,5 +112,7 @@ From `GEMINI.md` — apply when editing any metadata or page copy:
 ## Deployment
 
 Cloudflare Pages (frontend) + a separate Cloudflare Worker (reviews API). `@cloudflare/next-on-pages` is in devDependencies.
+
+**Quotes Worker** lives in `quotes-worker/` (TypeScript, `wrangler.toml` with `production` + `[env.preview]`, each with its own D1 + R2). Does PDF (Browser Rendering), Workers AI (plans, e-mail text, inbox triage) and IMAP/SMTP to the Seznam mailbox (cron). Deployed by `.github/workflows/deploy-quotes-worker.yml` (master → production, other branches → preview; also applies `db/schema.sql`). Setup and mailbox config: `deployment.MD` §3.
 
 **Reviews Worker** lives in `worker/` (`worker/src/index.js` is the single source of truth, `worker/wrangler.toml` the config) and **auto-deploys** via `.github/workflows/deploy-worker.yml` on any push to `master` under `worker/**`. Non-secret config (`FIRMY_PROFILE_URL`, `GOOGLE_PLACE_ID`) is in `wrangler.toml [vars]`; `GOOGLE_API_KEY` is a Cloudflare secret (persists across deploys). CI needs repo secrets `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`. Full procedure in `deployment.MD`.

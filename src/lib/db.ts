@@ -12,14 +12,15 @@ import { getRequestContext } from '@cloudflare/next-on-pages';
 interface D1Result<T> {
   results: T[];
 }
-interface D1PreparedStatement {
+export interface D1PreparedStatement {
   bind(...values: unknown[]): D1PreparedStatement;
   run(): Promise<{ success: boolean; meta: { last_row_id?: number } }>;
   all<T = Record<string, unknown>>(): Promise<D1Result<T>>;
   first<T = Record<string, unknown>>(): Promise<T | null>;
 }
-interface D1Database {
+export interface D1Database {
   prepare(query: string): D1PreparedStatement;
+  batch(statements: D1PreparedStatement[]): Promise<unknown[]>;
 }
 
 export interface Customer {
@@ -51,7 +52,7 @@ export interface EmailLogRow {
 }
 
 /** Vrátí D1 binding, nebo null když nejsme v Cloudflare runtime (lokální dev). */
-function getDB(): D1Database | null {
+export function getDB(): D1Database | null {
   try {
     return (getRequestContext().env as { DB?: D1Database }).DB ?? null;
   } catch {
@@ -105,10 +106,10 @@ export async function addCustomer(input: {
   jobSize?: string | null;
   realized_at?: string | null;
   createdBy: string;
-}): Promise<void> {
+}): Promise<number> {
   const db = getDB();
   if (!db) throw new Error('Databáze není dostupná (chybí binding DB).');
-  await db
+  const res = await db
     .prepare(
       `INSERT INTO customers (name, email, phone, project, job_size, source, realized_at, created_at, created_by)
        VALUES (?, ?, ?, ?, ?, 'manual', ?, ?, ?)`,
@@ -124,6 +125,7 @@ export async function addCustomer(input: {
       input.createdBy,
     )
     .run();
+  return Number(res.meta.last_row_id);
 }
 
 /** Seznam zákazníků + stav posledního odeslaného e-mailu. */

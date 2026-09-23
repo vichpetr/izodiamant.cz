@@ -12,6 +12,7 @@ export default [
       'node_modules/**',
       'out/**',
       'worker/**',
+      'quotes-worker/**',
       'test-results/**',
       'playwright-report/**',
       'next-env.d.ts',
