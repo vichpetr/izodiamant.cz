@@ -1,27 +1,27 @@
 'use client';
 
-// Editor nabídky: klient, místo, specifikace zdiva, opakovatelné položky
+// Krok 2 – editor nabídky: klient, místo, specifikace zdiva, opakovatelné položky
 // (technologie × m² × cena/m²), doprava a texty do PDF. Vpravo živý souhrn ceny.
 //
 // Cena za m² se předvyplní středem ceníku (calculator.json), ale poslední slovo
-// má uživatel – přepsanou cenu nic automaticky nemění. Návrhy z plánku (AI) se
-// do formuláře propíšou až po kliknutí na „Použít“.
+// má uživatel – přepsanou cenu nic automaticky nemění. Návrhy z příloh (krok 1)
+// se do formuláře propíšou po kliknutí na „Použít“. U údajů, které doplnila AI,
+// je štítek s původem; po ruční změně a uložení zmizí.
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { computeTotals, cutArea, formatArea, formatCzk, recommendedTechnology, suggestedPricePerM2 } from '@/lib/quotes/calc';
 import {
   DEFAULT_CONDITIONS,
   MATERIALS,
   TECHNOLOGIES,
+  isTechnology,
   parseJsonArray,
-  type PlanAnalysis,
   type Quote,
-  type QuoteFile,
   type QuoteItem,
   type QuoteMode,
   type TechnologyId,
 } from '@/lib/quotes/model';
-import PlansPanel from './PlansPanel';
+import { useWizard, type Dims } from './QuoteWizard';
 import Working from './Working';
 import { cardCls, headingCls, inputCls, labelCls } from './ui';
 import { submitWithoutReset, useToastAction, type Action } from './useToastAction';
@@ -41,21 +41,25 @@ const toStr = (v: number | null | undefined) => (v === null || v === undefined ?
 
 let nextKey = 1;
 
+function parseSources(raw: string | null): Record<string, string> {
+  try {
+    const parsed: unknown = raw ? JSON.parse(raw) : {};
+    return parsed && typeof parsed === 'object' ? (parsed as Record<string, string>) : {};
+  } catch {
+    return {};
+  }
+}
+
 export default function QuoteEditor({
   quote,
   items: initialItems,
-  files,
   saveAction,
-  uploadAction,
-  reanalyzeAction,
 }: {
   quote: Quote;
   items: QuoteItem[];
-  files: QuoteFile[];
   saveAction: Action;
-  uploadAction: Action;
-  reanalyzeAction: Action;
 }) {
+  const wizard = useWizard();
   const [f, setF] = useState({
     client_name: quote.client_name,
     client_email: quote.client_email ?? '',
@@ -75,10 +79,26 @@ export default function QuoteEditor({
   const [items, setItems] = useState<ItemDraft[]>(() =>
     initialItems.map((i) => ({ key: nextKey++, technology: i.technology, area: toStr(i.area_m2), price: String(i.price_per_m2) })),
   );
-  const [formAction, pending] = useToastAction(saveAction);
+  // Po úspěšném „Uložit a vygenerovat PDF“ pokračujeme na krok 3 (odeslání).
+  const intentRef = useRef<string | null>(null);
+  const [formAction, pending] = useToastAction(saveAction, () => {
+    if (intentRef.current === 'generate') wizard?.goTo(3);
+  });
+  // Štítky „od AI“: uložené z DB + ty, které se právě převzaly z přílohy (do uložení).
+  const [sources, setSources] = useState<Record<string, string>>(() => parseSources(quote.field_sources));
 
-  const set = (key: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+  const dropSource = (key: string) =>
+    setSources((prev) => {
+      if (!(key in prev)) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  // Ruční přepsání údaje ruší štítek „od AI“.
+  const set = (key: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setF((prev) => ({ ...prev, [key]: e.target.value }));
+    dropSource(key);
+  };
 
   const computedArea = cutArea(toNum(f.length_m), toNum(f.thickness_cm));
   const parsedItems: QuoteItem[] = items.map((i, position) => ({
@@ -96,15 +116,24 @@ export default function QuoteEditor({
       { key: nextKey++, technology, area: toStr(computedArea), price: String(suggestedPricePerM2(technology, f.material || null)) },
     ]);
   };
-  const updateItem = (key: number, patch: Partial<ItemDraft>) =>
+  const updateItem = (key: number, patch: Partial<ItemDraft>) => {
     setItems((prev) => prev.map((i) => (i.key === key ? { ...i, ...patch } : i)));
+    if (patch.area !== undefined || patch.technology !== undefined) dropSource('items');
+  };
 
-  const applyAnalysis = (a: PlanAnalysis) => {
+  const applyDims = (a: Dims) => {
     setF((prev) => ({
       ...prev,
       length_m: a.lengthM !== null ? toStr(a.lengthM) : prev.length_m,
       thickness_cm: a.thicknessCm !== null ? toStr(a.thicknessCm) : prev.thickness_cm,
       material: a.material && !prev.material ? a.material : prev.material,
+    }));
+    setSources((prev) => ({
+      ...prev,
+      ...(a.lengthM !== null ? { length_m: a.label } : {}),
+      ...(a.thicknessCm !== null ? { thickness_cm: a.label } : {}),
+      ...(a.material && !f.material ? { material: a.label } : {}),
+      ...(a.areaM2 !== null ? { items: a.label } : {}),
     }));
     if (a.areaM2 !== null) {
       const area = toStr(a.areaM2);
@@ -114,43 +143,58 @@ export default function QuoteEditor({
         if (prev.length > 1 && mode === 'kombinace') return prev;
         if (prev.length) return prev.map((i) => ({ ...i, area }));
         const material = f.material || a.material || '';
-        const technology = recommendedTechnology(material || null, a.thicknessCm ?? (toNum(f.thickness_cm) || null));
+        const technology = isTechnology(a.technology)
+          ? a.technology
+          : recommendedTechnology(material || null, a.thicknessCm ?? (toNum(f.thickness_cm) || null));
         return [{ key: nextKey++, technology, area, price: String(suggestedPricePerM2(technology, material || null)) }];
       });
     }
   };
 
+  // Tlačítko „Použít“ je v kroku 1 – průvodce mu předá tuhle funkci.
+  const applyRef = useRef(applyDims);
+  applyRef.current = applyDims;
+  useEffect(() => {
+    wizard?.registerApply((a) => applyRef.current(a));
+  }, [wizard]);
+
+  const src = (key: string) => sources[key];
+
   return (
     <div className="grid lg:grid-cols-3 gap-6 items-start">
       <div className="lg:col-span-2 space-y-6">
-        {/* Plánky jsou první: u nabídek z e-mailu bývá příloha nejrychlejší cesta
-            k rozměrům, teprve z nich se doplní specifikace a položky. */}
-        <PlansPanel quoteId={quote.id} files={files} uploadAction={uploadAction} reanalyzeAction={reanalyzeAction} onApply={applyAnalysis} />
-
-        <form id="quote-form" onSubmit={submitWithoutReset(formAction)} className="space-y-6">
+        <form
+          id="quote-form"
+          onSubmit={(e) => {
+            intentRef.current = ((e.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null)?.value ?? null;
+            submitWithoutReset(formAction)(e);
+          }}
+          className="space-y-6"
+        >
           <input type="hidden" name="id" value={quote.id} />
           <input type="hidden" name="mode" value={mode} />
           <input type="hidden" name="items" value={JSON.stringify(parsedItems)} />
+          <input type="hidden" name="field_sources" value={JSON.stringify(sources)} />
 
           <section className={cardCls}>
             <h2 className={`${headingCls} mb-4`}>Klient a místo realizace</h2>
             <div className="grid sm:grid-cols-3 gap-4">
-              <Field label="Klient *" className="sm:col-span-3">
+              <Field label="Klient *" className="sm:col-span-3" source={src('client_name')}>
                 <input name="client_name" required value={f.client_name} onChange={set('client_name')} className={inputCls} />
               </Field>
               <Field label="E-mail">
                 <input name="client_email" type="email" value={f.client_email} onChange={set('client_email')} className={inputCls} />
               </Field>
-              <Field label="Telefon">
+              <Field label="Telefon" source={src('client_phone')}>
                 <input name="client_phone" value={f.client_phone} onChange={set('client_phone')} className={inputCls} />
               </Field>
-              <Field label="Obec">
+              <Field label="Obec" source={src('city')}>
                 <input name="city" value={f.city} onChange={set('city')} placeholder="např. Polička" className={inputCls} />
               </Field>
-              <Field label="Objekt" className="sm:col-span-1">
+              <Field label="Objekt" className="sm:col-span-1" source={src('site_name')}>
                 <input name="site_name" value={f.site_name} onChange={set('site_name')} placeholder="Bytový dům č.p. 575" className={inputCls} />
               </Field>
-              <Field label="Adresa" className="sm:col-span-2">
+              <Field label="Adresa" className="sm:col-span-2" source={src('site_address')}>
                 <input name="site_address" value={f.site_address} onChange={set('site_address')} placeholder="Ulice 1. máje, Polička" className={inputCls} />
               </Field>
             </div>
@@ -159,7 +203,7 @@ export default function QuoteEditor({
           <section className={cardCls}>
             <h2 className={`${headingCls} mb-4`}>Specifikace zdiva</h2>
             <div className="grid sm:grid-cols-3 gap-4">
-              <Field label="Zdivo">
+              <Field label="Zdivo" source={src('material')}>
                 <select name="material" value={f.material} onChange={set('material')} className={inputCls}>
                   <option value="">—</option>
                   {MATERIALS.map((m) => (
@@ -167,10 +211,10 @@ export default function QuoteEditor({
                   ))}
                 </select>
               </Field>
-              <Field label="Tloušťka (cm)">
+              <Field label="Tloušťka (cm)" source={src('thickness_cm')}>
                 <input name="thickness_cm" inputMode="decimal" value={f.thickness_cm} onChange={set('thickness_cm')} className={inputCls} />
               </Field>
-              <Field label="Délka řezu (m)">
+              <Field label="Délka řezu (m)" source={src('length_m')}>
                 <input name="length_m" inputMode="decimal" value={f.length_m} onChange={set('length_m')} className={inputCls} />
               </Field>
             </div>
@@ -188,7 +232,13 @@ export default function QuoteEditor({
 
           <section className={cardCls}>
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <h2 className={headingCls}>Technologie a ceny</h2>
+              <div>
+                <h2 className={headingCls}>Technologie a ceny</h2>
+                <p className="text-[11px] text-neutral-dark/50 mt-1">
+                  Cena za m² je předvyplněná středem ceníku – zkontrolujte ji.
+                  {src('items') && <SourceBadge source={src('items')!} prefix="plocha" />}
+                </p>
+              </div>
               <div className="flex rounded-xl border-2 border-neutral-light overflow-hidden text-[11px] font-black uppercase tracking-widest">
                 {(['kombinace', 'varianty'] as const).map((m) => (
                   <button
@@ -324,11 +374,26 @@ export default function QuoteEditor({
   );
 }
 
-function Field({ label, className, children }: { label: string; className?: string; children: React.ReactNode }) {
+function Field({ label, className, source, children }: { label: string; className?: string; source?: string; children: React.ReactNode }) {
   return (
     <label className={`flex flex-col gap-1 ${className ?? ''}`}>
-      <span className={labelCls}>{label}</span>
+      <span className={`${labelCls} flex items-center gap-2`}>
+        {label}
+        {source && <SourceBadge source={source} />}
+      </span>
       {children}
     </label>
+  );
+}
+
+/** Štítek „doplnila AI“ – odkud údaj je, ať ho člověk ověří. */
+function SourceBadge({ source, prefix }: { source: string; prefix?: string }) {
+  return (
+    <span
+      title={`Doplnila AI – ${source}. Po ruční úpravě a uložení štítek zmizí.`}
+      className="ml-1 inline-block max-w-[14rem] truncate align-middle normal-case tracking-normal font-bold text-[10px] px-1.5 py-0.5 rounded bg-violet-100 text-violet-900"
+    >
+      AI{prefix ? ` ${prefix}` : ''} · {source}
+    </span>
   );
 }

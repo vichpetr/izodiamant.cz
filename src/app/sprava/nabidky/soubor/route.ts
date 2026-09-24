@@ -11,6 +11,12 @@ import { rawQuotesWorker } from '@/lib/quotesWorker';
 export const runtime = 'edge';
 
 const SAFE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+// Tabulky (výkaz výměr) jen ke stažení – prohlížeč je stejně neotevře.
+const DOWNLOAD_TYPES = [
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-excel',
+  'text/csv',
+];
 
 /** Název souboru bezpečný do hlavičky (ASCII fallback + RFC 5987 varianta s diakritikou). */
 function disposition(key: string): string {
@@ -26,7 +32,7 @@ export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
   const preview = params.get('preview');
   const key = params.get('key') ?? '';
-  const isGeneratedPdf = key.startsWith('nabidky/');
+  const isGeneratedPdf = key.startsWith('nabidky/') && key.endsWith('.pdf');
   try {
     // Náhled: worker vrací obrázek (u PDF vykreslenou první stránku), takže se
     // dá zobrazit rovnou na stránce. Obsah je vždy obrázek pod naší kontrolou.
@@ -66,7 +72,7 @@ export async function GET(request: Request) {
       headers.set('Content-Type', 'application/pdf');
       headers.set('Content-Disposition', res.headers.get('Content-Disposition') ?? disposition(key));
     } else {
-      headers.set('Content-Type', SAFE_TYPES.includes(upstreamType) ? upstreamType : 'application/octet-stream');
+      headers.set('Content-Type', SAFE_TYPES.includes(upstreamType) || DOWNLOAD_TYPES.includes(upstreamType) ? upstreamType : 'application/octet-stream');
       headers.set('Content-Disposition', disposition(key));
     }
     return new Response(res.body, { headers });

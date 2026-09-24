@@ -11,7 +11,7 @@ import puppeteer from '@cloudflare/puppeteer';
 import type { PlanAnalysis } from '../../src/lib/quotes/model';
 import { cutArea } from '../../src/lib/quotes/calc';
 import { num, pdfToText, runJson, str, type AiImage } from './ai';
-import { nowIso, type Env, type PlanJob } from './env';
+import type { Env } from './env';
 import { toBase64 } from './util';
 
 const MAX_PDF_PAGES = 3;
@@ -88,10 +88,57 @@ export async function pdfToImages(env: Env, data: ArrayBuffer, maxPages = MAX_PD
   }
 }
 
+// Claude bere obrázky do ~5 MB; fotky z mobilu v příloze e-mailu bývají větší.
+const MAX_IMAGE_BYTES = 3.5 * 1024 * 1024;
+
+/** Velký obrázek zmenší v Browser Rendering na JPEG (delší strana 2400 px); malý vrátí beze změny. */
+export async function fitImage(env: Env, image: AiImage): Promise<AiImage> {
+  if (image.data.byteLength <= MAX_IMAGE_BYTES) return image;
+  const browser = await puppeteer.launch(env.BROWSER);
+  try {
+    const page = await browser.newPage();
+    const b64 = await page.evaluate(
+      async (src: string) => {
+        const g = globalThis as unknown as {
+          document: { createElement(tag: 'img'): ImgEl; createElement(tag: 'canvas'): PdfCanvas };
+        };
+        const img = g.document.createElement('img');
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject(new Error('Obrázek se nepodařilo načíst.'));
+          img.src = src;
+        });
+        const scale = Math.min(1, 2400 / Math.max(img.naturalWidth, img.naturalHeight));
+        const canvas = g.document.createElement('canvas');
+        canvas.width = Math.round(img.naturalWidth * scale);
+        canvas.height = Math.round(img.naturalHeight * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+      },
+      `data:${image.mediaType};base64,${toBase64(image.data)}`,
+    );
+    return { mediaType: 'image/jpeg', data: Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)).buffer as ArrayBuffer };
+  } finally {
+    await browser.close();
+  }
+}
+
+interface ImgEl {
+  naturalWidth: number;
+  naturalHeight: number;
+  src: string;
+  onload: () => void;
+  onerror: () => void;
+}
+
 interface PdfCanvas {
   width: number;
   height: number;
-  getContext(type: '2d'): { fillStyle: string; fillRect(x: number, y: number, w: number, h: number): void };
+  getContext(type: '2d'): {
+    fillStyle: string;
+    fillRect(x: number, y: number, w: number, h: number): void;
+    drawImage(image: unknown, x: number, y: number, w: number, h: number): void;
+  };
   toDataURL(type: string, quality: number): string;
 }
 
@@ -107,7 +154,10 @@ export async function analyzePlan(
   env: Env,
   file: { name: string; type: string; data: ArrayBuffer },
   hint: string | null,
+  quoteId: number,
 ): Promise<PlanAnalysis> {
+  // `think` platí jen pro zálohu na Workers AI (Gemma) – komerční modely ho ignorují.
+  const call = { task: 'extract' as const, system: SYSTEM, think: true, quoteId };
   const userText = `Podklad: ${file.name}.${hint ? `\nPokyn od rozpočtáře: ${hint}` : ''}`;
 
   let raw: Record<string, unknown>;
@@ -119,15 +169,14 @@ export async function analyzePlan(
       console.warn('Vykreslení PDF selhalo, zkusím textový výpis:', err instanceof Error ? err.message : err);
     }
     if (images.length > 0) {
-      raw = await runJson(env, { system: SYSTEM, user: `${userText}\n(Stránky PDF jako obrázky.)`, images, think: true });
+      raw = await runJson(env, { ...call, user: `${userText}\n(Stránky PDF jako obrázky.)`, images });
     } else {
       const text = (await pdfToText(env, file.name, file.data)).slice(0, 30_000);
       if (!text.trim()) return empty('PDF se nepodařilo vykreslit ani z něj přečíst text. Zkuste plánek nahrát jako obrázek (JPG/PNG).');
-      raw = await runJson(env, { system: SYSTEM, user: `${userText}\n\nText vytažený z PDF:\n${text}`, think: true });
+      raw = await runJson(env, { ...call, user: `${userText}\n\nText vytažený z PDF:\n${text}` });
     }
   } else {
-    const image: AiImage = { mediaType: file.type, data: file.data };
-    raw = await runJson(env, { system: SYSTEM, user: userText, images: [image], think: true });
+    raw = await runJson(env, { ...call, user: userText, images: [await fitImage(env, { mediaType: file.type, data: file.data })] });
   }
 
   const lengthM = num(raw.lengthM, 0.1, 2000);
@@ -140,51 +189,9 @@ export async function analyzePlan(
     .map((v) => str(v, 120))
     .filter((v): v is string => Boolean(v))
     .slice(0, 5);
-  return { lengthM, thicknessCm, areaM2, material, confidence, reasoning: str(raw.reasoning, 1200) ?? '', sources };
+  return { kind: 'plan', lengthM, thicknessCm, areaM2, material, confidence, reasoning: str(raw.reasoning, 1200) ?? '', sources };
 }
 
 function empty(reasoning: string): PlanAnalysis {
-  return { lengthM: null, thicknessCm: null, areaM2: null, material: null, confidence: 'nizka', reasoning, sources: [] };
-}
-
-// ─── Čtení plánku na pozadí ──────────────────────────────────────────────────
-// Rozbor reálného výkresu trvá i přes 2 minuty, takže se nedá dělat v požadavku
-// z administrace (edge ho po ~100 s ukončí). Úloha se zařadí do fronty a UI mezitím
-// ukazuje „zpracovává se“; consumer má na doběhnutí 15 minut.
-
-/** Zapíše k souboru značku, že se pracuje – UI podle ní ukáže průběh. */
-export async function markPending(env: Env, fileId: number): Promise<void> {
-  await env.DB.prepare('UPDATE quote_files SET analysis = ? WHERE id = ?')
-    .bind(JSON.stringify({ pending: true, startedAt: nowIso() }), fileId)
-    .run();
-}
-
-/** Zařadí čtení plánku do fronty (a rovnou označí soubor jako rozpracovaný). */
-export async function queueAnalysis(env: Env, fileId: number, hint: string | null): Promise<void> {
-  await markPending(env, fileId);
-  const job: PlanJob = { type: 'plan', fileId, hint };
-  await env.JOBS.send(job);
-}
-
-/** Spuštění úlohy z fronty: přečte plánek a výsledek (i případnou chybu) uloží k souboru. */
-export async function runPlanJob(env: Env, job: PlanJob): Promise<void> {
-  const file = await env.DB.prepare('SELECT * FROM quote_files WHERE id = ?')
-    .bind(job.fileId)
-    .first<{ id: number; r2_key: string; filename: string; content_type: string }>();
-  if (!file) return;
-
-  let result: string;
-  try {
-    const object = await env.BUCKET.get(file.r2_key);
-    if (!object) throw new Error('Soubor v úložišti chybí.');
-    const analysis = await analyzePlan(
-      env,
-      { name: file.filename, type: file.content_type, data: await object.arrayBuffer() },
-      job.hint,
-    );
-    result = JSON.stringify(analysis);
-  } catch (err) {
-    result = JSON.stringify({ error: err instanceof Error ? err.message : String(err) });
-  }
-  await env.DB.prepare('UPDATE quote_files SET analysis = ? WHERE id = ?').bind(result, file.id).run();
+  return { kind: 'plan', lengthM: null, thicknessCm: null, areaM2: null, material: null, confidence: 'nizka', reasoning, sources: [] };
 }

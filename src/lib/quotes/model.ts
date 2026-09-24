@@ -21,6 +21,7 @@ export const MATERIALS = [
 export const QUOTE_STATUSES = {
   koncept: 'Koncept',
   ceka_na_udaje: 'Čeká na údaje',
+  pripraveno: 'Připraveno k odeslání',
   vygenerovano: 'PDF hotové',
   odeslano: 'Odesláno',
   prijato: 'Přijato',
@@ -73,6 +74,10 @@ export interface Quote {
   pdf_generated_at: string | null;
   email_subject: string | null;
   email_body: string | null;
+  /** Verze PDF, která se přiloží k e-mailu; null = vždy poslední. */
+  email_version: number | null;
+  /** JSON {pole: "odkud"} – u údajů, které doplnila AI (z e-mailu, z plánku…). */
+  field_sources: string | null;
   created_at: string;
   created_by: string | null;
   updated_at: string;
@@ -96,7 +101,84 @@ export interface QuoteFile {
   size: number;
   kind: 'plan' | 'priloha';
   analysis: string | null;
+  relevance: Relevance | null;
+  relevance_override: Relevance | null;
+  relevance_reason: string | null;
+  doc_kind: DocKind | null;
+  include_in_email: number;
   created_at: string;
+}
+
+/** Jak moc příloha pomůže k nabídce – rozhoduje, jestli ji čte silný model. */
+export type Relevance = 'vysoka' | 'stredni' | 'nizka' | 'zadna';
+export const RELEVANCE_LABELS: Record<Relevance, string> = {
+  vysoka: 'Vysoká',
+  stredni: 'Střední',
+  nizka: 'Nízká',
+  zadna: 'Nerelevantní',
+};
+export const RELEVANCE_ORDER: Relevance[] = ['vysoka', 'stredni', 'nizka', 'zadna'];
+/** Co se čte silným modelem automaticky. */
+export const RELEVANT: Relevance[] = ['vysoka', 'stredni'];
+
+export type DocKind = 'pudorys' | 'rez' | 'pohled' | 'situace' | 'foto' | 'vykaz' | 'logo' | 'jine';
+export const DOC_KIND_LABELS: Record<DocKind, string> = {
+  pudorys: 'Půdorys',
+  rez: 'Řez',
+  pohled: 'Pohled',
+  situace: 'Situace',
+  foto: 'Fotografie',
+  vykaz: 'Výkaz výměr',
+  logo: 'Logo / podpis',
+  jine: 'Jiné',
+};
+
+/** Platná relevance souboru – ruční rozhodnutí má přednost před AI. */
+export function effectiveRelevance(f: Pick<QuoteFile, 'relevance' | 'relevance_override'>): Relevance | null {
+  return f.relevance_override ?? f.relevance;
+}
+
+export interface QuoteVersion {
+  id: number;
+  quote_id: number;
+  version: number;
+  pdf_key: string;
+  vykaz_key: string | null;
+  input_hash: string;
+  total_label: string | null;
+  sent_at: string | null;
+  created_at: string;
+  created_by: string | null;
+}
+
+/** Rozbor výkazu výměr: které řádky jsou naše práce a kam patří cena. */
+export interface VykazAnalysis {
+  kind: 'vykaz';
+  /** Jde vyplnit (xlsx). Starší .xls a .csv se jen čtou. */
+  fillable: boolean;
+  rows: {
+    sheet: string;
+    row: number;
+    description: string;
+    unit: string | null;
+    quantity: number | null;
+    technology: TechnologyId | null;
+    /** Buňka pro jednotkovou cenu (např. "I113") – sem se zapíše naše cena. */
+    unitPriceCell: string | null;
+    /** Buňka s cenou celkem (vzorec zadavatele, jen pro informaci). */
+    totalCell: string | null;
+  }[];
+  /** Pole „Vyplň údaj“ u zhotovitele (název, IČ, DIČ). */
+  contractorCells: { sheet: string; cell: string; field: 'nazev' | 'ic' | 'dic' }[];
+  lengthM: number | null;
+  thicknessCm: number | null;
+  areaM2: number | null;
+  material: string | null;
+  confidence: 'nizka' | 'stredni' | 'vysoka';
+  reasoning: string;
+  sources?: string[];
+  /** Na co upozornit (DPH, nevyplnitelné řádky…). */
+  warnings: string[];
 }
 
 export interface QuoteMessage {
@@ -115,6 +197,7 @@ export interface QuoteMessage {
 
 /** Návrh rozměrů z AI (plánek nebo text e-mailu). Vždy jen návrh – potvrzuje člověk. */
 export interface PlanAnalysis {
+  kind?: 'plan';
   lengthM: number | null;
   thicknessCm: number | null;
   areaM2: number | null;
@@ -146,4 +229,46 @@ export function parseJsonArray(value: string | null): string[] {
   } catch {
     return [];
   }
+}
+
+/** Uložený výsledek práce AI nad souborem (quote_files.analysis). */
+export type FileAnalysis = (PlanAnalysis | VykazAnalysis) & { error?: string; pending?: boolean; startedAt?: string };
+
+export function parseFileAnalysis(raw: string | null): FileAnalysis | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as FileAnalysis;
+  } catch {
+    return null;
+  }
+}
+
+export function isVykaz(a: FileAnalysis | null): a is VykazAnalysis & { error?: string; pending?: boolean } {
+  return a?.kind === 'vykaz';
+}
+
+/** Tabulky (výkaz výměr) poznáme podle typu i přípony – pošta je často posílá jako octet-stream. */
+export const SPREADSHEET_TYPES: Record<string, string> = {
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  xls: 'application/vnd.ms-excel',
+  csv: 'text/csv',
+};
+
+export function isSpreadsheet(f: { content_type: string; filename: string }): boolean {
+  return Object.values(SPREADSHEET_TYPES).includes(f.content_type) || /\.(xlsx|xls|csv)$/i.test(f.filename);
+}
+
+/** Výkazy, které se vyplní a přiloží k e-mailu (zaškrtnuté a s aspoň jedním nalezeným řádkem). */
+export function includedVykazIds(files: Pick<QuoteFile, 'id' | 'include_in_email' | 'analysis'>[]): number[] {
+  return files
+    .filter((f) => {
+      const a = parseFileAnalysis(f.analysis);
+      return f.include_in_email === 1 && isVykaz(a) && a.fillable && a.rows.length > 0;
+    })
+    .map((f) => f.id);
+}
+
+/** Název PDF v příloze e-mailu: první verze bez přípony, další s „-v2“ atd. */
+export function versionFilename(number: string, version: number, ext = 'pdf'): string {
+  return `${number}${version > 1 ? `-v${version}` : ''}.${ext}`;
 }

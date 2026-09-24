@@ -11,6 +11,7 @@ export const primarySmall = 'text-[11px] font-black uppercase tracking-widest px
 const STATUS_STYLE: Record<QuoteStatus, string> = {
   koncept: 'bg-neutral-light text-neutral-dark/70',
   ceka_na_udaje: 'bg-amber-100 text-amber-900',
+  pripraveno: 'bg-violet-100 text-violet-900',
   vygenerovano: 'bg-primary/20 text-primary-ink',
   odeslano: 'bg-sky-100 text-sky-900',
   prijato: 'bg-emerald-100 text-emerald-900',
@@ -28,7 +29,8 @@ export function StatusBadge({ status }: { status: QuoteStatus }) {
 export function fmtDateTime(iso?: string | null): string {
   if (!iso) return '—';
   const d = new Date(iso);
-  return isNaN(d.getTime()) ? '—' : d.toLocaleString('cs-CZ', { dateStyle: 'short', timeStyle: 'short' });
+  // Pevná časová zóna: stejný výstup na serveru (UTC) i v prohlížeči – jinak nesedí hydratace.
+  return isNaN(d.getTime()) ? '—' : d.toLocaleString('cs-CZ', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Europe/Prague' });
 }
 
 export function fileUrl(key: string): string {

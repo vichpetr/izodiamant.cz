@@ -67,7 +67,7 @@ enforces them.
   section only shows the 3 newest cards and links here.
 - `/reference/[id]` — single project detail, ID matches `references.json`.
 - `/doporuc-a-ziskej-odmenu` — referral program page.
-- `/sprava/nabidky` — admin: price quotes (list, and editor via `?id=`; kept as ONE route on
+- `/sprava/nabidky` — admin: price quotes (list, and a 3-step wizard via `?id=…&krok=1|2|3`; kept as ONE route on
   purpose – every `/sprava/*` route is a separate ~0.5 MiB gz edge function). Domain logic
   (model, price math, PDF HTML template) lives in `src/lib/quotes/` and is shared with
   `quotes-worker/` via relative imports — **no `@/` aliases there**. Prices are always computed
@@ -115,6 +115,6 @@ Cloudflare Pages (frontend) + a separate Cloudflare Worker (reviews API). `@clou
 
 **`vercel` is pinned to an exact version (`59.25.0`) in devDependencies — do not widen it.** `next-on-pages` shells out to `vercel build`; without a local copy it pulls the latest CLI, and 59.25.4 broke the build (every prerendered route is reported as "not configured to run with the Edge Runtime" and the deploy fails). Pinning it also makes Pages builds reproducible. Before bumping, run `rm -rf .next .vercel && npx @cloudflare/next-on-pages` and check it ends with `Generated '.vercel/output/static/_worker.js/index.js'`.
 
-**Quotes Worker** lives in `quotes-worker/` (TypeScript, `wrangler.toml` with `production` + `[env.preview]`, each with its own D1 + R2). Does PDF (Browser Rendering), Workers AI (plans, e-mail text, inbox triage) and IMAP/SMTP to the Seznam mailbox (cron). Deployed by `.github/workflows/deploy-quotes-worker.yml` (master → production, other branches → preview; also applies `db/schema.sql`). Setup and mailbox config: `deployment.MD` §3.
+**Quotes Worker** lives in `quotes-worker/` (TypeScript, `wrangler.toml` with `production` + `[env.preview]`, each with its own D1 + R2 + queue). Does PDF (Browser Rendering), AI (inbox triage, attachment relevance, reading plans and bills of quantities / výkaz výměr, e-mail text), filling the client's xlsx výkaz (`src/vykaz.ts`, in-place XML patch via fflate), PDF versioning (`quote_versions`) and IMAP/SMTP to the Seznam mailbox (cron). AI model per task is `<provider>:<model>` in `wrangler.toml` (`zen:` = OpenCode Zen, secret `OPENCODE_API_KEY`; `cf:` = Workers AI fallback) – see `src/ai.ts`; every call is logged to `ai_usage`. Deployed by `.github/workflows/deploy-quotes-worker.yml` (master → production, other branches → preview; applies `db/schema.sql` and the `ALTER TABLE`s in `db/migrations/`). Setup and mailbox config: `deployment.MD` §3.
 
 **Reviews Worker** lives in `worker/` (`worker/src/index.js` is the single source of truth, `worker/wrangler.toml` the config) and **auto-deploys** via `.github/workflows/deploy-worker.yml` on any push to `master` under `worker/**`. Non-secret config (`FIRMY_PROFILE_URL`, `GOOGLE_PLACE_ID`) is in `wrangler.toml [vars]`; `GOOGLE_API_KEY` is a Cloudflare secret (persists across deploys). CI needs repo secrets `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`. Full procedure in `deployment.MD`.

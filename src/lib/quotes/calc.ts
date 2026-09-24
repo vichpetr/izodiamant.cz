@@ -101,17 +101,75 @@ function pragueDateParts(date: Date): [number, number, number] {
   return [get('year'), get('month'), get('day')];
 }
 
-/** Základ čísla nabídky: NAB-20260906-POL (3 písmena obce bez diakritiky). */
-export function quoteNumberBase(date: Date, city: string | null): string {
+/** Prefix čísla nabídek jednoho dne: NAB-20260924 (datum v pražském čase). */
+export function quoteDayPrefix(date: Date): string {
   const [y, m, d] = pragueDateParts(date);
-  const ymd = `${y}${String(m).padStart(2, '0')}${String(d).padStart(2, '0')}`;
+  return `NAB-${y}${String(m).padStart(2, '0')}${String(d).padStart(2, '0')}`;
+}
+
+/**
+ * Číslo nabídky: NAB-20260924-02-POL = druhá nabídka dne, obec Polička.
+ * Přípona obce jen když je obec vyplněná (dřív se doplňovalo „XXX“).
+ */
+export function quoteNumber(date: Date, seq: number, city: string | null): string {
   const letters = (city || '')
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^A-Za-z]/g, '')
     .slice(0, 3)
     .toUpperCase();
-  return `NAB-${ymd}-${letters.padEnd(3, 'X')}`;
+  const base = `${quoteDayPrefix(date)}-${String(seq).padStart(2, '0')}`;
+  return letters ? `${base}-${letters}` : base;
+}
+
+/**
+ * Pořadí nabídky v rámci dne podle čísel, která už ten den existují. Počítá i
+ * se starým formátem (NAB-20260922-POL, NAB-20260922-POL-2), který pořadí neměl.
+ */
+export function nextDaySequence(prefix: string, existing: string[]): number {
+  let max = 0;
+  for (const number of existing) {
+    if (!number.startsWith(`${prefix}-`)) continue;
+    const seq = /^\d{2}$/.test(number.slice(prefix.length + 1, prefix.length + 3)) ? Number(number.slice(prefix.length + 1, prefix.length + 3)) : 0;
+    max = Math.max(max, seq);
+  }
+  return Math.max(max, existing.filter((n) => n.startsWith(`${prefix}-`)).length) + 1;
+}
+
+/**
+ * Otisk vstupů, ze kterých vzniká PDF (a vyplněný výkaz). Když se od poslední
+ * verze nezměnil, nová verze nevznikne. `attachments` = id výkazů, které se
+ * přikládají k e-mailu. Pořadí klíčů je pevné, ať se otisk nemění náhodou.
+ */
+export type FingerprintFields = Pick<
+  Quote,
+  'client_name' | 'client_email' | 'client_phone' | 'site_name' | 'site_address' | 'city' | 'material' | 'thickness_cm' | 'length_m' | 'mode' | 'transport_price' | 'intro' | 'conditions'
+>;
+
+export function quoteFingerprint(quote: FingerprintFields, items: QuoteItem[], attachments: number[] = []): string {
+  return JSON.stringify([
+    quote.client_name,
+    quote.client_email,
+    quote.client_phone,
+    quote.site_name,
+    quote.site_address,
+    quote.city,
+    quote.material,
+    quote.thickness_cm,
+    quote.length_m,
+    quote.mode,
+    quote.transport_price,
+    quote.intro,
+    quote.conditions,
+    items.map((i) => [i.technology, i.area_m2, i.price_per_m2]),
+    [...attachments].sort((a, b) => a - b),
+  ]);
+}
+
+/** SHA-256 otisku (hex) – ukládá se k verzi PDF. Web Crypto je v prohlížeči, edge i workeru. */
+export async function fingerprintHash(quote: FingerprintFields, items: QuoteItem[], attachments: number[] = []): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(quoteFingerprint(quote, items, attachments)));
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 /**

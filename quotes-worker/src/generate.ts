@@ -1,26 +1,55 @@
 // Vygenerování PDF nabídky (HTML šablona → Browser Rendering → R2) a návrh
 // průvodního e-mailu. Čísla v PDF počítá computeTotals(), AI píše jen text e-mailu.
+//
+// Verze: každé vygenerování se změněnými vstupy (otisk v quote_versions.input_hash)
+// založí novou verzi s vlastním PDF (nabidky/<číslo>-v<n>.pdf) a případně
+// vyplněným výkazem výměr. Beze změny se nová verze nezakládá. K e-mailu se
+// přikládá quotes.email_version, a když není zvolená, poslední verze.
 
 import puppeteer from '@cloudflare/puppeteer';
-import { computeTotals, formatArea, formatCzk, quoteNumberBase } from '../../src/lib/quotes/calc';
-import { QUOTE_AUTHOR, technologyLabel, type Quote, type QuoteItem } from '../../src/lib/quotes/model';
+import { computeTotals, fingerprintHash, formatArea, formatCzk, nextDaySequence, quoteDayPrefix, quoteNumber } from '../../src/lib/quotes/calc';
+import {
+  QUOTE_AUTHOR,
+  includedVykazIds,
+  isVykaz,
+  parseFileAnalysis,
+  technologyLabel,
+  type Quote,
+  type QuoteFile,
+  type QuoteItem,
+  type QuoteVersion,
+} from '../../src/lib/quotes/model';
 import { renderQuoteHtml } from '../../src/lib/quotes/template';
 import { runJson, str } from './ai';
 import { getItems, getQuote, updateQuote } from './db';
 import { nowIso, type Env } from './env';
+import { fillVykaz } from './vykaz';
 
 export class UserError extends Error {}
 
+const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+/**
+ * Číslo nabídky se přidělí při prvním PDF a hned se zapíše (UNIQUE) – dvě
+ * souběžná generování tak nedostanou stejné pořadí dne.
+ */
 async function assignNumber(env: Env, quote: Quote): Promise<string> {
   if (quote.number) return quote.number;
-  const base = quoteNumberBase(new Date(), quote.city);
-  const { results } = await env.DB.prepare('SELECT number FROM quotes WHERE number = ? OR number LIKE ?')
-    .bind(base, `${base}-%`)
-    .all<{ number: string }>();
-  const taken = new Set(results.map((r) => r.number));
-  let number = base;
-  for (let n = 2; taken.has(number); n++) number = `${base}-${n}`;
-  return number;
+  const now = new Date();
+  const prefix = quoteDayPrefix(now);
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const { results } = await env.DB.prepare('SELECT number FROM quotes WHERE number LIKE ?').bind(`${prefix}-%`).all<{ number: string }>();
+    const number = quoteNumber(now, nextDaySequence(prefix, results.map((r) => r.number)) + attempt, quote.city);
+    try {
+      const res = await env.DB.prepare('UPDATE quotes SET number = ? WHERE id = ? AND number IS NULL').bind(number, quote.id).run();
+      if ((res.meta.changes ?? 0) > 0) return number;
+      const current = await getQuote(env, quote.id);
+      if (current?.number) return current.number;
+    } catch (err) {
+      if (!/UNIQUE/i.test(err instanceof Error ? err.message : String(err))) throw err;
+    }
+  }
+  throw new Error('Nepodařilo se přidělit číslo nabídky.');
 }
 
 export async function renderPdf(env: Env, html: string): Promise<ArrayBuffer> {
@@ -35,7 +64,34 @@ export async function renderPdf(env: Env, html: string): Promise<ArrayBuffer> {
   }
 }
 
-export async function generateQuote(env: Env, id: number): Promise<{ number: string; pdfKey: string }> {
+export async function getVersions(env: Env, quoteId: number): Promise<QuoteVersion[]> {
+  const { results } = await env.DB.prepare('SELECT * FROM quote_versions WHERE quote_id = ? ORDER BY version DESC').bind(quoteId).all<QuoteVersion>();
+  return results;
+}
+
+async function getFiles(env: Env, quoteId: number): Promise<QuoteFile[]> {
+  const { results } = await env.DB.prepare('SELECT * FROM quote_files WHERE quote_id = ? ORDER BY created_at').bind(quoteId).all<QuoteFile>();
+  return results;
+}
+
+function totalLabel(quote: Quote, items: QuoteItem[]): string {
+  const totals = computeTotals(quote, items);
+  return quote.mode === 'varianty' ? totals.variantTotals.map((t) => formatCzk(t)).join(' / ') : formatCzk(totals.total);
+}
+
+export interface GenerateResult {
+  number: string;
+  version: number;
+  pdfKey: string;
+  /** Vstupy se od poslední verze nezměnily – nová verze nevznikla. */
+  unchanged: boolean;
+}
+
+export async function generateQuote(
+  env: Env,
+  id: number,
+  opts: { auto?: boolean; createdBy?: string | null; force?: boolean } = {},
+): Promise<GenerateResult> {
   const quote = await getQuote(env, id);
   if (!quote) throw new UserError('Nabídka neexistuje.');
   const items = await getItems(env, id);
@@ -45,19 +101,61 @@ export async function generateQuote(env: Env, id: number): Promise<{ number: str
     throw new UserError('Každá položka musí mít plochu i cenu za m² větší než 0.');
   }
 
+  const files = await getFiles(env, id);
+  const vykazIds = includedVykazIds(files);
+  const hash = await fingerprintHash(quote, items, vykazIds);
+  let [latest] = await getVersions(env, id);
+
+  if (latest && latest.input_hash === hash && !opts.force && (await env.BUCKET.head(latest.pdf_key))) {
+    return { number: quote.number ?? '', version: latest.version, pdfKey: latest.pdf_key, unchanged: true };
+  }
+
+  // Nabídka z doby před verzováním: dosavadní PDF zapíšeme jako verzi 1.
+  if (!latest && quote.pdf_key && quote.number) {
+    await env.DB.prepare(
+      `INSERT INTO quote_versions (quote_id, version, pdf_key, vykaz_key, input_hash, total_label, created_at, created_by) VALUES (?, 1, ?, NULL, '', NULL, ?, NULL)`,
+    )
+      .bind(id, quote.pdf_key, quote.pdf_generated_at ?? nowIso())
+      .run();
+    [latest] = await getVersions(env, id);
+  }
+
+  const version = (latest?.version ?? 0) + 1;
   const number = await assignNumber(env, quote);
   const numbered = { ...quote, number };
-  const pdf = await renderPdf(env, renderQuoteHtml(numbered, items, new Date()));
-  const pdfKey = `nabidky/${number}.pdf`;
+  // Na PDF je vidět i verze, ať se při telefonátu s klientem ví, o které se mluví.
+  const shown = { ...numbered, number: version > 1 ? `${number} (verze ${version})` : number };
+  const pdf = await renderPdf(env, renderQuoteHtml(shown, items, new Date()));
+  const pdfKey = `nabidky/${number}-v${version}.pdf`;
   await env.BUCKET.put(pdfKey, pdf, {
-    httpMetadata: { contentType: 'application/pdf', contentDisposition: `inline; filename="${number}.pdf"` },
+    httpMetadata: { contentType: 'application/pdf', contentDisposition: `inline; filename="${number}-v${version}.pdf"` },
   });
+
+  // Vyplněný výkaz výměr (první zaškrtnutý) – ceny z téže verze nabídky.
+  let vykazKey: string | null = null;
+  const vykazFile = files.find((f) => vykazIds.includes(f.id));
+  const vykazAnalysis = vykazFile ? parseFileAnalysis(vykazFile.analysis) : null;
+  if (vykazFile && isVykaz(vykazAnalysis)) {
+    const original = await env.BUCKET.get(vykazFile.r2_key);
+    const filled = original ? fillVykaz(await original.arrayBuffer(), vykazAnalysis, items, quote.thickness_cm ?? vykazAnalysis.thicknessCm) : null;
+    if (filled) {
+      vykazKey = `nabidky/${number}-v${version}-vykaz.xlsx`;
+      await env.BUCKET.put(vykazKey, filled.data, { httpMetadata: { contentType: XLSX_TYPE } });
+    }
+  }
+
+  await env.DB.prepare(
+    `INSERT INTO quote_versions (quote_id, version, pdf_key, vykaz_key, input_hash, total_label, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+  )
+    .bind(id, version, pdfKey, vykazKey, hash, totalLabel(quote, items), nowIso(), opts.createdBy ?? null)
+    .run();
 
   const fields: Partial<Record<keyof Quote, unknown>> = {
     number,
     pdf_key: pdfKey,
     pdf_generated_at: nowIso(),
-    status: quote.status === 'odeslano' || quote.status === 'prijato' ? quote.status : 'vygenerovano',
+    status: quote.status === 'odeslano' || quote.status === 'prijato' ? quote.status : opts.auto ? 'pripraveno' : 'vygenerovano',
+    missing: '[]',
   };
   // Text e-mailu navrhujeme jen poprvé – ruční úpravy nepřepisujeme. Předmět u nabídky
   // z e-mailu („Re: …“) zůstává, aby odpověď zůstala ve vlákně.
@@ -67,7 +165,13 @@ export async function generateQuote(env: Env, id: number): Promise<{ number: str
     fields.email_subject = quote.email_subject || text.email_subject;
   }
   await updateQuote(env, id, fields);
-  return { number, pdfKey };
+  return { number, version, pdfKey, unchanged: false };
+}
+
+/** Verze, která jde k e-mailu: zvolená (email_version), jinak poslední. */
+export async function emailVersion(env: Env, quote: Quote): Promise<QuoteVersion | null> {
+  const versions = await getVersions(env, quote.id);
+  return versions.find((v) => v.version === quote.email_version) ?? versions[0] ?? null;
 }
 
 // ─── Průvodní e-mail ─────────────────────────────────────────────────────────
@@ -114,6 +218,8 @@ export async function draftEmailText(
   const fallback = fallbackEmail(quote, items);
   try {
     const raw = await runJson<{ subject?: unknown; body?: unknown }>(env, {
+      task: 'text',
+      quoteId: quote.id,
       system: `Píšeš e-maily za firmu IZODIAMANT (sanace vlhkého zdiva). Jménem Václava Ropka napiš krátký, věcný a zdvořilý průvodní e-mail k cenové nabídce, která je v příloze jako PDF.
 Pravidla:
 - Česky, vykání, bez zbytečných frází, max. ~120 slov.

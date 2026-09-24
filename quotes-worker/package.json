@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@cloudflare/puppeteer": "^1.4.0",
+    "fflate": "^0.8.3",
     "imapflow": "^2.0.5",
     "postal-mime": "^3.0.0",
-    "worker-mailer": "^1.2.1"
+    "worker-mailer": "^1.2.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260922.1",

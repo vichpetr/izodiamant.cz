@@ -5,7 +5,18 @@ import { safeAuth, isAllowed } from '@/auth';
 import { isDbAvailable } from '@/lib/db';
 import { getQuoteBundle, listCustomerOptions, listInbox, listQuotes } from '@/lib/quotesDb';
 import { getWorkerStatus } from '@/lib/quotesWorker';
-import { parseJsonArray } from '@/lib/quotes/model';
+import { computeTotals, fingerprintHash, formatArea, formatCzk } from '@/lib/quotes/calc';
+import {
+  RELEVANT,
+  effectiveRelevance,
+  includedVykazIds,
+  materialLabel,
+  parseJsonArray,
+  technologyLabel,
+  versionFilename,
+  type Quote,
+  type QuoteItem,
+} from '@/lib/quotes/model';
 import SpravaNav from '../SpravaNav';
 import {
   createQuoteAction,
@@ -18,16 +29,22 @@ import {
   saveEmailAction,
   saveQuoteAction,
   sendEmailAction,
+  setEmailVersionAction,
+  setIncludeAction,
+  setRelevanceAction,
   setStatusAction,
   uploadPlansAction,
 } from './actions';
+import AttachmentsPanel from './AttachmentsPanel';
+import EmailPanel from './EmailPanel';
 import InboxPanel from './InboxPanel';
 import NewQuoteModal from './NewQuoteModal';
 import OutputPanel from './OutputPanel';
 import QuoteActions from './QuoteActions';
 import QuoteEditor from './QuoteEditor';
+import QuoteWizard, { NextStepButton, type Step } from './QuoteWizard';
 import QuotesTable from './QuotesTable';
-import SourceEmail from './SourceEmail';
+import VersionsPanel from './VersionsPanel';
 import { StatusBadge, cardCls, fmtDateTime, headingCls } from './ui';
 
 export const runtime = 'edge';
@@ -36,13 +53,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-// Seznam i detail jsou jedna route (detail = ?id=…). Každá /sprava/* route je
-// samostatná edge funkce a zvětšuje worker Pages – viz deployment.MD.
-export default async function NabidkyPage({ searchParams }: { searchParams: Promise<{ id?: string }> }) {
+// Seznam i detail jsou jedna route (detail = ?id=…&krok=1|2|3). Každá /sprava/*
+// route je samostatná edge funkce a zvětšuje worker Pages – viz deployment.MD.
+export default async function NabidkyPage({ searchParams }: { searchParams: Promise<{ id?: string; krok?: string }> }) {
   const session = await safeAuth();
   if (!session?.user || !isAllowed(session.user.email)) redirect('/sprava/prihlaseni');
 
-  const { id } = await searchParams;
+  const { id, krok } = await searchParams;
   const status = await getWorkerStatus();
 
   return (
@@ -54,7 +71,7 @@ export default async function NabidkyPage({ searchParams }: { searchParams: Prom
             <strong>Databáze není připojená.</strong> Chybí binding <code>DB</code> (Cloudflare D1).
           </div>
         )}
-        {id ? <QuoteDetail id={Number(id)} status={status} /> : <QuoteList status={status} />}
+        {id ? <QuoteDetail id={Number(id)} step={Number(krok)} status={status} /> : <QuoteList status={status} />}
       </div>
     </main>
   );
@@ -74,7 +91,7 @@ async function QuoteList({ status }: { status: Awaited<ReturnType<typeof getWork
   );
 }
 
-async function QuoteDetail({ id, status }: { id: number; status: Awaited<ReturnType<typeof getWorkerStatus>> }) {
+async function QuoteDetail({ id, step, status }: { id: number; step: number; status: Awaited<ReturnType<typeof getWorkerStatus>> }) {
   const bundle = Number.isInteger(id) ? await getQuoteBundle(id) : null;
   if (!bundle) {
     return (
@@ -83,8 +100,29 @@ async function QuoteDetail({ id, status }: { id: number; status: Awaited<ReturnT
       </div>
     );
   }
-  const { quote, items, files, messages, source } = bundle;
+  const { quote, items, files, messages, versions, source } = bundle;
   const missing = parseJsonArray(quote.missing);
+  const latest = versions[0] ?? null;
+  // Změnily se údaje od poslední verze? (Verze 1 převzatá z doby před verzováním nemá otisk.)
+  const stale = latest
+    ? latest.input_hash
+      ? latest.input_hash !== (await fingerprintHash(quote, items, includedVykazIds(files)))
+      : quote.status === 'koncept'
+    : false;
+  const emailVersion = versions.find((v) => v.version === quote.email_version) ?? latest;
+  const attachments = emailVersion
+    ? [versionFilename(quote.number ?? '', emailVersion.version), ...(emailVersion.vykaz_key ? [versionFilename(`vykaz-vymer-${quote.number}`, emailVersion.version, 'xlsx')] : [])]
+    : quote.pdf_key && quote.number
+      ? [`${quote.number}.pdf`]
+      : [];
+
+  // Výchozí krok: hotové PDF → odeslání; poptávka z e-mailu nebo přílohy → podklady; jinak formulář.
+  const initialStep: Step =
+    step === 1 || step === 2 || step === 3 ? step : versions.length || quote.pdf_key ? 3 : source || files.length ? 1 : 2;
+  const relevantCount = files.filter((f) => {
+    const r = effectiveRelevance(f);
+    return r === null || RELEVANT.includes(r);
+  }).length;
 
   return (
     <>
@@ -96,7 +134,7 @@ async function QuoteDetail({ id, status }: { id: number; status: Awaited<ReturnT
             <StatusBadge status={quote.status} />
           </div>
           <p className="text-xs text-neutral-dark/40 mt-1">
-            Založeno {fmtDateTime(quote.created_at)} {quote.created_by === 'system' ? 'automaticky z e-mailu' : quote.created_by ? `· ${quote.created_by}` : ''}
+            {quote.client_name} · založeno {fmtDateTime(quote.created_at)} {quote.created_by === 'system' ? 'automaticky z e-mailu' : quote.created_by ? `· ${quote.created_by}` : ''}
           </p>
         </div>
         <QuoteActions id={quote.id} status={quote.status} setStatusAction={setStatusAction} deleteAction={deleteQuoteAction} />
@@ -107,59 +145,133 @@ async function QuoteDetail({ id, status }: { id: number; status: Awaited<ReturnT
           <strong>Čeká na doplnění:</strong> {missing.join(', ')}.
         </div>
       )}
-      {source && <SourceEmail source={source} summary={quote.note} />}
-
+      {quote.status === 'pripraveno' && (
+        <div className="bg-violet-50 border border-violet-200 rounded-2xl p-4 text-sm text-violet-900">
+          <strong>Připraveno k odeslání.</strong> Nabídku i PDF připravila AI z e-mailu – zkontrolujte údaje a ceny, pak ji v kroku 3 odešlete.
+        </div>
+      )}
       {!status && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-900">
-          Služba nabídek (quotes-worker) není připojená – formulář lze ukládat, ale PDF, čtení plánků a e-maily nepůjdou.
+          Služba nabídek (quotes-worker) není připojená – formulář lze ukládat, ale PDF, čtení příloh a e-maily nepůjdou.
         </div>
       )}
 
-      <QuoteEditor
-        key={quote.id}
-        quote={quote}
-        items={items}
-        files={files}
-        saveAction={saveQuoteAction}
-        uploadAction={uploadPlansAction}
-        reanalyzeAction={reanalyzeFileAction}
+      <QuoteWizard
+        initialStep={initialStep}
+        hints={{
+          1: `${source ? 'e-mail · ' : ''}${plural(files.length, 'příloha', 'přílohy', 'příloh')}`,
+          2: items.length ? `${plural(items.length, 'položka', 'položky', 'položek')}${missing.length ? ` · chybí ${missing.length}` : ''}` : 'bez položek',
+          3: latest ? `verze ${latest.version}${stale ? ' · zastaralá' : ''}` : 'PDF zatím není',
+        }}
+        step1={
+          <>
+            {source && <EmailPanel source={source} />}
+            <AttachmentsPanel
+              quoteId={quote.id}
+              files={files}
+              uploadAction={uploadPlansAction}
+              reanalyzeAction={reanalyzeFileAction}
+              relevanceAction={setRelevanceAction}
+              includeAction={setIncludeAction}
+            />
+            <NextStepButton to={2}>Pokračovat na údaje a ceny →</NextStepButton>
+            {relevantCount === 0 && files.length > 0 && (
+              <p className="text-right text-xs text-neutral-dark/40">Žádná příloha nevypadá užitečně – rozměry doplňte ručně v kroku 2.</p>
+            )}
+          </>
+        }
+        step2={<QuoteEditor key={quote.id} quote={quote} items={items} saveAction={saveQuoteAction} />}
+        step3={
+          <div className="grid lg:grid-cols-3 gap-6 items-start">
+            <div className="lg:col-span-2 space-y-6">
+              <VersionsPanel quote={quote} versions={versions} stale={stale} setVersionAction={setEmailVersionAction} />
+              <OutputPanel
+                key={quote.updated_at}
+                quote={quote}
+                attachments={attachments}
+                versionCount={versions.length}
+                mailbox={status?.mailbox ?? null}
+                mailboxReady={Boolean(status?.mailboxConfigured)}
+                sendEnabled={Boolean(status?.sendEnabled)}
+                saveEmailAction={saveEmailAction}
+                regenerateEmailAction={regenerateEmailAction}
+                draftEmailAction={draftEmailAction}
+                sendEmailAction={sendEmailAction}
+              />
+            </div>
+            <div className="space-y-6">
+              <QuoteSummary quote={quote} items={items} />
+              <section className={cardCls}>
+                <h2 className={`${headingCls} mb-3`}>Historie e-mailů</h2>
+                {messages.length === 0 ? (
+                  <p className="text-sm text-neutral-dark/50">Zatím nic.</p>
+                ) : (
+                  <ul className="space-y-3 text-sm">
+                    {messages.map((m) => (
+                      <li key={m.id}>
+                        <div className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40">
+                          {fmtDateTime(m.created_at)} · {m.kind === 'draft' ? 'koncept do schránky' : m.kind === 'sent' ? 'odesláno' : 'odpověď klienta'}
+                        </div>
+                        <div className={m.status === 'error' ? 'text-red-700' : ''}>
+                          {m.subject}
+                          {m.status === 'error' && ` – ${m.error}`}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            </div>
+          </div>
+        }
       />
-
-      <div className="grid lg:grid-cols-3 gap-6 items-start">
-        <div className="lg:col-span-2">
-          <OutputPanel
-            key={quote.updated_at}
-            quote={quote}
-            mailbox={status?.mailbox ?? null}
-            mailboxReady={Boolean(status?.mailboxConfigured)}
-            sendEnabled={Boolean(status?.sendEnabled)}
-            saveEmailAction={saveEmailAction}
-            regenerateEmailAction={regenerateEmailAction}
-            draftEmailAction={draftEmailAction}
-            sendEmailAction={sendEmailAction}
-          />
-        </div>
-        <section className={cardCls}>
-          <h2 className={`${headingCls} mb-3`}>Historie e-mailů</h2>
-          {messages.length === 0 ? (
-            <p className="text-sm text-neutral-dark/50">Zatím nic.</p>
-          ) : (
-            <ul className="space-y-3 text-sm">
-              {messages.map((m) => (
-                <li key={m.id}>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-neutral-dark/40">
-                    {fmtDateTime(m.created_at)} · {m.kind === 'draft' ? 'koncept do schránky' : m.kind === 'sent' ? 'odesláno' : 'odpověď klienta'}
-                  </div>
-                  <div className={m.status === 'error' ? 'text-red-700' : ''}>
-                    {m.subject}
-                    {m.status === 'error' && ` – ${m.error}`}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      </div>
     </>
+  );
+}
+
+/** „1 příloha“, „3 přílohy“, „5 příloh“. */
+function plural(n: number, one: string, few: string, many: string): string {
+  return `${n} ${n === 1 ? one : n >= 2 && n <= 4 ? few : many}`;
+}
+
+/** Krok 3: rekapitulace uložené nabídky – co přesně klient dostane. */
+function QuoteSummary({ quote, items }: { quote: Quote; items: QuoteItem[] }) {
+  const totals = computeTotals(quote, items);
+  const place = [quote.site_name, quote.site_address, quote.city].filter(Boolean).join(', ');
+  return (
+    <section className={`${cardCls} text-sm`}>
+      <h2 className={`${headingCls} mb-3`}>Souhrn nabídky</h2>
+      <p className="font-bold">{quote.client_name}</p>
+      <p className="text-neutral-dark/60">{[quote.client_email, quote.client_phone].filter(Boolean).join(' · ') || 'bez kontaktu'}</p>
+      {place && <p className="text-neutral-dark/60 mt-1">{place}</p>}
+      {(quote.material || quote.thickness_cm || quote.length_m) && (
+        <p className="text-neutral-dark/60 mt-1">
+          {[materialLabel(quote.material), quote.thickness_cm ? `${quote.thickness_cm} cm` : null, quote.length_m ? `${quote.length_m} m` : null]
+            .filter(Boolean)
+            .join(' · ')}
+        </p>
+      )}
+      <dl className="mt-3 space-y-1">
+        {totals.lines.map((l, i) => (
+          <div key={i} className="flex justify-between gap-2">
+            <dt className="text-neutral-dark/60">
+              {technologyLabel(l.technology)} ({formatArea(l.area_m2)} × {formatCzk(l.price_per_m2)})
+            </dt>
+            <dd className="whitespace-nowrap">{formatCzk(quote.mode === 'varianty' ? totals.variantTotals[i] : l.workPrice)}</dd>
+          </div>
+        ))}
+        <div className="flex justify-between gap-2">
+          <dt className="text-neutral-dark/60">Doprava{quote.mode === 'varianty' ? ' (v každé variantě)' : ''}</dt>
+          <dd className="whitespace-nowrap">{formatCzk(quote.transport_price)}</dd>
+        </div>
+        {quote.mode === 'kombinace' && (
+          <div className="flex justify-between gap-2 pt-2 mt-1 border-t border-neutral-light font-black">
+            <dt>Celkem</dt>
+            <dd className="whitespace-nowrap">{formatCzk(totals.total)}</dd>
+          </div>
+        )}
+      </dl>
+      <p className="text-[11px] text-neutral-dark/40 mt-2">Ze stavu po posledním uložení. Úpravy v kroku 2.</p>
+    </section>
   );
 }
