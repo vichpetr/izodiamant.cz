@@ -27,6 +27,7 @@ import OutputPanel from './OutputPanel';
 import QuoteActions from './QuoteActions';
 import QuoteEditor from './QuoteEditor';
 import QuotesTable from './QuotesTable';
+import SourceEmail from './SourceEmail';
 import { StatusBadge, cardCls, fmtDateTime, headingCls } from './ui';
 
 export const runtime = 'edge';
@@ -106,14 +107,7 @@ async function QuoteDetail({ id, status }: { id: number; status: Awaited<ReturnT
           <strong>Čeká na doplnění:</strong> {missing.join(', ')}.
         </div>
       )}
-      {source && (
-        <div className={`${cardCls} text-sm`}>
-          <h2 className={`${headingCls} mb-2`}>Zdrojový e-mail</h2>
-          <p><strong>{source.from_name ?? source.from_email}</strong> {source.from_name && `<${source.from_email}>`} · {fmtDateTime(source.received_at)}</p>
-          <p className="text-neutral-dark/60">{source.subject}</p>
-          {quote.note && <p className="mt-2 text-neutral-dark/80">{quote.note}</p>}
-        </div>
-      )}
+      {source && <SourceEmail source={source} summary={quote.note} />}
 
       {!status && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-900">

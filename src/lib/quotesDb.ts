@@ -20,6 +20,7 @@ export interface InboxRow {
   subject: string | null;
   received_at: string | null;
   status: string;
+  body_text: string | null;
   quote_id: number | null;
   error: string | null;
   processed_at: string;
@@ -165,7 +166,7 @@ export async function listInbox(limit = 30): Promise<InboxRow[]> {
   const db = getDB();
   if (!db) return [];
   const { results } = await db
-    .prepare('SELECT id, from_email, from_name, subject, received_at, status, quote_id, error, processed_at FROM inbox_messages ORDER BY processed_at DESC LIMIT ?')
+    .prepare('SELECT id, from_email, from_name, subject, received_at, status, quote_id, error, processed_at, NULL AS body_text FROM inbox_messages ORDER BY processed_at DESC LIMIT ?')
     .bind(limit)
     .all<InboxRow>();
   return results;
