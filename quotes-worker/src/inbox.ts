@@ -179,10 +179,19 @@ async function startRecord(env: Env, mailbox: string, messageId: string): Promis
 async function finishRecord(
   env: Env,
   id: number,
-  fields: { status: string; fromEmail: string; fromName: string | null; subject: string; receivedAt: string | null; extracted?: unknown; quoteId?: number | null },
+  fields: {
+    status: string;
+    fromEmail: string;
+    fromName: string | null;
+    subject: string;
+    receivedAt: string | null;
+    bodyText?: string | null;
+    extracted?: unknown;
+    quoteId?: number | null;
+  },
 ): Promise<void> {
   await env.DB.prepare(
-    `UPDATE inbox_messages SET status = ?, from_email = ?, from_name = ?, subject = ?, received_at = ?, extracted = ?, quote_id = ?, error = NULL, processed_at = ? WHERE id = ?`,
+    `UPDATE inbox_messages SET status = ?, from_email = ?, from_name = ?, subject = ?, received_at = ?, body_text = ?, extracted = ?, quote_id = ?, error = NULL, processed_at = ? WHERE id = ?`,
   )
     .bind(
       fields.status,
@@ -190,6 +199,7 @@ async function finishRecord(
       fields.fromName,
       fields.subject,
       fields.receivedAt,
+      fields.bodyText?.slice(0, 20_000) || null,
       fields.extracted ? JSON.stringify(fields.extracted) : null,
       fields.quoteId ?? null,
       nowIso(),
@@ -238,7 +248,9 @@ export async function handleEmail(
   const fromEmail = (parsed.from?.address ?? '').toLowerCase();
   const fromName = parsed.from?.name || null;
   const subject = parsed.subject ?? '';
-  const base = { fromEmail, fromName, subject, receivedAt: parsed.date ?? null };
+  // Text zprávy si schováváme, ať si ho obsluha může přečíst u nabídky (ne jen shrnutí od AI).
+  const bodyText = (parsed.text || htmlToText(parsed.html ?? '')).trim() || null;
+  const base = { fromEmail, fromName, subject, receivedAt: parsed.date ?? null, bodyText };
 
   if (!fromEmail || fromEmail === env.MAILBOX_USER.trim().toLowerCase() || looksAutomated(parsed, fromEmail)) {
     await finishRecord(env, inboxId, { ...base, status: 'ignorovano' });
@@ -256,7 +268,7 @@ export async function handleEmail(
     if (row) return recordReply(env, inboxId, row.quote_id, base, parsed.messageId ?? null);
   }
 
-  const text = (parsed.text || htmlToText(parsed.html ?? '')).slice(0, 8000);
+  const text = (bodyText ?? '').slice(0, 8000);
   const attachments = (parsed.attachments ?? []).filter(
     (a) => ALLOWED_ATTACHMENTS.includes(a.mimeType) && byteLength(a.content) <= MAX_ATTACHMENT_BYTES,
   );
@@ -302,7 +314,7 @@ async function recordReply(
   env: Env,
   inboxId: number,
   quoteId: number,
-  base: { fromEmail: string; fromName: string | null; subject: string; receivedAt: string | null },
+  base: { fromEmail: string; fromName: string | null; subject: string; receivedAt: string | null; bodyText: string | null },
   messageId: string | null,
 ): Promise<'odpoved'> {
   await logQuoteMessage(env, {

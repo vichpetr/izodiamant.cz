@@ -120,6 +120,7 @@ CREATE TABLE IF NOT EXISTS inbox_messages (
   subject TEXT,
   received_at TEXT,
   status TEXT NOT NULL,                   -- nabidka | odpoved | ignorovano | chyba
+  body_text TEXT,                         -- text zprávy (u HTML převedený), ať jde přečíst v adminu
   extracted TEXT,                         -- JSON výstup AI
   quote_id INTEGER REFERENCES quotes(id) ON DELETE SET NULL,
   error TEXT,
@@ -135,3 +136,8 @@ CREATE TABLE IF NOT EXISTS app_state (
   value TEXT,
   updated_at TEXT NOT NULL
 );
+
+-- Migrace existujících databází (CREATE TABLE IF NOT EXISTS výše sloupce nedoplní).
+-- Spustit ručně jednou; podruhé skončí hláškou „duplicate column name“, což nevadí:
+--   npx wrangler d1 execute izodiamant-db --remote --command \
+--     "ALTER TABLE inbox_messages ADD COLUMN body_text TEXT"
