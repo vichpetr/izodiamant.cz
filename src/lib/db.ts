@@ -1,12 +1,11 @@
 // Datová vrstva pro admin sekci /sprava nad Cloudflare D1.
 //
-// D1 je nabindovaná jako `DB` v nastavení Cloudflare Pages projektu (viz
-// deployment.MD). Přístup přes getRequestContext() z @cloudflare/next-on-pages,
-// který funguje jen v Cloudflare runtime – lokálně s `next dev` vyhodí chybu,
-// proto getDB() vrací null a čtecí funkce degradují (prázdný seznam), aby web
-// nespadl. Zápisy (insertLead) jsou best-effort.
+// D1 je nabindovaná jako `DB` (Workers: `wrangler.jsonc`, Pages: nastavení projektu –
+// viz deployment.MD). Přístup přes getCfEnv(), který funguje jen v Cloudflare runtime –
+// lokálně s `next dev` vrátí null, proto getDB() vrací null a čtecí funkce degradují
+// (prázdný seznam), aby web nespadl. Zápisy (insertLead) jsou best-effort.
 
-import { getRequestContext } from '@cloudflare/next-on-pages';
+import { getCfEnv } from './cfEnv';
 
 // Minimální typ D1, ať nemusíme přidávat @cloudflare/workers-types.
 interface D1Result<T> {
@@ -53,11 +52,7 @@ export interface EmailLogRow {
 
 /** Vrátí D1 binding, nebo null když nejsme v Cloudflare runtime (lokální dev). */
 export function getDB(): D1Database | null {
-  try {
-    return (getRequestContext().env as { DB?: D1Database }).DB ?? null;
-  } catch {
-    return null;
-  }
+  return (getCfEnv()?.DB as D1Database | undefined) ?? null;
 }
 
 /** Je databáze dostupná? (Pro UI hlášku, když binding chybí.) */
