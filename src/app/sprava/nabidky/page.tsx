@@ -145,11 +145,6 @@ async function QuoteDetail({ id, step, status }: { id: number; step: number; sta
         <QuoteActions id={quote.id} status={quote.status} setStatusAction={setStatusAction} deleteAction={deleteQuoteAction} />
       </div>
 
-      {quote.status === 'ceka_na_udaje' && missing.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-900">
-          <strong>Čeká na doplnění:</strong> {missing.join(', ')}.
-        </div>
-      )}
       {quote.status === 'pripraveno' && (
         <div className="bg-violet-50 border border-violet-200 rounded-2xl p-4 text-sm text-violet-900">
           <strong>Připraveno k odeslání.</strong> Nabídku i PDF připravila AI z e-mailu – zkontrolujte údaje a ceny, pak ji v kroku 3 odešlete.

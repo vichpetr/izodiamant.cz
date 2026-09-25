@@ -187,6 +187,10 @@ export async function saveQuoteAction(_prev: ActionState, formData: FormData): P
     const { missing } = await saveQuote(id, fields, items, sources);
 
     if (formData.get('intent') === 'generate') {
+      if (missing.length) {
+        revalidatePath(PATH);
+        return { ok: false, message: `Uloženo, ale přílohy zatím nejde vygenerovat – doplňte: ${missing.join(', ')}.` };
+      }
       const res = await callQuotesWorker<{ number: string; version: number; unchanged: boolean; vykazCount?: number }>(`/quotes/${id}/generate`, {
         method: 'POST',
         admin,

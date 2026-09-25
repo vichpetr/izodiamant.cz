@@ -14,6 +14,7 @@ import {
   computeTotals,
   cutArea,
   duplicateVariantTechnologies,
+  missingInputs,
   formatArea,
   formatCzk,
   formatNumber,
@@ -146,6 +147,12 @@ export default function QuoteEditor({
   const duplicates = duplicateVariantTechnologies(mode, parsedItems);
   const variantsProblem = variantsError(mode, parsedItems);
   const usedTechnologies = new Set(items.map((i) => i.technology));
+  // Co chybí k vygenerování příloh – kontroluje se až při kliknutí na „Vygenerovat přílohy“.
+  const missing = missingInputs(
+    { ...f, transport_price: Math.round(toNum(f.transport_price)) },
+    parsedItems,
+  );
+  const [triedGenerate, setTriedGenerate] = useState(false);
 
   // ─── Automatické ukládání ───────────────────────────────────────────────────
   // Otisk formuláře: když se liší od posledního uloženého, za chvíli se uloží sám.
@@ -307,6 +314,11 @@ export default function QuoteEditor({
               name="intent"
               value="generate"
               disabled={pending || autoSaving || Boolean(variantsProblem)}
+              onClick={(e) => {
+                if (missing.length === 0) return;
+                e.preventDefault();
+                setTriedGenerate(true);
+              }}
               title="Uloží změny a vytvoří PDF nabídky, případně i vyplněný výkaz výměr"
               className="btn-primary text-[11px] py-2 px-4 uppercase tracking-widest disabled:opacity-60"
             >
@@ -315,8 +327,10 @@ export default function QuoteEditor({
           </div>
         </div>
         {failedHere && autoState?.message && <p className="text-[11px] text-red-800 mt-1">Neuloženo: {autoState.message}</p>}
-        {!dirty && autoState?.ok && /chybí/i.test(autoState.message) && (
-          <p className="text-[11px] text-amber-800 mt-1">{autoState.message.replace(/^Uloženo\.\s*/, '')}</p>
+        {triedGenerate && missing.length > 0 && (
+          <p role="alert" className="text-[11px] text-red-800 mt-1">
+            Přílohy zatím nejde vygenerovat – doplňte: {missing.join(', ')}.
+          </p>
         )}
         {variantsProblem && <p className="text-[11px] text-red-800 mt-1">Nejde uložit – u variant je některá technologie víckrát (viz Technologie a ceny).</p>}
         {pending && (
