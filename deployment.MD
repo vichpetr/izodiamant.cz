@@ -127,13 +127,15 @@ proto ty řádky před Worker buildem dočasně odstraní a po buildu vrátí. B
 3. **Secrety workeru** – hodnoty zkopírujte z Pages (Production, resp. Preview). Worker musí
    existovat, takže až po prvním deployi (po merge, resp. po pushi větve):
    ```bash
-   for s in RESEND_API_KEY FROM_EMAIL TURNSTILE_SECRET_KEY AUTH_SECRET AUTH_GOOGLE_ID AUTH_GOOGLE_SECRET ADMIN_EMAILS; do
+   for s in RESEND_API_KEY FROM_EMAIL CONTACT_EMAIL TURNSTILE_SECRET_KEY AUTH_SECRET AUTH_GOOGLE_ID AUTH_GOOGLE_SECRET ADMIN_EMAILS; do
      npx wrangler secret put $s                  # produkce (izodiamant)
      npx wrangler secret put $s --env preview    # preview  (izodiamant-preview)
    done
    ```
    `AUTH_URL` **nenastavujte** – `trustHost: true` odvodí adresu z požadavku, takže přihlášení
-   funguje na workers.dev i na izodiamant.cz. `TURNSTILE_SECRET_KEY` jen pokud je nastavený v Pages.
+   funguje na workers.dev i na izodiamant.cz. Nahrajte jen ty, které Pages skutečně má – `FROM_EMAIL`
+   (bez něj odesílá `onboarding@resend.dev`), `CONTACT_EMAIL` (bez něj `info@izodiamant.cz`) a
+   `TURNSTILE_SECRET_KEY` jsou volitelné. Preview worker vzniká už pushem větve, produkční až mergem.
 4. **Google OAuth** (Google Cloud Console → Credentials → OAuth klient) → *Authorized redirect
    URIs* doplňte:
    - `https://izodiamant.<účet>.workers.dev/api/auth/callback/google` (test produkce před přepnutím)

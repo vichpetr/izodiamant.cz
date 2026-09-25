@@ -10,7 +10,7 @@
 // worker ověřený na workers.dev. Do konfigurace se přidá v MR, který smaže Pages.
 //
 // Secrety (nejsou tady, nastavují se zvlášť pro každé prostředí, `--env preview`):
-//   RESEND_API_KEY, FROM_EMAIL, TURNSTILE_SECRET_KEY,
+//   RESEND_API_KEY, FROM_EMAIL, CONTACT_EMAIL, TURNSTILE_SECRET_KEY,
 //   AUTH_SECRET, AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, ADMIN_EMAILS
 // NEXT_PUBLIC_* se do kódu zapékají při buildu – bere je CI z GitHub Variables.
 //
