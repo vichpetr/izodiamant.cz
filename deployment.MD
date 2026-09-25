@@ -115,13 +115,21 @@ proto ty řádky před Worker buildem dočasně odstraní a po buildu vrátí. B
 
 **a) Jednorázově před mergem / hned po něm**
 
-1. **GitHub → Settings → Secrets and variables → Actions → Variables**: založte proměnné se
-   stejnými hodnotami, jako mají `NEXT_PUBLIC_*` v Pages → Settings → Environment variables
-   (Production): `NEXT_PUBLIC_REVIEWS_API_URL`, `NEXT_PUBLIC_FIRMY_PROFILE_URL`,
-   `NEXT_PUBLIC_FIRMY_REVIEW_URL`, `NEXT_PUBLIC_GOOGLE_REVIEW_URL`, `NEXT_PUBLIC_GOOGLE_MAPS_URL`,
-   `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`,
-   `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`, `NEXT_PUBLIC_BING_SITE_VERIFICATION` (nastavte ty, které
-   Pages má). `NEXT_PUBLIC_CF_IMAGES` zatím **nezakládejte** (viz krok c).
+1. **GitHub Environments + Variables** – `NEXT_PUBLIC_*` se zapékají do JS při buildu, do
+   nastavení workeru se nedostanou. Workflow běží v GitHub Environment `production` (master)
+   nebo `preview` (ostatní větve); obě prostředí založí první běh, případně ručně Settings →
+   Environments → New environment. Proměnná se hledá nejdřív v prostředí, pak v repo-level
+   Variables (Settings → Secrets and variables → Actions → Variables):
+   - společné hodnoty → **repo-level**: `NEXT_PUBLIC_FIRMY_PROFILE_URL`, případně
+     `NEXT_PUBLIC_GOOGLE_REVIEW_URL` …
+   - hodnoty, které se liší, → **do prostředí**: `NEXT_PUBLIC_REVIEWS_API_URL` (production i preview),
+     `NEXT_PUBLIC_GA_MEASUREMENT_ID` jen do `production` (preview pak GA nenačte a nezkresluje statistiky),
+     `NEXT_PUBLIC_TURNSTILE_SITE_KEY` – Turnstile widget povoluje jen své hostnamy, takže na
+     `*.workers.dev` buď přidat hostname do widgetu, nebo na preview použít testovací pár Cloudflare
+     (site key `1x00000000000000000000AA` + secret `TURNSTILE_SECRET_KEY` `1x0000000000000000000000000000000AA`
+     v preview workeru – vždy projde).
+   Hodnoty odpovídají Pages → Settings → Environment variables (Production, resp. Preview).
+   `NEXT_PUBLIC_CF_IMAGES` zatím **nezakládejte** (viz krok c); workflow ho na preview ignoruje.
 2. **API token** `CLOUDFLARE_API_TOKEN` (už existuje pro ostatní workery) musí mít
    *Workers Scripts: Edit* a *D1: Edit* – má je, pokud prochází deploy quotes-workeru.
 3. **Secrety workeru** – hodnoty zkopírujte z Pages (Production, resp. Preview). Worker musí
@@ -162,7 +170,7 @@ Obrázky se zde servírují bez Cloudflare Transformations (plná velikost) – 
    - `www.izodiamant.cz` dnes přesměrovává 301 na `izodiamant.cz` – route pro `www` nepřidávejte,
      pokud přesměrování řeší pravidlo zóny (Rules → Redirect Rules). Pokud ho dělá Pages, přidejte
      i route `www.izodiamant.cz/*` a ověřte, že 301 zůstala.
-2. GitHub Variables: `NEXT_PUBLIC_CF_IMAGES` = `true` → Actions → **Deploy Web (Workers)** →
+2. GitHub Environment `production` → Variables: `NEXT_PUBLIC_CF_IMAGES` = `true` → Actions → **Deploy Web (Workers)** →
    Run workflow (na `master`). Tím se zapnou zmenšené obrázky přes `/cdn-cgi/image`.
 3. Ověřit `https://izodiamant.cz` (hlavička `cf-ray` je u obou; worker poznáte ve
    Workers → izodiamant → Logs / Observability).
