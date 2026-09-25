@@ -4,7 +4,7 @@
 // /sprava přes service binding QUOTES (autorizaci řeší Pages – Google login +
 // ADMIN_EMAILS) a cron. Kdo akci spustil, posílá Pages v hlavičce X-Admin-Email.
 
-import { SPREADSHEET_TYPES, isSpreadsheet, versionFilename, versionVykazFiles, vykazFilename, type QuoteFile } from '../../src/lib/quotes/model';
+import { SPREADSHEET_TYPES, attachedVykazFiles, isSpreadsheet, versionFilename, vykazFilename, type QuoteFile } from '../../src/lib/quotes/model';
 import { maybeAutoGenerate, queueAttachment, runAttachmentJob } from './attachments';
 import { getFile, getItems, getQuote, getState, logQuoteMessage, updateQuote } from './db';
 import { flag, mailboxConfigured, nowIso, type Env, type Job } from './env';
@@ -185,7 +185,11 @@ async function handle(request: Request, env: Env): Promise<Response> {
     const attachments: NonNullable<OutgoingMail['attachments']> = [
       { filename: versionFilename(quote.number, version?.version ?? 1), data: await pdf.arrayBuffer(), mimeType: 'application/pdf' },
     ];
-    for (const file of version ? versionVykazFiles(version) : []) {
+    // Vyplněné výkazy jen ty, u jejichž zdroje je zaškrtnuté „přiložit k e-mailu“.
+    const quoteFiles = version
+      ? (await env.DB.prepare('SELECT id, include_in_email, analysis FROM quote_files WHERE quote_id = ?').bind(quoteId).all<Pick<QuoteFile, 'id' | 'include_in_email' | 'analysis'>>()).results
+      : [];
+    for (const file of version ? attachedVykazFiles(version, quoteFiles) : []) {
       const vykaz = await env.BUCKET.get(file.key);
       if (vykaz) {
         attachments.push({

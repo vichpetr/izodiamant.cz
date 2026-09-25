@@ -261,12 +261,15 @@ export function isSpreadsheet(f: { content_type: string; filename: string }): bo
   return Object.values(SPREADSHEET_TYPES).includes(f.content_type) || /\.(xlsx|xls|csv)$/i.test(f.filename);
 }
 
-/** Výkazy, které se vyplní a přiloží k e-mailu (zaškrtnuté a s aspoň jedním nalezeným řádkem). */
-export function includedVykazIds(files: Pick<QuoteFile, 'id' | 'include_in_email' | 'analysis'>[]): number[] {
+/**
+ * Výkazy, které se vyplní spolu s PDF (xlsx s aspoň jedním nalezeným řádkem).
+ * Vyplňují se vždy; jestli jdou k e-mailu, řídí až `include_in_email` (viz attachedVykazFiles).
+ */
+export function fillableVykazIds(files: Pick<QuoteFile, 'id' | 'analysis'>[]): number[] {
   return files
     .filter((f) => {
       const a = parseFileAnalysis(f.analysis);
-      return f.include_in_email === 1 && isVykaz(a) && a.fillable && a.rows.length > 0;
+      return isVykaz(a) && a.fillable && a.rows.length > 0;
     })
     .map((f) => f.id);
 }
@@ -280,6 +283,8 @@ export interface VersionVykaz {
   key: string;
   /** Technologie, jejíž ceny jsou ve výkazu (u variant); null = ceny všech položek. */
   technology: TechnologyId | null;
+  /** Zdrojový výkaz (quote_files.id); null u starších verzí. */
+  fileId: number | null;
 }
 
 /** Vyplněné výkazy k verzi (nový i starší tvar záznamu). */
@@ -289,14 +294,30 @@ export function versionVykazFiles(v: Pick<QuoteVersion, 'vykaz_key' | 'vykaz_fil
       const parsed: unknown = JSON.parse(v.vykaz_files);
       if (Array.isArray(parsed)) {
         return parsed
-          .filter((f): f is { key: string; technology?: unknown } => typeof f?.key === 'string')
-          .map((f) => ({ key: f.key, technology: isTechnology(f.technology) ? f.technology : null }));
+          .filter((f): f is { key: string; technology?: unknown; fileId?: unknown } => typeof f?.key === 'string')
+          .map((f) => ({
+            key: f.key,
+            technology: isTechnology(f.technology) ? f.technology : null,
+            fileId: typeof f.fileId === 'number' ? f.fileId : null,
+          }));
       }
     } catch {
       /* spadne na vykaz_key */
     }
   }
-  return v.vykaz_key ? [{ key: v.vykaz_key, technology: null }] : [];
+  return v.vykaz_key ? [{ key: v.vykaz_key, technology: null, fileId: null }] : [];
+}
+
+/** Vyplněné výkazy verze, které jdou k e-mailu – u zdrojového výkazu je zaškrtnuté „přiložit“. */
+export function attachedVykazFiles(
+  v: Pick<QuoteVersion, 'vykaz_key' | 'vykaz_files'>,
+  files: Pick<QuoteFile, 'id' | 'include_in_email' | 'analysis'>[],
+): VersionVykaz[] {
+  // Starší verze nevědí, ze kterého výkazu vznikly – řídí se kterýmkoli zaškrtnutým výkazem.
+  const anyIncluded = files.some((file) => file.include_in_email === 1 && fillableVykazIds([file]).length > 0);
+  return versionVykazFiles(v).filter((f) =>
+    f.fileId === null ? anyIncluded : files.find((file) => file.id === f.fileId)?.include_in_email === 1,
+  );
 }
 
 const TECH_SLUG: Record<TechnologyId, string> = { 'retezova-pila': 'pila', 'diamantove-lano': 'lano', 'chemicka-injektaz': 'injektaz' };

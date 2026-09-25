@@ -9,12 +9,12 @@ import { computeTotals, fingerprintHash, formatArea, formatCzk } from '@/lib/quo
 import {
   RELEVANT,
   effectiveRelevance,
-  includedVykazIds,
+  attachedVykazFiles,
+  fillableVykazIds,
   materialLabel,
   parseJsonArray,
   technologyLabel,
   versionFilename,
-  versionVykazFiles,
   vykazFilename,
   type Quote,
   type QuoteItem,
@@ -108,14 +108,14 @@ async function QuoteDetail({ id, step, status }: { id: number; step: number; sta
   // Změnily se údaje od poslední verze? (Verze 1 převzatá z doby před verzováním nemá otisk.)
   const stale = latest
     ? latest.input_hash
-      ? latest.input_hash !== (await fingerprintHash(quote, items, includedVykazIds(files)))
+      ? latest.input_hash !== (await fingerprintHash(quote, items, fillableVykazIds(files)))
       : quote.status === 'koncept'
     : false;
   const emailVersion = versions.find((v) => v.version === quote.email_version) ?? latest;
   const attachments = emailVersion
     ? [
         versionFilename(quote.number ?? '', emailVersion.version),
-        ...versionVykazFiles(emailVersion).map((f) => vykazFilename(quote.number ?? '', emailVersion.version, f.technology)),
+        ...attachedVykazFiles(emailVersion, files).map((f) => vykazFilename(quote.number ?? '', emailVersion.version, f.technology)),
       ]
     : quote.pdf_key && quote.number
       ? [`${quote.number}.pdf`]

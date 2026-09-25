@@ -263,7 +263,8 @@ Pages /sprava/nabidky ──service binding QUOTES──▶ quotes-worker ──
   kód podle hlavičky), název zhotovitele a IČ; uložené výsledky vzorců se zahodí, takže
   Excel/LibreOffice po otevření vše přepočítají. DIČ a sazba DPH se nemění (upozornění
   v UI – firma není plátce DPH). Vyplněný výkaz jde k e-mailu jako návrh ke kontrole.
-- **Verze:** každé „Uložit a vygenerovat PDF“ se změněnými údaji založí verzi
+- **Verze:** každé „Uložit a vygenerovat přílohy“ se změněnými údaji založí verzi – PDF a
+  vyplněný výkaz (je-li na vstupu) vznikají vždy společně; „přiložit k e-mailu“ jen řídí odeslání
   (`quote_versions`, PDF `nabidky/<číslo>-v<n>.pdf`, výkaz `…-v<n>-vykaz.xlsx`). Beze změny
   nová verze nevznikne (otisk vstupů). K e-mailu jde `quotes.email_version`, jinak poslední.
 - **Číslo nabídky:** `NAB-RRRRMMDD-PP-OBE` – `PP` pořadí nabídky v daný den, `OBE` první
@@ -333,11 +334,15 @@ Model se volí podle úlohy ve `quotes-worker/wrangler.toml` (obě prostředí),
 
 | Proměnná | Úloha | Výchozí |
 | --- | --- | --- |
-| `AI_TRIAGE_MODEL` | třídění pošty, údaje z textu poptávky | `zen:claude-haiku-4-5` |
-| `AI_ATTACHMENT_MODEL` | hodnocení relevance příloh (vidí obrázky) | `zen:claude-haiku-4-5` |
+| `AI_TRIAGE_MODEL` | třídění pošty, údaje z textu poptávky | `zen:gpt-5-nano,zen:claude-haiku-4-5` |
+| `AI_ATTACHMENT_MODEL` | hodnocení relevance příloh (vidí obrázky) | `zen:gpt-5-nano,zen:claude-haiku-4-5` |
 | `AI_EXTRACT_MODEL` | čtení výkresů a výkazů výměr | `zen:claude-opus-5-5` |
 | `AI_TEXT_MODEL` | text e-mailu klientovi | `zen:claude-sonnet-5` |
 | `AI_FALLBACK_MODEL` | záloha při chybě / chybějícím klíči | `cf:@cf/google/gemma-4-26b-a4b-it` |
+
+Víc modelů čárkou = zkouší se popořadě, nakonec záloha. V Zen jde `claude-*` přes `/messages`
+(klíč v hlavičce `x-api-key` – dokumentace Zen uvádí Bearer, ale ten tam nefunguje), `gpt-*`
+přes `/responses` (Bearer), ostatní přes `/chat/completions` (Bearer).
 
 Ovladače: `zen:` = OpenCode Zen (hlavní brána, secret `OPENCODE_API_KEY`), `anthropic:` =
 Claude API přímo (secret `ANTHROPIC_API_KEY`), `cf:` = Workers AI (bez klíče). Bez klíče
@@ -366,7 +371,7 @@ npx wrangler dev --env preview --persist-to ../.wrangler/state      # bez OPENCO
 
 ### 3.5 Náklady (orientačně, 40 nabídek + 300 e-mailů měsíčně)
 
-- AI přes OpenCode Zen: třídění 300 e-mailů (Haiku) ~1 USD, hodnocení příloh ~0,5 USD,
+- AI přes OpenCode Zen: třídění 300 e-mailů a hodnocení příloh (GPT-5 nano) pod 0,5 USD,
   čtení ~80 výkresů/výkazů (Opus, ~0,05 USD za soubor) ~4–5 USD, texty e-mailů (Sonnet)
   pod 0,5 USD → **řádově 5–10 USD měsíčně**. Skutečnost ukáže tabulka `ai_usage`.
 - Workers AI (záloha): prakticky v rámci 10 000 neuronů denně zdarma.

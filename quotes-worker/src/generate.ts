@@ -10,7 +10,7 @@ import puppeteer from '@cloudflare/puppeteer';
 import { computeTotals, variantsError, fingerprintHash, formatArea, formatCzk, nextDaySequence, quoteDayPrefix, quoteNumber } from '../../src/lib/quotes/calc';
 import {
   QUOTE_AUTHOR,
-  includedVykazIds,
+  fillableVykazIds,
   isVykaz,
   parseFileAnalysis,
   technologyLabel,
@@ -20,6 +20,7 @@ import {
   type QuoteVersion,
   type TechnologyId,
   type VersionVykaz,
+  versionVykazFiles,
 } from '../../src/lib/quotes/model';
 import { renderQuoteHtml } from '../../src/lib/quotes/template';
 import { runJson, str } from './ai';
@@ -87,6 +88,8 @@ export interface GenerateResult {
   pdfKey: string;
   /** Vstupy se od poslední verze nezměnily – nová verze nevznikla. */
   unchanged: boolean;
+  /** Kolik vyplněných výkazů vzniklo spolu s PDF. */
+  vykazCount?: number;
 }
 
 export async function generateQuote(
@@ -106,12 +109,12 @@ export async function generateQuote(
   if (variants) throw new UserError(variants);
 
   const files = await getFiles(env, id);
-  const vykazIds = includedVykazIds(files);
+  const vykazIds = fillableVykazIds(files);
   const hash = await fingerprintHash(quote, items, vykazIds);
   let [latest] = await getVersions(env, id);
 
   if (latest && latest.input_hash === hash && !opts.force && (await env.BUCKET.head(latest.pdf_key))) {
-    return { number: quote.number ?? '', version: latest.version, pdfKey: latest.pdf_key, unchanged: true };
+    return { number: quote.number ?? '', version: latest.version, pdfKey: latest.pdf_key, unchanged: true, vykazCount: versionVykazFiles(latest).length };
   }
 
   // Nabídka z doby před verzováním: dosavadní PDF zapíšeme jako verzi 1.
@@ -135,11 +138,13 @@ export async function generateQuote(
     httpMetadata: { contentType: 'application/pdf', contentDisposition: `inline; filename="${number}-v${version}.pdf"` },
   });
 
-  // Vyplněný výkaz výměr (první zaškrtnutý) – ceny z téže verze nabídky. U variant
+  // Přílohy vznikají společně: k PDF i vyplněný výkaz výměr (je-li na vstupu), ceny
+  // z téže verze nabídky. Jestli jde k e-mailu, rozhoduje až odeslání. U variant
   // (klient si vybere jednu technologii) vznikne samostatný výkaz za každou variantu;
   // u kombinace jeden, kde má každý řádek cenu své technologie.
   const vykazFiles: VersionVykaz[] = [];
-  const vykazFile = files.find((f) => vykazIds.includes(f.id));
+  // Víc výkazů v jedné poptávce je vzácné – vyplní se ten zaškrtnutý, jinak první.
+  const vykazFile = files.find((f) => vykazIds.includes(f.id) && f.include_in_email === 1) ?? files.find((f) => vykazIds.includes(f.id));
   const vykazAnalysis = vykazFile ? parseFileAnalysis(vykazFile.analysis) : null;
   if (vykazFile && isVykaz(vykazAnalysis)) {
     const original = await env.BUCKET.get(vykazFile.r2_key);
@@ -154,7 +159,7 @@ export async function generateQuote(
       if (!filled) continue;
       const key = `nabidky/${number}-v${version}-vykaz${groups.length > 1 ? `-${i + 1}` : ''}.xlsx`;
       await env.BUCKET.put(key, filled.data, { httpMetadata: { contentType: XLSX_TYPE } });
-      vykazFiles.push({ key, technology: group.technology });
+      vykazFiles.push({ key, technology: group.technology, fileId: vykazFile.id });
     }
   }
 
@@ -190,7 +195,7 @@ export async function generateQuote(
     fields.email_subject = quote.email_subject || text.email_subject;
   }
   await updateQuote(env, id, fields);
-  return { number, version, pdfKey, unchanged: false };
+  return { number, version, pdfKey, unchanged: false, vykazCount: vykazFiles.length };
 }
 
 /** Verze, která jde k e-mailu: zvolená (email_version), jinak poslední. */

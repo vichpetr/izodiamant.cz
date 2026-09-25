@@ -3,8 +3,9 @@
 //   AI_ATTACHMENT_MODEL  hodnocení relevance příloh (levný model s viděním)
 //   AI_EXTRACT_MODEL     čtení plánků a výkazů výměr (silný model)
 //   AI_TEXT_MODEL        texty e-mailů klientům
-// ve tvaru "<ovladač>:<model>":
+// ve tvaru "<ovladač>:<model>", případně víc čárkou oddělených (zkouší se popořadě):
 //   zen:claude-sonnet-5               OpenCode Zen – hlavní brána (secret OPENCODE_API_KEY)
+//   zen:gpt-5-nano                    GPT modely v Zen (Responses API)
 //   anthropic:claude-opus-5           Claude API přímo (secret ANTHROPIC_API_KEY)
 //   cf:@cf/google/gemma-4-26b-a4b-it  Workers AI
 // Když komerční volání selže (výpadek, došel kredit, chybí klíč), úloha se zopakuje
@@ -129,6 +130,50 @@ async function callChat(url: string, key: string, model: string, o: CallOpts): P
   return { text, inputTokens: data?.usage?.prompt_tokens ?? null, outputTokens: data?.usage?.completion_tokens ?? null };
 }
 
+/**
+ * OpenAI Responses API – GPT modely v OpenCode Zen (/responses, klíč jako Bearer).
+ * GPT-5 „přemýšlí“ a přemýšlení se počítá do max_output_tokens, proto nízké úsilí
+ * a rezerva tokenů.
+ */
+async function callResponses(url: string, key: string, model: string, o: CallOpts): Promise<CallResult> {
+  const content = [
+    { type: 'input_text', text: o.user },
+    ...(o.images ?? []).map((img) => ({ type: 'input_image', image_url: `data:${img.mediaType};base64,${toBase64(img.data)}` })),
+  ];
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      model,
+      instructions: o.system,
+      input: [{ role: 'user', content }],
+      max_output_tokens: Math.max(o.maxTokens ?? 16_000, 4000),
+      reasoning: { effort: 'low' },
+    }),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  const data = (await res.json().catch(() => null)) as {
+    status?: string;
+    output_text?: string;
+    output?: { type: string; content?: { type: string; text?: string }[] }[];
+    usage?: { input_tokens?: number; output_tokens?: number };
+    error?: { message?: string } | null;
+    incomplete_details?: { reason?: string } | null;
+  } | null;
+  if (!res.ok) throw new Error(`${res.status}: ${data?.error?.message ?? 'chyba modelu'}`);
+  const text = (
+    data?.output_text ??
+    (data?.output ?? [])
+      .filter((o) => o.type === 'message')
+      .flatMap((o) => o.content ?? [])
+      .filter((c) => c.type === 'output_text' && c.text)
+      .map((c) => c.text)
+      .join('\n')
+  ).trim();
+  if (!text) throw new Error(data?.status === 'incomplete' ? `Model nedokončil odpověď (${data.incomplete_details?.reason ?? 'limit'}).` : 'Model nevrátil text.');
+  return { text, inputTokens: data?.usage?.input_tokens ?? null, outputTokens: data?.usage?.output_tokens ?? null };
+}
+
 /** Workers AI modely vrací buď `{ response }`, nebo OpenAI tvar `{ choices[].message.content }`. */
 async function callCf(env: Env, model: string, o: CallOpts): Promise<CallResult> {
   const content = o.images?.length
@@ -173,9 +218,9 @@ async function dispatch(env: Env, spec: string, o: CallOpts): Promise<CallResult
   // Claude modely má Zen v Anthropic tvaru (/messages), ostatní v OpenAI tvaru.
   // Pozor: /messages čte klíč jen z `x-api-key` (s Bearer vrací „Missing API key“,
   // i když dokumentace Zen uvádí Bearer); /chat/completions naopak chce Bearer.
-  return model.startsWith('claude-')
-    ? callMessages(`${ZEN_BASE}/messages`, { 'x-api-key': env.OPENCODE_API_KEY }, model, o)
-    : callChat(`${ZEN_BASE}/chat/completions`, env.OPENCODE_API_KEY, model, o);
+  if (model.startsWith('claude-')) return callMessages(`${ZEN_BASE}/messages`, { 'x-api-key': env.OPENCODE_API_KEY }, model, o);
+  if (model.startsWith('gpt-')) return callResponses(`${ZEN_BASE}/responses`, env.OPENCODE_API_KEY, model, o);
+  return callChat(`${ZEN_BASE}/chat/completions`, env.OPENCODE_API_KEY, model, o);
 }
 
 async function logUsage(env: Env, o: CallOpts, spec: string, started: number, result: CallResult | null, error: string | null) {
@@ -192,11 +237,19 @@ async function logUsage(env: Env, o: CallOpts, spec: string, started: number, re
   }
 }
 
-/** Zavolá model pro danou úlohu; při selhání komerčního modelu zkusí zálohu (Workers AI). */
+/**
+ * Zavolá model pro danou úlohu. Úloha může mít víc modelů (čárkou) – zkouší se
+ * popořadě, nakonec záloha AI_FALLBACK_MODEL (Workers AI).
+ */
 export async function runText(env: Env, o: CallOpts): Promise<string> {
-  const primary = (env[TASK_VARS[o.task]] as string | undefined)?.trim() || env.AI_FALLBACK_MODEL;
-  const fallback = env.AI_FALLBACK_MODEL?.trim();
-  const attempts = fallback && fallback !== primary ? [primary, fallback] : [primary];
+  const specs = [
+    ...((env[TASK_VARS[o.task]] as string | undefined) ?? '').split(','),
+    ...(env.AI_FALLBACK_MODEL ?? '').split(','),
+  ]
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const attempts = [...new Set(specs)];
+  if (attempts.length === 0) throw new Error('Není nastavený žádný AI model.');
 
   let lastError: unknown;
   for (const spec of attempts) {

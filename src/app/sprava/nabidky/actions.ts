@@ -178,13 +178,17 @@ export async function saveQuoteAction(_prev: ActionState, formData: FormData): P
     const { missing } = await saveQuote(id, fields, items, sources);
 
     if (formData.get('intent') === 'generate') {
-      const res = await callQuotesWorker<{ number: string; version: number; unchanged: boolean }>(`/quotes/${id}/generate`, { method: 'POST', admin });
+      const res = await callQuotesWorker<{ number: string; version: number; unchanged: boolean; vykazCount?: number }>(`/quotes/${id}/generate`, {
+        method: 'POST',
+        admin,
+      });
       revalidatePath(PATH);
+      const what = res.vykazCount ? `PDF + ${res.vykazCount === 1 ? 'vyplněný výkaz' : `${res.vykazCount} vyplněné výkazy`}` : 'PDF';
       return {
         ok: true,
         message: res.unchanged
-          ? `Beze změny – platí PDF ${res.number}, verze ${res.version}.`
-          : `PDF ${res.number} vygenerováno (verze ${res.version}).`,
+          ? `Beze změny – platí přílohy verze ${res.version} (${what}).`
+          : `Přílohy ${res.number} vygenerovány (verze ${res.version}): ${what}.`,
       };
     }
     revalidatePath(PATH);
@@ -282,7 +286,7 @@ export async function setIncludeAction(_prev: ActionState, formData: FormData): 
     revalidatePath(PATH);
     return {
       ok: true,
-      message: include ? 'Vyplněný výkaz se přiloží k e-mailu (projeví se v nové verzi PDF).' : 'Výkaz se k e-mailu nepřiloží.',
+      message: include ? 'Vyplněný výkaz se přiloží k e-mailu.' : 'Vyplněný výkaz se k e-mailu nepřiloží (vygeneruje se ale dál spolu s PDF).',
     };
   } catch (err) {
     return fail(err);

@@ -6,7 +6,7 @@ import { getDB } from './db';
 import { fingerprintHash, missingInputs } from './quotes/calc';
 import {
   DEFAULT_CONDITIONS,
-  includedVykazIds,
+  fillableVykazIds,
   type Quote,
   type QuoteFile,
   type QuoteItem,
@@ -152,7 +152,7 @@ export async function saveQuote(
   let status = current.status;
   if (status === 'ceka_na_udaje' && missing.length === 0) status = 'koncept';
   if (status === 'vygenerovano' || status === 'pripraveno') {
-    const hash = await fingerprintHash(fields, items, includedVykazIds(files.results));
+    const hash = await fingerprintHash(fields, items, fillableVykazIds(files.results));
     if (hash !== latest?.input_hash) status = 'koncept';
   }
 

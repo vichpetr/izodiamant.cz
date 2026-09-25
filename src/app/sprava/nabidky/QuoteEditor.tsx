@@ -88,7 +88,7 @@ export default function QuoteEditor({
   const [items, setItems] = useState<ItemDraft[]>(() =>
     initialItems.map((i) => ({ key: nextKey++, technology: i.technology, area: toStr(i.area_m2), price: String(i.price_per_m2) })),
   );
-  // Po úspěšném „Uložit a vygenerovat PDF“ pokračujeme na krok 3 (odeslání).
+  // Po úspěšném „Uložit a vygenerovat přílohy“ pokračujeme na krok 3 (odeslání).
   const intentRef = useRef<string | null>(null);
   const [formAction, pending] = useToastAction(saveAction, () => {
     if (intentRef.current === 'generate') wizard?.goTo(3);
@@ -403,13 +403,13 @@ export default function QuoteEditor({
 
         <div className="flex flex-col gap-2">
           <button type="submit" form="quote-form" name="intent" value="generate" disabled={pending || Boolean(variantsProblem)} className="btn-primary py-3 px-6 uppercase tracking-widest disabled:opacity-60">
-            {pending ? 'Pracuji…' : 'Uložit a vygenerovat PDF'}
+            {pending ? 'Pracuji…' : 'Uložit a vygenerovat přílohy'}
           </button>
           <button type="submit" form="quote-form" name="intent" value="save" disabled={pending || Boolean(variantsProblem)} className="py-3 px-6 rounded-xl border-2 border-neutral-dark/10 text-xs font-black uppercase tracking-widest text-neutral-dark/70 hover:border-primary/40 disabled:opacity-60">
             Jen uložit
           </button>
           {variantsProblem && <p className="text-[11px] text-red-800">Nejde uložit – u variant je některá technologie víckrát (viz Technologie a ceny).</p>}
-          {pending && <Working label="Generuji PDF…" hint="Obvykle 5–20 s; poprvé i s návrhem textu e-mailu." />}
+          {pending && <Working label="Generuji přílohy…" hint="PDF nabídky a vyplněný výkaz (je-li v podkladech). Obvykle 5–20 s; poprvé i s návrhem textu e-mailu." />}
         </div>
       </aside>
     </div>

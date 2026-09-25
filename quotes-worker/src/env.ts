@@ -3,7 +3,7 @@
  * - attachment: ohodnotit relevanci přílohy a relevantní přečíst silným modelem.
  *   `force` = přečíst i to, co AI vyhodnotí jako nerelevantní (ruční nahrání,
  *   tlačítko „Přečíst“). Typ "plan" je starší tvar téže úlohy (bere se jako force).
- * - autogen: nabídka z e-mailu má všechny údaje → vygenerovat PDF (stav „připraveno“).
+ * - autogen: nabídka z e-mailu má všechny údaje → vygenerovat přílohy (stav „připraveno“).
  */
 export type Job =
   | { type: 'attachment' | 'plan'; fileId: number; hint: string | null; force?: boolean }

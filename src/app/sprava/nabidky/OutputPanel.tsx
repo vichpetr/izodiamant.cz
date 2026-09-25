@@ -66,7 +66,7 @@ export default function OutputPanel({
           {attachments.join(' · ')}
         </p>
       ) : (
-        <p className="text-sm text-neutral-dark/50 mb-2">E-mail půjde připravit, až bude PDF nabídky (krok 2 → „Uložit a vygenerovat PDF“).</p>
+        <p className="text-sm text-neutral-dark/50 mb-2">E-mail půjde připravit, až bude PDF nabídky (krok 2 → „Uložit a vygenerovat přílohy“).</p>
       )}
       {versionCount > 1 && (
         <p className="text-xs text-neutral-dark/50 mb-2">Nabídka má víc verzí – ceny v textu e-mailu se samy nemění. Zkontrolujte je, případně „Navrhnout znovu (AI)“.</p>
