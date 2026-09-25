@@ -38,6 +38,8 @@
   "exclude": [
     "node_modules",
     "worker",
-    "quotes-worker"
+    "quotes-worker",
+    ".open-next",
+    ".vercel"
   ]
 }

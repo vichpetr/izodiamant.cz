@@ -4,7 +4,8 @@
 // Cloudflare: zapnuté „Transformations" pro zónu (na izodiamant.cz jsou).
 //
 // Aktivuje se jen když NEXT_PUBLIC_CF_IMAGES === 'true'. Tuto proměnnou nastavuje
-// next.config.ts automaticky na buildu Cloudflare Pages (podle CF_PAGES). V dev,
+// next.config.ts automaticky na buildu Cloudflare Pages (podle CF_PAGES), u Workeru
+// ji předává deploy-web.yml z GitHub Variables. V dev,
 // CI a Playwrightu (spouští se přes `npm run start` bez CF_PAGES) zůstává vypnutá,
 // takže loader vrací původní src a /cdn-cgi/image na localhostu nic nerozbije.
 interface LoaderArgs {

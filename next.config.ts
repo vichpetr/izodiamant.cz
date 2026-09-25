@@ -10,11 +10,11 @@ const clankyKeepRegex = `(?!(?:${articleSlugs.join("|")})$).*`;
 
 // Vlastní image loader přes /cdn-cgi/image (viz src/lib/cfImageLoader.ts) zapneme
 // jen pro PRODUKČNÍ nasazení na custom doméně izodiamant.cz, kde jsou Cloudflare
-// Transformations aktivní. Na preview (*.pages.dev) /cdn-cgi/image NEfunguje –
+// Transformations aktivní. Na preview (*.pages.dev, *.workers.dev) /cdn-cgi/image NEfunguje –
 // transformace tam nejdou zapnout – takže tam i lokálně/v CI zůstává loader vypnutý
 // a obrázky se servírují přímo. CF Pages nastavuje CF_PAGES_BRANCH; produkční větev
-// je 'master'. Ruční přepis přes NEXT_PUBLIC_CF_IMAGES má přednost (např. lze zapnout
-// nastavením NEXT_PUBLIC_CF_IMAGES=true jen v Production env varech projektu).
+// je 'master'. Ruční přepis přes NEXT_PUBLIC_CF_IMAGES má přednost – Worker build
+// (deploy-web.yml) ho bere z GitHub Variables, CF_PAGES tam není.
 const isCfProd = Boolean(process.env.CF_PAGES) && process.env.CF_PAGES_BRANCH === 'master';
 const cfImages = process.env.NEXT_PUBLIC_CF_IMAGES ?? (isCfProd ? 'true' : '');
 

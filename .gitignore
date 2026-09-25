@@ -47,3 +47,6 @@ next-env.d.ts
 
 # wrangler (lokální D1/R2 stav, dev registry)
 .wrangler/
+
+# OpenNext (Cloudflare Workers build)
+/.open-next/

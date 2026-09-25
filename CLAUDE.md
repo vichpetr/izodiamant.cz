@@ -7,6 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` — Next.js dev server at http://localhost:3000
 - `npm run build` — production build
 - `npm run start` — serve production build (Playwright's webServer uses this)
+- `npm run build:worker` — Cloudflare Workers build via OpenNext → `.open-next/` (`scripts/build-worker.mjs`, see Deployment)
+- `npm run preview:worker` — build + run the Worker locally in workerd (`wrangler.jsonc` env `preview`)
 - `npm run lint` — ESLint 9 flat config (`eslint.config.mjs`, rulesets `next/core-web-vitals` + `next/typescript`); runs `eslint .` directly, **not** `next lint` (removed in Next 16)
 - `npm run sync:llms` — regenerate `src/lib/llms.ts` from `public/llms.txt` (run after editing the latter)
 - `npm test` — runs Playwright suite against `npm run start` on port 3000 (build first)
@@ -40,8 +42,8 @@ no 500) when unset:
 - `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` — Google OAuth 2.0 web client
 - `AUTH_URL` — canonical origin, e.g. `https://izodiamant.cz`
 - `ADMIN_EMAILS` — comma-separated allowlist of Google accounts that may sign in
-- **Cloudflare D1 binding `DB`** — bound in the Pages project settings (not an env var); schema in `db/schema.sql`. Accessed via `getRequestContext().env.DB` (`src/lib/db.ts`, degrades to empty/no-op when absent).
-- **Service binding `QUOTES`** — Pages → `izodiamant-quotes` (Production) / `izodiamant-quotes-preview` (Preview). Needed by `/sprava/nabidky` for PDF, AI and mailbox; without it the section degrades to a plain form (`src/lib/quotesWorker.ts`).
+- **Cloudflare D1 binding `DB`** — in `wrangler.jsonc` (Workers) / Pages project settings (Pages, until it's deleted); schema in `db/schema.sql`. Accessed via `getCfEnv()` (`src/lib/cfEnv.ts` → `src/lib/db.ts`, degrades to empty/no-op when absent).
+- **Service binding `QUOTES`** — `wrangler.jsonc` / Pages → `izodiamant-quotes` (production) / `izodiamant-quotes-preview` (preview). Needed by `/sprava/nabidky` for PDF, AI and mailbox; without it the section degrades to a plain form (`src/lib/quotesWorker.ts`).
 
 ## Coupled invariants
 
@@ -111,7 +113,13 @@ From `GEMINI.md` — apply when editing any metadata or page copy:
 
 ## Deployment
 
-Cloudflare Pages (frontend) + a separate Cloudflare Worker (reviews API). `@cloudflare/next-on-pages` is in devDependencies.
+**Mid-migration from Cloudflare Pages to Workers** (`deployment.MD` §1.3). The same code builds two ways until the Pages project is deleted in a follow-up MR:
+
+- **Workers (target):** OpenNext (`@opennextjs/cloudflare`), config `wrangler.jsonc` (worker `izodiamant` + env `preview` → `izodiamant-preview`, each with its own D1 and quotes-worker binding), deployed by `.github/workflows/deploy-web.yml` (master → production, other branches → preview version with a per-branch alias, daily cron rebuild). `NEXT_PUBLIC_*` come from GitHub Actions **Variables**, server secrets live in the worker (`wrangler secret put`). Deploy via `opennextjs-cloudflare deploy/upload`, not bare `wrangler deploy` — only the former populates the SSG page cache (`open-next.config.ts`, static-assets incremental cache).
+- **Pages (legacy, serves the domain until cut-over):** dashboard Git integration running `@cloudflare/next-on-pages`. It ignores `wrangler.jsonc` (no `pages_build_output_dir`) — keep it that way. Note that `wrangler pages dev` run from the repo root *does* read it and breaks routing; run it from another directory if needed.
+- **`export const runtime = 'edge'`** stays in the dynamic routes for next-on-pages; OpenNext doesn't support the edge runtime, so `scripts/build-worker.mjs` strips those lines for the Worker build and restores them afterwards. New dynamic routes still need the line while Pages lives.
+- **Bindings** only via `getCfEnv()` (`src/lib/cfEnv.ts`) — never call `getRequestContext()` / `getCloudflareContext()` directly.
+- **Versions are held back for next-on-pages:** `next` `16.2.x` exact, `@opennextjs/cloudflare` `1.20.2` exact (newer needs Next ≥ 16.3.3), and `esbuild` `0.25.4` as a direct devDependency (OpenNext imports esbuild without declaring it; otherwise it resolves next-on-pages' ancient 0.15 and the build fails with "Invalid alias name").
 
 **`vercel` is pinned to an exact version (`59.25.0`) in devDependencies — do not widen it.** `next-on-pages` shells out to `vercel build`; without a local copy it pulls the latest CLI, and 59.25.4 broke the build (every prerendered route is reported as "not configured to run with the Edge Runtime" and the deploy fails). Pinning it also makes Pages builds reproducible. Before bumping, run `rm -rf .next .vercel && npx @cloudflare/next-on-pages` and check it ends with `Generated '.vercel/output/static/_worker.js/index.js'`.
 

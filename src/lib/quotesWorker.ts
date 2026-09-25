@@ -1,9 +1,9 @@
-// Volání quotes-workeru (PDF, AI, schránka) přes service binding `QUOTES`
-// z Pages projektu. Binding se nastavuje v Cloudflare dashboardu zvlášť pro
-// Production (izodiamant-quotes) a Preview (izodiamant-quotes-preview) – viz
-// deployment.MD. Worker není na internetu, autorizaci řeší volající (admin).
+// Volání quotes-workeru (PDF, AI, schránka) přes service binding `QUOTES`.
+// Workers: binding je ve `wrangler.jsonc` (produkce → izodiamant-quotes, env preview →
+// izodiamant-quotes-preview). Pages (dožívá): nastavení v dashboardu – viz deployment.MD.
+// Worker není na internetu, autorizaci řeší volající (admin).
 
-import { getRequestContext } from '@cloudflare/next-on-pages';
+import { getCfEnv } from './cfEnv';
 
 interface Fetcher {
   fetch(input: string, init?: RequestInit): Promise<Response>;
@@ -33,15 +33,11 @@ export interface WorkerStatus {
 }
 
 function getService(): Fetcher | null {
-  try {
-    const binding = (getRequestContext().env as { QUOTES?: unknown }).QUOTES;
-    // Pozor: `QUOTES` musí být **service binding**, ne obyčejná proměnná prostředí –
-    // jako text by sem přišel řetězec a volání .fetch() by spadlo na TypeError.
-    if (!binding || typeof (binding as Fetcher).fetch !== 'function') return null;
-    return binding as Fetcher;
-  } catch {
-    return null;
-  }
+  const binding = getCfEnv()?.QUOTES;
+  // Pozor: `QUOTES` musí být **service binding**, ne obyčejná proměnná prostředí –
+  // jako text by sem přišel řetězec a volání .fetch() by spadlo na TypeError.
+  if (!binding || typeof (binding as Fetcher).fetch !== 'function') return null;
+  return binding as Fetcher;
 }
 
 export function isQuotesWorkerAvailable(): boolean {
@@ -63,7 +59,7 @@ export async function rawQuotesWorker(path: string, init: RequestInit & { admin?
   const service = getService();
   if (!service) {
     throw new Error(
-      'Služba nabídek není připojená. V Pages → Settings → Bindings musí být QUOTES jako Service binding (ne proměnná prostředí) na izodiamant-quotes, resp. izodiamant-quotes-preview.',
+      'Služba nabídek není připojená. QUOTES musí být Service binding (ne proměnná prostředí) na izodiamant-quotes, resp. izodiamant-quotes-preview – ve wrangler.jsonc (Workers) nebo v Pages → Settings → Bindings.',
     );
   }
   const { admin, ...rest } = init;
