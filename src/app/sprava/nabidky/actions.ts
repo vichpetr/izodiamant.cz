@@ -30,6 +30,7 @@ import {
   type QuoteStatus,
   type Relevance,
 } from '@/lib/quotes/model';
+import { variantsError } from '@/lib/quotes/calc';
 import { isValidEmail } from '@/lib/validators';
 import type { ActionState } from '../ActionForm';
 
@@ -165,6 +166,8 @@ export async function saveQuoteAction(_prev: ActionState, formData: FormData): P
       note: text(formData, 'note', 2000),
     };
     const items = parseItems(formData);
+    const variants = variantsError(fields.mode, items);
+    if (variants) return { ok: false, message: variants };
     let sources: Record<string, string> | null = null;
     try {
       const raw: unknown = JSON.parse(String(formData.get('field_sources') ?? 'null'));

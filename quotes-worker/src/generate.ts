@@ -7,7 +7,7 @@
 // přikládá quotes.email_version, a když není zvolená, poslední verze.
 
 import puppeteer from '@cloudflare/puppeteer';
-import { computeTotals, fingerprintHash, formatArea, formatCzk, nextDaySequence, quoteDayPrefix, quoteNumber } from '../../src/lib/quotes/calc';
+import { computeTotals, variantsError, fingerprintHash, formatArea, formatCzk, nextDaySequence, quoteDayPrefix, quoteNumber } from '../../src/lib/quotes/calc';
 import {
   QUOTE_AUTHOR,
   includedVykazIds,
@@ -102,6 +102,8 @@ export async function generateQuote(
   if (items.some((i) => !(i.area_m2 > 0) || !(i.price_per_m2 > 0))) {
     throw new UserError('Každá položka musí mít plochu i cenu za m² větší než 0.');
   }
+  const variants = variantsError(quote.mode, items);
+  if (variants) throw new UserError(variants);
 
   const files = await getFiles(env, id);
   const vykazIds = includedVykazIds(files);

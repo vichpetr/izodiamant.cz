@@ -9,7 +9,16 @@
 // je štítek s původem; po ruční změně a uložení zmizí.
 
 import { useEffect, useRef, useState } from 'react';
-import { computeTotals, cutArea, formatArea, formatCzk, recommendedTechnology, suggestedPricePerM2 } from '@/lib/quotes/calc';
+import {
+  computeTotals,
+  cutArea,
+  duplicateVariantTechnologies,
+  formatArea,
+  formatCzk,
+  recommendedTechnology,
+  suggestedPricePerM2,
+  variantsError,
+} from '@/lib/quotes/calc';
 import {
   DEFAULT_CONDITIONS,
   MATERIALS,
@@ -109,8 +118,19 @@ export default function QuoteEditor({
   }));
   const totals = computeTotals({ mode, transport_price: Math.round(toNum(f.transport_price)) }, parsedItems);
 
+  // Varianty: každá technologie jen jednou (u kombinace se opakovat může).
+  const duplicates = duplicateVariantTechnologies(mode, parsedItems);
+  const variantsProblem = variantsError(mode, parsedItems);
+  const usedTechnologies = new Set(items.map((i) => i.technology));
+  const canAddItem = mode !== 'varianty' || usedTechnologies.size < TECHNOLOGIES.length;
+
   const addItem = () => {
-    const technology = recommendedTechnology(f.material || null, toNum(f.thickness_cm) || null);
+    const recommended = recommendedTechnology(f.material || null, toNum(f.thickness_cm) || null);
+    // U variant nabídneme technologii, která tam ještě není.
+    const technology =
+      mode === 'varianty' && usedTechnologies.has(recommended)
+        ? (TECHNOLOGIES.find((t) => !usedTechnologies.has(t.id))?.id ?? recommended)
+        : recommended;
     setItems((prev) => [
       ...prev,
       { key: nextKey++, technology, area: toStr(computedArea), price: String(suggestedPricePerM2(technology, f.material || null)) },
@@ -259,7 +279,10 @@ export default function QuoteEditor({
                 const suggested = suggestedPricePerM2(item.technology, f.material || null);
                 const line = totals.lines[idx];
                 return (
-                  <div key={item.key} className="grid grid-cols-12 gap-3 items-end bg-neutral-light/60 rounded-2xl p-3">
+                  <div
+                    key={item.key}
+                    className={`grid grid-cols-12 gap-3 items-end rounded-2xl p-3 ${duplicates.includes(item.technology) ? 'bg-red-50 ring-2 ring-red-200' : 'bg-neutral-light/60'}`}
+                  >
                     <Field label="Technologie" className="col-span-12 sm:col-span-4">
                       <select
                         value={item.technology}
@@ -268,7 +291,14 @@ export default function QuoteEditor({
                         aria-label={`Technologie položky ${idx + 1}`}
                       >
                         {TECHNOLOGIES.map((t) => (
-                          <option key={t.id} value={t.id}>{t.label}</option>
+                          <option
+                            key={t.id}
+                            value={t.id}
+                            // U variant nejde vybrat technologii, kterou má už jiná položka.
+                            disabled={mode === 'varianty' && t.id !== item.technology && usedTechnologies.has(t.id)}
+                          >
+                            {t.label}
+                          </option>
                         ))}
                       </select>
                     </Field>
@@ -296,7 +326,18 @@ export default function QuoteEditor({
                 );
               })}
             </div>
-            <button type="button" onClick={addItem} className="mt-3 text-[11px] font-black uppercase tracking-widest px-3 py-2 rounded-lg bg-primary/15 text-primary-ink hover:bg-primary/25">
+            {variantsProblem && (
+              <p role="alert" className="mt-3 text-sm text-red-800 bg-red-50 rounded-xl px-3 py-2">
+                {variantsProblem}
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={addItem}
+              disabled={!canAddItem}
+              title={canAddItem ? undefined : 'U variant je každá technologie jen jednou – všechny už v nabídce jsou.'}
+              className="mt-3 text-[11px] font-black uppercase tracking-widest px-3 py-2 rounded-lg bg-primary/15 text-primary-ink hover:bg-primary/25 disabled:opacity-50"
+            >
               + Přidat technologii
             </button>
 
@@ -361,12 +402,13 @@ export default function QuoteEditor({
         </section>
 
         <div className="flex flex-col gap-2">
-          <button type="submit" form="quote-form" name="intent" value="generate" disabled={pending} className="btn-primary py-3 px-6 uppercase tracking-widest disabled:opacity-60">
+          <button type="submit" form="quote-form" name="intent" value="generate" disabled={pending || Boolean(variantsProblem)} className="btn-primary py-3 px-6 uppercase tracking-widest disabled:opacity-60">
             {pending ? 'Pracuji…' : 'Uložit a vygenerovat PDF'}
           </button>
-          <button type="submit" form="quote-form" name="intent" value="save" disabled={pending} className="py-3 px-6 rounded-xl border-2 border-neutral-dark/10 text-xs font-black uppercase tracking-widest text-neutral-dark/70 hover:border-primary/40 disabled:opacity-60">
+          <button type="submit" form="quote-form" name="intent" value="save" disabled={pending || Boolean(variantsProblem)} className="py-3 px-6 rounded-xl border-2 border-neutral-dark/10 text-xs font-black uppercase tracking-widest text-neutral-dark/70 hover:border-primary/40 disabled:opacity-60">
             Jen uložit
           </button>
+          {variantsProblem && <p className="text-[11px] text-red-800">Nejde uložit – u variant je některá technologie víckrát (viz Technologie a ceny).</p>}
           {pending && <Working label="Generuji PDF…" hint="Obvykle 5–20 s; poprvé i s návrhem textu e-mailu." />}
         </div>
       </aside>

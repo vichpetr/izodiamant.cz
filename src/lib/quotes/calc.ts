@@ -2,7 +2,7 @@
 // nesahá (jen navrhuje rozměry, které člověk potvrdí).
 
 import calculatorData from '../../data/calculator.json';
-import type { Quote, QuoteItem, TechnologyId } from './model';
+import { technologyLabel, type Quote, type QuoteItem, type TechnologyId } from './model';
 
 /** Tloušťka zdiva, od které řetězová pila nestačí a nasazuje se diamantové lano. */
 export const LANO_THICKNESS_CM = 50;
@@ -57,6 +57,26 @@ export function computeTotals(quote: Pick<Quote, 'mode' | 'transport_price'>, it
     total: workTotal + transport,
     variantTotals: lines.map((l) => l.workPrice + transport),
   };
+}
+
+/**
+ * U variant si klient vybírá jednu technologii – každá tam smí být jen jednou
+ * (dvakrát pila s různou cenou nedává smysl). U kombinace se opakovat může:
+ * po obvodu bývá různé zdivo, a tak i různá cena téže technologie.
+ */
+export function duplicateVariantTechnologies(mode: Quote['mode'], items: Pick<QuoteItem, 'technology'>[]): TechnologyId[] {
+  if (mode !== 'varianty') return [];
+  const seen = new Set<TechnologyId>();
+  const dupes = new Set<TechnologyId>();
+  for (const { technology } of items) (seen.has(technology) ? dupes : seen).add(technology);
+  return [...dupes];
+}
+
+/** Chybová hláška pro opakovanou technologii ve variantách, jinak null. */
+export function variantsError(mode: Quote['mode'], items: Pick<QuoteItem, 'technology'>[]): string | null {
+  const dupes = duplicateVariantTechnologies(mode, items);
+  if (dupes.length === 0) return null;
+  return `U variant může být každá technologie jen jednou (${dupes.map(technologyLabel).join(', ')} je tam víckrát). Nechte jednu položku, nebo přepněte na Kombinaci.`;
 }
 
 /** Řezná plocha = délka × tloušťka (stejně jako kalkulačka, viz src/lib/pricing.ts). */
