@@ -14,6 +14,8 @@ import {
   parseJsonArray,
   technologyLabel,
   versionFilename,
+  versionVykazFiles,
+  vykazFilename,
   type Quote,
   type QuoteItem,
 } from '@/lib/quotes/model';
@@ -111,7 +113,10 @@ async function QuoteDetail({ id, step, status }: { id: number; step: number; sta
     : false;
   const emailVersion = versions.find((v) => v.version === quote.email_version) ?? latest;
   const attachments = emailVersion
-    ? [versionFilename(quote.number ?? '', emailVersion.version), ...(emailVersion.vykaz_key ? [versionFilename(`vykaz-vymer-${quote.number}`, emailVersion.version, 'xlsx')] : [])]
+    ? [
+        versionFilename(quote.number ?? '', emailVersion.version),
+        ...versionVykazFiles(emailVersion).map((f) => vykazFilename(quote.number ?? '', emailVersion.version, f.technology)),
+      ]
     : quote.pdf_key && quote.number
       ? [`${quote.number}.pdf`]
       : [];

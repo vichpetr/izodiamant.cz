@@ -143,7 +143,10 @@ export interface QuoteVersion {
   quote_id: number;
   version: number;
   pdf_key: string;
+  /** Starší tvar: jeden vyplněný výkaz. Nově `vykaz_files`. */
   vykaz_key: string | null;
+  /** JSON [{key, technology}] – u variant jeden vyplněný výkaz za každou technologii. */
+  vykaz_files: string | null;
   input_hash: string;
   total_label: string | null;
   sent_at: string | null;
@@ -271,4 +274,34 @@ export function includedVykazIds(files: Pick<QuoteFile, 'id' | 'include_in_email
 /** Název PDF v příloze e-mailu: první verze bez přípony, další s „-v2“ atd. */
 export function versionFilename(number: string, version: number, ext = 'pdf'): string {
   return `${number}${version > 1 ? `-v${version}` : ''}.${ext}`;
+}
+
+export interface VersionVykaz {
+  key: string;
+  /** Technologie, jejíž ceny jsou ve výkazu (u variant); null = ceny všech položek. */
+  technology: TechnologyId | null;
+}
+
+/** Vyplněné výkazy k verzi (nový i starší tvar záznamu). */
+export function versionVykazFiles(v: Pick<QuoteVersion, 'vykaz_key' | 'vykaz_files'>): VersionVykaz[] {
+  if (v.vykaz_files) {
+    try {
+      const parsed: unknown = JSON.parse(v.vykaz_files);
+      if (Array.isArray(parsed)) {
+        return parsed
+          .filter((f): f is { key: string; technology?: unknown } => typeof f?.key === 'string')
+          .map((f) => ({ key: f.key, technology: isTechnology(f.technology) ? f.technology : null }));
+      }
+    } catch {
+      /* spadne na vykaz_key */
+    }
+  }
+  return v.vykaz_key ? [{ key: v.vykaz_key, technology: null }] : [];
+}
+
+const TECH_SLUG: Record<TechnologyId, string> = { 'retezova-pila': 'pila', 'diamantove-lano': 'lano', 'chemicka-injektaz': 'injektaz' };
+
+/** Název vyplněného výkazu v e-mailu, např. vykaz-vymer-NAB-20260925-01-lano-v2.xlsx. */
+export function vykazFilename(number: string, version: number, technology: TechnologyId | null): string {
+  return versionFilename(`vykaz-vymer-${number}${technology ? `-${TECH_SLUG[technology]}` : ''}`, version, 'xlsx');
 }

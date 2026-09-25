@@ -143,7 +143,8 @@ CREATE TABLE IF NOT EXISTS quote_versions (
   quote_id INTEGER NOT NULL REFERENCES quotes(id) ON DELETE CASCADE,
   version INTEGER NOT NULL,
   pdf_key TEXT NOT NULL,
-  vykaz_key TEXT,                         -- vyplněný výkaz výměr k této verzi (R2)
+  vykaz_key TEXT,                         -- vyplněný výkaz výměr k této verzi (R2) – první z vykaz_files
+  vykaz_files TEXT,                       -- JSON [{key, technology}] – u variant výkaz za každou technologii
   input_hash TEXT NOT NULL,               -- otisk vstupů – bez změny nevzniká nová verze
   total_label TEXT,                       -- „67 500 Kč“ / „2 varianty“ pro přehled
   sent_at TEXT,

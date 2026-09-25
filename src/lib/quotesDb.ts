@@ -229,9 +229,10 @@ export async function deleteQuote(id: number): Promise<string[]> {
       `SELECT r2_key AS k FROM quote_files WHERE quote_id = ?
        UNION SELECT pdf_key FROM quotes WHERE id = ? AND pdf_key IS NOT NULL
        UNION SELECT pdf_key FROM quote_versions WHERE quote_id = ?
-       UNION SELECT vykaz_key FROM quote_versions WHERE quote_id = ? AND vykaz_key IS NOT NULL`,
+       UNION SELECT vykaz_key FROM quote_versions WHERE quote_id = ? AND vykaz_key IS NOT NULL
+       UNION SELECT json_extract(f.value, '$.key') FROM quote_versions v, json_each(v.vykaz_files) f WHERE v.quote_id = ?`,
     )
-    .bind(id, id, id, id)
+    .bind(id, id, id, id, id)
     .all<{ k: string }>();
   await db.batch([
     db.prepare('DELETE FROM quote_versions WHERE quote_id = ?').bind(id),

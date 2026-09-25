@@ -18,6 +18,8 @@ import {
   type QuoteFile,
   type QuoteItem,
   type QuoteVersion,
+  type TechnologyId,
+  type VersionVykaz,
 } from '../../src/lib/quotes/model';
 import { renderQuoteHtml } from '../../src/lib/quotes/template';
 import { runJson, str } from './ai';
@@ -131,23 +133,44 @@ export async function generateQuote(
     httpMetadata: { contentType: 'application/pdf', contentDisposition: `inline; filename="${number}-v${version}.pdf"` },
   });
 
-  // Vyplněný výkaz výměr (první zaškrtnutý) – ceny z téže verze nabídky.
-  let vykazKey: string | null = null;
+  // Vyplněný výkaz výměr (první zaškrtnutý) – ceny z téže verze nabídky. U variant
+  // (klient si vybere jednu technologii) vznikne samostatný výkaz za každou variantu;
+  // u kombinace jeden, kde má každý řádek cenu své technologie.
+  const vykazFiles: VersionVykaz[] = [];
   const vykazFile = files.find((f) => vykazIds.includes(f.id));
   const vykazAnalysis = vykazFile ? parseFileAnalysis(vykazFile.analysis) : null;
   if (vykazFile && isVykaz(vykazAnalysis)) {
     const original = await env.BUCKET.get(vykazFile.r2_key);
-    const filled = original ? fillVykaz(await original.arrayBuffer(), vykazAnalysis, items, quote.thickness_cm ?? vykazAnalysis.thicknessCm) : null;
-    if (filled) {
-      vykazKey = `nabidky/${number}-v${version}-vykaz.xlsx`;
-      await env.BUCKET.put(vykazKey, filled.data, { httpMetadata: { contentType: XLSX_TYPE } });
+    const data = original ? await original.arrayBuffer() : null;
+    const thickness = quote.thickness_cm ?? vykazAnalysis.thicknessCm;
+    const groups =
+      quote.mode === 'varianty' && items.length > 1
+        ? items.map((item) => ({ technology: item.technology as TechnologyId | null, items: [item] }))
+        : [{ technology: null, items }];
+    for (const [i, group] of groups.entries()) {
+      const filled = data ? fillVykaz(data, vykazAnalysis, group.items, thickness) : null;
+      if (!filled) continue;
+      const key = `nabidky/${number}-v${version}-vykaz${groups.length > 1 ? `-${i + 1}` : ''}.xlsx`;
+      await env.BUCKET.put(key, filled.data, { httpMetadata: { contentType: XLSX_TYPE } });
+      vykazFiles.push({ key, technology: group.technology });
     }
   }
 
   await env.DB.prepare(
-    `INSERT INTO quote_versions (quote_id, version, pdf_key, vykaz_key, input_hash, total_label, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO quote_versions (quote_id, version, pdf_key, vykaz_key, vykaz_files, input_hash, total_label, created_at, created_by)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   )
-    .bind(id, version, pdfKey, vykazKey, hash, totalLabel(quote, items), nowIso(), opts.createdBy ?? null)
+    .bind(
+      id,
+      version,
+      pdfKey,
+      vykazFiles[0]?.key ?? null,
+      vykazFiles.length ? JSON.stringify(vykazFiles) : null,
+      hash,
+      totalLabel(quote, items),
+      nowIso(),
+      opts.createdBy ?? null,
+    )
     .run();
 
   const fields: Partial<Record<keyof Quote, unknown>> = {

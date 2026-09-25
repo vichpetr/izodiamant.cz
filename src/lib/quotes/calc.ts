@@ -146,8 +146,12 @@ export type FingerprintFields = Pick<
   'client_name' | 'client_email' | 'client_phone' | 'site_name' | 'site_address' | 'city' | 'material' | 'thickness_cm' | 'length_m' | 'mode' | 'transport_price' | 'intro' | 'conditions'
 >;
 
+/** Zvýšit, když se změní, co z týchž údajů vzniká (např. výkaz po variantách) – vznikne nová verze. */
+const FINGERPRINT_VERSION = 2;
+
 export function quoteFingerprint(quote: FingerprintFields, items: QuoteItem[], attachments: number[] = []): string {
   return JSON.stringify([
+    FINGERPRINT_VERSION,
     quote.client_name,
     quote.client_email,
     quote.client_phone,

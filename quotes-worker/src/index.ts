@@ -4,7 +4,7 @@
 // /sprava přes service binding QUOTES (autorizaci řeší Pages – Google login +
 // ADMIN_EMAILS) a cron. Kdo akci spustil, posílá Pages v hlavičce X-Admin-Email.
 
-import { SPREADSHEET_TYPES, isSpreadsheet, versionFilename, type QuoteFile } from '../../src/lib/quotes/model';
+import { SPREADSHEET_TYPES, isSpreadsheet, versionFilename, versionVykazFiles, vykazFilename, type QuoteFile } from '../../src/lib/quotes/model';
 import { maybeAutoGenerate, queueAttachment, runAttachmentJob } from './attachments';
 import { getFile, getItems, getQuote, getState, logQuoteMessage, updateQuote } from './db';
 import { flag, mailboxConfigured, nowIso, type Env, type Job } from './env';
@@ -185,11 +185,11 @@ async function handle(request: Request, env: Env): Promise<Response> {
     const attachments: NonNullable<OutgoingMail['attachments']> = [
       { filename: versionFilename(quote.number, version?.version ?? 1), data: await pdf.arrayBuffer(), mimeType: 'application/pdf' },
     ];
-    if (version?.vykaz_key) {
-      const vykaz = await env.BUCKET.get(version.vykaz_key);
+    for (const file of version ? versionVykazFiles(version) : []) {
+      const vykaz = await env.BUCKET.get(file.key);
       if (vykaz) {
         attachments.push({
-          filename: versionFilename(`vykaz-vymer-${quote.number}`, version.version, 'xlsx'),
+          filename: vykazFilename(quote.number, version!.version, file.technology),
           data: await vykaz.arrayBuffer(),
           mimeType: SPREADSHEET_TYPES.xlsx,
         });

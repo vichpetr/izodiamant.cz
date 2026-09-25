@@ -437,7 +437,7 @@ function VykazResult({ file, a, includeAction }: { file: QuoteFile; a: VykazAnal
               onChange={(e) => e.currentTarget.form?.requestSubmit()}
               className="h-4 w-4 accent-primary"
             />
-            Vyplnit našimi cenami a přiložit k e-mailu <span className="text-neutral-dark/40">(návrh ke kontrole)</span>
+            Vyplnit našimi cenami a přiložit k e-mailu <span className="text-neutral-dark/40">(návrh ke kontrole; u variant zvlášť za každou technologii)</span>
           </label>
         </form>
       )}

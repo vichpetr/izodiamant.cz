@@ -142,7 +142,8 @@ async function callCf(env: Env, model: string, o: CallOpts): Promise<CallResult>
       { role: 'system', content: o.system },
       { role: 'user', content },
     ],
-    max_tokens: o.maxTokens ?? 8192,
+    // S „přemýšlením“ spotřebuje Gemma na velkém výkresu i přes 8 000 tokenů.
+    max_tokens: o.maxTokens ?? (o.think ? 16_384 : 8192),
     temperature: 0.2,
     // Gemma 4 standardně „přemýšlí“ (desítky sekund) – pro běžný text vypnuto.
     ...(model.includes('gemma-4') && !o.think ? { chat_template_kwargs: { enable_thinking: false } } : {}),
@@ -170,8 +171,10 @@ async function dispatch(env: Env, spec: string, o: CallOpts): Promise<CallResult
   }
   if (!env.OPENCODE_API_KEY) throw new Error('Chybí secret OPENCODE_API_KEY.');
   // Claude modely má Zen v Anthropic tvaru (/messages), ostatní v OpenAI tvaru.
+  // Pozor: /messages čte klíč jen z `x-api-key` (s Bearer vrací „Missing API key“,
+  // i když dokumentace Zen uvádí Bearer); /chat/completions naopak chce Bearer.
   return model.startsWith('claude-')
-    ? callMessages(`${ZEN_BASE}/messages`, { authorization: `Bearer ${env.OPENCODE_API_KEY}` }, model, o)
+    ? callMessages(`${ZEN_BASE}/messages`, { 'x-api-key': env.OPENCODE_API_KEY }, model, o)
     : callChat(`${ZEN_BASE}/chat/completions`, env.OPENCODE_API_KEY, model, o);
 }
 

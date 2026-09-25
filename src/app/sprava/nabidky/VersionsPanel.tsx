@@ -4,7 +4,7 @@
 // verzi (stará zůstává). K e-mailu se přikládá poslední verze, pokud uživatel
 // nevybere jinou – třeba když klient reagoval na starší variantu.
 
-import { versionFilename, type Quote, type QuoteVersion } from '@/lib/quotes/model';
+import { technologyLabel, versionFilename, versionVykazFiles, type Quote, type QuoteVersion } from '@/lib/quotes/model';
 import { Icons } from '@/components/Icons';
 import { cardCls, fileUrl, fmtDateTime, headingCls } from './ui';
 import { useToastAction, type Action } from './useToastAction';
@@ -82,11 +82,16 @@ export default function VersionsPanel({
                   <a href={fileUrl(v.pdf_key)} target="_blank" rel="noopener" className="inline-flex items-center gap-1 text-[11px] font-black uppercase tracking-widest text-primary-ink hover:underline">
                     <Icons.FileText className="w-3.5 h-3.5" /> {versionFilename(number, v.version)}
                   </a>
-                  {v.vykaz_key && (
-                    <a href={fileUrl(v.vykaz_key)} className="text-[11px] font-black uppercase tracking-widest text-emerald-800 hover:underline" title="Vyplněný výkaz výměr – návrh ke kontrole">
-                      Výkaz XLSX
+                  {versionVykazFiles(v).map((f) => (
+                    <a
+                      key={f.key}
+                      href={fileUrl(f.key)}
+                      className="text-[11px] font-black uppercase tracking-widest text-emerald-800 hover:underline"
+                      title="Vyplněný výkaz výměr – návrh ke kontrole"
+                    >
+                      Výkaz{f.technology ? ` – ${technologyLabel(f.technology)}` : ''} XLSX
                     </a>
-                  )}
+                  ))}
                 </span>
               </li>
             ))}
