@@ -35,7 +35,7 @@ export default function InboxPanel({
   if (!status) {
     return (
       <section className={`${cardCls} text-sm text-neutral-dark/60`}>
-        <strong className="text-neutral-dark">Služba nabídek není připojená.</strong> V Pages projektu musí být <code>QUOTES</code> jako <strong>Service binding</strong> (ne proměnná prostředí) na <code>izodiamant-quotes</code>, resp. <code>izodiamant-quotes-preview</code> – viz deployment.MD §3.1. Bez ní nefunguje PDF, AI ani schránka.
+        <strong className="text-neutral-dark">Služba nabídek není připojená.</strong> Ve <code>wrangler.jsonc</code> musí být <code>QUOTES</code> jako <strong>Service binding</strong> (ne proměnná prostředí) na <code>izodiamant-quotes</code>, resp. <code>izodiamant-quotes-preview</code> – viz deployment.MD §3.1. Bez ní nefunguje PDF, AI ani schránka.
       </section>
     );
   }

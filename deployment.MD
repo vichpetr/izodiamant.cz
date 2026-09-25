@@ -1,58 +1,88 @@
-# Deployment Guide: Cloudflare Workers (dříve Pages)
+# Deployment Guide: Cloudflare Workers
 
 Tento dokument popisuje proces nasazení aplikace IZODIAMANT.cz a nastavení pomocného Workeru pro živé recenze ze **Seznam Firmy.cz** a **Google Maps**.
 
-## 1. Frontend (Cloudflare Workers, dožívající Pages)
+## 1. Frontend (Cloudflare Worker `izodiamant`)
 
-**Probíhá přechod z Cloudflare Pages na Workers** (Pages Cloudflare už dál nerozvíjí). Po dobu
-přechodu se web staví **oběma cestami ze stejného kódu**:
+Web je Next.js nasazený jako Cloudflare Worker přes **OpenNext** (`@opennextjs/cloudflare`).
+Do září 2026 běžel na Cloudflare Pages (`@cloudflare/next-on-pages`).
 
-- **Workers** (cíl): `npm run build:worker` (OpenNext) → worker `izodiamant` (produkce) a
-  `izodiamant-preview` (větve). Konfigurace `wrangler.jsonc`, nasazení
-  `.github/workflows/deploy-web.yml`. Postup přepnutí a vše potřebné: **§1.3**.
-- **Pages** (dožívá, dokud na něj míří doména): Git integrace v dashboardu, build
-  `@cloudflare/next-on-pages`. Kapitoly 1.1 a 1.2 popisují nastavení Pages – u Workeru se
-  totéž nastavuje podle §1.3.
+| | produkce | preview (ostatní větve) |
+|---|---|---|
+| worker | `izodiamant` | `izodiamant-preview` |
+| adresa | `izodiamant.cz` (+ `www` → 301), `izodiamant.<účet>.workers.dev` | `<větev>-izodiamant-preview.<účet>.workers.dev` |
+| D1 `DB` | `izodiamant-db` | `izodiamant-preview-db` |
+| `QUOTES` | `izodiamant-quotes` | `izodiamant-quotes-preview` |
+| GitHub Environment | `production` | `preview` |
+
+- **Konfigurace:** `wrangler.jsonc` (bindingy, domény jako Custom Domains), `open-next.config.ts`
+  (předrenderované stránky se čtou ze statických assetů – bez KV/R2 cache).
+- **Nasazení:** `.github/workflows/deploy-web.yml` – push na master → produkce, push na jinou
+  větev → nová preview verze s aliasem větve, cron 04:10 UTC → denní rebuild (články naplánované
+  v `articles.json` se zveřejní v den `date`). Nasazuje se přes `opennextjs-cloudflare deploy` /
+  `upload`, ne holým `wrangler deploy` – jen tak se naplní cache předrenderovaných stránek.
+- **Git integraci v Cloudflare (Workers Builds) nezapínat** – nasazuje GitHub Actions; druhá
+  pipeline by build přepisovala (a bez `NEXT_PUBLIC_*` a OpenNext buildu).
 
 Veřejný web žádné secrety navíc nepotřebuje.
 
-### 1.1 Skrytá admin sekce `/sprava` (evidence zákazníků + poděkování s prosbou o hodnocení)
+### 1.1 Proměnné, secrety a přihlášení
 
-Sekce je nelinkovaná, `noindex` a chráněná přihlášením přes Google. Bez níže uvedené konfigurace se veřejný web chová normálně a `/sprava` slušně ukáže přihlášení (nespadne). Ke zprovoznění:
+**a) `NEXT_PUBLIC_*` – GitHub Variables** (zapékají se do JS při buildu, do nastavení workeru
+se nedostanou). Workflow běží v GitHub Environment `production` / `preview`; hodnota se hledá
+nejdřív v prostředí, pak v repo-level Variables (Settings → Secrets and variables → Actions):
 
-**a) Google OAuth 2.0 klient** (Google Cloud Console → APIs & Services → Credentials → Create credentials → OAuth client ID → *Web application*):
-- Authorized redirect URIs: `https://izodiamant.cz/api/auth/callback/google` (+ `http://localhost:3000/api/auth/callback/google` pro dev).
-- **Testujete-li admin na preview deploji** (Cloudflare Pages branch alias), přidejte i redirect URI té větve: `https://<branch>.izodiamant-cz.pages.dev/api/auth/callback/google` (název větve: tečky/lomítka → pomlčky, např. `feat/clanky-date-publish` → `feat-clanky-date-publish`). Google **nepodporuje wildcardy**, takže každou testovanou větev je nutné přidat zvlášť. Přihlašujte se přes **branch alias**, ne přes per-commit URL (`<hash>.…pages.dev`) – ta se mění každým buildem.
-- Zkopírujte **Client ID** a **Client secret**.
+| Proměnná | Kde | Pozn. |
+|---|---|---|
+| `NEXT_PUBLIC_FIRMY_PROFILE_URL` | repo | povinná |
+| `NEXT_PUBLIC_REVIEWS_API_URL` | production / preview | preview: placeholder `…vas-ucet…` = recenze se nevykreslí |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | production | preview bez GA, nezkresluje statistiky |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | production / preview | widget povoluje jen své hostnamy → preview testovací `1x00000000000000000000AA` |
+| `NEXT_PUBLIC_CF_IMAGES` | production (`true`) | zmenšování obrázků přes `/cdn-cgi/image` – funguje jen na izodiamant.cz |
+| `NEXT_PUBLIC_GOOGLE_REVIEW_URL`, `…_FIRMY_REVIEW_URL`, `…_GOOGLE_MAPS_URL`, `…_GOOGLE_SITE_VERIFICATION`, `…_BING_SITE_VERIFICATION` | volitelné | bez nich výchozí hodnoty z kódu |
 
-**b) Cloudflare D1 databáze:**
+Změna proměnné se projeví až novým buildem (Actions → Deploy Web (Workers) → Run workflow).
+
+**b) Secrety workeru** (serverové, přežijí deploy). Z kořene repa:
 ```bash
-npx wrangler d1 create izodiamant-db           # vytvoří DB, vypíše database_id
-npm run db:schema:remote                        # aplikuje db/schema.sql (viz package.json)
+npx wrangler secret put <NÁZEV> --env=""                  # produkce (izodiamant)
+npx wrangler versions secret put <NÁZEV> --env preview    # preview (izodiamant-preview)
 ```
-V **Pages projektu → Settings → Functions → D1 database bindings** přidejte binding **Variable name `DB`** → vytvořená databáze. (Kód ji čte přes `getRequestContext().env.DB`.)
+Na preview jde jen `versions secret put`: větve nahrávají verze (`versions upload`), žádná není
+„nasazená“, a obyčejný `secret put` to odmítne. Secret se přenáší do dalších verzí.
 
-**c) Environment variables / secrets** (Pages → Settings → Environment variables, Production):
-| Proměnná | Hodnota |
+| Secret | |
 |---|---|
-| `AUTH_SECRET` | náhodný řetězec (`openssl rand -base64 32`) |
-| `AUTH_GOOGLE_ID` | Client ID z kroku a) |
-| `AUTH_GOOGLE_SECRET` | Client secret z kroku a) |
-| `AUTH_URL` | `https://izodiamant.cz` |
-| `ADMIN_EMAILS` | povolené Google účty, čárkami: `vichpetr@gmail.com,...` |
+| `RESEND_API_KEY` | povinný – kontaktní formulář, kalkulačka, poděkování z `/sprava` |
+| `AUTH_SECRET` | povinný pro `/sprava` – `openssl rand -base64 32 \| npx wrangler secret put AUTH_SECRET --env=""` (nový = jen nové přihlášení) |
+| `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` | OAuth klient z kroku c) |
+| `ADMIN_EMAILS` | povolené Google účty, čárkami |
+| `FROM_EMAIL` | volitelný (výchozí `onboarding@resend.dev`), musí být z ověřené domény v Resendu |
+| `CONTACT_EMAIL` | volitelný (výchozí `info@izodiamant.cz`) – kam chodí poptávky |
+| `TURNSTILE_SECRET_KEY` | volitelný; bez něj se token nekontroluje (preview: `1x0000000000000000000000000000000AA`) |
 
-**d) Odesílání zákazníkům:** poděkování jde přes Resend (stejně jako potvrzení z formuláře). `FROM_EMAIL` musí být z **ověřené domény** v Resendu (web už zákazníkům potvrzení posílá, takže je pravděpodobně hotové).
+`AUTH_URL` **nenastavujte** – `trustHost: true` (`src/auth.ts`) odvodí adresu z požadavku, takže
+přihlášení funguje na izodiamant.cz, workers.dev i na aliasech větví.
 
-> **`AUTH_URL` patří jen do Production, ne do Preview.** Cloudflare Pages sdílí env
-> proměnné napříč **všemi** preview deploji (jedno „Preview" prostředí). Pevná `AUTH_URL`
-> tam připíchne přihlášení na jedinou větev – po loginu vás to pak vrátí na cizí (starší)
-> preview bez ohledu na to, kde jste začali. Proto: nastavte `AUTH_URL` **výhradně ve
-> scope Production** (`https://izodiamant.cz`) a v **Preview scope ji nechte prázdnou**.
-> Kód má `trustHost: true` (`src/auth.ts`), takže si na previewu host odvodí z requestu a
-> každá větev funguje na své vlastní doméně. Změna env proměnných se projeví až **novým
-> buildem** – po úpravě větev znovu nasaďte (Deployments → Retry deployment).
+**c) Google OAuth 2.0 klient** (Google Cloud Console → APIs & Services → Credentials → OAuth
+client ID → *Web application*) – *Authorized redirect URIs*:
+- `https://izodiamant.cz/api/auth/callback/google`
+- `https://izodiamant.<účet>.workers.dev/api/auth/callback/google`
+- `http://localhost:8787/api/auth/callback/google` (lokální `npm run preview:worker`)
+- testujete-li admin na větvi: `https://<alias>-izodiamant-preview.<účet>.workers.dev/api/auth/callback/google`
+  (alias = název větve malými písmeny, jiné znaky → `-`, max. 30 znaků). Google nepodporuje
+  wildcardy – každou testovanou větev přidat zvlášť.
 
-Po nastavení: `https://izodiamant.cz/sprava` → přihlášení Googlem → jen e-mail z `ADMIN_EMAILS` se dostane dovnitř. Přidání dalšího správce = doplnit `ADMIN_EMAILS` (bez zásahu do kódu). Lokální dev: `.env.local` s `AUTH_*`/`ADMIN_EMAILS` + `npm run db:schema:local` a `npx wrangler pages dev`.
+**d) D1:** databáze `izodiamant-db` / `izodiamant-preview-db` jsou ve `wrangler.jsonc`; schéma
+aplikuje CI quotes-workeru (§3.1), ručně `npm run db:schema:remote` / `db:schema:preview:remote`.
+
+`/sprava` je nelinkovaná (jen nenápadně z patičky), `noindex` a chráněná přihlášením Googlem –
+dovnitř se dostane jen e-mail z `ADMIN_EMAILS`. Bez secretů se veřejný web chová normálně a
+`/sprava` jen ukáže přihlášení.
+
+**Lokálně:** `npm run preview:worker` (build + workerd s bindingy `env.preview`, lokální D1),
+secrety do `.dev.vars` (`AUTH_SECRET=…` apod.), schéma `npm run db:schema:local`.
+Pro čistý frontend stačí `npm run dev`.
 
 ### 1.2 Automatické plánování FB postů (články + reference)
 
@@ -72,7 +102,7 @@ naplánovaným postům. Přesný čas 11:30 pohlídá Facebook; post je vidět (
 upravit/zrušit) v Meta Business Suite. Přehled textů je i v adminu na `/sprava/clanky`
 (záložky **Články** a **Reference**).
 
-Job běží po denním rebuildu (`scheduled-rebuild.yml` ve 04:10 UTC), takže je obsah na
+Job běží po denním rebuildu (`deploy-web.yml`, cron 04:10 UTC), takže je obsah na
 webu aktuální a Facebook si stáhne správný náhled z OG tagů. Ruční test bez odeslání:
 `TZ=Europe/Prague FB_DRY_RUN=1 FB_FORCE_KIND=reference node scripts/fb-schedule.mjs`
 (nebo `FB_FORCE_KIND=article`).
@@ -96,96 +126,6 @@ webu aktuální a Facebook si stáhne správný náhled z OG tagů. Ruční test
 Bez těchto secrets job jen tiše doběhne (nic nenaplánuje), workflow nepadá. Ruční test:
 *Actions → FB auto-poster → Run workflow*. Lokální suchý běh bez tokenu:
 `TZ=Europe/Prague FB_DRY_RUN=1 node scripts/fb-schedule.mjs` (jen vypíše, co by naplánoval).
-
-### 1.3 Přechod z Pages na Workers (bez výpadku)
-
-Pages projekt zůstává beze změny a obsluhuje `izodiamant.cz`, dokud doménu ručně
-nepřepnete. Merge tohoto kódu nic nepřepíná – jen začne nasazovat worker vedle Pages.
-
-```
-master ──▶ Pages (next-on-pages)   ◀── izodiamant.cz (DNS CNAME → pages.dev)   ← dnes
-      └──▶ Worker izodiamant (OpenNext) ◀── izodiamant.<účet>.workers.dev     ← ověření
-           po přepnutí: Worker route izodiamant.cz/* má přednost před Pages     ← cíl
-```
-
-**Proč dva buildy z jednoho kódu:** next-on-pages u dynamických rout vyžaduje
-`export const runtime = 'edge'`, OpenNext edge runtime nepodporuje. `scripts/build-worker.mjs`
-proto ty řádky před Worker buildem dočasně odstraní a po buildu vrátí. Bindingy (`DB`,
-`QUOTES`) čte `src/lib/cfEnv.ts` v obou runtimech.
-
-**a) Jednorázově před mergem / hned po něm**
-
-1. **GitHub Environments + Variables** – `NEXT_PUBLIC_*` se zapékají do JS při buildu, do
-   nastavení workeru se nedostanou. Workflow běží v GitHub Environment `production` (master)
-   nebo `preview` (ostatní větve); obě prostředí založí první běh, případně ručně Settings →
-   Environments → New environment. Proměnná se hledá nejdřív v prostředí, pak v repo-level
-   Variables (Settings → Secrets and variables → Actions → Variables):
-   - společné hodnoty → **repo-level**: `NEXT_PUBLIC_FIRMY_PROFILE_URL`, případně
-     `NEXT_PUBLIC_GOOGLE_REVIEW_URL` …
-   - hodnoty, které se liší, → **do prostředí**: `NEXT_PUBLIC_REVIEWS_API_URL` (production i preview),
-     `NEXT_PUBLIC_GA_MEASUREMENT_ID` jen do `production` (preview pak GA nenačte a nezkresluje statistiky),
-     `NEXT_PUBLIC_TURNSTILE_SITE_KEY` – Turnstile widget povoluje jen své hostnamy, takže na
-     `*.workers.dev` buď přidat hostname do widgetu, nebo na preview použít testovací pár Cloudflare
-     (site key `1x00000000000000000000AA` + secret `TURNSTILE_SECRET_KEY` `1x0000000000000000000000000000000AA`
-     v preview workeru – vždy projde).
-   Hodnoty odpovídají Pages → Settings → Environment variables (Production, resp. Preview).
-   `NEXT_PUBLIC_CF_IMAGES` zatím **nezakládejte** (viz krok c); workflow ho na preview ignoruje.
-2. **API token** `CLOUDFLARE_API_TOKEN` (už existuje pro ostatní workery) musí mít
-   *Workers Scripts: Edit* a *D1: Edit* – má je, pokud prochází deploy quotes-workeru.
-3. **Secrety workeru** – hodnoty zkopírujte z Pages (Production, resp. Preview). Worker musí
-   existovat, takže až po prvním deployi (po merge, resp. po pushi větve):
-   ```bash
-   for s in RESEND_API_KEY FROM_EMAIL CONTACT_EMAIL TURNSTILE_SECRET_KEY AUTH_SECRET AUTH_GOOGLE_ID AUTH_GOOGLE_SECRET ADMIN_EMAILS; do
-     npx wrangler secret put $s                  # produkce (izodiamant)
-     npx wrangler secret put $s --env preview    # preview  (izodiamant-preview)
-   done
-   ```
-   `AUTH_URL` **nenastavujte** – `trustHost: true` odvodí adresu z požadavku, takže přihlášení
-   funguje na workers.dev i na izodiamant.cz. Nahrajte jen ty, které Pages skutečně má – `FROM_EMAIL`
-   (bez něj odesílá `onboarding@resend.dev`), `CONTACT_EMAIL` (bez něj `info@izodiamant.cz`) a
-   `TURNSTILE_SECRET_KEY` jsou volitelné. Preview worker vzniká už pushem větve, produkční až mergem.
-4. **Google OAuth** (Google Cloud Console → Credentials → OAuth klient) → *Authorized redirect
-   URIs* doplňte:
-   - `https://izodiamant.<účet>.workers.dev/api/auth/callback/google` (test produkce před přepnutím)
-   - pro preview větve `https://<větev>-izodiamant-preview.<účet>.workers.dev/api/auth/callback/google`
-     (alias větve = malá písmena, jiné znaky → `-`, max. 30 znaků; Google nepodporuje wildcardy).
-
-D1 (`DB`) a quotes-worker (`QUOTES`) jsou ve `wrangler.jsonc` – v dashboardu se nenastavují.
-Preview worker má vlastní D1 `izodiamant-preview-db` a `izodiamant-quotes-preview`, stejně jako
-dnes Pages Preview.
-
-**b) Ověření na workers.dev** (po merge; deploy spustí push na master)
-
-`https://izodiamant.<účet>.workers.dev` – projít homepage, služby, `/reference`, článek,
-kontaktní formulář a kalkulačku (dorazí e-mail, lead se propíše do `/sprava`), přihlášení do
-`/sprava`, `/sprava/nabidky` (PDF přes `QUOTES`), `llms.txt`, `curl -H 'Accept: text/markdown'`.
-Obrázky se zde servírují bez Cloudflare Transformations (plná velikost) – to je v pořádku.
-
-**c) Přepnutí domény** (bez výpadku, s okamžitým návratem)
-
-1. Workers & Pages → **izodiamant** → Settings → Domains & Routes → **Add → Route**:
-   `izodiamant.cz/*`, zóna `izodiamant.cz`. Route na zóně má přednost před Pages – DNS záznam
-   (CNAME na pages.dev) zůstává, jen požadavky od teď obslouží worker. Žádná změna DNS, žádná
-   propagace, žádné nové certifikáty.
-   - `www.izodiamant.cz` dnes přesměrovává 301 na `izodiamant.cz` – route pro `www` nepřidávejte,
-     pokud přesměrování řeší pravidlo zóny (Rules → Redirect Rules). Pokud ho dělá Pages, přidejte
-     i route `www.izodiamant.cz/*` a ověřte, že 301 zůstala.
-2. GitHub Environment `production` → Variables: `NEXT_PUBLIC_CF_IMAGES` = `true` → Actions → **Deploy Web (Workers)** →
-   Run workflow (na `master`). Tím se zapnou zmenšené obrázky přes `/cdn-cgi/image`.
-3. Ověřit `https://izodiamant.cz` (hlavička `cf-ray` je u obou; worker poznáte ve
-   Workers → izodiamant → Logs / Observability).
-4. **Návrat zpět:** smazat route `izodiamant.cz/*` → provoz jde okamžitě zase na Pages.
-
-**d) Úklid – samostatné MR, až worker nějakou dobu běží**
-
-- Smazat Pages projekt (`npx wrangler pages project delete izodiamant-cz`) a jeho deploy hook,
-  `.github/workflows/scheduled-rebuild.yml` (denní rebuild dělá `deploy-web.yml` přes cron).
-- Odebrat `@cloudflare/next-on-pages`, `vercel`, `getRequestContext` z `src/lib/cfEnv.ts`,
-  `export const runtime = 'edge'` ze zdrojů a `scripts/build-worker.mjs` (build pak rovnou
-  `opennextjs-cloudflare build`) a `CF_PAGES` v `next.config.ts`.
-- Route přesunout do `wrangler.jsonc` (`routes`, případně jako Custom Domain), aby byla v gitu.
-- Upgrade Next na 16.3.x + nejnovější `@opennextjs/cloudflare` (teď drženo na 16.2.x kvůli
-  next-on-pages).
 
 ## 2. Cloudflare Worker (Recenze API – Seznam + Google)
 
@@ -340,7 +280,7 @@ Admin sekce pro přípravu cenových nabídek jako průvodce ve třech krocích
 přílohy, koncept do schránky / odeslání). Poptávky čte ze schránky `info@izodiamant.cz`.
 
 ```
-Pages /sprava/nabidky ──service binding QUOTES──▶ quotes-worker ──▶ D1 (DB), R2 (BUCKET)
+Web /sprava/nabidky ──service binding QUOTES──▶ quotes-worker ──▶ D1 (DB), R2 (BUCKET)
    (UI, D1 čtení/zápis formuláře)                   │  AI: OpenCode Zen (Claude), záloha Workers AI
                                                     │  Queue JOBS (hodnocení a čtení příloh, auto-PDF)
                                                     │  Browser Rendering (HTML → PDF, PDF → obrázky)
@@ -372,28 +312,23 @@ Pages /sprava/nabidky ──service binding QUOTES──▶ quotes-worker ──
 - **Dvě prostředí se samostatnými daty:** `izodiamant-quotes` (D1 `izodiamant-db`, R2
   `izodiamant-nabidky`) a `izodiamant-quotes-preview` (D1 `izodiamant-preview-db`, R2
   `izodiamant-nabidky-preview`). Vše je v `quotes-worker/wrangler.toml`.
-- Worker **není na internetu** (`workers_dev = false`, bez rout) – volá ho jen Pages přes
-  service binding; autorizaci (Google + `ADMIN_EMAILS`) řeší Pages.
+- Worker **není na internetu** (`workers_dev = false`, bez rout) – volá ho jen worker webu přes
+  service binding; autorizaci (Google + `ADMIN_EMAILS`) řeší web.
 - Sdílený kód (model, výpočty, HTML šablona PDF) je v `src/lib/quotes/` a worker ho bundluje
   relativní cestou – proto tam nesmí být importy přes `@/`.
 
 ### 3.1 Jednorázové nastavení
 
-1. **Workers Paid** ($5/měs.) – nutné: Pages worker má s touto sekcí ~3,4 MiB gzip (limit free
-   plánu je 3 MiB, Paid 10 MiB).
+1. **Workers Paid** ($5/měs.) – Browser Rendering, Queues a delší CPU quotes-workeru.
+   (Worker webu má ~2,3 MiB gzip – limit free plánu je 3 MiB, Paid 10 MiB.)
 2. **R2 buckety** `izodiamant-nabidky` a `izodiamant-nabidky-preview` (už vytvořené).
 3. **Schéma D1** – nové tabulky jsou v `db/schema.sql` (idempotentní), nové sloupce do
    existujících tabulek v `db/migrations/*.sql` (ALTER TABLE). Obojí aplikuje CI při nasazení
    workeru (migrace po jednom příkazu, „duplicate column name“ = už proběhla). Ručně:
    `npm run db:schema:remote` / `npm run db:schema:preview:remote` a ALTERy přes
    `npx wrangler d1 execute <db> --remote --command "…"`.
-4. **Service binding v Pages** – musí to být **Service binding**, ne proměnná prostředí
-   (textová proměnná `QUOTES` nepomůže – kód na ní volá `.fetch()`). Pages projekt →
-   Settings → Bindings → Add → *Service binding*:
-   - Production: `QUOTES` → `izodiamant-quotes`
-   - Preview: `QUOTES` → `izodiamant-quotes-preview`
-
-   Pak znovu nasaďte (Retry deployment). Bez bindingu sekce funguje jen jako formulář a ukáže
+4. **Service binding `QUOTES`** je ve `wrangler.jsonc` webu (produkce → `izodiamant-quotes`,
+   `env.preview` → `izodiamant-quotes-preview`). Bez něj sekce funguje jen jako formulář a ukáže
    hlášku „Služba nabídek není připojená“.
 5. **API token pro CI** (`CLOUDFLARE_API_TOKEN`, viz 2.4) musí mít navíc práva
    *D1: Edit*, *Workers R2 Storage: Edit*, *Workers AI: Read* a *Browser Rendering: Edit*.

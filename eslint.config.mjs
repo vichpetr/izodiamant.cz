@@ -10,7 +10,6 @@ export default [
     ignores: [
       '.next/**',
       '.open-next/**',
-      '.vercel/**',
       'node_modules/**',
       'out/**',
       'worker/**',

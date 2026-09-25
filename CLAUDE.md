@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` — Next.js dev server at http://localhost:3000
 - `npm run build` — production build
 - `npm run start` — serve production build (Playwright's webServer uses this)
-- `npm run build:worker` — Cloudflare Workers build via OpenNext → `.open-next/` (`scripts/build-worker.mjs`, see Deployment)
+- `npm run build:worker` — Cloudflare Workers build via OpenNext → `.open-next/` (see Deployment)
 - `npm run preview:worker` — build + run the Worker locally in workerd (`wrangler.jsonc` env `preview`)
 - `npm run lint` — ESLint 9 flat config (`eslint.config.mjs`, rulesets `next/core-web-vitals` + `next/typescript`); runs `eslint .` directly, **not** `next lint` (removed in Next 16)
 - `npm run sync:llms` — regenerate `src/lib/llms.ts` from `public/llms.txt` (run after editing the latter)
@@ -42,8 +42,8 @@ no 500) when unset:
 - `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` — Google OAuth 2.0 web client
 - `AUTH_URL` — canonical origin, e.g. `https://izodiamant.cz`
 - `ADMIN_EMAILS` — comma-separated allowlist of Google accounts that may sign in
-- **Cloudflare D1 binding `DB`** — in `wrangler.jsonc` (Workers) / Pages project settings (Pages, until it's deleted); schema in `db/schema.sql`. Accessed via `getCfEnv()` (`src/lib/cfEnv.ts` → `src/lib/db.ts`, degrades to empty/no-op when absent).
-- **Service binding `QUOTES`** — `wrangler.jsonc` / Pages → `izodiamant-quotes` (production) / `izodiamant-quotes-preview` (preview). Needed by `/sprava/nabidky` for PDF, AI and mailbox; without it the section degrades to a plain form (`src/lib/quotesWorker.ts`).
+- **Cloudflare D1 binding `DB`** — in `wrangler.jsonc`; schema in `db/schema.sql`. Accessed via `getCfEnv()` (`src/lib/cfEnv.ts` → `src/lib/db.ts`, degrades to empty/no-op when absent).
+- **Service binding `QUOTES`** — `wrangler.jsonc` → `izodiamant-quotes` (production) / `izodiamant-quotes-preview` (preview). Needed by `/sprava/nabidky` for PDF, AI and mailbox; without it the section degrades to a plain form (`src/lib/quotesWorker.ts`).
 
 ## Coupled invariants
 
@@ -69,8 +69,7 @@ enforces them.
   section only shows the 3 newest cards and links here.
 - `/reference/[id]` — single project detail, ID matches `references.json`.
 - `/doporuc-a-ziskej-odmenu` — referral program page.
-- `/sprava/nabidky` — admin: price quotes (list, and a 3-step wizard via `?id=…&krok=1|2|3`; kept as ONE route on
-  purpose – every `/sprava/*` route is a separate ~0.5 MiB gz edge function). Domain logic
+- `/sprava/nabidky` — admin: price quotes (list, and a 3-step wizard via `?id=…&krok=1|2|3`; one route; the wizard step is a query param). Domain logic
   (model, price math, PDF HTML template) lives in `src/lib/quotes/` and is shared with
   `quotes-worker/` via relative imports — **no `@/` aliases there**. Prices are always computed
   by `computeTotals()`, never by AI.
@@ -87,7 +86,7 @@ enforces them.
 
 **Agent / LLM discovery layer** is unusually prominent and intentional:
 - `src/middleware.ts` content-negotiates `Accept: text/markdown` on any page and serves the `LLMS_MD` constant from `src/lib/llms.ts`. **`public/llms.txt` is the source of truth; `src/lib/llms.ts` is generated** — edit the former and run `npm run sync:llms`. A test in `tests/audit.spec.ts` fails if they drift.
-- `next.config.ts` `headers()` and `public/_headers` (Cloudflare Pages) advertise `Link: rel="service-doc" | "api-catalog" | "openid-configuration" | "oauth-protected-resource" | "agent-card"`. Same set is mirrored as `<link>` tags in `src/app/layout.tsx`.
+- `src/middleware.ts` (on `/`) and `public/_headers` (static assets) advertise `Link: rel="service-doc" | "api-catalog" | "openid-configuration" | "oauth-protected-resource" | "agent-card"`. Same set is mirrored as `<link>` tags in `src/app/layout.tsx`.
 - `<WebMCP />` mounts a Web-MCP shim in the layout.
 - The middleware matcher excludes `api`, `_next/static`, `_next/image`, `.well-known`, `favicon.ico` — `.well-known/*` files are served as static assets from `public/`.
 
@@ -113,15 +112,13 @@ From `GEMINI.md` — apply when editing any metadata or page copy:
 
 ## Deployment
 
-**Mid-migration from Cloudflare Pages to Workers** (`deployment.MD` §1.3). The same code builds two ways until the Pages project is deleted in a follow-up MR:
+**Cloudflare Worker `izodiamant`** via OpenNext (`@opennextjs/cloudflare`) + separate workers for reviews and quotes. (Until 2026-09 the site ran on Cloudflare Pages / `next-on-pages`; that's gone — don't reintroduce `runtime = 'edge'`, `getRequestContext` or `_worker.js`-style config.) Setup: `deployment.MD` §1.
 
-- **Workers (target):** OpenNext (`@opennextjs/cloudflare`), config `wrangler.jsonc` (worker `izodiamant` + env `preview` → `izodiamant-preview`, each with its own D1 and quotes-worker binding), deployed by `.github/workflows/deploy-web.yml` (master → production, other branches → preview version with a per-branch alias, daily cron rebuild). `NEXT_PUBLIC_*` come from GitHub Actions **Variables**, server secrets live in the worker (`wrangler secret put`). Deploy via `opennextjs-cloudflare deploy/upload`, not bare `wrangler deploy` — only the former populates the SSG page cache (`open-next.config.ts`, static-assets incremental cache).
-- **Pages (legacy, serves the domain until cut-over):** dashboard Git integration running `@cloudflare/next-on-pages`. It ignores `wrangler.jsonc` (no `pages_build_output_dir`) — keep it that way. Note that `wrangler pages dev` run from the repo root *does* read it and breaks routing; run it from another directory if needed.
-- **`export const runtime = 'edge'`** stays in the dynamic routes for next-on-pages; OpenNext doesn't support the edge runtime, so `scripts/build-worker.mjs` strips those lines for the Worker build and restores them afterwards. New dynamic routes still need the line while Pages lives.
-- **Bindings** only via `getCfEnv()` (`src/lib/cfEnv.ts`) — never call `getRequestContext()` / `getCloudflareContext()` directly.
-- **Versions are held back for next-on-pages:** `next` `16.2.x` exact, `@opennextjs/cloudflare` `1.20.2` exact (newer needs Next ≥ 16.3.3), and `esbuild` `0.25.4` as a direct devDependency (OpenNext imports esbuild without declaring it; otherwise it resolves next-on-pages' ancient 0.15 and the build fails with "Invalid alias name").
-
-**`vercel` is pinned to an exact version (`59.25.0`) in devDependencies — do not widen it.** `next-on-pages` shells out to `vercel build`; without a local copy it pulls the latest CLI, and 59.25.4 broke the build (every prerendered route is reported as "not configured to run with the Edge Runtime" and the deploy fails). Pinning it also makes Pages builds reproducible. Before bumping, run `rm -rf .next .vercel && npx @cloudflare/next-on-pages` and check it ends with `Generated '.vercel/output/static/_worker.js/index.js'`.
+- **Config:** `wrangler.jsonc` — worker `izodiamant` (custom domains `izodiamant.cz` + `www`) and env `preview` → `izodiamant-preview` with its own D1 and quotes-worker binding. `routes` is inheritable, so `env.preview` sets `"routes": []` explicitly — keep it, or preview would claim the production domains. `open-next.config.ts` serves prerendered pages from static assets (no KV/R2 cache).
+- **Deploy:** `.github/workflows/deploy-web.yml` only (master → production, other branches → preview version with a per-branch alias, daily 04:10 UTC cron rebuild for scheduled articles). Don't enable Cloudflare's Git integration (Workers Builds) — it would be a second, broken pipeline. Deploy with `opennextjs-cloudflare deploy/upload`, not bare `wrangler deploy` — only the former populates the SSG page cache.
+- **Env:** `NEXT_PUBLIC_*` are baked in at build time from GitHub **Environments** `production` / `preview` (falls back to repo Variables); server secrets live in the worker (`wrangler secret put --env=""`, preview `wrangler versions secret put --env preview`).
+- **Bindings** only via `getCfEnv()` (`src/lib/cfEnv.ts`) — never call `getCloudflareContext()` directly. It returns null under `next dev` / `next start`, and callers degrade.
+- **`esbuild` is a direct devDependency pinned to the version `@opennextjs/aws` uses** — OpenNext imports esbuild without declaring it, so it would otherwise resolve whatever is hoisted (e.g. wrangler's) and the build can fail with "Invalid alias name". Bump it together with `@opennextjs/cloudflare`.
 
 **Quotes Worker** lives in `quotes-worker/` (TypeScript, `wrangler.toml` with `production` + `[env.preview]`, each with its own D1 + R2 + queue). Does PDF (Browser Rendering), AI (inbox triage, attachment relevance, reading plans and bills of quantities / výkaz výměr, e-mail text), filling the client's xlsx výkaz (`src/vykaz.ts`, in-place XML patch via fflate), PDF versioning (`quote_versions`) and IMAP/SMTP to the Seznam mailbox (cron). AI model per task is `<provider>:<model>` in `wrangler.toml` (`zen:` = OpenCode Zen, secret `OPENCODE_API_KEY`; `cf:` = Workers AI fallback) – see `src/ai.ts`; every call is logged to `ai_usage`. Deployed by `.github/workflows/deploy-quotes-worker.yml` (master → production, other branches → preview; applies `db/schema.sql` and the `ALTER TABLE`s in `db/migrations/`). Setup and mailbox config: `deployment.MD` §3.
 

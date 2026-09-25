@@ -1,13 +1,12 @@
 // Cloudflare Worker – web izodiamant.cz (Next.js přes OpenNext, build: `npm run build:worker`).
-// Nahrazuje Cloudflare Pages projekt `izodiamant-cz` (postup přechodu: deployment.MD §1.3).
 //
 // Dvě prostředí se samostatnými daty (stejně jako quotes-worker):
 //   production → izodiamant          (D1 izodiamant-db,         QUOTES → izodiamant-quotes)
 //   preview    → izodiamant-preview  (D1 izodiamant-preview-db, QUOTES → izodiamant-quotes-preview)
 // Nasazuje .github/workflows/deploy-web.yml (master → production, ostatní větve → preview).
 //
-// Doména izodiamant.cz tu ZÁMĚRNĚ není – přepíná se ručně (route v dashboardu), až bude
-// worker ověřený na workers.dev. Do konfigurace se přidá v MR, který smaže Pages.
+// Domény izodiamant.cz a www jsou Custom Domains (DNS záznamy typu Worker spravuje Cloudflare).
+// www → izodiamant.cz přesměrovává pravidlo zóny, ne worker.
 //
 // Secrety (nejsou tady, nastavují se zvlášť pro každé prostředí, `--env preview`):
 //   RESEND_API_KEY, FROM_EMAIL, CONTACT_EMAIL, TURNSTILE_SECRET_KEY,
@@ -27,6 +26,10 @@
   },
   "workers_dev": true,
   "preview_urls": false,
+  "routes": [
+    { "pattern": "izodiamant.cz", "custom_domain": true },
+    { "pattern": "www.izodiamant.cz", "custom_domain": true }
+  ],
   "observability": { "enabled": true },
   "d1_databases": [
     {
@@ -39,6 +42,8 @@
   "env": {
     "preview": {
       "name": "izodiamant-preview",
+      // routes se dědí z top-level – bez tohohle by preview převzal produkční domény.
+      "routes": [],
       "workers_dev": true,
       // <větev>-izodiamant-preview.<účet>.workers.dev – alias nastavuje CI (--preview-alias).
       "preview_urls": true,

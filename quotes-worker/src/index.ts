@@ -1,8 +1,8 @@
 // izodiamant-quotes – interní API pro cenové nabídky.
 //
-// Není na internetu (workers_dev = false, žádné routy): volá ho jen Pages admin
-// /sprava přes service binding QUOTES (autorizaci řeší Pages – Google login +
-// ADMIN_EMAILS) a cron. Kdo akci spustil, posílá Pages v hlavičce X-Admin-Email.
+// Není na internetu (workers_dev = false, žádné routy): volá ho jen admin webu
+// /sprava přes service binding QUOTES (autorizaci řeší web – Google login +
+// ADMIN_EMAILS) a cron. Kdo akci spustil, posílá web v hlavičce X-Admin-Email.
 
 import { SPREADSHEET_TYPES, attachedVykazFiles, isSpreadsheet, versionFilename, vykazFilename, type QuoteFile } from '../../src/lib/quotes/model';
 import { maybeAutoGenerate, queueAttachment, runAttachmentJob } from './attachments';

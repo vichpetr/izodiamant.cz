@@ -17,7 +17,7 @@ on:
       - 'public/**'
       - 'next.config.ts'
   schedule:
-    # 04:40 UTC – půl hodiny po scheduled-rebuild.yml (04:10), ať je nový článek
+    # 04:40 UTC – půl hodiny po denním rebuildu v deploy-web.yml (04:10), ať je nový článek
     # už živý, než ho ohlásíme.
     - cron: '40 4 * * *'
   workflow_dispatch:
@@ -30,11 +30,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      # Dát Cloudflare Pages čas nasadit novou verzi, ať IndexNow crawler
+      # Dát deploy-web.yml čas nasadit novou verzi workeru, ať IndexNow crawler
       # nenarazí na 404 (nová URL ještě není živá). Ověření se stejně opakuje.
-      - name: Wait for Cloudflare Pages deploy
+      - name: Wait for Worker deploy
         if: github.event_name == 'push'
-        run: sleep 120
+        run: sleep 240
       - name: Submit URLs to IndexNow
         env:
           TZ: Europe/Prague
