@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build` — production build
 - `npm run start` — serve production build (Playwright's webServer uses this)
 - `npm run build:worker` — Cloudflare Workers build via OpenNext → `.open-next/` (see Deployment)
-- `npm run preview:worker` — build + run the Worker locally in workerd (`wrangler.jsonc` env `preview`)
+- `npm run preview:worker` — build + run the Worker locally in workerd (`wrangler.toml` env `preview`)
 - `npm run lint` — ESLint 9 flat config (`eslint.config.mjs`, rulesets `next/core-web-vitals` + `next/typescript`); runs `eslint .` directly, **not** `next lint` (removed in Next 16)
 - `npm run sync:llms` — regenerate `src/lib/llms.ts` from `public/llms.txt` (run after editing the latter)
 - `npm test` — runs Playwright suite against `npm run start` on port 3000 (build first)
@@ -42,8 +42,8 @@ no 500) when unset:
 - `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` — Google OAuth 2.0 web client
 - `AUTH_URL` — canonical origin, e.g. `https://izodiamant.cz`
 - `ADMIN_EMAILS` — comma-separated allowlist of Google accounts that may sign in
-- **Cloudflare D1 binding `DB`** — in `wrangler.jsonc`; schema in `db/schema.sql`. Accessed via `getCfEnv()` (`src/lib/cfEnv.ts` → `src/lib/db.ts`, degrades to empty/no-op when absent).
-- **Service binding `QUOTES`** — `wrangler.jsonc` → `izodiamant-quotes` (production) / `izodiamant-quotes-preview` (preview). Needed by `/sprava/nabidky` for PDF, AI and mailbox; without it the section degrades to a plain form (`src/lib/quotesWorker.ts`).
+- **Cloudflare D1 binding `DB`** — in `wrangler.toml`; schema in `db/schema.sql`. Accessed via `getCfEnv()` (`src/lib/cfEnv.ts` → `src/lib/db.ts`, degrades to empty/no-op when absent).
+- **Service binding `QUOTES`** — `wrangler.toml` → `izodiamant-quotes` (production) / `izodiamant-quotes-preview` (preview). Needed by `/sprava/nabidky` for PDF, AI and mailbox; without it the section degrades to a plain form (`src/lib/quotesWorker.ts`).
 
 ## Coupled invariants
 
@@ -114,7 +114,7 @@ From `GEMINI.md` — apply when editing any metadata or page copy:
 
 **Cloudflare Worker `izodiamant`** via OpenNext (`@opennextjs/cloudflare`) + separate workers for reviews and quotes. (Until 2026-09 the site ran on Cloudflare Pages / `next-on-pages`; that's gone — don't reintroduce `runtime = 'edge'`, `getRequestContext` or `_worker.js`-style config.) Setup: `deployment.MD` §1.
 
-- **Config:** `wrangler.jsonc` — worker `izodiamant` (custom domains `izodiamant.cz` + `www`) and env `preview` → `izodiamant-preview` with its own D1 and quotes-worker binding. `routes` is inheritable, so `env.preview` sets `"routes": []` explicitly — keep it, or preview would claim the production domains. `open-next.config.ts` serves prerendered pages from static assets (no KV/R2 cache).
+- **Config:** `wrangler.toml` — worker `izodiamant` (custom domains `izodiamant.cz` + `www`) and env `preview` → `izodiamant-preview` with its own D1 and quotes-worker binding. `routes` is inheritable, so `[env.preview]` sets `routes = []` explicitly — keep it, or preview would claim the production domains. **Keep the root config TOML, never `wrangler.json(c)`:** wrangler looks for json → jsonc → toml, each name up the whole directory tree, so a root `wrangler.jsonc` shadows `quotes-worker/wrangler.toml` and `worker/wrangler.toml` (their deploys would pick up the web config). `open-next.config.ts` serves prerendered pages from static assets (no KV/R2 cache).
 - **Deploy:** `.github/workflows/deploy-web.yml` only (master → production, other branches → preview version with a per-branch alias, daily 04:10 UTC cron rebuild for scheduled articles). Don't enable Cloudflare's Git integration (Workers Builds) — it would be a second, broken pipeline. Deploy with `opennextjs-cloudflare deploy/upload`, not bare `wrangler deploy` — only the former populates the SSG page cache.
 - **Env:** `NEXT_PUBLIC_*` are baked in at build time from GitHub **Environments** `production` / `preview` (falls back to repo Variables); server secrets live in the worker (`wrangler secret put --env=""`, preview `wrangler versions secret put --env preview`).
 - **Bindings** only via `getCfEnv()` (`src/lib/cfEnv.ts`) — never call `getCloudflareContext()` directly. It returns null under `next dev` / `next start`, and callers degrade.

@@ -15,7 +15,7 @@ Do září 2026 běžel na Cloudflare Pages (`@cloudflare/next-on-pages`).
 | `QUOTES` | `izodiamant-quotes` | `izodiamant-quotes-preview` |
 | GitHub Environment | `production` | `preview` |
 
-- **Konfigurace:** `wrangler.jsonc` (bindingy, domény jako Custom Domains), `open-next.config.ts`
+- **Konfigurace:** `wrangler.toml` (bindingy, domény jako Custom Domains), `open-next.config.ts`
   (předrenderované stránky se čtou ze statických assetů – bez KV/R2 cache).
 - **Nasazení:** `.github/workflows/deploy-web.yml` – push na master → produkce, push na jinou
   větev → nová preview verze s aliasem větve, cron 04:10 UTC → denní rebuild (články naplánované
@@ -73,7 +73,7 @@ client ID → *Web application*) – *Authorized redirect URIs*:
   (alias = název větve malými písmeny, jiné znaky → `-`, max. 30 znaků). Google nepodporuje
   wildcardy – každou testovanou větev přidat zvlášť.
 
-**d) D1:** databáze `izodiamant-db` / `izodiamant-preview-db` jsou ve `wrangler.jsonc`; schéma
+**d) D1:** databáze `izodiamant-db` / `izodiamant-preview-db` jsou ve `wrangler.toml`; schéma
 aplikuje CI quotes-workeru (§3.1), ručně `npm run db:schema:remote` / `db:schema:preview:remote`.
 
 `/sprava` je nelinkovaná (jen nenápadně z patičky), `noindex` a chráněná přihlášením Googlem –
@@ -327,7 +327,7 @@ Web /sprava/nabidky ──service binding QUOTES──▶ quotes-worker ──�
    workeru (migrace po jednom příkazu, „duplicate column name“ = už proběhla). Ručně:
    `npm run db:schema:remote` / `npm run db:schema:preview:remote` a ALTERy přes
    `npx wrangler d1 execute <db> --remote --command "…"`.
-4. **Service binding `QUOTES`** je ve `wrangler.jsonc` webu (produkce → `izodiamant-quotes`,
+4. **Service binding `QUOTES`** je ve `wrangler.toml` webu (produkce → `izodiamant-quotes`,
    `env.preview` → `izodiamant-quotes-preview`). Bez něj sekce funguje jen jako formulář a ukáže
    hlášku „Služba nabídek není připojená“.
 5. **API token pro CI** (`CLOUDFLARE_API_TOKEN`, viz 2.4) musí mít navíc práva
@@ -399,7 +399,7 @@ podle ní jde ověřit skutečné náklady:
 cd quotes-worker && npm ci
 npx wrangler d1 execute izodiamant-preview-db --local --env preview --persist-to ../.wrangler/state --file=../db/schema.sql
 npx wrangler dev --env preview --persist-to ../.wrangler/state      # bez OPENCODE_API_KEY jede AI na záloze (Workers AI), PDF lokální Chromium
-# v kořeni (web jako Worker, bindingy z wrangler.jsonc env.preview, secrety do .dev.vars):
+# v kořeni (web jako Worker, bindingy z wrangler.toml env.preview, secrety do .dev.vars):
 #   npm run preview:worker
 ```
 

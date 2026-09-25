@@ -27,7 +27,7 @@ export default async function SpravaPage() {
         {!dbReady && (
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-sm text-amber-900">
             <strong>Databáze není připojená.</strong> Chybí binding <code>DB</code> (Cloudflare D1).
-            Sekce se zobrazí, ale data se nenačtou ani neuloží – dokud se D1 nenabinduje ve <code>wrangler.jsonc</code> (viz deployment.MD).
+            Sekce se zobrazí, ale data se nenačtou ani neuloží – dokud se D1 nenabinduje ve <code>wrangler.toml</code> (viz deployment.MD).
           </div>
         )}
 

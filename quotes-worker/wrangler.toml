@@ -1,7 +1,7 @@
 # Cloudflare Worker – izodiamant-quotes (cenové nabídky: PDF, AI, schránka info@).
 #
 # Není veřejně dostupný (workers_dev = false, žádné routy). Volá ho jen admin
-# /sprava přes service binding `QUOTES` z workeru webu (wrangler.jsonc) a cron (čtení schránky).
+# /sprava přes service binding `QUOTES` z workeru webu (wrangler.toml) a cron (čtení schránky).
 #
 # Dvě oddělená prostředí se samostatnou D1 i R2:
 #   production → izodiamant-quotes          (izodiamant-db,         izodiamant-nabidky)

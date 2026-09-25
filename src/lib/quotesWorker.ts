@@ -1,5 +1,5 @@
 // Volání quotes-workeru (PDF, AI, schránka) přes service binding `QUOTES`.
-// Binding je ve `wrangler.jsonc` (produkce → izodiamant-quotes, env preview →
+// Binding je ve `wrangler.toml` (produkce → izodiamant-quotes, env preview →
 // izodiamant-quotes-preview), viz deployment.MD.
 // Worker není na internetu, autorizaci řeší volající (admin).
 
@@ -59,7 +59,7 @@ export async function rawQuotesWorker(path: string, init: RequestInit & { admin?
   const service = getService();
   if (!service) {
     throw new Error(
-      'Služba nabídek není připojená. QUOTES musí být Service binding (ne proměnná prostředí) na izodiamant-quotes, resp. izodiamant-quotes-preview – viz wrangler.jsonc.',
+      'Služba nabídek není připojená. QUOTES musí být Service binding (ne proměnná prostředí) na izodiamant-quotes, resp. izodiamant-quotes-preview – viz wrangler.toml.',
     );
   }
   const { admin, ...rest } = init;
