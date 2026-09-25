@@ -22,6 +22,7 @@ import {
   materialLabel,
   parseFileAnalysis,
   technologyLabel,
+  vykazSegments,
   type FileAnalysis,
   type PlanAnalysis,
   type QuoteFile,
@@ -416,7 +417,7 @@ function VykazResult({ file, a, includeAction }: { file: QuoteFile; a: VykazAnal
         </form>
       )}
       <ApplyButton
-        dims={{ ...a, label: `výkaz: ${file.filename}`, technology: a.rows.find((r) => r.technology)?.technology ?? null }}
+        dims={{ ...a, label: `výkaz: ${file.filename}`, technology: a.rows.find((r) => r.technology)?.technology ?? null, segments: vykazSegments(a) }}
       />
     </>
   );
@@ -433,6 +434,8 @@ export function VykazRows({ rows }: { rows: VykazAnalysis['rows'] }) {
             <th className="pr-3 py-1">Řádek</th>
             <th className="pr-3 py-1">Položka výkazu</th>
             <th className="pr-3 py-1 text-right">Množství</th>
+            <th className="pr-3 py-1 text-right">Tloušťka</th>
+            <th className="pr-3 py-1 text-right">Řezná plocha</th>
             <th className="pr-3 py-1">Naše technologie</th>
             <th className="py-1">Cena do</th>
           </tr>
@@ -445,6 +448,8 @@ export function VykazRows({ rows }: { rows: VykazAnalysis['rows'] }) {
               <td className="pr-3 py-1.5 text-right whitespace-nowrap">
                 {r.quantity !== null ? formatNumber(r.quantity) : '—'} {r.unit}
               </td>
+              <td className="pr-3 py-1.5 text-right whitespace-nowrap">{r.thicknessCm ? `${formatNumber(r.thicknessCm)} cm` : '—'}</td>
+              <td className="pr-3 py-1.5 text-right whitespace-nowrap">{r.areaM2 ? formatArea(r.areaM2) : '—'}</td>
               <td className="pr-3 py-1.5 whitespace-nowrap">{r.technology ? technologyLabel(r.technology) : '—'}</td>
               <td className="py-1.5 whitespace-nowrap text-neutral-dark/50">{r.unitPriceCell ?? '—'}</td>
             </tr>

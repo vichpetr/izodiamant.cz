@@ -174,6 +174,12 @@ export interface VykazAnalysis {
     unit: string | null;
     quantity: number | null;
     technology: TechnologyId | null;
+    /** Tloušťka zdi u řádku v cm – horní hranice rozsahu z popisu („přes 450 do 600 mm“ → 60). */
+    thicknessCm?: number | null;
+    /** Délka zdi v m (u řádku v běžných metrech = množství). */
+    lengthM?: number | null;
+    /** Řezná plocha řádku: délka × tloušťka, u řádku v m² přímo množství. */
+    areaM2?: number | null;
     /** Buňka pro jednotkovou cenu (např. "I113") – sem se zapíše naše cena. */
     unitPriceCell: string | null;
     /** Buňka s cenou celkem (vzorec zadavatele, jen pro informaci). */
@@ -334,4 +340,19 @@ const TECH_SLUG: Record<TechnologyId, string> = { 'retezova-pila': 'pila', 'diam
 /** Název vyplněného výkazu v e-mailu, např. vykaz-vymer-NAB-20260925-01-lano-v2.xlsx. */
 export function vykazFilename(number: string, version: number, technology: TechnologyId | null): string {
   return versionFilename(`vykaz-vymer-${number}${technology ? `-${TECH_SLUG[technology]}` : ''}`, version, 'xlsx');
+}
+
+/** Úsek zdi pro položku nabídky (z řádku výkazu): technologie, délka, tloušťka, řezná plocha. */
+export interface WallSegment {
+  technology: TechnologyId | null;
+  lengthM: number | null;
+  thicknessCm: number | null;
+  areaM2: number | null;
+}
+
+/** Řádky výkazu jako úseky zdi – každý má svou tloušťku, a tedy svou řeznou plochu. */
+export function vykazSegments(a: VykazAnalysis): WallSegment[] {
+  return a.rows
+    .filter((r) => r.areaM2 || (r.lengthM && r.thicknessCm))
+    .map((r) => ({ technology: r.technology, lengthM: r.lengthM ?? null, thicknessCm: r.thicknessCm ?? null, areaM2: r.areaM2 ?? null }));
 }

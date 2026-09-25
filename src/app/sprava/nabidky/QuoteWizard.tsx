@@ -9,10 +9,15 @@
 // se přepnutím kroku neztratí. Krok je i v URL (?krok=), ať jde odkaz poslat.
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import type { PlanAnalysis } from '@/lib/quotes/model';
+import type { PlanAnalysis, WallSegment } from '@/lib/quotes/model';
 
 export type Step = 1 | 2 | 3;
-export type Dims = Pick<PlanAnalysis, 'lengthM' | 'thicknessCm' | 'areaM2' | 'material'> & { technology?: string | null; label: string };
+export type Dims = Pick<PlanAnalysis, 'lengthM' | 'thicknessCm' | 'areaM2' | 'material'> & {
+  technology?: string | null;
+  label: string;
+  /** Víc úseků s různou tloušťkou (řádky výkazu) → položka za každý úsek (kombinace). */
+  segments?: WallSegment[];
+};
 
 interface WizardApi {
   step: Step;

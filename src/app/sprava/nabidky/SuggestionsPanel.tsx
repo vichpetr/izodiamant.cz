@@ -11,6 +11,7 @@ import {
   isVykaz,
   parseFileAnalysis,
   technologyLabel,
+  vykazSegments,
   type PlanAnalysis,
   type QuoteFile,
   type VykazAnalysis,
@@ -30,7 +31,7 @@ function readable(file: QuoteFile): Readable | null {
 
 function dimsOf(file: QuoteFile, a: Readable): Dims {
   return isVykaz(a)
-    ? { ...a, label: `výkaz: ${file.filename}`, technology: a.rows.find((r) => r.technology)?.technology ?? null }
+    ? { ...a, label: `výkaz: ${file.filename}`, technology: a.rows.find((r) => r.technology)?.technology ?? null, segments: vykazSegments(a) }
     : { ...a, label: `příloha: ${file.filename}` };
 }
 

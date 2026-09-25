@@ -242,6 +242,29 @@ export default function QuoteEditor({
       ...(a.material && !f.material ? { material: a.label } : {}),
       ...((a.lengthM !== null && a.thicknessCm !== null) || a.areaM2 !== null ? { items: a.label } : {}),
     }));
+    const segments = a.segments ?? [];
+    if (segments.length > 1) {
+      // Víc úseků s různou tloušťkou (řádky výkazu) → položka za každý úsek, sčítají se.
+      const material = f.material || a.material || '';
+      setMode('kombinace');
+      setItems((prev) =>
+        segments.map((seg) => {
+          const technology = isTechnology(seg.technology) ? seg.technology : recommendedTechnology(material || null, seg.thicknessCm);
+          const same = prev.find((i) => i.technology === technology);
+          const byDims = seg.lengthM !== null && seg.thicknessCm !== null;
+          return {
+            key: nextKey++,
+            technology,
+            length: byDims ? toStr(seg.lengthM) : '',
+            thickness: byDims ? toStr(seg.thicknessCm) : '',
+            area: byDims ? '' : toStr(seg.areaM2),
+            // Ručně upravenou cenu stejné technologie zachováme, jinak ceník.
+            price: same?.price ?? String(suggestedPricePerM2(technology, material || null)),
+          };
+        }),
+      );
+      return;
+    }
     const hasDims = a.lengthM !== null && a.thicknessCm !== null;
     if (hasDims || a.areaM2 !== null) {
       // Rozměry, ze kterých se spočítá řezná plocha; samotná m² jen z výkazu bez VV.
