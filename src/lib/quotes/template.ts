@@ -23,6 +23,11 @@ function esc(value: string | number | null | undefined): string {
     .replace(/"/g, '&quot;');
 }
 
+/** „16 m × 45 cm = 7,2 m²“ */
+function dimsLabel(l: { length_m?: number | null; thickness_cm?: number | null; area_m2: number }): string {
+  return `${formatNumber(l.length_m ?? 0)} m × ${formatNumber(l.thickness_cm ?? 0)} cm = ${formatArea(l.area_m2)}`;
+}
+
 function tagline(technology: string): string {
   return TECHNOLOGIES.find((t) => t.id === technology)?.tagline ?? '';
 }
@@ -42,13 +47,22 @@ export function renderQuoteHtml(quote: Quote, items: QuoteItem[], issuedAt: Date
   const conditions = quote.conditions !== null ? parseJsonArray(quote.conditions) : DEFAULT_CONDITIONS;
   const intro = quote.intro?.trim() || defaultIntro(quote, items);
 
-  const areas = [...new Set(items.map((i) => i.area_m2))];
+  const areas = [...new Set(totals.lines.map((l) => l.area_m2))];
   const specRows: [string, string][] = [];
   if (quote.material) specRows.push(['Zdivo', materialLabel(quote.material)]);
-  if (quote.thickness_cm) specRows.push(['Tloušťka zdiva', `${formatNumber(quote.thickness_cm)} cm`]);
-  if (quote.length_m) specRows.push(['Délka řezu', `${formatNumber(quote.length_m)} m`]);
+  // Rozměry z položek (každá má svou délku a tloušťku); pole nabídky jen jako záloha.
+  const dimLines = totals.lines.filter((l) => l.length_m && l.thickness_cm);
+  if (dimLines.length === totals.lines.length && dimLines.length > 0) {
+    const thicknesses = [...new Set(dimLines.map((l) => l.thickness_cm!))].sort((a, b) => a - b);
+    const length = quote.mode === 'kombinace' ? dimLines.reduce((s, l) => s + l.length_m!, 0) : Math.max(...dimLines.map((l) => l.length_m!));
+    specRows.push(['Tloušťka zdiva', thicknesses.length === 1 ? `${formatNumber(thicknesses[0])} cm` : `${formatNumber(thicknesses[0])}–${formatNumber(thicknesses[thicknesses.length - 1])} cm`]);
+    specRows.push(['Délka řezu', `${formatNumber(length)} m`]);
+  } else {
+    if (quote.thickness_cm) specRows.push(['Tloušťka zdiva', `${formatNumber(quote.thickness_cm)} cm`]);
+    if (quote.length_m) specRows.push(['Délka řezu', `${formatNumber(quote.length_m)} m`]);
+  }
   if (quote.mode === 'kombinace' && items.length > 1) {
-    specRows.push(['Plocha celkem', formatArea(items.reduce((s, i) => s + i.area_m2, 0))]);
+    specRows.push(['Řezná plocha celkem', formatArea(totals.lines.reduce((s, l) => s + l.area_m2, 0))]);
   } else if (areas.length === 1) {
     specRows.push([hasCutting ? 'Řezná plocha' : 'Plocha', formatArea(areas[0])]);
   }
@@ -63,7 +77,8 @@ export function renderQuoteHtml(quote: Quote, items: QuoteItem[], issuedAt: Date
               (l, idx) => `<div class="card">
                 <h3>${esc(technologyLabel(l.technology))}</h3>
                 <p class="tag">${esc(tagline(l.technology))}</p>
-                <div class="row"><span>Cena za m²</span><strong>${formatCzk(l.price_per_m2)}</strong></div>
+                ${l.length_m && l.thickness_cm ? `<div class="row"><span>Rozsah</span><strong>${esc(dimsLabel(l))}</strong></div>` : ''}
+                <div class="row"><span>Cena za m² řezné plochy</span><strong>${formatCzk(l.price_per_m2)}</strong></div>
                 <div class="row"><span>Cena za práce (${formatArea(l.area_m2)} × ${formatCzk(l.price_per_m2)})</span><strong>${formatCzk(l.workPrice)}</strong></div>
                 ${transportRow}
                 <div class="total"><span>Cena celkem</span><strong>${formatCzk(totals.variantTotals[idx])}</strong></div>
@@ -74,18 +89,19 @@ export function renderQuoteHtml(quote: Quote, items: QuoteItem[], issuedAt: Date
         <div class="callout"><strong>Výsledná cena bude odpovídat jedné z uvedených variant, případně jejich kombinaci</strong> podle toho, kterou technologii bude možné na místě reálně použít. Cena za m² zůstává v obou případech neměnná. <strong>Výsledná cena bude potvrzena po osobní prohlídce objektu</strong> a konečná částka se stanoví po dokončení prací podle skutečně provedeného rozsahu.</div>`
       : `<div class="card wide">
           <table class="items">
-            <thead><tr><th>Technologie</th><th>Plocha</th><th>Cena za m²</th><th>Cena za práce</th></tr></thead>
+            <thead><tr><th>Technologie</th><th>Řezná plocha</th><th>Cena za m²</th><th>Cena za práce</th></tr></thead>
             <tbody>
               ${totals.lines
                 .map(
                   (l) => `<tr>
                     <td><strong>${esc(technologyLabel(l.technology))}</strong><span class="tag">${esc(tagline(l.technology))}</span></td>
-                    <td>${formatArea(l.area_m2)}</td>
+                    <td>${l.length_m && l.thickness_cm ? `${esc(dimsLabel(l))}` : formatArea(l.area_m2)}</td>
                     <td>${formatCzk(l.price_per_m2)}</td>
                     <td><strong>${formatCzk(l.workPrice)}</strong></td>
                   </tr>`,
                 )
                 .join('')}
+              <tr><td colspan="4" class="tag">Řezná plocha = délka zdi × tloušťka zdi.</td></tr>
               <tr><td colspan="3">Doprava</td><td><strong>${formatCzk(quote.transport_price)}</strong></td></tr>
             </tbody>
           </table>

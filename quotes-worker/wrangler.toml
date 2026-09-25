@@ -7,9 +7,11 @@
 #   production → izodiamant-quotes          (izodiamant-db,         izodiamant-nabidky)
 #   preview    → izodiamant-quotes-preview  (izodiamant-preview-db, izodiamant-nabidky-preview)
 #
-# Secret (není tady, nastavuje se zvlášť pro každé prostředí):
+# Secrety (nejsou tady, nastavují se zvlášť pro každé prostředí):
 #   npx wrangler secret put MAILBOX_PASSWORD               # produkce
 #   npx wrangler secret put MAILBOX_PASSWORD --env preview # preview (testovací schránka)
+#   npx wrangler secret put OPENCODE_API_KEY               # OpenCode Zen (AI) – produkce
+#   npx wrangler secret put OPENCODE_API_KEY --env preview # OpenCode Zen (AI) – preview
 #
 # Bindingy a vars se NEDĚDÍ do [env.preview] – při změně je upravte v obou blocích.
 
@@ -59,9 +61,18 @@ bucket_name = "izodiamant-nabidky"
 
 [vars]
 ENVIRONMENT = "production"
-# Workers AI modely (lze přepnout bez zásahu do kódu). Gemma 4 umí text i obrázky.
-AI_TEXT_MODEL = "@cf/google/gemma-4-26b-a4b-it"
-AI_VISION_MODEL = "@cf/google/gemma-4-26b-a4b-it"
+# Modely podle úlohy, tvar "<ovladač>:<model>" (viz src/ai.ts):
+#   zen:…       OpenCode Zen – hlavní brána, secret OPENCODE_API_KEY
+#   anthropic:… Claude API přímo, secret ANTHROPIC_API_KEY
+#   cf:…        Workers AI (bez klíče)
+# Levné a časté úlohy na malý model, čtení plánků/výkazů na silný. Víc modelů čárkou =
+# zkouší se popořadě (GPT-5 nano je ~20× levnější než Haiku a umí i obrázky).
+AI_TRIAGE_MODEL = "zen:gpt-5-nano,zen:claude-haiku-4-5"
+AI_ATTACHMENT_MODEL = "zen:gpt-5-nano,zen:claude-haiku-4-5"
+AI_EXTRACT_MODEL = "zen:claude-opus-5-5"
+AI_TEXT_MODEL = "zen:claude-sonnet-5"
+# Když komerční model selže (výpadek, došel kredit, chybí klíč) – úloha se zopakuje zde.
+AI_FALLBACK_MODEL = "cf:@cf/google/gemma-4-26b-a4b-it"
 # Schránka, ze které se čtou poptávky a do které se ukládají koncepty odpovědí.
 MAILBOX_USER = "info@izodiamant.cz"
 MAILBOX_SENDER_NAME = "Václav Ropek – IZODIAMANT"
@@ -118,8 +129,11 @@ bucket_name = "izodiamant-nabidky-preview"
 
 [env.preview.vars]
 ENVIRONMENT = "preview"
-AI_TEXT_MODEL = "@cf/google/gemma-4-26b-a4b-it"
-AI_VISION_MODEL = "@cf/google/gemma-4-26b-a4b-it"
+AI_TRIAGE_MODEL = "zen:gpt-5-nano,zen:claude-haiku-4-5"
+AI_ATTACHMENT_MODEL = "zen:gpt-5-nano,zen:claude-haiku-4-5"
+AI_EXTRACT_MODEL = "zen:claude-opus-5-5"
+AI_TEXT_MODEL = "zen:claude-sonnet-5"
+AI_FALLBACK_MODEL = "cf:@cf/google/gemma-4-26b-a4b-it"
 # TESTOVACÍ schránka (heslo: wrangler secret put MAILBOX_PASSWORD --env preview).
 MAILBOX_USER = "tesquotes-test@izodiamant.cz"
 MAILBOX_SENDER_NAME = "Václav Ropek – IZODIAMANT (TEST)"

@@ -12,6 +12,7 @@ import { useToastAction, type Action } from './useToastAction';
 
 const STATUS_LABEL: Record<string, string> = {
   nabidka: 'Poptávka → nabídka',
+  dotaz: 'Dotaz – zůstal ve schránce',
   odpoved: 'Odpověď k nabídce',
   ignorovano: 'Ostatní',
   chyba: 'Chyba',
@@ -52,7 +53,9 @@ export default function InboxPanel({
             {last && (
               <>
                 {' · '}Poslední kontrola {fmtDateTime(last.at)}
-                {last.skipped ? ` – ${last.skipped}` : ` – ${last.checked} nových, ${last.created} poptávek${last.errors ? `, ${last.errors} chyb` : ''}`}
+                {last.skipped
+                  ? ` – ${last.skipped}`
+                  : ` – ${last.checked} nových, ${last.created} poptávek${last.questions ? `, ${last.questions} dotazů` : ''}${last.errors ? `, ${last.errors} chyb` : ''}`}
               </>
             )}
           </p>
@@ -64,7 +67,7 @@ export default function InboxPanel({
         </form>
       </div>
 
-      {polling && <Working label="Kontroluji schránku…" hint="Ruční kontrola bere až 3 nové zprávy; plánky se čtou na pozadí." className="mt-4" />}
+      {polling && <Working label="Kontroluji schránku…" hint="Ruční kontrola bere až 3 nové zprávy; přílohy se čtou na pozadí." className="mt-4" />}
 
       {inbox.length > 0 && (
         <details className="mt-4">
@@ -74,7 +77,10 @@ export default function InboxPanel({
               <li key={m.id} className="py-2 flex flex-wrap items-center gap-x-4 gap-y-1">
                 <span className="text-neutral-dark/40 text-xs w-28">{fmtDateTime(m.received_at ?? m.processed_at)}</span>
                 <span className="font-medium">{m.from_name || m.from_email || '—'}</span>
-                <span className="text-neutral-dark/60 flex-1 min-w-[12rem] truncate">{m.subject}</span>
+                <span className="text-neutral-dark/60 flex-1 min-w-[12rem] truncate" title={m.summary ?? undefined}>
+                  {m.subject}
+                  {m.status === 'dotaz' && m.summary && <span className="block text-xs text-neutral-dark/40 truncate">{m.summary}</span>}
+                </span>
                 <span className={`text-[10px] font-black uppercase tracking-widest ${m.status === 'chyba' ? 'text-red-700' : 'text-neutral-dark/40'}`}>
                   {STATUS_LABEL[m.status] ?? m.status}
                 </span>

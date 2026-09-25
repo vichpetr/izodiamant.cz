@@ -58,7 +58,8 @@ export interface OutgoingMail {
   subject: string;
   text: string;
   inReplyTo?: string | null;
-  attachment?: { filename: string; data: ArrayBuffer };
+  /** PDF nabídky, případně vyplněný výkaz výměr. */
+  attachments?: { filename: string; data: ArrayBuffer; mimeType: string }[];
 }
 
 function mailOptions(env: Env, mail: OutgoingMail, messageId: string): EmailOptions {
@@ -73,8 +74,8 @@ function mailOptions(env: Env, mail: OutgoingMail, messageId: string): EmailOpti
     subject: mail.subject,
     text: mail.text,
     headers,
-    attachments: mail.attachment
-      ? [{ filename: mail.attachment.filename, content: toBase64(mail.attachment.data), mimeType: 'application/pdf' }]
+    attachments: mail.attachments?.length
+      ? mail.attachments.map((a) => ({ filename: a.filename, content: toBase64(a.data), mimeType: a.mimeType }))
       : undefined,
   };
 }

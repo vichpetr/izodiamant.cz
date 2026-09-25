@@ -1,8 +1,9 @@
 'use client';
 
-// Seznam nabídek s filtrem podle stavu a hledáním. Klik na řádek = editor.
+// Seznam nabídek s filtrem podle stavu a hledáním. Klik kamkoli na řádek = detail.
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import type { QuoteListRow } from '@/lib/quotesDb';
 import { formatArea, formatCzk } from '@/lib/quotes/calc';
@@ -18,6 +19,7 @@ function priceLabel(q: QuoteListRow): string {
 export default function QuotesTable({ quotes }: { quotes: QuoteListRow[] }) {
   const [status, setStatus] = useState<'all' | QuoteStatus>('all');
   const [query, setQuery] = useState('');
+  const router = useRouter();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -84,7 +86,15 @@ export default function QuotesTable({ quotes }: { quotes: QuoteListRow[] }) {
             </thead>
             <tbody>
               {filtered.map((q) => (
-                <tr key={q.id} className="border-t border-neutral-light hover:bg-neutral-light/50">
+                <tr
+                  key={q.id}
+                  onClick={(e) => {
+                    // Odkazy uvnitř řádku (číslo, PDF) fungují po svém – i s Ctrl/Cmd pro novou záložku.
+                    if ((e.target as HTMLElement).closest('a')) return;
+                    router.push(`/sprava/nabidky?id=${q.id}`);
+                  }}
+                  className="border-t border-neutral-light hover:bg-neutral-light/50 cursor-pointer"
+                >
                   <td className="px-4 py-3">
                     <Link href={`/sprava/nabidky?id=${q.id}`} className="font-bold text-neutral-dark hover:text-primary-ink">
                       {q.number ?? `Koncept #${q.id}`}

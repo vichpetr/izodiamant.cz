@@ -2,7 +2,7 @@
 // nesahá (jen navrhuje rozměry, které člověk potvrdí).
 
 import calculatorData from '../../data/calculator.json';
-import type { Quote, QuoteItem, TechnologyId } from './model';
+import { technologyLabel, type Quote, type QuoteItem, type TechnologyId } from './model';
 
 /** Tloušťka zdiva, od které řetězová pila nestačí a nasazuje se diamantové lano. */
 export const LANO_THICKNESS_CM = 50;
@@ -49,7 +49,10 @@ export interface QuoteTotals {
 
 export function computeTotals(quote: Pick<Quote, 'mode' | 'transport_price'>, items: QuoteItem[]): QuoteTotals {
   const transport = Math.max(0, Math.round(quote.transport_price || 0));
-  const lines = items.map((item) => ({ ...item, workPrice: Math.round(item.area_m2 * item.price_per_m2) }));
+  const lines = items.map((item) => {
+    const area_m2 = itemArea(item);
+    return { ...item, area_m2, workPrice: Math.round(area_m2 * item.price_per_m2) };
+  });
   const workTotal = lines.reduce((sum, l) => sum + l.workPrice, 0);
   return {
     lines,
@@ -59,10 +62,44 @@ export function computeTotals(quote: Pick<Quote, 'mode' | 'transport_price'>, it
   };
 }
 
+/**
+ * U variant si klient vybírá jednu technologii – každá tam smí být jen jednou
+ * (dvakrát pila s různou cenou nedává smysl). U kombinace se opakovat může:
+ * po obvodu bývá různé zdivo, a tak i různá cena téže technologie.
+ */
+export function duplicateVariantTechnologies(mode: Quote['mode'], items: Pick<QuoteItem, 'technology'>[]): TechnologyId[] {
+  if (mode !== 'varianty') return [];
+  const seen = new Set<TechnologyId>();
+  const dupes = new Set<TechnologyId>();
+  for (const { technology } of items) (seen.has(technology) ? dupes : seen).add(technology);
+  return [...dupes];
+}
+
+/** Chybová hláška pro opakovanou technologii ve variantách, jinak null. */
+export function variantsError(mode: Quote['mode'], items: Pick<QuoteItem, 'technology'>[]): string | null {
+  const dupes = duplicateVariantTechnologies(mode, items);
+  if (dupes.length === 0) return null;
+  return `U variant může být každá technologie jen jednou (${dupes.map(technologyLabel).join(', ')} je tam víckrát). Nechte jednu položku, nebo přepněte na Kombinaci.`;
+}
+
 /** Řezná plocha = délka × tloušťka (stejně jako kalkulačka, viz src/lib/pricing.ts). */
-export function cutArea(lengthM: number | null, thicknessCm: number | null): number | null {
+export function cutArea(lengthM: number | null | undefined, thicknessCm: number | null | undefined): number | null {
   if (!lengthM || !thicknessCm) return null;
   return Math.round(lengthM * (thicknessCm / 100) * 100) / 100;
+}
+
+/**
+ * Plocha položky pro cenu. Ceník je za m² ŘEZNÉ plochy (délka zdi × tloušťka),
+ * ne za běžný metr ani za plochu podlahy – proto se plocha z délky a tloušťky
+ * vždy dopočítá a ručně zadaná m² platí jen tam, kde rozměry chybí.
+ */
+export function itemArea(item: Pick<QuoteItem, 'length_m' | 'thickness_cm' | 'area_m2'>): number {
+  return cutArea(item.length_m, item.thickness_cm) ?? item.area_m2;
+}
+
+/** Cena za běžný metr zdi (pro kontrolu – ceníkem je cena za m² řezné plochy). */
+export function pricePerMeter(pricePerM2: number, thicknessCm: number | null | undefined): number | null {
+  return thicknessCm ? Math.round(pricePerM2 * (thicknessCm / 100)) : null;
 }
 
 const NBSP = ' ';
@@ -101,17 +138,79 @@ function pragueDateParts(date: Date): [number, number, number] {
   return [get('year'), get('month'), get('day')];
 }
 
-/** Základ čísla nabídky: NAB-20260906-POL (3 písmena obce bez diakritiky). */
-export function quoteNumberBase(date: Date, city: string | null): string {
+/** Prefix čísla nabídek jednoho dne: NAB-20260924 (datum v pražském čase). */
+export function quoteDayPrefix(date: Date): string {
   const [y, m, d] = pragueDateParts(date);
-  const ymd = `${y}${String(m).padStart(2, '0')}${String(d).padStart(2, '0')}`;
+  return `NAB-${y}${String(m).padStart(2, '0')}${String(d).padStart(2, '0')}`;
+}
+
+/**
+ * Číslo nabídky: NAB-20260924-02-POL = druhá nabídka dne, obec Polička.
+ * Přípona obce jen když je obec vyplněná (dřív se doplňovalo „XXX“).
+ */
+export function quoteNumber(date: Date, seq: number, city: string | null): string {
   const letters = (city || '')
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^A-Za-z]/g, '')
     .slice(0, 3)
     .toUpperCase();
-  return `NAB-${ymd}-${letters.padEnd(3, 'X')}`;
+  const base = `${quoteDayPrefix(date)}-${String(seq).padStart(2, '0')}`;
+  return letters ? `${base}-${letters}` : base;
+}
+
+/**
+ * Pořadí nabídky v rámci dne podle čísel, která už ten den existují. Počítá i
+ * se starým formátem (NAB-20260922-POL, NAB-20260922-POL-2), který pořadí neměl.
+ */
+export function nextDaySequence(prefix: string, existing: string[]): number {
+  let max = 0;
+  for (const number of existing) {
+    if (!number.startsWith(`${prefix}-`)) continue;
+    const seq = /^\d{2}$/.test(number.slice(prefix.length + 1, prefix.length + 3)) ? Number(number.slice(prefix.length + 1, prefix.length + 3)) : 0;
+    max = Math.max(max, seq);
+  }
+  return Math.max(max, existing.filter((n) => n.startsWith(`${prefix}-`)).length) + 1;
+}
+
+/**
+ * Otisk vstupů, ze kterých vzniká PDF (a vyplněný výkaz). Když se od poslední
+ * verze nezměnil, nová verze nevznikne. `attachments` = id výkazů, které se
+ * přikládají k e-mailu. Pořadí klíčů je pevné, ať se otisk nemění náhodou.
+ */
+export type FingerprintFields = Pick<
+  Quote,
+  'client_name' | 'client_email' | 'client_phone' | 'site_name' | 'site_address' | 'city' | 'material' | 'thickness_cm' | 'length_m' | 'mode' | 'transport_price' | 'intro' | 'conditions'
+>;
+
+/** Zvýšit, když se změní, co z týchž údajů vzniká (např. výkaz po variantách) – vznikne nová verze. */
+const FINGERPRINT_VERSION = 3;
+
+export function quoteFingerprint(quote: FingerprintFields, items: QuoteItem[], attachments: number[] = []): string {
+  return JSON.stringify([
+    FINGERPRINT_VERSION,
+    quote.client_name,
+    quote.client_email,
+    quote.client_phone,
+    quote.site_name,
+    quote.site_address,
+    quote.city,
+    quote.material,
+    quote.thickness_cm,
+    quote.length_m,
+    quote.mode,
+    quote.transport_price,
+    quote.intro,
+    quote.conditions,
+    items.map((i) => [i.technology, i.length_m ?? null, i.thickness_cm ?? null, itemArea(i), i.price_per_m2]),
+    [...attachments].sort((a, b) => a - b),
+  ]);
+}
+
+/** SHA-256 otisku (hex) – ukládá se k verzi PDF. Web Crypto je v prohlížeči, edge i workeru. */
+export async function fingerprintHash(quote: FingerprintFields, items: QuoteItem[], attachments: number[] = []): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(quoteFingerprint(quote, items, attachments)));
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 /**
@@ -127,7 +226,7 @@ export function missingInputs(
   if (!quote.client_email && !quote.client_phone) missing.push('kontakt (e-mail nebo telefon)');
   if (!quote.site_address && !quote.city) missing.push('místo realizace');
   if (items.length === 0) missing.push('technologie a plocha (m²)');
-  else if (items.some((i) => !(i.area_m2 > 0))) missing.push('plocha (m²) u všech položek');
+  else if (items.some((i) => !(itemArea(i) > 0))) missing.push('délka a tloušťka u všech položek');
   if (!(quote.transport_price > 0)) missing.push('cena dopravy');
   return missing;
 }

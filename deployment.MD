@@ -234,19 +234,41 @@ Frontend (`HomeReviews.tsx`) konzumuje `reviews[]`, řadí podle `date` a render
 
 ## 3. Cenové nabídky (`/sprava/nabidky` + Worker `quotes-worker`)
 
-Admin sekce pro přípravu cenových nabídek: formulář → PDF (vzhled podle ruční nabídky) →
-návrh průvodního e-mailu → koncept do schránky / odeslání. Volitelně čte poptávky ze
-schránky `info@izodiamant.cz` a zakládá z nich nabídky ve stavu *čeká na údaje*.
+Admin sekce pro přípravu cenových nabídek jako průvodce ve třech krocích
+(`?id=…&krok=1|2|3`): **Podklady** (text e-mailu, přílohy a co z nich AI vyčetla) →
+**Údaje a ceny** (formulář, ceny zadává člověk) → **Odeslání** (verze PDF, text e-mailu,
+přílohy, koncept do schránky / odeslání). Poptávky čte ze schránky `info@izodiamant.cz`.
 
 ```
 Pages /sprava/nabidky ──service binding QUOTES──▶ quotes-worker ──▶ D1 (DB), R2 (BUCKET)
-   (UI, D1 čtení/zápis formuláře)                   │  Workers AI (text, plánky)
-                                                    │  Browser Rendering (HTML → PDF)
+   (UI, D1 čtení/zápis formuláře)                   │  AI: OpenCode Zen (Claude), záloha Workers AI
+                                                    │  Queue JOBS (hodnocení a čtení příloh, auto-PDF)
+                                                    │  Browser Rendering (HTML → PDF, PDF → obrázky)
                                                     └─ IMAP/SMTP Seznam (cron každých 15 min)
 ```
 
-- **Ceny počítá kód** (`src/lib/quotes/calc.ts`), AI jen navrhuje rozměry z plánku a text
-  e-mailu – vše potvrzuje člověk. Předvyplněná cena za m² = střed ceníku z `calculator.json`.
+- **Ceny počítá kód** (`src/lib/quotes/calc.ts`), AI navrhuje jen rozměry a texty – vše
+  potvrzuje člověk. Předvyplněná cena za m² = střed ceníku z `calculator.json`; doprava se
+  zadává ručně (odvozování cen přijde později).
+- **Třídění pošty:** AI zprávu zařadí jako *poptávku* (→ nabídka, přílohy, archiv),
+  *dotaz* (zůstane ve schránce netknutý, v adminu je vidět se shrnutím) nebo *ostatní*.
+- **Přílohy:** levný model každou ohodnotí (půdorys / řez / pohled / logo / výkaz…,
+  relevance vysoká–žádná). Silný model čte jen relevantní (vysoká, střední) – z výkresu
+  délku obvodových zdí a tloušťku, z výkazu výměr (XLSX/XLS/CSV) řádky s naší prací.
+  Uživatel může relevanci přehlasovat. U nabídek z e-mailu se rozměry propíšou do
+  **prázdných** polí (s evidencí původu v `quotes.field_sources`, v UI štítek „AI · …“).
+- **Automatické PDF:** když má nabídka z e-mailu všechny údaje (`missingInputs()` – včetně
+  ceny dopravy), vygeneruje se PDF a stav je *Připraveno k odeslání*. Odesílá vždy člověk.
+- **Výkaz výměr:** v xlsx se přepíšou jen buňky jednotkové ceny (sloupec „J. cena“ dohledá
+  kód podle hlavičky), název zhotovitele a IČ; uložené výsledky vzorců se zahodí, takže
+  Excel/LibreOffice po otevření vše přepočítají. DIČ a sazba DPH se nemění (upozornění
+  v UI – firma není plátce DPH). Vyplněný výkaz jde k e-mailu jako návrh ke kontrole.
+- **Verze:** formulář nabídky se ukládá automaticky; každé „Vygenerovat přílohy“ se změněnými údaji založí verzi – PDF a
+  vyplněný výkaz (je-li na vstupu) vznikají vždy společně; „přiložit k e-mailu“ jen řídí odeslání
+  (`quote_versions`, PDF `nabidky/<číslo>-v<n>.pdf`, výkaz `…-v<n>-vykaz.xlsx`). Beze změny
+  nová verze nevznikne (otisk vstupů). K e-mailu jde `quotes.email_version`, jinak poslední.
+- **Číslo nabídky:** `NAB-RRRRMMDD-PP-OBE` – `PP` pořadí nabídky v daný den, `OBE` první
+  tři písmena obce (bez obce se přípona vynechá).
 - **Dvě prostředí se samostatnými daty:** `izodiamant-quotes` (D1 `izodiamant-db`, R2
   `izodiamant-nabidky`) a `izodiamant-quotes-preview` (D1 `izodiamant-preview-db`, R2
   `izodiamant-nabidky-preview`). Vše je v `quotes-worker/wrangler.toml`.
@@ -260,8 +282,11 @@ Pages /sprava/nabidky ──service binding QUOTES──▶ quotes-worker ──
 1. **Workers Paid** ($5/měs.) – nutné: Pages worker má s touto sekcí ~3,4 MiB gzip (limit free
    plánu je 3 MiB, Paid 10 MiB).
 2. **R2 buckety** `izodiamant-nabidky` a `izodiamant-nabidky-preview` (už vytvořené).
-3. **Schéma D1** – nové tabulky jsou v `db/schema.sql` (idempotentní). Aplikuje je CI při
-   nasazení workeru, ručně: `npm run db:schema:remote` / `npm run db:schema:preview:remote`.
+3. **Schéma D1** – nové tabulky jsou v `db/schema.sql` (idempotentní), nové sloupce do
+   existujících tabulek v `db/migrations/*.sql` (ALTER TABLE). Obojí aplikuje CI při nasazení
+   workeru (migrace po jednom příkazu, „duplicate column name“ = už proběhla). Ručně:
+   `npm run db:schema:remote` / `npm run db:schema:preview:remote` a ALTERy přes
+   `npx wrangler d1 execute <db> --remote --command "…"`.
 4. **Service binding v Pages** – musí to být **Service binding**, ne proměnná prostředí
    (textová proměnná `QUOTES` nepomůže – kód na ní volá `.fetch()`). Pages projekt →
    Settings → Bindings → Add → *Service binding*:
@@ -302,21 +327,54 @@ Zpracované e-maily se evidují v `inbox_messages` (klíč Message-ID) – nic s
 Nepoptávky zůstávají ve schránce netknuté. Obsah e-mailu je pro AI nedůvěryhodný vstup: smí z něj
 jen vyplnit pole nabídky, nikdy nic neodešle.
 
-### 3.3 Lokální vývoj
+### 3.3 AI modely a klíč
+
+Model se volí podle úlohy ve `quotes-worker/wrangler.toml` (obě prostředí), tvar
+`<ovladač>:<model>`:
+
+| Proměnná | Úloha | Výchozí |
+| --- | --- | --- |
+| `AI_TRIAGE_MODEL` | třídění pošty, údaje z textu poptávky | `zen:gpt-5-nano,zen:claude-haiku-4-5` |
+| `AI_ATTACHMENT_MODEL` | hodnocení relevance příloh (vidí obrázky) | `zen:gpt-5-nano,zen:claude-haiku-4-5` |
+| `AI_EXTRACT_MODEL` | čtení výkresů a výkazů výměr | `zen:claude-opus-5-5` |
+| `AI_TEXT_MODEL` | text e-mailu klientovi | `zen:claude-sonnet-5` |
+| `AI_FALLBACK_MODEL` | záloha při chybě / chybějícím klíči | `cf:@cf/google/gemma-4-26b-a4b-it` |
+
+Víc modelů čárkou = zkouší se popořadě, nakonec záloha. V Zen jde `claude-*` přes `/messages`
+(klíč v hlavičce `x-api-key` – dokumentace Zen uvádí Bearer, ale ten tam nefunguje), `gpt-*`
+přes `/responses` (Bearer), ostatní přes `/chat/completions` (Bearer).
+
+Ovladače: `zen:` = OpenCode Zen (hlavní brána, secret `OPENCODE_API_KEY`), `anthropic:` =
+Claude API přímo (secret `ANTHROPIC_API_KEY`), `cf:` = Workers AI (bez klíče). Bez klíče
+worker funguje dál na záloze (Gemma), jen hůř čte výkresy.
+
+```bash
+cd quotes-worker
+npx wrangler secret put OPENCODE_API_KEY                  # produkce
+npx wrangler secret put OPENCODE_API_KEY --env preview    # preview
+```
+
+Každé volání (úloha, model, tokeny, doba, chyba) se zapisuje do tabulky `ai_usage` –
+podle ní jde ověřit skutečné náklady:
+`SELECT model, COUNT(*), SUM(input_tokens), SUM(output_tokens) FROM ai_usage GROUP BY model`.
+
+### 3.4 Lokální vývoj
 
 ```bash
 cd quotes-worker && npm ci
 npx wrangler d1 execute izodiamant-preview-db --local --env preview --persist-to ../.wrangler/state --file=../db/schema.sql
-npx wrangler dev --env preview --persist-to ../.wrangler/state      # AI volá vzdálený Workers AI, PDF lokální Chromium
+npx wrangler dev --env preview --persist-to ../.wrangler/state      # bez OPENCODE_API_KEY jede AI na záloze (Workers AI), PDF lokální Chromium
 # v kořeni: npx @cloudflare/next-on-pages && npx wrangler pages dev .vercel/output/static \
 #   --compatibility-flag nodejs_compat --persist-to .wrangler/state \
 #   --d1 DB=fb43aba4-c91a-4d90-8758-e473815ddee1 --service QUOTES=izodiamant-quotes-preview --binding AUTH_SECRET=…
 ```
 
-### 3.4 Náklady (orientačně, 40 nabídek + 300 e-mailů měsíčně)
+### 3.5 Náklady (orientačně, 40 nabídek + 300 e-mailů měsíčně)
 
-- Workers AI (Gemma 4): e-mail/třídění ~5 s a pár setin haléře za kus, čtení plánku ~30 s;
-  prakticky v rámci 10 000 neuronů denně zdarma.
-- R2: PDF ~0,4 MB → stovky nabídek ročně jsou hluboko ve free tieru (10 GB).
-- Browser Rendering: ~5–10 s na PDF, v rámci 10 h/měs. zahrnutých v Paid plánu.
-- Přechod na Claude (lepší čtení plánků): změna jen v `quotes-worker/src/ai.ts`, odhad $5–15/měs.
+- AI přes OpenCode Zen: třídění 300 e-mailů a hodnocení příloh (GPT-5 nano) pod 0,5 USD,
+  čtení ~80 výkresů/výkazů (Opus, ~0,05 USD za soubor) ~4–5 USD, texty e-mailů (Sonnet)
+  pod 0,5 USD → **řádově 5–10 USD měsíčně**. Skutečnost ukáže tabulka `ai_usage`.
+- Workers AI (záloha): prakticky v rámci 10 000 neuronů denně zdarma.
+- R2: PDF ~0,4 MB (každá verze zvlášť) → stovky nabídek ročně jsou hluboko ve free tieru (10 GB).
+- Browser Rendering: ~5–10 s na PDF / náhled, v rámci 10 h/měs. zahrnutých v Paid plánu.
+- Queues: jednotky tisíc zpráv měsíčně, v rámci Paid plánu.

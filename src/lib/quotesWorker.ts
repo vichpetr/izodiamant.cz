@@ -16,9 +16,20 @@ export interface WorkerStatus {
   inboxEnabled: boolean;
   sendEnabled: boolean;
   archiveFolder: string;
-  textModel: string;
-  visionModel: string;
-  lastPoll: { at: string; manual: boolean; skipped?: string; checked: number; created: number; replies: number; ignored: number; errors: number } | null;
+  /** Model pro každou úlohu („zen:…“, „cf:…“) – viz quotes-worker/wrangler.toml. */
+  models?: { triage: string; attachment: string; extract: string; text: string; fallback: string };
+  aiKeyConfigured?: boolean;
+  lastPoll: {
+    at: string;
+    manual: boolean;
+    skipped?: string;
+    checked: number;
+    created: number;
+    questions?: number;
+    replies: number;
+    ignored: number;
+    errors: number;
+  } | null;
 }
 
 function getService(): Fetcher | null {

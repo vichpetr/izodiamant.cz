@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS quotes (
   intro TEXT,                             -- úvodní odstavec do PDF (volitelný, jinak výchozí text)
   conditions TEXT,                        -- JSON pole textů „Technické podmínky“
   note TEXT,                              -- interní poznámka (do PDF nejde)
-  status TEXT NOT NULL DEFAULT 'koncept', -- koncept | ceka_na_udaje | vygenerovano | odeslano | prijato | odmitnuto
+  status TEXT NOT NULL DEFAULT 'koncept', -- koncept | ceka_na_udaje | pripraveno | vygenerovano | odeslano | prijato | odmitnuto
   missing TEXT,                           -- JSON pole chybějících údajů (u nabídek z e-mailu)
   source TEXT NOT NULL DEFAULT 'manual',  -- manual | email
   inbox_message_id INTEGER,               -- zdrojový e-mail (inbox_messages.id)
@@ -60,6 +60,8 @@ CREATE TABLE IF NOT EXISTS quotes (
   pdf_generated_at TEXT,
   email_subject TEXT,
   email_body TEXT,
+  email_version INTEGER,                  -- verze PDF k odeslání (NULL = poslední)
+  field_sources TEXT,                     -- JSON {pole: "odkud"} – původ údajů z AI (e-mail, plánek…)
   created_at TEXT NOT NULL,
   created_by TEXT,
   updated_at TEXT NOT NULL
@@ -72,7 +74,9 @@ CREATE TABLE IF NOT EXISTS quote_items (
   quote_id INTEGER NOT NULL REFERENCES quotes(id) ON DELETE CASCADE,
   position INTEGER NOT NULL DEFAULT 0,
   technology TEXT NOT NULL,               -- retezova-pila | diamantove-lano | chemicka-injektaz
-  area_m2 REAL NOT NULL,
+  length_m REAL,                          -- délka úseku zdi (m)
+  thickness_cm REAL,                      -- tloušťka zdi (cm)
+  area_m2 REAL NOT NULL,                  -- řezná plocha = délka × tloušťka (ručně jen když rozměry chybí)
   price_per_m2 INTEGER NOT NULL
 );
 
@@ -87,6 +91,11 @@ CREATE TABLE IF NOT EXISTS quote_files (
   size INTEGER NOT NULL,
   kind TEXT NOT NULL DEFAULT 'plan',      -- plan | priloha
   analysis TEXT,                          -- JSON návrh z AI (délka, tloušťka, m², zdůvodnění)
+  relevance TEXT,                         -- vysoka | stredni | nizka | zadna (hodnocení AI)
+  relevance_override TEXT,                -- totéž, ale nastavené člověkem (má přednost)
+  relevance_reason TEXT,                  -- proč (např. „půdorys 1.PP s kótami“)
+  doc_kind TEXT,                          -- pudorys | rez | pohled | situace | foto | vykaz | logo | jine
+  include_in_email INTEGER NOT NULL DEFAULT 0, -- vyplněný výkaz přiložit k e-mailu
   created_at TEXT NOT NULL
 );
 
@@ -119,7 +128,7 @@ CREATE TABLE IF NOT EXISTS inbox_messages (
   from_name TEXT,
   subject TEXT,
   received_at TEXT,
-  status TEXT NOT NULL,                   -- nabidka | odpoved | ignorovano | chyba
+  status TEXT NOT NULL,                   -- nabidka | dotaz | odpoved | ignorovano | chyba
   body_text TEXT,                         -- text zprávy (u HTML převedený), ať jde přečíst v adminu
   extracted TEXT,                         -- JSON výstup AI
   quote_id INTEGER REFERENCES quotes(id) ON DELETE SET NULL,
@@ -129,6 +138,41 @@ CREATE TABLE IF NOT EXISTS inbox_messages (
 );
 
 CREATE INDEX IF NOT EXISTS idx_inbox_processed ON inbox_messages(processed_at DESC);
+
+-- Verze nabídky: každé vygenerování PDF po změně vstupů = nová verze.
+CREATE TABLE IF NOT EXISTS quote_versions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  quote_id INTEGER NOT NULL REFERENCES quotes(id) ON DELETE CASCADE,
+  version INTEGER NOT NULL,
+  pdf_key TEXT NOT NULL,
+  vykaz_key TEXT,                         -- vyplněný výkaz výměr k této verzi (R2) – první z vykaz_files
+  vykaz_files TEXT,                       -- JSON [{key, technology}] – u variant výkaz za každou technologii
+  input_hash TEXT NOT NULL,               -- otisk vstupů – bez změny nevzniká nová verze
+  total_label TEXT,                       -- „67 500 Kč“ / „2 varianty“ pro přehled
+  sent_at TEXT,
+  created_at TEXT NOT NULL,
+  created_by TEXT,
+  UNIQUE (quote_id, version)
+);
+
+CREATE INDEX IF NOT EXISTS idx_quote_versions_quote ON quote_versions(quote_id, version DESC);
+
+-- Každé volání modelu (kvůli nákladům u komerčních modelů).
+CREATE TABLE IF NOT EXISTS ai_usage (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  task TEXT NOT NULL,                     -- triage | attachment | extract | text
+  provider TEXT NOT NULL,                 -- zen | anthropic | cf
+  model TEXT NOT NULL,
+  input_tokens INTEGER,
+  output_tokens INTEGER,
+  ms INTEGER,
+  ok INTEGER NOT NULL,
+  error TEXT,
+  quote_id INTEGER,
+  created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_ai_usage_created ON ai_usage(created_at DESC);
 
 -- Drobný stav workeru (zámek pollingu, čas posledního běhu).
 CREATE TABLE IF NOT EXISTS app_state (

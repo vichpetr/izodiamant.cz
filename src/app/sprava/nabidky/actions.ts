@@ -8,9 +8,29 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { safeAuth, isAllowed } from '@/auth';
 import { addCustomer, getCustomer, getDB } from '@/lib/db';
-import { createQuote, deleteQuote, saveQuote, setQuoteStatus, type QuoteFormFields } from '@/lib/quotesDb';
+import {
+  createQuote,
+  deleteQuote,
+  saveQuote,
+  setEmailVersion,
+  setFileIncluded,
+  setFileRelevance,
+  setQuoteStatus,
+  type QuoteFormFields,
+} from '@/lib/quotesDb';
 import { callQuotesWorker } from '@/lib/quotesWorker';
-import { isTechnology, MATERIALS, QUOTE_STATUSES, type QuoteItem, type QuoteStatus } from '@/lib/quotes/model';
+import {
+  RELEVANCE_ORDER,
+  RELEVANT,
+  effectiveRelevance,
+  isTechnology,
+  MATERIALS,
+  QUOTE_STATUSES,
+  type QuoteItem,
+  type QuoteStatus,
+  type Relevance,
+} from '@/lib/quotes/model';
+import { cutArea, variantsError } from '@/lib/quotes/calc';
 import { isValidEmail } from '@/lib/validators';
 import type { ActionState } from '../ActionForm';
 
@@ -105,11 +125,20 @@ function parseItems(formData: FormData): QuoteItem[] {
   if (raw.length > 10) throw new Error('Nabídka může mít nejvýš 10 položek.');
   return raw.map((r: Record<string, unknown>, position) => {
     if (!isTechnology(r.technology)) throw new Error(`Položka ${position + 1}: vyberte technologii.`);
-    const area = Number(r.area_m2);
+    const optional = (v: unknown, min: number, max: number, label: string): number | null => {
+      if (v === null || v === undefined || v === '' || v === 0) return null;
+      const n = Number(v);
+      if (!Number.isFinite(n) || n < min || n > max) throw new Error(`Položka ${position + 1}: ${label}`);
+      return Math.round(n * 100) / 100;
+    };
+    const length = optional(r.length_m, 0.1, 5000, 'délka musí být 0,1–5000 m.');
+    const thickness = optional(r.thickness_cm, 1, 300, 'tloušťka musí být 1–300 cm.');
     const price = Number(r.price_per_m2);
-    if (!Number.isFinite(area) || area < 0 || area > 5000) throw new Error(`Položka ${position + 1}: plocha musí být 0–5000 m².`);
     if (!Number.isFinite(price) || price < 0 || price > 100_000) throw new Error(`Položka ${position + 1}: cena za m² musí být 0–100 000 Kč.`);
-    return { position, technology: r.technology, area_m2: Math.round(area * 100) / 100, price_per_m2: Math.round(price) };
+    // Řezná plocha = délka × tloušťka; ručně zadaná m² jen když rozměry chybí.
+    const area = cutArea(length, thickness) ?? Number(r.area_m2);
+    if (!Number.isFinite(area) || area < 0 || area > 5000) throw new Error(`Položka ${position + 1}: řezná plocha musí být 0–5000 m².`);
+    return { position, technology: r.technology, length_m: length, thickness_cm: thickness, area_m2: Math.round(area * 100) / 100, price_per_m2: Math.round(price) };
   });
 }
 
@@ -146,12 +175,34 @@ export async function saveQuoteAction(_prev: ActionState, formData: FormData): P
       note: text(formData, 'note', 2000),
     };
     const items = parseItems(formData);
-    const { missing } = await saveQuote(id, fields, items);
+    const variants = variantsError(fields.mode, items);
+    if (variants) return { ok: false, message: variants };
+    let sources: Record<string, string> | null = null;
+    try {
+      const raw: unknown = JSON.parse(String(formData.get('field_sources') ?? 'null'));
+      if (raw && typeof raw === 'object' && !Array.isArray(raw)) sources = raw as Record<string, string>;
+    } catch {
+      /* bez štítků se nic nerozbije */
+    }
+    const { missing } = await saveQuote(id, fields, items, sources);
 
     if (formData.get('intent') === 'generate') {
-      const res = await callQuotesWorker<{ number: string }>(`/quotes/${id}/generate`, { method: 'POST', admin });
+      if (missing.length) {
+        revalidatePath(PATH);
+        return { ok: false, message: `Uloženo, ale přílohy zatím nejde vygenerovat – doplňte: ${missing.join(', ')}.` };
+      }
+      const res = await callQuotesWorker<{ number: string; version: number; unchanged: boolean; vykazCount?: number }>(`/quotes/${id}/generate`, {
+        method: 'POST',
+        admin,
+      });
       revalidatePath(PATH);
-      return { ok: true, message: `PDF ${res.number} vygenerováno.` };
+      const what = res.vykazCount ? `PDF + ${res.vykazCount === 1 ? 'vyplněný výkaz' : `${res.vykazCount} vyplněné výkazy`}` : 'PDF';
+      return {
+        ok: true,
+        message: res.unchanged
+          ? `Beze změny – platí přílohy verze ${res.version} (${what}).`
+          : `Přílohy ${res.number} vygenerovány (verze ${res.version}): ${what}.`,
+      };
     }
     revalidatePath(PATH);
     return { ok: true, message: missing.length ? `Uloženo. Ještě chybí: ${missing.join(', ')}.` : 'Nabídka uložena.' };
@@ -183,13 +234,13 @@ export async function uploadPlansAction(_prev: ActionState, formData: FormData):
     const admin = await requireAdmin();
     const id = quoteId(formData);
     const files = formData.getAll('files').filter((f): f is File => typeof f !== 'string' && f.size > 0);
-    if (files.length === 0) return { ok: false, message: 'Vyberte plánek (JPG, PNG nebo PDF).' };
+    if (files.length === 0) return { ok: false, message: 'Vyberte soubor (plánek JPG/PNG/PDF nebo výkaz XLSX).' };
     const body = new FormData();
     files.forEach((f) => body.append('files', f, f.name));
     body.append('hint', text(formData, 'hint', 500) ?? '');
     await callQuotesWorker(`/quotes/${id}/plans`, { method: 'POST', body, admin });
     revalidatePath(PATH);
-    return { ok: true, message: 'Plánek nahrán a přečten. Zkontrolujte návrh a klikněte na „Použít“.' };
+    return { ok: true, message: 'Nahráno – AI soubor na pozadí ohodnotí a relevantní přečte, výsledek se objeví sám.' };
   } catch (err) {
     revalidatePath(PATH);
     return fail(err);
@@ -204,10 +255,65 @@ export async function reanalyzeFileAction(_prev: ActionState, formData: FormData
       method: 'POST',
       admin,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ hint: text(formData, 'hint', 500) }),
+      body: JSON.stringify({ hint: text(formData, 'hint', 500), force: true }),
     });
     revalidatePath(PATH);
-    return { ok: true, message: 'Plánek přečten znovu.' };
+    return { ok: true, message: 'Zařazeno ke čtení – výsledek se objeví sám.' };
+  } catch (err) {
+    return fail(err);
+  }
+}
+
+/** Ruční relevance přílohy. Označení za relevantní rovnou spustí čtení, pokud ještě neproběhlo. */
+export async function setRelevanceAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  try {
+    const admin = await requireAdmin();
+    const fileId = Number(formData.get('file_id'));
+    const raw = String(formData.get('relevance') ?? '');
+    const relevance = RELEVANCE_ORDER.includes(raw as Relevance) ? (raw as Relevance) : null;
+    const file = await setFileRelevance(fileId, relevance);
+    if (!file) return { ok: false, message: 'Soubor nenalezen.' };
+    const effective = effectiveRelevance(file);
+    let message = relevance ? 'Relevance změněna.' : 'Vráceno na hodnocení AI.';
+    if (!file.analysis && effective && RELEVANT.includes(effective)) {
+      await callQuotesWorker(`/files/${fileId}/analyze`, {
+        method: 'POST',
+        admin,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ force: true }),
+      });
+      message = 'Označeno jako relevantní – AI soubor čte.';
+    }
+    revalidatePath(PATH);
+    return { ok: true, message };
+  } catch (err) {
+    return fail(err);
+  }
+}
+
+export async function setIncludeAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  try {
+    await requireAdmin();
+    const include = formData.get('include') === '1';
+    await setFileIncluded(Number(formData.get('file_id')), include);
+    revalidatePath(PATH);
+    return {
+      ok: true,
+      message: include ? 'Vyplněný výkaz se přiloží k e-mailu.' : 'Vyplněný výkaz se k e-mailu nepřiloží (vygeneruje se ale dál spolu s PDF).',
+    };
+  } catch (err) {
+    return fail(err);
+  }
+}
+
+export async function setEmailVersionAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  try {
+    await requireAdmin();
+    const raw = Number(formData.get('version'));
+    const version = Number.isInteger(raw) && raw > 0 ? raw : null;
+    await setEmailVersion(quoteId(formData), version);
+    revalidatePath(PATH);
+    return { ok: true, message: version ? `K e-mailu se přiloží verze ${version}.` : 'K e-mailu se přiloží vždy poslední verze.' };
   } catch (err) {
     return fail(err);
   }
@@ -227,9 +333,12 @@ export async function regenerateEmailAction(_prev: ActionState, formData: FormDa
 export async function draftEmailAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   try {
     const admin = await requireAdmin();
-    const res = await callQuotesWorker<{ folder: string }>(`/quotes/${quoteId(formData)}/draft`, { method: 'POST', admin });
+    const res = await callQuotesWorker<{ folder: string; attachments?: string[] }>(`/quotes/${quoteId(formData)}/draft`, { method: 'POST', admin });
     revalidatePath(PATH);
-    return { ok: true, message: `Koncept uložen do schránky (složka „${res.folder}“).` };
+    return {
+      ok: true,
+      message: `Koncept uložen do schránky (složka „${res.folder}“)${res.attachments?.length ? `, přílohy: ${res.attachments.join(', ')}` : ''}.`,
+    };
   } catch (err) {
     revalidatePath(PATH);
     return fail(err);
@@ -284,13 +393,13 @@ export async function pollInboxAction(): Promise<ActionState> {
   try {
     const admin = await requireAdmin();
     const { result } = await callQuotesWorker<{
-      result: { skipped?: string; checked: number; created: number; replies: number; ignored: number; errors: number };
+      result: { skipped?: string; checked: number; created: number; questions?: number; replies: number; ignored: number; errors: number };
     }>('/inbox/poll', { method: 'POST', admin });
     revalidatePath(PATH);
     if (result.skipped) return { ok: false, message: result.skipped };
     return {
       ok: result.errors === 0,
-      message: `Zkontrolováno ${result.checked} nových zpráv: ${result.created} poptávek, ${result.replies} odpovědí, ${result.ignored} ostatních${result.errors ? `, ${result.errors} chyb` : ''}.`,
+      message: `Zkontrolováno ${result.checked} nových zpráv: ${result.created} poptávek, ${result.questions ?? 0} dotazů (zůstaly ve schránce), ${result.replies} odpovědí, ${result.ignored} ostatních${result.errors ? `, ${result.errors} chyb` : ''}.`,
     };
   } catch (err) {
     return fail(err);

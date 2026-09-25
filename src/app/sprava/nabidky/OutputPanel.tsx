@@ -1,18 +1,19 @@
 'use client';
 
-// PDF + průvodní e-mail. Text e-mailu navrhne AI při prvním vygenerování PDF,
-// dá se upravit, zkopírovat, uložit jako koncept do schránky (fáze 3a) nebo –
-// když je SEND_ENABLED – rovnou odeslat (fáze 3b).
+// Krok 3 – průvodní e-mail. Text navrhne AI při prvním vygenerování PDF, dá se
+// upravit, zkopírovat, uložit jako koncept do schránky nebo – když je
+// SEND_ENABLED – rovnou odeslat. Přílohy = vybraná verze PDF (+ vyplněný výkaz).
 
 import { useState } from 'react';
 import type { Quote } from '@/lib/quotes/model';
-import { Icons } from '@/components/Icons';
-import { cardCls, fileUrl, fmtDateTime, ghostBtn, headingCls, inputCls, labelCls, primarySmall } from './ui';
+import { cardCls, ghostBtn, headingCls, inputCls, labelCls, primarySmall } from './ui';
 import { submitWithoutReset, useToastAction, type Action } from './useToastAction';
 import Working from './Working';
 
 export default function OutputPanel({
   quote,
+  attachments,
+  versionCount,
   mailbox,
   mailboxReady,
   sendEnabled,
@@ -22,6 +23,9 @@ export default function OutputPanel({
   sendEmailAction,
 }: {
   quote: Quote;
+  /** Názvy souborů, které půjdou s e-mailem (PDF vybrané verze, případně výkaz). */
+  attachments: string[];
+  versionCount: number;
   mailbox: string | null;
   mailboxReady: boolean;
   sendEnabled: boolean;
@@ -38,9 +42,9 @@ export default function OutputPanel({
   const [draftFormAction, drafting] = useToastAction(draftEmailAction);
   const [sendFormAction, sending] = useToastAction(sendEmailAction);
 
-  const stale = Boolean(quote.pdf_key) && quote.status === 'koncept';
+  const hasPdf = attachments.length > 0;
   const dirty = subject !== (quote.email_subject ?? '') || body !== (quote.email_body ?? '');
-  const canMail = Boolean(quote.pdf_key && quote.client_email && quote.email_subject && quote.email_body) && !dirty;
+  const canMail = Boolean(hasPdf && quote.client_email && quote.email_subject && quote.email_body) && !dirty;
 
   const copy = async () => {
     try {
@@ -54,21 +58,21 @@ export default function OutputPanel({
 
   return (
     <section className={cardCls}>
-      <h2 className={`${headingCls} mb-4`}>PDF a e-mail klientovi</h2>
+      <h2 className={`${headingCls} mb-4`}>E-mail klientovi</h2>
 
-      {quote.pdf_key ? (
-        <div className="flex flex-wrap items-center gap-3 mb-2">
-          <a href={fileUrl(quote.pdf_key)} target="_blank" rel="noopener" className="inline-flex items-center gap-2 btn-primary py-2.5 px-5 uppercase tracking-widest text-xs">
-            <Icons.FileText className="w-4 h-4" /> {quote.number}.pdf
-          </a>
-          <span className="text-xs text-neutral-dark/50">vygenerováno {fmtDateTime(quote.pdf_generated_at)}</span>
-        </div>
+      {hasPdf ? (
+        <p className="text-sm mb-2">
+          <span className={`${labelCls} ml-0 mr-2`}>Přílohy</span>
+          {attachments.join(' · ')}
+        </p>
       ) : (
-        <p className="text-sm text-neutral-dark/50 mb-2">PDF zatím není – vyplňte nabídku a klikněte na „Uložit a vygenerovat PDF“.</p>
+        <p className="text-sm text-neutral-dark/50 mb-2">E-mail půjde připravit, až bude PDF nabídky (krok 2 → „Vygenerovat přílohy“).</p>
       )}
-      {stale && <p className="text-sm text-amber-800 bg-amber-50 rounded-xl px-3 py-2 mb-2">Nabídka se od vygenerování změnila – PDF vygenerujte znovu.</p>}
+      {versionCount > 1 && (
+        <p className="text-xs text-neutral-dark/50 mb-2">Nabídka má víc verzí – ceny v textu e-mailu se samy nemění. Zkontrolujte je, případně „Navrhnout znovu (AI)“.</p>
+      )}
 
-      {(quote.email_body || quote.pdf_key) && (
+      {(quote.email_body || hasPdf) && (
         <form onSubmit={submitWithoutReset((fd) => (fd.get('intent') === 'regenerate' ? regenFormAction(fd) : saveFormAction(fd)))} className="space-y-3 mt-5">
           <input type="hidden" name="id" value={quote.id} />
           <label className="flex flex-col gap-1">
@@ -90,7 +94,7 @@ export default function OutputPanel({
         </form>
       )}
 
-      {quote.pdf_key && (
+      {hasPdf && (
         <div className="mt-6 pt-5 border-t border-neutral-light">
           {!mailboxReady ? (
             <p className="text-sm text-neutral-dark/50">Schránka pro koncepty není nastavená (quotes-worker: MAILBOX_USER + MAILBOX_PASSWORD).</p>
@@ -98,7 +102,7 @@ export default function OutputPanel({
             <div className="flex flex-wrap items-center gap-2">
               <form action={draftFormAction}>
                 <input type="hidden" name="id" value={quote.id} />
-                <button type="submit" disabled={!canMail || drafting} className={primarySmall} title={`Uloží e-mail s PDF do Konceptů schránky ${mailbox ?? ''}`}>
+                <button type="submit" disabled={!canMail || drafting} className={primarySmall} title={`Uloží e-mail s přílohami do Konceptů schránky ${mailbox ?? ''} – odešlete ho sami ze Seznamu`}>
                   {drafting ? 'Ukládám…' : 'Uložit jako koncept do schránky'}
                 </button>
               </form>

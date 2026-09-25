@@ -1,72 +1,277 @@
-// Tenká vrstva nad Workers AI. Modely se vybírají v wrangler.toml (AI_TEXT_MODEL,
-// AI_VISION_MODEL), takže přechod na jiný model – případně později na Claude –
-// znamená změnit jen tenhle soubor, ne volající kód.
+// Vrstva nad jazykovými modely. Model se volí podle ÚLOHY (wrangler.toml):
+//   AI_TRIAGE_MODEL      třídění pošty a vytažení údajů z textu poptávky
+//   AI_ATTACHMENT_MODEL  hodnocení relevance příloh (levný model s viděním)
+//   AI_EXTRACT_MODEL     čtení plánků a výkazů výměr (silný model)
+//   AI_TEXT_MODEL        texty e-mailů klientům
+// ve tvaru "<ovladač>:<model>", případně víc čárkou oddělených (zkouší se popořadě):
+//   zen:claude-sonnet-5               OpenCode Zen – hlavní brána (secret OPENCODE_API_KEY)
+//   zen:gpt-5-nano                    GPT modely v Zen (Responses API)
+//   anthropic:claude-opus-5           Claude API přímo (secret ANTHROPIC_API_KEY)
+//   cf:@cf/google/gemma-4-26b-a4b-it  Workers AI
+// Když komerční volání selže (výpadek, došel kredit, chybí klíč), úloha se zopakuje
+// na AI_FALLBACK_MODEL. Každé volání se zapíše do ai_usage kvůli nákladům.
 //
 // Výstup AI je vždy jen NÁVRH: volající ho validuje a člověk potvrzuje.
 
 import type { Env } from './env';
+import { nowIso } from './env';
 import { toBase64 } from './util';
+
+export type AiTask = 'triage' | 'attachment' | 'extract' | 'text';
 
 export interface AiImage {
   mediaType: string;
   data: ArrayBuffer;
 }
 
-type ChatContent = string | ({ type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } })[];
-
-/** Workers AI modely vrací buď `{ response }`, nebo OpenAI tvar `{ choices[].message.content }`. */
-function extractText(result: unknown): string {
-  if (typeof result === 'string') return result;
-  const r = result as {
-    response?: unknown;
-    choices?: { finish_reason?: string; message?: { content?: unknown } }[];
-  };
-  if (typeof r?.response === 'string' && r.response.trim()) return r.response;
-  if (r?.response && typeof r.response === 'object') return JSON.stringify(r.response);
-  const choice = r?.choices?.[0];
-  if (typeof choice?.message?.content === 'string' && choice.message.content.trim()) return choice.message.content;
-  // Reasoning modely (Gemma 4) umí vyčerpat max_tokens na uvažování a odpověď pak chybí.
-  if (choice?.finish_reason === 'length') throw new Error('AI nestihla odpovědět (limit tokenů).');
-  throw new Error('AI nevrátila žádný text.');
+interface CallOpts {
+  task: AiTask;
+  system: string;
+  user: string;
+  images?: AiImage[];
+  maxTokens?: number;
+  /** Jen Workers AI (Gemma 4): zapnout „přemýšlení“ – pomalejší, ale přesnější. */
+  think?: boolean;
+  quoteId?: number | null;
 }
 
-export async function runText(
-  env: Env,
-  opts: { system: string; user: string; images?: AiImage[]; maxTokens?: number; think?: boolean },
-): Promise<string> {
-  const model = opts.images?.length ? env.AI_VISION_MODEL : env.AI_TEXT_MODEL;
-  const content: ChatContent = opts.images?.length
-    ? [
-        { type: 'text', text: opts.user },
-        ...opts.images.map((img) => ({
-          type: 'image_url' as const,
-          image_url: { url: `data:${img.mediaType};base64,${toBase64(img.data)}` },
-        })),
-      ]
-    : opts.user;
+interface CallResult {
+  text: string;
+  inputTokens: number | null;
+  outputTokens: number | null;
+}
 
-  const result = await env.AI.run(model as keyof AiModels, {
+type Provider = 'zen' | 'anthropic' | 'cf';
+
+const ZEN_BASE = 'https://opencode.ai/zen/v1';
+const ANTHROPIC_BASE = 'https://api.anthropic.com/v1';
+const TIMEOUT_MS = 240_000;
+
+const TASK_VARS: Record<AiTask, keyof Env> = {
+  triage: 'AI_TRIAGE_MODEL',
+  attachment: 'AI_ATTACHMENT_MODEL',
+  extract: 'AI_EXTRACT_MODEL',
+  text: 'AI_TEXT_MODEL',
+};
+
+function parseSpec(spec: string): { provider: Provider; model: string } {
+  const i = spec.indexOf(':');
+  const provider = spec.slice(0, i) as Provider;
+  if (i < 1 || !['zen', 'anthropic', 'cf'].includes(provider)) {
+    throw new Error(`Neplatné nastavení modelu „${spec}“ – čekám tvar zen:…, anthropic:… nebo cf:…`);
+  }
+  return { provider, model: spec.slice(i + 1) };
+}
+
+// ─── Ovladače ────────────────────────────────────────────────────────────────
+
+/** Tvar Anthropic Messages API – Claude přímo i Claude modely v OpenCode Zen. */
+async function callMessages(url: string, headers: Record<string, string>, model: string, o: CallOpts): Promise<CallResult> {
+  const content = [
+    ...(o.images ?? []).map((img) => ({
+      type: 'image',
+      source: { type: 'base64', media_type: img.mediaType, data: toBase64(img.data) },
+    })),
+    { type: 'text', text: o.user },
+  ];
+  // Pozor: temperature/top_p nový Claude (Opus 5, Sonnet 5) odmítá s chybou 400 – neposílat.
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'anthropic-version': '2023-06-01', ...headers },
+    body: JSON.stringify({ model, max_tokens: o.maxTokens ?? 16_000, system: o.system, messages: [{ role: 'user', content }] }),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  const data = (await res.json().catch(() => null)) as {
+    content?: { type: string; text?: string }[];
+    stop_reason?: string;
+    usage?: { input_tokens?: number; output_tokens?: number };
+    error?: { message?: string };
+  } | null;
+  if (!res.ok) throw new Error(`${res.status}: ${data?.error?.message ?? 'chyba modelu'}`);
+  if (data?.stop_reason === 'refusal') throw new Error('Model požadavek odmítl.');
+  const text = (data?.content ?? [])
+    .filter((b) => b.type === 'text' && b.text)
+    .map((b) => b.text)
+    .join('\n')
+    .trim();
+  if (!text) throw new Error(data?.stop_reason === 'max_tokens' ? 'Model nestihl odpovědět (limit tokenů).' : 'Model nevrátil text.');
+  return { text, inputTokens: data?.usage?.input_tokens ?? null, outputTokens: data?.usage?.output_tokens ?? null };
+}
+
+/** Tvar OpenAI Chat Completions – ostatní modely v OpenCode Zen. */
+async function callChat(url: string, key: string, model: string, o: CallOpts): Promise<CallResult> {
+  const content = o.images?.length
+    ? [
+        { type: 'text', text: o.user },
+        ...o.images.map((img) => ({ type: 'image_url', image_url: { url: `data:${img.mediaType};base64,${toBase64(img.data)}` } })),
+      ]
+    : o.user;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      model,
+      max_tokens: o.maxTokens ?? 16_000,
+      messages: [
+        { role: 'system', content: o.system },
+        { role: 'user', content },
+      ],
+    }),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  const data = (await res.json().catch(() => null)) as {
+    choices?: { message?: { content?: string }; finish_reason?: string }[];
+    usage?: { prompt_tokens?: number; completion_tokens?: number };
+    error?: { message?: string };
+  } | null;
+  if (!res.ok) throw new Error(`${res.status}: ${data?.error?.message ?? 'chyba modelu'}`);
+  const text = data?.choices?.[0]?.message?.content?.trim();
+  if (!text) throw new Error('Model nevrátil text.');
+  return { text, inputTokens: data?.usage?.prompt_tokens ?? null, outputTokens: data?.usage?.completion_tokens ?? null };
+}
+
+/**
+ * OpenAI Responses API – GPT modely v OpenCode Zen (/responses, klíč jako Bearer).
+ * GPT-5 „přemýšlí“ a přemýšlení se počítá do max_output_tokens, proto nízké úsilí
+ * a rezerva tokenů.
+ */
+async function callResponses(url: string, key: string, model: string, o: CallOpts): Promise<CallResult> {
+  const content = [
+    { type: 'input_text', text: o.user },
+    ...(o.images ?? []).map((img) => ({ type: 'input_image', image_url: `data:${img.mediaType};base64,${toBase64(img.data)}` })),
+  ];
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      model,
+      instructions: o.system,
+      input: [{ role: 'user', content }],
+      max_output_tokens: Math.max(o.maxTokens ?? 16_000, 4000),
+      reasoning: { effort: 'low' },
+    }),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  const data = (await res.json().catch(() => null)) as {
+    status?: string;
+    output_text?: string;
+    output?: { type: string; content?: { type: string; text?: string }[] }[];
+    usage?: { input_tokens?: number; output_tokens?: number };
+    error?: { message?: string } | null;
+    incomplete_details?: { reason?: string } | null;
+  } | null;
+  if (!res.ok) throw new Error(`${res.status}: ${data?.error?.message ?? 'chyba modelu'}`);
+  const text = (
+    data?.output_text ??
+    (data?.output ?? [])
+      .filter((o) => o.type === 'message')
+      .flatMap((o) => o.content ?? [])
+      .filter((c) => c.type === 'output_text' && c.text)
+      .map((c) => c.text)
+      .join('\n')
+  ).trim();
+  if (!text) throw new Error(data?.status === 'incomplete' ? `Model nedokončil odpověď (${data.incomplete_details?.reason ?? 'limit'}).` : 'Model nevrátil text.');
+  return { text, inputTokens: data?.usage?.input_tokens ?? null, outputTokens: data?.usage?.output_tokens ?? null };
+}
+
+/** Workers AI modely vrací buď `{ response }`, nebo OpenAI tvar `{ choices[].message.content }`. */
+async function callCf(env: Env, model: string, o: CallOpts): Promise<CallResult> {
+  const content = o.images?.length
+    ? [
+        { type: 'text', text: o.user },
+        ...o.images.map((img) => ({ type: 'image_url', image_url: { url: `data:${img.mediaType};base64,${toBase64(img.data)}` } })),
+      ]
+    : o.user;
+  const result = (await env.AI.run(model as keyof AiModels, {
     messages: [
-      { role: 'system', content: opts.system },
+      { role: 'system', content: o.system },
       { role: 'user', content },
     ],
-    max_tokens: opts.maxTokens ?? 8192,
+    // S „přemýšlením“ spotřebuje Gemma na velkém výkresu i přes 8 000 tokenů.
+    max_tokens: o.maxTokens ?? (o.think ? 16_384 : 8192),
     temperature: 0.2,
-    // Gemma 4 standardně „přemýšlí“ (desítky sekund). Pro běžný text to vypínáme
-    // (~5 s místo ~35 s); zapnuté zůstává jen tam, kde se počítá (plánek).
-    ...(model.includes('gemma-4') && !opts.think ? { chat_template_kwargs: { enable_thinking: false } } : {}),
-  } as never);
-  return extractText(result).trim();
+    // Gemma 4 standardně „přemýšlí“ (desítky sekund) – pro běžný text vypnuto.
+    ...(model.includes('gemma-4') && !o.think ? { chat_template_kwargs: { enable_thinking: false } } : {}),
+  } as never)) as {
+    response?: unknown;
+    choices?: { finish_reason?: string; message?: { content?: unknown } }[];
+    usage?: { prompt_tokens?: number; completion_tokens?: number };
+  };
+  let text = '';
+  if (typeof result?.response === 'string') text = result.response;
+  else if (result?.response && typeof result.response === 'object') text = JSON.stringify(result.response);
+  else if (typeof result?.choices?.[0]?.message?.content === 'string') text = result.choices[0].message.content as string;
+  if (!text.trim()) {
+    throw new Error(result?.choices?.[0]?.finish_reason === 'length' ? 'AI nestihla odpovědět (limit tokenů).' : 'AI nevrátila žádný text.');
+  }
+  return { text: text.trim(), inputTokens: result?.usage?.prompt_tokens ?? null, outputTokens: result?.usage?.completion_tokens ?? null };
+}
+
+async function dispatch(env: Env, spec: string, o: CallOpts): Promise<CallResult> {
+  const { provider, model } = parseSpec(spec);
+  if (provider === 'cf') return callCf(env, model, o);
+  if (provider === 'anthropic') {
+    if (!env.ANTHROPIC_API_KEY) throw new Error('Chybí secret ANTHROPIC_API_KEY.');
+    return callMessages(`${ANTHROPIC_BASE}/messages`, { 'x-api-key': env.ANTHROPIC_API_KEY }, model, o);
+  }
+  if (!env.OPENCODE_API_KEY) throw new Error('Chybí secret OPENCODE_API_KEY.');
+  // Claude modely má Zen v Anthropic tvaru (/messages), ostatní v OpenAI tvaru.
+  // Pozor: /messages čte klíč jen z `x-api-key` (s Bearer vrací „Missing API key“,
+  // i když dokumentace Zen uvádí Bearer); /chat/completions naopak chce Bearer.
+  if (model.startsWith('claude-')) return callMessages(`${ZEN_BASE}/messages`, { 'x-api-key': env.OPENCODE_API_KEY }, model, o);
+  if (model.startsWith('gpt-')) return callResponses(`${ZEN_BASE}/responses`, env.OPENCODE_API_KEY, model, o);
+  return callChat(`${ZEN_BASE}/chat/completions`, env.OPENCODE_API_KEY, model, o);
+}
+
+async function logUsage(env: Env, o: CallOpts, spec: string, started: number, result: CallResult | null, error: string | null) {
+  try {
+    const { provider, model } = parseSpec(spec);
+    await env.DB.prepare(
+      `INSERT INTO ai_usage (task, provider, model, input_tokens, output_tokens, ms, ok, error, quote_id, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    )
+      .bind(o.task, provider, model, result?.inputTokens ?? null, result?.outputTokens ?? null, Date.now() - started, result ? 1 : 0, error?.slice(0, 500) ?? null, o.quoteId ?? null, nowIso())
+      .run();
+  } catch {
+    // záznam spotřeby je jen evidence – nesmí shodit samotnou úlohu
+  }
+}
+
+/**
+ * Zavolá model pro danou úlohu. Úloha může mít víc modelů (čárkou) – zkouší se
+ * popořadě, nakonec záloha AI_FALLBACK_MODEL (Workers AI).
+ */
+export async function runText(env: Env, o: CallOpts): Promise<string> {
+  const specs = [
+    ...((env[TASK_VARS[o.task]] as string | undefined) ?? '').split(','),
+    ...(env.AI_FALLBACK_MODEL ?? '').split(','),
+  ]
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const attempts = [...new Set(specs)];
+  if (attempts.length === 0) throw new Error('Není nastavený žádný AI model.');
+
+  let lastError: unknown;
+  for (const spec of attempts) {
+    const started = Date.now();
+    try {
+      const result = await dispatch(env, spec, o);
+      await logUsage(env, o, spec, started, result, null);
+      return result.text;
+    } catch (err) {
+      lastError = err;
+      await logUsage(env, o, spec, started, null, err instanceof Error ? err.message : String(err));
+      console.warn(`AI (${o.task}) přes ${spec} selhala:`, err instanceof Error ? err.message : err);
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error('AI selhala.');
 }
 
 /** Zavolá model a z odpovědi vytáhne první JSON objekt (modely občas přidají ```json nebo text okolo). */
-export async function runJson<T>(
-  env: Env,
-  opts: { system: string; user: string; images?: AiImage[]; maxTokens?: number; think?: boolean },
-): Promise<T> {
+export async function runJson<T>(env: Env, o: CallOpts): Promise<T> {
   const text = await runText(env, {
-    ...opts,
-    system: `${opts.system}\n\nOdpověz VÝHRADNĚ jedním platným JSON objektem, bez dalšího textu a bez markdownu.`,
+    ...o,
+    system: `${o.system}\n\nOdpověz VÝHRADNĚ jedním platným JSON objektem, bez dalšího textu a bez markdownu.`,
   });
   const start = text.indexOf('{');
   const end = text.lastIndexOf('}');
@@ -74,7 +279,7 @@ export async function runJson<T>(
   return JSON.parse(text.slice(start, end + 1)) as T;
 }
 
-/** PDF (např. plánek z e-mailu) → text přes Workers AI toMarkdown. */
+/** PDF → text přes Workers AI toMarkdown (záloha, když se PDF nepodaří vykreslit). */
 export async function pdfToText(env: Env, name: string, data: ArrayBuffer): Promise<string> {
   const [result] = await env.AI.toMarkdown([{ name, blob: new Blob([data], { type: 'application/pdf' }) }]);
   if (!result || result.format === 'error') return '';

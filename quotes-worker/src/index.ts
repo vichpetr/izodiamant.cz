@@ -4,16 +4,24 @@
 // /sprava přes service binding QUOTES (autorizaci řeší Pages – Google login +
 // ADMIN_EMAILS) a cron. Kdo akci spustil, posílá Pages v hlavičce X-Admin-Email.
 
-import type { QuoteFile } from '../../src/lib/quotes/model';
+import { SPREADSHEET_TYPES, attachedVykazFiles, isSpreadsheet, versionFilename, vykazFilename, type QuoteFile } from '../../src/lib/quotes/model';
+import { maybeAutoGenerate, queueAttachment, runAttachmentJob } from './attachments';
 import { getFile, getItems, getQuote, getState, logQuoteMessage, updateQuote } from './db';
-import { flag, mailboxConfigured, nowIso, type Env, type PlanJob } from './env';
-import { UserError, draftEmailText, generateQuote } from './generate';
+import { flag, mailboxConfigured, nowIso, type Env, type Job } from './env';
+import { UserError, draftEmailText, emailVersion, generateQuote } from './generate';
 import { pollInbox } from './inbox';
 import { saveDraft, sendMail, type OutgoingMail } from './mailbox';
-import { pdfToImages, queueAnalysis, runPlanJob } from './plans';
+import { pdfToImages } from './plans';
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 const ALLOWED_UPLOADS = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+
+/** Typ nahraného souboru, nebo null = nepodporovaný. Tabulky i podle přípony (prohlížeče je hlásí různě). */
+function uploadType(file: File): string | null {
+  if (ALLOWED_UPLOADS.includes(file.type)) return file.type;
+  const ext = /\.(xlsx|xls|csv)$/i.exec(file.name)?.[1]?.toLowerCase();
+  return ext ? SPREADSHEET_TYPES[ext] : null;
+}
 
 const json = (data: unknown, status = 200) => Response.json(data, { status });
 
@@ -32,8 +40,15 @@ async function handle(request: Request, env: Env): Promise<Response> {
       inboxEnabled: flag(env.INBOX_ENABLED),
       sendEnabled: flag(env.SEND_ENABLED),
       archiveFolder: env.INBOX_ARCHIVE_FOLDER,
-      textModel: env.AI_TEXT_MODEL,
-      visionModel: env.AI_VISION_MODEL,
+      models: {
+        triage: env.AI_TRIAGE_MODEL,
+        attachment: env.AI_ATTACHMENT_MODEL,
+        extract: env.AI_EXTRACT_MODEL,
+        text: env.AI_TEXT_MODEL,
+        fallback: env.AI_FALLBACK_MODEL,
+      },
+      // Jen jestli klíč je – hodnota secretu nikdy neopustí worker.
+      aiKeyConfigured: Boolean(env.OPENCODE_API_KEY || env.ANTHROPIC_API_KEY),
       lastPoll: last ? JSON.parse(last) : null,
     });
   }
@@ -80,7 +95,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
       if (!object) return json({ error: 'Soubor v úložišti chybí.' }, 404);
       return new Response(object.body, { headers: { 'Content-Type': file.content_type } });
     }
-    if (file.content_type !== 'application/pdf') return json({ error: 'Náhled není k dispozici.' }, 415);
+    if (file.content_type !== 'application/pdf' || isSpreadsheet(file)) return json({ error: 'Náhled není k dispozici.' }, 415);
 
     const previewKey = `${file.r2_key}.nahled.jpg`;
     const cached = await env.BUCKET.get(previewKey);
@@ -94,12 +109,13 @@ async function handle(request: Request, env: Env): Promise<Response> {
     return new Response(firstPage.data, { headers: { 'Content-Type': 'image/jpeg' } });
   }
 
-  // POST /files/:id/analyze – zařadí čtení plánku do fronty a hned se vrátí.
+  // POST /files/:id/analyze { hint?, force? } – zařadí zpracování přílohy do fronty a hned se vrátí.
+  // Ruční „Přečíst“ je force (čte i to, co AI označila za nerelevantní).
   if (method === 'POST' && parts[0] === 'files' && parts[2] === 'analyze') {
     const file = await getFile(env, Number(parts[1]));
     if (!file) return json({ error: 'Soubor neexistuje.' }, 404);
-    const body = (await request.json().catch(() => ({}))) as { hint?: string };
-    await queueAnalysis(env, file.id, body.hint?.slice(0, 500) || null);
+    const body = (await request.json().catch(() => ({}))) as { hint?: string; force?: boolean };
+    await queueAttachment(env, file.id, body.hint?.slice(0, 500) || null, body.force !== false);
     return json({ ok: true, pending: true }, 202);
   }
 
@@ -109,7 +125,8 @@ async function handle(request: Request, env: Env): Promise<Response> {
   const action = parts[2];
 
   if (method === 'POST' && action === 'generate') {
-    return json({ ok: true, ...(await generateQuote(env, quoteId)) });
+    const body = (await request.json().catch(() => ({}))) as { force?: boolean };
+    return json({ ok: true, ...(await generateQuote(env, quoteId, { createdBy: admin, force: body.force === true })) });
   }
 
   if (method === 'POST' && action === 'email-text') {
@@ -120,7 +137,7 @@ async function handle(request: Request, env: Env): Promise<Response> {
     return json({ ok: true, ...text });
   }
 
-  // POST /quotes/:id/plans – multipart `files` (+ volitelně `hint`): uloží do R2 a přečte AI.
+  // POST /quotes/:id/plans – multipart `files` (+ volitelně `hint`): uloží do R2 a zařadí ke čtení.
   if (method === 'POST' && action === 'plans') {
     const quote = await getQuote(env, quoteId);
     if (!quote) return json({ error: 'Nabídka neexistuje.' }, 404);
@@ -130,57 +147,78 @@ async function handle(request: Request, env: Env): Promise<Response> {
     if (uploads.length === 0) return json({ error: 'Nevybrali jste žádný soubor.' }, 400);
     const saved: Pick<QuoteFile, 'id' | 'filename' | 'analysis'>[] = [];
     for (const upload of uploads.slice(0, 5)) {
-      if (!ALLOWED_UPLOADS.includes(upload.type)) throw new UserError(`${upload.name}: podporované jsou JPG, PNG, WEBP a PDF.`);
+      const type = uploadType(upload);
+      if (!type) throw new UserError(`${upload.name}: podporované jsou JPG, PNG, WEBP, PDF a výkazy XLSX/XLS/CSV.`);
       if (upload.size > MAX_UPLOAD_BYTES) throw new UserError(`${upload.name}: soubor je větší než 10 MB.`);
       const data = await upload.arrayBuffer();
       const filename = upload.name.replace(/[/\\]/g, '_').slice(0, 120);
       const key = `prilohy/${quoteId}/${crypto.randomUUID()}-${filename}`;
-      await env.BUCKET.put(key, data, { httpMetadata: { contentType: upload.type } });
+      await env.BUCKET.put(key, data, { httpMetadata: { contentType: type } });
       const res = await env.DB.prepare(
         `INSERT INTO quote_files (quote_id, r2_key, filename, content_type, size, kind, analysis, created_at) VALUES (?, ?, ?, ?, ?, 'plan', NULL, ?)`,
       )
-        .bind(quoteId, key, filename, upload.type, data.byteLength, nowIso())
+        .bind(quoteId, key, filename, type, data.byteLength, nowIso())
         .run();
       const fileId = Number(res.meta.last_row_id);
-      await queueAnalysis(env, fileId, hint);
+      // I ručně nahraný soubor se nejdřív ohodnotí – silný model čte jen relevantní
+      // (nerelevantní jde v adminu přečíst tlačítkem „Přečíst“).
+      await queueAttachment(env, fileId, hint, false);
       saved.push({ id: fileId, filename, analysis: null });
     }
     return json({ ok: true, files: saved });
   }
 
-  // POST /quotes/:id/draft | /send – fáze 3 (koncept do schránky / přímé odeslání).
+  // POST /quotes/:id/draft | /send – koncept do schránky / přímé odeslání.
+  // Příloha = zvolená verze (email_version), jinak poslední; k ní vyplněný výkaz.
   if (method === 'POST' && (action === 'draft' || action === 'send')) {
     const quote = await getQuote(env, quoteId);
     if (!quote) return json({ error: 'Nabídka neexistuje.' }, 404);
     if (!quote.client_email) throw new UserError('Nabídka nemá e-mail klienta.');
-    if (!quote.pdf_key || !quote.number) throw new UserError('Nejdřív vygenerujte PDF.');
+    if (!quote.number) throw new UserError('Nejdřív vygenerujte PDF.');
     if (!quote.email_subject || !quote.email_body) throw new UserError('Chybí předmět nebo text e-mailu.');
-    const pdf = await env.BUCKET.get(quote.pdf_key);
+    const version = await emailVersion(env, quote);
+    const pdfKey = version?.pdf_key ?? quote.pdf_key;
+    if (!pdfKey) throw new UserError('Nejdřív vygenerujte PDF.');
+    const pdf = await env.BUCKET.get(pdfKey);
     if (!pdf) throw new UserError('PDF v úložišti chybí – vygenerujte ho znovu.');
+
+    const attachments: NonNullable<OutgoingMail['attachments']> = [
+      { filename: versionFilename(quote.number, version?.version ?? 1), data: await pdf.arrayBuffer(), mimeType: 'application/pdf' },
+    ];
+    // Vyplněné výkazy jen ty, u jejichž zdroje je zaškrtnuté „přiložit k e-mailu“.
+    const quoteFiles = version
+      ? (await env.DB.prepare('SELECT id, include_in_email, analysis FROM quote_files WHERE quote_id = ?').bind(quoteId).all<Pick<QuoteFile, 'id' | 'include_in_email' | 'analysis'>>()).results
+      : [];
+    for (const file of version ? attachedVykazFiles(version, quoteFiles) : []) {
+      const vykaz = await env.BUCKET.get(file.key);
+      if (vykaz) {
+        attachments.push({
+          filename: vykazFilename(quote.number, version!.version, file.technology),
+          data: await vykaz.arrayBuffer(),
+          mimeType: SPREADSHEET_TYPES.xlsx,
+        });
+      }
+    }
 
     let inReplyTo: string | null = null;
     if (quote.inbox_message_id) {
       const src = await env.DB.prepare('SELECT message_id FROM inbox_messages WHERE id = ?').bind(quote.inbox_message_id).first<{ message_id: string }>();
       inReplyTo = src?.message_id ?? null;
     }
-    const mail: OutgoingMail = {
-      to: quote.client_email,
-      subject: quote.email_subject,
-      text: quote.email_body,
-      inReplyTo,
-      attachment: { filename: `${quote.number}.pdf`, data: await pdf.arrayBuffer() },
-    };
-    const log = { quoteId, direction: 'out' as const, subject: quote.email_subject, counterpart: quote.client_email, createdBy: admin };
+    const mail: OutgoingMail = { to: quote.client_email, subject: quote.email_subject, text: quote.email_body, inReplyTo, attachments };
+    const label = version ? ` (verze ${version.version})` : '';
+    const log = { quoteId, direction: 'out' as const, subject: `${quote.email_subject}${label}`, counterpart: quote.client_email, createdBy: admin };
     try {
       if (action === 'draft') {
         const { messageId, folder } = await saveDraft(env, mail);
         await logQuoteMessage(env, { ...log, kind: 'draft', messageId, status: 'ok' });
-        return json({ ok: true, folder });
+        return json({ ok: true, folder, version: version?.version ?? null, attachments: attachments.map((a) => a.filename) });
       }
       const { messageId } = await sendMail(env, mail);
       await logQuoteMessage(env, { ...log, kind: 'sent', messageId, status: 'ok' });
       await updateQuote(env, quoteId, { status: 'odeslano' });
-      return json({ ok: true });
+      if (version) await env.DB.prepare('UPDATE quote_versions SET sent_at = ? WHERE id = ?').bind(nowIso(), version.id).run();
+      return json({ ok: true, version: version?.version ?? null });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       await logQuoteMessage(env, { ...log, kind: action === 'draft' ? 'draft' : 'sent', messageId: null, status: 'error', error: message });
@@ -202,11 +240,13 @@ export default {
     }
   },
 
-  // Consumer fronty: dlouhé čtení plánků (limit 15 min na dávku).
+  // Consumer fronty: hodnocení a čtení příloh, automatické PDF (limit 15 min na dávku).
   async queue(batch, env): Promise<void> {
     for (const message of batch.messages) {
       try {
-        if (message.body?.type === 'plan') await runPlanJob(env, message.body);
+        const job = message.body;
+        if (job?.type === 'attachment' || job?.type === 'plan') await runAttachmentJob(env, job);
+        else if (job?.type === 'autogen') await maybeAutoGenerate(env, job.quoteId);
         message.ack();
       } catch (err) {
         console.error('Úloha z fronty selhala:', err);
@@ -223,4 +263,4 @@ export default {
       ),
     );
   },
-} satisfies ExportedHandler<Env, PlanJob>;
+} satisfies ExportedHandler<Env, Job>;
