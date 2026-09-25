@@ -26,11 +26,14 @@ import {
   isTechnology,
   parseJsonArray,
   type Quote,
+  type QuoteFile,
   type QuoteItem,
   type QuoteMode,
   type TechnologyId,
 } from '@/lib/quotes/model';
+import { toast } from '../toast';
 import { useWizard, type Dims } from './QuoteWizard';
+import SuggestionsPanel from './SuggestionsPanel';
 import Working from './Working';
 import { cardCls, headingCls, inputCls, labelCls } from './ui';
 import { submitWithoutReset, useToastAction, type Action } from './useToastAction';
@@ -62,10 +65,13 @@ function parseSources(raw: string | null): Record<string, string> {
 export default function QuoteEditor({
   quote,
   items: initialItems,
+  files,
   saveAction,
 }: {
   quote: Quote;
   items: QuoteItem[];
+  /** Přílohy s rozborem z kroku 1 – vpravo jako „Návrhy z podkladů“. */
+  files: QuoteFile[];
   saveAction: Action;
 }) {
   const wizard = useWizard();
@@ -365,7 +371,8 @@ export default function QuoteEditor({
         </form>
       </div>
 
-      <aside className="lg:sticky lg:top-6 space-y-4">
+      {/* Sticky jen když se vejde – s návrhy z podkladů může být sloupec delší než okno. */}
+      <aside className="lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto space-y-4">
         <section className={cardCls}>
           <h2 className={`${headingCls} mb-4`}>Souhrn</h2>
           {parsedItems.length === 0 ? (
@@ -411,6 +418,14 @@ export default function QuoteEditor({
           {variantsProblem && <p className="text-[11px] text-red-800">Nejde uložit – u variant je některá technologie víckrát (viz Technologie a ceny).</p>}
           {pending && <Working label="Generuji přílohy…" hint="PDF nabídky a vyplněný výkaz (je-li v podkladech). Obvykle 5–20 s; poprvé i s návrhem textu e-mailu." />}
         </div>
+
+        <SuggestionsPanel
+          files={files}
+          onApply={(dims) => {
+            applyDims(dims);
+            toast(`Převzato z „${dims.label}“ – zkontrolujte a uložte.`);
+          }}
+        />
       </aside>
     </div>
   );

@@ -185,7 +185,7 @@ async function QuoteDetail({ id, step, status }: { id: number; step: number; sta
             )}
           </>
         }
-        step2={<QuoteEditor key={quote.id} quote={quote} items={items} saveAction={saveQuoteAction} />}
+        step2={<QuoteEditor key={quote.id} quote={quote} items={items} files={files} saveAction={saveQuoteAction} />}
         step3={
           <div className="grid lg:grid-cols-3 gap-6 items-start">
             <div className="lg:col-span-2 space-y-6">

@@ -59,7 +59,7 @@ const RELEVANCE_STYLE: Record<Relevance, string> = {
 };
 
 /** Proč z rozboru vychází lano – ať uživatel vidí, co o tom rozhodlo. */
-function whyLano(a: Pick<PlanAnalysis, 'material' | 'thicknessCm'>): string {
+export function whyLano(a: Pick<PlanAnalysis, 'material' | 'thicknessCm'>): string {
   if (a.material === 'kamen' || a.material === 'beton') return ' (podle materiálu)';
   if (a.thicknessCm !== null && a.thicknessCm >= LANO_THICKNESS_CM) return ` (zeď od ${LANO_THICKNESS_CM} cm)`;
   return '';
@@ -322,7 +322,7 @@ function FileCard({
   );
 }
 
-function Sources({ sources }: { sources?: string[] }) {
+export function Sources({ sources }: { sources?: string[] }) {
   if (!sources?.length) return null;
   return (
     <div className="mt-2">
@@ -353,7 +353,7 @@ function ApplyButton({ dims }: { dims: Parameters<NonNullable<ReturnType<typeof 
   );
 }
 
-function Dimensions({ a }: { a: Pick<PlanAnalysis, 'lengthM' | 'thicknessCm' | 'areaM2' | 'material' | 'confidence'> }) {
+export function Dimensions({ a }: { a: Pick<PlanAnalysis, 'lengthM' | 'thicknessCm' | 'areaM2' | 'material' | 'confidence'> }) {
   return (
     <div className="flex flex-wrap gap-x-5 gap-y-1">
       <span>Obvodové zdi: <strong>{a.lengthM !== null ? `${formatNumber(a.lengthM)} m` : '—'}</strong></span>
@@ -387,34 +387,7 @@ function VykazResult({ file, a, includeAction }: { file: QuoteFile; a: VykazAnal
   return (
     <>
       <Dimensions a={a} />
-      {a.rows.length > 0 && (
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="text-left text-[10px] font-black uppercase tracking-widest text-neutral-dark/40">
-                <th className="pr-3 py-1">Řádek</th>
-                <th className="pr-3 py-1">Položka výkazu</th>
-                <th className="pr-3 py-1 text-right">Množství</th>
-                <th className="pr-3 py-1">Naše technologie</th>
-                <th className="py-1">Cena do</th>
-              </tr>
-            </thead>
-            <tbody>
-              {a.rows.map((r) => (
-                <tr key={`${r.sheet}-${r.row}`} className="border-t border-neutral-light align-top">
-                  <td className="pr-3 py-1.5 whitespace-nowrap text-neutral-dark/50">{r.row}</td>
-                  <td className="pr-3 py-1.5">{r.description}</td>
-                  <td className="pr-3 py-1.5 text-right whitespace-nowrap">
-                    {r.quantity !== null ? formatNumber(r.quantity) : '—'} {r.unit}
-                  </td>
-                  <td className="pr-3 py-1.5 whitespace-nowrap">{r.technology ? technologyLabel(r.technology) : '—'}</td>
-                  <td className="py-1.5 whitespace-nowrap text-neutral-dark/50">{r.unitPriceCell ?? '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <VykazRows rows={a.rows} />
       {a.reasoning && <p className="text-neutral-dark/60 mt-2">{a.reasoning}</p>}
       <Sources sources={a.sources} />
       {a.warnings.length > 0 && (
@@ -446,5 +419,38 @@ function VykazResult({ file, a, includeAction }: { file: QuoteFile; a: VykazAnal
         dims={{ ...a, label: `výkaz: ${file.filename}`, technology: a.rows.find((r) => r.technology)?.technology ?? null }}
       />
     </>
+  );
+}
+
+/** Řádky výkazu, které AI přiřadila k naší práci. */
+export function VykazRows({ rows }: { rows: VykazAnalysis['rows'] }) {
+  if (rows.length === 0) return null;
+  return (
+    <div className="mt-3 overflow-x-auto">
+      <table className="w-full text-xs">
+        <thead>
+          <tr className="text-left text-[10px] font-black uppercase tracking-widest text-neutral-dark/40">
+            <th className="pr-3 py-1">Řádek</th>
+            <th className="pr-3 py-1">Položka výkazu</th>
+            <th className="pr-3 py-1 text-right">Množství</th>
+            <th className="pr-3 py-1">Naše technologie</th>
+            <th className="py-1">Cena do</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={`${r.sheet}-${r.row}`} className="border-t border-neutral-light align-top">
+              <td className="pr-3 py-1.5 whitespace-nowrap text-neutral-dark/50">{r.row}</td>
+              <td className="pr-3 py-1.5">{r.description}</td>
+              <td className="pr-3 py-1.5 text-right whitespace-nowrap">
+                {r.quantity !== null ? formatNumber(r.quantity) : '—'} {r.unit}
+              </td>
+              <td className="pr-3 py-1.5 whitespace-nowrap">{r.technology ? technologyLabel(r.technology) : '—'}</td>
+              <td className="py-1.5 whitespace-nowrap text-neutral-dark/50">{r.unitPriceCell ?? '—'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
