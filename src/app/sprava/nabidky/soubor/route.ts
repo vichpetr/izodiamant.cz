@@ -8,8 +8,6 @@
 import { safeAuth, isAllowed } from '@/auth';
 import { rawQuotesWorker } from '@/lib/quotesWorker';
 
-export const runtime = 'edge';
-
 const SAFE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
 // Tabulky (výkaz výměr) jen ke stažení – prohlížeč je stejně neotevře.
 const DOWNLOAD_TYPES = [

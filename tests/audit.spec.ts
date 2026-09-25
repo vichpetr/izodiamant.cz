@@ -443,7 +443,7 @@ test.describe('Audit: délka meta description homepage', () => {
 /**
  * GSC 2026-09: /.well-known/oauth-protected-resource skončil v „Procházeno –
  * momentálně neindexováno". Soubory pro agenty do výsledků hledání nepatří.
- * _headers aplikuje až Cloudflare Pages (ne `next start`), proto se testuje
+ * _headers aplikuje až Cloudflare (statické assety workeru, ne `next start`), proto se testuje
  * přímo soubor.
  */
 test.describe('Audit: public/_headers', () => {

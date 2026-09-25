@@ -8,16 +8,6 @@ const articleSlugs = (articlesData as { slug: string }[]).map((a) => a.slug);
 // Non-capturing skupina (?:…) – Next.js v source nepovoluje capturing skupiny.
 const clankyKeepRegex = `(?!(?:${articleSlugs.join("|")})$).*`;
 
-// Vlastní image loader přes /cdn-cgi/image (viz src/lib/cfImageLoader.ts) zapneme
-// jen pro PRODUKČNÍ nasazení na custom doméně izodiamant.cz, kde jsou Cloudflare
-// Transformations aktivní. Na preview (*.pages.dev, *.workers.dev) /cdn-cgi/image NEfunguje –
-// transformace tam nejdou zapnout – takže tam i lokálně/v CI zůstává loader vypnutý
-// a obrázky se servírují přímo. CF Pages nastavuje CF_PAGES_BRANCH; produkční větev
-// je 'master'. Ruční přepis přes NEXT_PUBLIC_CF_IMAGES má přednost – Worker build
-// (deploy-web.yml) ho bere z GitHub Variables, CF_PAGES tam není.
-const isCfProd = Boolean(process.env.CF_PAGES) && process.env.CF_PAGES_BRANCH === 'master';
-const cfImages = process.env.NEXT_PUBLIC_CF_IMAGES ?? (isCfProd ? 'true' : '');
-
 const nextConfig: NextConfig = {
   images: {
     loaderFile: './src/lib/cfImageLoader.ts',
@@ -27,9 +17,6 @@ const nextConfig: NextConfig = {
         hostname: 'images.unsplash.com',
       }
     ],
-  },
-  env: {
-    NEXT_PUBLIC_CF_IMAGES: cfImages,
   },
   experimental: {
     optimizePackageImports: ['framer-motion'],
@@ -43,15 +30,7 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
-      {
-        source: '/',
-        headers: [
-          {
-            key: 'Link',
-            value: '</llms.txt>; rel="service-doc", </.well-known/api-catalog>; rel="api-catalog", </.well-known/openid-configuration>; rel="openid-configuration", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource", </.well-known/agent-card.json>; rel="agent-card"',
-          },
-        ],
-      },
+      // Link hlavička na „/“ se nastavuje v src/middleware.ts (tady by se zdvojila).
       {
         source: '/llms.txt',
         headers: [

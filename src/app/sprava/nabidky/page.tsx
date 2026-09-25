@@ -49,14 +49,12 @@ import QuotesTable from './QuotesTable';
 import VersionsPanel from './VersionsPanel';
 import { StatusBadge, cardCls, fmtDateTime, headingCls } from './ui';
 
-export const runtime = 'edge';
 export const metadata: Metadata = {
   title: 'Cenové nabídky',
   robots: { index: false, follow: false },
 };
 
-// Seznam i detail jsou jedna route (detail = ?id=…&krok=1|2|3). Každá /sprava/*
-// route je samostatná edge funkce a zvětšuje worker Pages – viz deployment.MD.
+// Seznam i detail jsou jedna route (detail = ?id=…&krok=1|2|3).
 export default async function NabidkyPage({ searchParams }: { searchParams: Promise<{ id?: string; krok?: string }> }) {
   const session = await safeAuth();
   if (!session?.user || !isAllowed(session.user.email)) redirect('/sprava/prihlaseni');

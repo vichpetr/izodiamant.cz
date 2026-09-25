@@ -1,8 +1,7 @@
 // Datová vrstva pro admin sekci /sprava nad Cloudflare D1.
 //
-// D1 je nabindovaná jako `DB` (Workers: `wrangler.jsonc`, Pages: nastavení projektu –
-// viz deployment.MD). Přístup přes getCfEnv(), který funguje jen v Cloudflare runtime –
-// lokálně s `next dev` vrátí null, proto getDB() vrací null a čtecí funkce degradují
+// D1 je nabindovaná jako `DB` ve `wrangler.toml` (viz deployment.MD). Přístup přes
+// getCfEnv(), který funguje jen v Cloudflare runtime – lokálně s `next dev` vrátí null, proto getDB() vrací null a čtecí funkce degradují
 // (prázdný seznam), aby web nespadl. Zápisy (insertLead) jsou best-effort.
 
 import { getCfEnv } from './cfEnv';
