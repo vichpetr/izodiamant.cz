@@ -30,7 +30,7 @@ import {
   type QuoteStatus,
   type Relevance,
 } from '@/lib/quotes/model';
-import { variantsError } from '@/lib/quotes/calc';
+import { cutArea, variantsError } from '@/lib/quotes/calc';
 import { isValidEmail } from '@/lib/validators';
 import type { ActionState } from '../ActionForm';
 
@@ -125,11 +125,20 @@ function parseItems(formData: FormData): QuoteItem[] {
   if (raw.length > 10) throw new Error('Nabídka může mít nejvýš 10 položek.');
   return raw.map((r: Record<string, unknown>, position) => {
     if (!isTechnology(r.technology)) throw new Error(`Položka ${position + 1}: vyberte technologii.`);
-    const area = Number(r.area_m2);
+    const optional = (v: unknown, min: number, max: number, label: string): number | null => {
+      if (v === null || v === undefined || v === '' || v === 0) return null;
+      const n = Number(v);
+      if (!Number.isFinite(n) || n < min || n > max) throw new Error(`Položka ${position + 1}: ${label}`);
+      return Math.round(n * 100) / 100;
+    };
+    const length = optional(r.length_m, 0.1, 5000, 'délka musí být 0,1–5000 m.');
+    const thickness = optional(r.thickness_cm, 1, 300, 'tloušťka musí být 1–300 cm.');
     const price = Number(r.price_per_m2);
-    if (!Number.isFinite(area) || area < 0 || area > 5000) throw new Error(`Položka ${position + 1}: plocha musí být 0–5000 m².`);
     if (!Number.isFinite(price) || price < 0 || price > 100_000) throw new Error(`Položka ${position + 1}: cena za m² musí být 0–100 000 Kč.`);
-    return { position, technology: r.technology, area_m2: Math.round(area * 100) / 100, price_per_m2: Math.round(price) };
+    // Řezná plocha = délka × tloušťka; ručně zadaná m² jen když rozměry chybí.
+    const area = cutArea(length, thickness) ?? Number(r.area_m2);
+    if (!Number.isFinite(area) || area < 0 || area > 5000) throw new Error(`Položka ${position + 1}: řezná plocha musí být 0–5000 m².`);
+    return { position, technology: r.technology, length_m: length, thickness_cm: thickness, area_m2: Math.round(area * 100) / 100, price_per_m2: Math.round(price) };
   });
 }
 

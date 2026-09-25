@@ -11,7 +11,7 @@
 //
 // Všechno běží ve frontě (JOBS) – consumer má na úlohu 15 minut.
 
-import { cutArea, missingInputs, recommendedTechnology, suggestedPricePerM2 } from '../../src/lib/quotes/calc';
+import { cutArea, itemArea, missingInputs, recommendedTechnology, suggestedPricePerM2 } from '../../src/lib/quotes/calc';
 import {
   RELEVANT,
   effectiveRelevance,
@@ -183,23 +183,27 @@ async function autoApply(env: Env, quoteId: number, a: PlanAnalysis | VykazAnaly
   }
 
   const thickness = (fields.thickness_cm as number | undefined) ?? quote.thickness_cm;
-  const area = dims.areaM2 ?? cutArea((fields.length_m as number | undefined) ?? quote.length_m, thickness);
+  const length = (fields.length_m as number | undefined) ?? quote.length_m;
+  // Řezná plocha z délky × tloušťky; samotná m² jen z výkazu (řádek v m² = řezná plocha).
+  const byDims = cutArea(length, thickness);
+  const itemLength = byDims !== null ? length : null;
+  const itemThickness = byDims !== null ? thickness : null;
+  const area = byDims ?? dims.areaM2;
   const items = await getItems(env, quoteId);
   const statements: D1PreparedStatement[] = [];
-  if (area && items.every((i) => !(i.area_m2 > 0))) {
+  if (area && items.every((i) => !(itemArea(i) > 0))) {
     if (items.length === 0) {
       const fromVykaz = a.kind === 'vykaz' ? a.rows.find((r) => r.technology)?.technology : null;
       const technology = fromVykaz ?? recommendedTechnology(material, thickness);
       statements.push(
-        env.DB.prepare('INSERT INTO quote_items (quote_id, position, technology, area_m2, price_per_m2) VALUES (?, 0, ?, ?, ?)').bind(
-          quoteId,
-          technology,
-          area,
-          suggestedPricePerM2(technology, material),
-        ),
+        env.DB.prepare(
+          'INSERT INTO quote_items (quote_id, position, technology, length_m, thickness_cm, area_m2, price_per_m2) VALUES (?, 0, ?, ?, ?, ?, ?)',
+        ).bind(quoteId, technology, itemLength, itemThickness, area, suggestedPricePerM2(technology, material)),
       );
     } else {
-      statements.push(env.DB.prepare('UPDATE quote_items SET area_m2 = ? WHERE quote_id = ?').bind(area, quoteId));
+      statements.push(
+        env.DB.prepare('UPDATE quote_items SET length_m = ?, thickness_cm = ?, area_m2 = ? WHERE quote_id = ?').bind(itemLength, itemThickness, area, quoteId),
+      );
     }
     sources.items = label;
   }

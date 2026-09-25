@@ -49,7 +49,10 @@ export interface QuoteTotals {
 
 export function computeTotals(quote: Pick<Quote, 'mode' | 'transport_price'>, items: QuoteItem[]): QuoteTotals {
   const transport = Math.max(0, Math.round(quote.transport_price || 0));
-  const lines = items.map((item) => ({ ...item, workPrice: Math.round(item.area_m2 * item.price_per_m2) }));
+  const lines = items.map((item) => {
+    const area_m2 = itemArea(item);
+    return { ...item, area_m2, workPrice: Math.round(area_m2 * item.price_per_m2) };
+  });
   const workTotal = lines.reduce((sum, l) => sum + l.workPrice, 0);
   return {
     lines,
@@ -80,9 +83,23 @@ export function variantsError(mode: Quote['mode'], items: Pick<QuoteItem, 'techn
 }
 
 /** Řezná plocha = délka × tloušťka (stejně jako kalkulačka, viz src/lib/pricing.ts). */
-export function cutArea(lengthM: number | null, thicknessCm: number | null): number | null {
+export function cutArea(lengthM: number | null | undefined, thicknessCm: number | null | undefined): number | null {
   if (!lengthM || !thicknessCm) return null;
   return Math.round(lengthM * (thicknessCm / 100) * 100) / 100;
+}
+
+/**
+ * Plocha položky pro cenu. Ceník je za m² ŘEZNÉ plochy (délka zdi × tloušťka),
+ * ne za běžný metr ani za plochu podlahy – proto se plocha z délky a tloušťky
+ * vždy dopočítá a ručně zadaná m² platí jen tam, kde rozměry chybí.
+ */
+export function itemArea(item: Pick<QuoteItem, 'length_m' | 'thickness_cm' | 'area_m2'>): number {
+  return cutArea(item.length_m, item.thickness_cm) ?? item.area_m2;
+}
+
+/** Cena za běžný metr zdi (pro kontrolu – ceníkem je cena za m² řezné plochy). */
+export function pricePerMeter(pricePerM2: number, thicknessCm: number | null | undefined): number | null {
+  return thicknessCm ? Math.round(pricePerM2 * (thicknessCm / 100)) : null;
 }
 
 const NBSP = ' ';
@@ -167,7 +184,7 @@ export type FingerprintFields = Pick<
 >;
 
 /** Zvýšit, když se změní, co z týchž údajů vzniká (např. výkaz po variantách) – vznikne nová verze. */
-const FINGERPRINT_VERSION = 2;
+const FINGERPRINT_VERSION = 3;
 
 export function quoteFingerprint(quote: FingerprintFields, items: QuoteItem[], attachments: number[] = []): string {
   return JSON.stringify([
@@ -185,7 +202,7 @@ export function quoteFingerprint(quote: FingerprintFields, items: QuoteItem[], a
     quote.transport_price,
     quote.intro,
     quote.conditions,
-    items.map((i) => [i.technology, i.area_m2, i.price_per_m2]),
+    items.map((i) => [i.technology, i.length_m ?? null, i.thickness_cm ?? null, itemArea(i), i.price_per_m2]),
     [...attachments].sort((a, b) => a - b),
   ]);
 }
@@ -209,7 +226,7 @@ export function missingInputs(
   if (!quote.client_email && !quote.client_phone) missing.push('kontakt (e-mail nebo telefon)');
   if (!quote.site_address && !quote.city) missing.push('místo realizace');
   if (items.length === 0) missing.push('technologie a plocha (m²)');
-  else if (items.some((i) => !(i.area_m2 > 0))) missing.push('plocha (m²) u všech položek');
+  else if (items.some((i) => !(itemArea(i) > 0))) missing.push('délka a tloušťka u všech položek');
   if (!(quote.transport_price > 0)) missing.push('cena dopravy');
   return missing;
 }

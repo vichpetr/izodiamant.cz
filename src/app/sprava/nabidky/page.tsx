@@ -5,7 +5,7 @@ import { safeAuth, isAllowed } from '@/auth';
 import { isDbAvailable } from '@/lib/db';
 import { getQuoteBundle, listCustomerOptions, listInbox, listQuotes } from '@/lib/quotesDb';
 import { getWorkerStatus } from '@/lib/quotesWorker';
-import { computeTotals, fingerprintHash, formatArea, formatCzk } from '@/lib/quotes/calc';
+import { computeTotals, fingerprintHash, formatArea, formatCzk, formatNumber } from '@/lib/quotes/calc';
 import {
   RELEVANT,
   effectiveRelevance,
@@ -260,7 +260,9 @@ function QuoteSummary({ quote, items }: { quote: Quote; items: QuoteItem[] }) {
         {totals.lines.map((l, i) => (
           <div key={i} className="flex justify-between gap-2">
             <dt className="text-neutral-dark/60">
-              {technologyLabel(l.technology)} ({formatArea(l.area_m2)} × {formatCzk(l.price_per_m2)})
+              {technologyLabel(l.technology)} (
+              {l.length_m && l.thickness_cm ? `${formatNumber(l.length_m)} m × ${formatNumber(l.thickness_cm)} cm = ` : ''}
+              {formatArea(l.area_m2)} × {formatCzk(l.price_per_m2)})
             </dt>
             <dd className="whitespace-nowrap">{formatCzk(quote.mode === 'varianty' ? totals.variantTotals[i] : l.workPrice)}</dd>
           </div>

@@ -358,7 +358,7 @@ export function Dimensions({ a }: { a: Pick<PlanAnalysis, 'lengthM' | 'thickness
     <div className="flex flex-wrap gap-x-5 gap-y-1">
       <span>Obvodové zdi: <strong>{a.lengthM !== null ? `${formatNumber(a.lengthM)} m` : '—'}</strong></span>
       <span>Tloušťka: <strong>{a.thicknessCm !== null ? `${formatNumber(a.thicknessCm)} cm` : '—'}</strong></span>
-      <span>Plocha: <strong>{a.areaM2 !== null ? formatArea(a.areaM2) : '—'}</strong></span>
+      <span title="Délka × tloušťka – za tuto plochu je cena z ceníku">Řezná plocha: <strong>{a.areaM2 !== null ? formatArea(a.areaM2) : '—'}</strong></span>
       {a.material && <span>Zdivo: <strong>{materialLabel(a.material)}</strong></span>}
       <span className="text-neutral-dark/50">jistota: {CONFIDENCE[a.confidence] ?? a.confidence}</span>
     </div>

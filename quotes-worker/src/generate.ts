@@ -7,7 +7,7 @@
 // přikládá quotes.email_version, a když není zvolená, poslední verze.
 
 import puppeteer from '@cloudflare/puppeteer';
-import { computeTotals, variantsError, fingerprintHash, formatArea, formatCzk, nextDaySequence, quoteDayPrefix, quoteNumber } from '../../src/lib/quotes/calc';
+import { computeTotals, itemArea, variantsError, fingerprintHash, formatArea, formatCzk, formatNumber, nextDaySequence, quoteDayPrefix, quoteNumber } from '../../src/lib/quotes/calc';
 import {
   QUOTE_AUTHOR,
   fillableVykazIds,
@@ -102,8 +102,8 @@ export async function generateQuote(
   const items = await getItems(env, id);
   if (!quote.client_name.trim()) throw new UserError('Chybí jméno klienta.');
   if (items.length === 0) throw new UserError('Nabídka nemá žádnou položku (technologie + m²).');
-  if (items.some((i) => !(i.area_m2 > 0) || !(i.price_per_m2 > 0))) {
-    throw new UserError('Každá položka musí mít plochu i cenu za m² větší než 0.');
+  if (items.some((i) => !(itemArea(i) > 0) || !(i.price_per_m2 > 0))) {
+    throw new UserError('Každá položka musí mít délku a tloušťku zdi (řeznou plochu) i cenu za m² větší než 0.');
   }
   const variants = variantsError(quote.mode, items);
   if (variants) throw new UserError(variants);
@@ -206,14 +206,21 @@ export async function emailVersion(env: Env, quote: Quote): Promise<QuoteVersion
 
 // ─── Průvodní e-mail ─────────────────────────────────────────────────────────
 
+/** „36 m × 45 cm = 16,2 m² řezné plochy“, u ručně zadané plochy jen m². */
+function scope(l: QuoteItem): string {
+  return l.length_m && l.thickness_cm
+    ? `${formatNumber(l.length_m)} m × ${formatNumber(l.thickness_cm)} cm = ${formatArea(l.area_m2)} řezné plochy`
+    : `${formatArea(l.area_m2)} řezné plochy`;
+}
+
 function priceSummary(quote: Quote, items: QuoteItem[]): string {
   const totals = computeTotals(quote, items);
   if (quote.mode === 'varianty') {
     return totals.lines
-      .map((l, i) => `- ${technologyLabel(l.technology)}: ${formatArea(l.area_m2)} × ${formatCzk(l.price_per_m2)}, celkem ${formatCzk(totals.variantTotals[i])} včetně dopravy`)
+      .map((l, i) => `- ${technologyLabel(l.technology)}: ${scope(l)} × ${formatCzk(l.price_per_m2)}/m², celkem ${formatCzk(totals.variantTotals[i])} včetně dopravy`)
       .join('\n');
   }
-  const lines = totals.lines.map((l) => `- ${technologyLabel(l.technology)}: ${formatArea(l.area_m2)} × ${formatCzk(l.price_per_m2)} = ${formatCzk(l.workPrice)}`);
+  const lines = totals.lines.map((l) => `- ${technologyLabel(l.technology)}: ${scope(l)} × ${formatCzk(l.price_per_m2)}/m² = ${formatCzk(l.workPrice)}`);
   return [...lines, `- Doprava: ${formatCzk(quote.transport_price)}`, `Celkem: ${formatCzk(totals.total)}`].join('\n');
 }
 

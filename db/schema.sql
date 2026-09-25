@@ -74,7 +74,9 @@ CREATE TABLE IF NOT EXISTS quote_items (
   quote_id INTEGER NOT NULL REFERENCES quotes(id) ON DELETE CASCADE,
   position INTEGER NOT NULL DEFAULT 0,
   technology TEXT NOT NULL,               -- retezova-pila | diamantove-lano | chemicka-injektaz
-  area_m2 REAL NOT NULL,
+  length_m REAL,                          -- délka úseku zdi (m)
+  thickness_cm REAL,                      -- tloušťka zdi (cm)
+  area_m2 REAL NOT NULL,                  -- řezná plocha = délka × tloušťka (ručně jen když rozměry chybí)
   price_per_m2 INTEGER NOT NULL
 );
 

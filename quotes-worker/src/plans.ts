@@ -29,10 +29,11 @@ DŮLEŽITÉ – vždy se pokus číslo dát:
 - Když některé úseky nejsou okótované, odhadni je podle měřítka a napiš to do poznámek.
 - null vrať jen tehdy, když z podkladu nejdou přečíst vůbec žádné použitelné rozměry.
 - Nabídka se stejně potvrzuje až po osobní prohlídce, takže raději mírně nadhodnoť než ať chybí číslo.
+- NEPOČÍTEJ žádnou plochu v m² – ani plochu místností, ani podlahy. Řeznou plochu dopočítáme sami z délky a tloušťky.
 - "sources" = 2 až 5 krátkých poznámek (každá do 100 znaků), odkud jsi který údaj vzal a kde byl případný rozpor,
   např. "kóta 10 500 mm nahoře", "spodní kóta 9 650 mm vs. součet 11 150 mm – použito 11 150", "popis: cihla tl. 450 mm".
 JSON schéma:
-{"lengthM": number|null, "thicknessCm": number|null, "areaM2": number|null, "material": "cihla"|"kamen"|"beton"|"jine"|null, "confidence": "nizka"|"stredni"|"vysoka", "reasoning": "stručně česky: jak obvod vyšel", "sources": ["…", "…"]}`;
+{"lengthM": number|null, "thicknessCm": number|null, "material": "cihla"|"kamen"|"beton"|"jine"|null, "confidence": "nizka"|"stredni"|"vysoka", "reasoning": "stručně česky: jak obvod vyšel", "sources": ["…", "…"]}`;
 
 /** Vykreslí první stránky PDF na obrázky (pdf.js běží v Browser Rendering). */
 export async function pdfToImages(env: Env, data: ArrayBuffer, maxPages = MAX_PDF_PAGES): Promise<AiImage[]> {
@@ -181,8 +182,9 @@ export async function analyzePlan(
 
   const lengthM = num(raw.lengthM, 0.1, 2000);
   const thicknessCm = num(raw.thicknessCm, 5, 250);
-  // Plochu přepočítáme sami, když máme oba rozměry – AI se v násobení plete častěji než v kótách.
-  const areaM2 = cutArea(lengthM, thicknessCm) ?? num(raw.areaM2, 0.1, 5000);
+  // Řezná plocha jen z délky × tloušťky. „Plocha“ od AI bývá plocha podlahy nebo
+  // místností (m² v půdorysu) – s ní by nabídka vyšla několikanásobně dražší.
+  const areaM2 = cutArea(lengthM, thicknessCm);
   const material = typeof raw.material === 'string' && ['cihla', 'kamen', 'beton', 'jine'].includes(raw.material) ? raw.material : null;
   const confidence = raw.confidence === 'vysoka' || raw.confidence === 'stredni' ? raw.confidence : 'nizka';
   const sources = (Array.isArray(raw.sources) ? raw.sources : [])

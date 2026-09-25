@@ -167,7 +167,7 @@ export async function saveQuote(
     if (clientSources && clientSources[key] !== parseSources(current.field_sources)[key]) continue; // právě převzato z přílohy
     if (sources[key] && String(current[key] ?? '') !== String(fields[key] ?? '')) delete sources[key];
   }
-  const areas = (list: QuoteItem[]) => JSON.stringify(list.map((i) => [i.technology, i.area_m2]));
+  const areas = (list: QuoteItem[]) => JSON.stringify(list.map((i) => [i.technology, i.length_m ?? null, i.thickness_cm ?? null, i.area_m2]));
   const itemsJustApplied = clientSources && clientSources.items !== parseSources(current.field_sources).items;
   if (sources.items && !itemsJustApplied && areas(oldItems.results) !== areas(items)) delete sources.items;
 
@@ -179,8 +179,8 @@ export async function saveQuote(
     db.prepare('DELETE FROM quote_items WHERE quote_id = ?').bind(id),
     ...items.map((item, position) =>
       db
-        .prepare('INSERT INTO quote_items (quote_id, position, technology, area_m2, price_per_m2) VALUES (?, ?, ?, ?, ?)')
-        .bind(id, position, item.technology, item.area_m2, item.price_per_m2),
+        .prepare('INSERT INTO quote_items (quote_id, position, technology, length_m, thickness_cm, area_m2, price_per_m2) VALUES (?, ?, ?, ?, ?, ?, ?)')
+        .bind(id, position, item.technology, item.length_m ?? null, item.thickness_cm ?? null, item.area_m2, item.price_per_m2),
     ),
   ]);
   return { missing };

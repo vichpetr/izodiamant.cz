@@ -263,7 +263,7 @@ Pages /sprava/nabidky ──service binding QUOTES──▶ quotes-worker ──
   kód podle hlavičky), název zhotovitele a IČ; uložené výsledky vzorců se zahodí, takže
   Excel/LibreOffice po otevření vše přepočítají. DIČ a sazba DPH se nemění (upozornění
   v UI – firma není plátce DPH). Vyplněný výkaz jde k e-mailu jako návrh ke kontrole.
-- **Verze:** každé „Uložit a vygenerovat přílohy“ se změněnými údaji založí verzi – PDF a
+- **Verze:** formulář nabídky se ukládá automaticky; každé „Vygenerovat přílohy“ se změněnými údaji založí verzi – PDF a
   vyplněný výkaz (je-li na vstupu) vznikají vždy společně; „přiložit k e-mailu“ jen řídí odeslání
   (`quote_versions`, PDF `nabidky/<číslo>-v<n>.pdf`, výkaz `…-v<n>-vykaz.xlsx`). Beze změny
   nová verze nevznikne (otisk vstupů). K e-mailu jde `quotes.email_version`, jinak poslední.

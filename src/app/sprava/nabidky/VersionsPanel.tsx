@@ -33,7 +33,7 @@ export default function VersionsPanel({
       </p>
       {stale && (
         <p className="text-sm text-amber-800 bg-amber-50 rounded-xl px-3 py-2 mb-4">
-          Údaje se od poslední verze změnily – v kroku 2 klikněte na „Uložit a vygenerovat přílohy“, vznikne nová verze.
+          Údaje se od poslední verze změnily – v kroku 2 klikněte na „Vygenerovat přílohy“, vznikne nová verze.
         </p>
       )}
       {versions.length === 0 ? (

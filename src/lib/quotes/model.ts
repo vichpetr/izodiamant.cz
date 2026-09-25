@@ -88,6 +88,14 @@ export interface QuoteItem {
   quote_id?: number;
   position: number;
   technology: TechnologyId;
+  /** Délka úseku zdi v m (běžné metry). */
+  length_m?: number | null;
+  /** Tloušťka zdi v cm. */
+  thickness_cm?: number | null;
+  /**
+   * Řezná plocha v m² = délka × tloušťka – za ni je cena z ceníku. Když jsou
+   * délka i tloušťka zadané, plocha se z nich vždy dopočítá (itemArea).
+   */
   area_m2: number;
   price_per_m2: number;
 }
@@ -203,6 +211,7 @@ export interface PlanAnalysis {
   kind?: 'plan';
   lengthM: number | null;
   thicknessCm: number | null;
+  /** Řezná plocha – jen dopočtená z délky × tloušťky, nikdy „plocha“ od AI. */
   areaM2: number | null;
   material: string | null;
   confidence: 'nizka' | 'stredni' | 'vysoka';
