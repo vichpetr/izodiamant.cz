@@ -23,6 +23,11 @@ Do září 2026 běžel na Cloudflare Pages (`@cloudflare/next-on-pages`).
   `upload`, ne holým `wrangler deploy` – jen tak se naplní cache předrenderovaných stránek.
 - **Git integraci v Cloudflare (Workers Builds) nezapínat** – nasazuje GitHub Actions; druhá
   pipeline by build přepisovala (a bez `NEXT_PUBLIC_*` a OpenNext buildu).
+- **Informace o nasazení v PR** místo komentáře Workers Builds dodává sám workflow: komentář
+  v otevřeném PR větve (URL náhledu, URL a ID verze, commit; při dalším pushi se přepíše),
+  tlačítko „View deployment“ (URL GitHub Environmentu) a souhrn běhu v Actions. Údaje bere
+  z `WRANGLER_OUTPUT_FILE_PATH`. Na úplně první push větve, dřív než vznikne PR, komentář
+  nepřibude – objeví se po dalším nasazení.
 
 Veřejný web žádné secrety navíc nepotřebuje.
 

@@ -30,7 +30,14 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref == 'refs/heads/master' && 'production' || 'preview' }}
+    environment:
+      name: ${{ github.ref == 'refs/heads/master' && 'production' || 'preview' }}
+      # U PR se ukáže jako „View deployment“ (preview = stabilní URL větve).
+      url: ${{ steps.deploy.outputs.url }}
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: write
     env:
       CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       TARGET: ${{ github.ref == 'refs/heads/master' && 'production' || 'preview' }}
@@ -69,8 +76,11 @@ jobs:
           NEXT_PUBLIC_CF_IMAGES: ${{ env.TARGET == 'production' && vars.NEXT_PUBLIC_CF_IMAGES || '' }}
 
       - name: Deploy (${{ env.TARGET }})
+        id: deploy
         if: env.CF_TOKEN != ''
         env:
+          # Wrangler sem zapisuje výsledek (ND-JSON: version_id, preview URL) – čte ho konec kroku.
+          WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.ndjson
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           BRANCH: ${{ github.ref_name }}
@@ -85,4 +95,71 @@ jobs:
             # První nasazení preview workeru ho musí založit – versions upload na neexistující worker selže.
             npx opennextjs-cloudflare upload --env preview --preview-alias "$ALIAS" \
               || { npx opennextjs-cloudflare deploy --env preview && npx opennextjs-cloudflare upload --env preview --preview-alias "$ALIAS"; }
+          fi
+
+          OUT="$WRANGLER_OUTPUT_FILE_PATH"
+          if [ "$TARGET" = production ]; then
+            VERSION=$(jq -rs '[.[] | select(.type == "deploy")] | last | .version_id // empty' "$OUT" 2>/dev/null || true)
+            URL=https://izodiamant.cz
+            VERSION_URL=
+          else
+            LAST=$(jq -cs '[.[] | select(.type == "version-upload")] | last // {}' "$OUT" 2>/dev/null || echo '{}')
+            VERSION=$(jq -r '.version_id // empty' <<<"$LAST")
+            VERSION_URL=$(jq -r '.preview_url // empty' <<<"$LAST")
+            URL=$(jq -r '.preview_alias_url // .preview_url // empty' <<<"$LAST")
+          fi
+          {
+            echo "url=$URL"
+            echo "version=$VERSION"
+            echo "version_url=$VERSION_URL"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "### Nasazeno: $TARGET"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Worker | \`$([ "$TARGET" = production ] && echo izodiamant || echo izodiamant-preview)\` |"
+            echo "| Verze | \`${VERSION:-?}\` |"
+            echo "| URL | ${URL:-?} |"
+            [ -n "$VERSION_URL" ] && echo "| URL této verze | $VERSION_URL |"
+            echo "| Commit | \`${GITHUB_SHA::7}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Obdoba komentáře Cloudflare Workers Builds: jeden komentář v PR větve, přepisuje se při
+      # každém nasazení. Bez otevřeného PR se přeskočí.
+      - name: Komentář v PR
+        if: env.TARGET == 'preview' && steps.deploy.outcome == 'success'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.ref_name }}
+          URL: ${{ steps.deploy.outputs.url }}
+          VERSION: ${{ steps.deploy.outputs.version }}
+          VERSION_URL: ${{ steps.deploy.outputs.version_url }}
+        run: |
+          PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -z "$PR" ]; then echo "Větev $BRANCH nemá otevřený PR – komentář přeskočen."; exit 0; fi
+          MARKER='<!-- izodiamant-preview-deploy -->'
+          RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          BODY=$(cat <<MD
+          $MARKER
+          ### ☁️ Preview nasazen – \`izodiamant-preview\`
+
+          | | |
+          |---|---|
+          | **Náhled větve** | ${URL:-–} |
+          | **URL této verze** | ${VERSION_URL:-–} |
+          | **ID verze** | \`${VERSION:-–}\` |
+          | **Commit** | $GITHUB_SHA |
+          | **Běh** | [Deploy Web (Workers) #$GITHUB_RUN_NUMBER]($RUN_URL) |
+
+          <sub>Aktualizováno $(TZ=Europe/Prague date '+%-d. %-m. %Y %H:%M'). Preview používá testovací D1, schránku a quotes-worker.</sub>
+          MD
+          )
+          ID=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -n1)
+          if [ -n "$ID" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$ID" -f body="$BODY" >/dev/null
+          else
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "$BODY"
           fi
