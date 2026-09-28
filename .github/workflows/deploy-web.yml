@@ -10,7 +10,7 @@ name: Deploy Web (Workers)
 # Settings → Environments → `production` / `preview` → Environment variables. Job běží v
 # prostředí podle větve, takže vars.X bere hodnotu daného prostředí; co v něm chybí, doplní
 # se z repo-level Variables (Settings → Secrets and variables → Actions → Variables).
-# Serverové secrety (RESEND_API_KEY, AUTH_*, …) jsou uložené přímo ve workeru, deploy je zachová.
+# Serverové secrety (AUTH_*, TURNSTILE_SECRET_KEY, …) jsou uložené přímo ve workeru, deploy je zachová.
 on:
   push:
     paths-ignore:
