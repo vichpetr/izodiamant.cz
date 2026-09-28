@@ -58,13 +58,21 @@ Na preview jde jen `versions secret put`: větve nahrávají verze (`versions up
 
 | Secret | |
 |---|---|
-| `RESEND_API_KEY` | povinný – kontaktní formulář, kalkulačka, poděkování z `/sprava` |
 | `AUTH_SECRET` | povinný pro `/sprava` – `openssl rand -base64 32 \| npx wrangler secret put AUTH_SECRET --env=""` (nový = jen nové přihlášení) |
 | `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` | OAuth klient z kroku c) |
 | `ADMIN_EMAILS` | povolené Google účty, čárkami |
-| `FROM_EMAIL` | volitelný (výchozí `onboarding@resend.dev`), musí být z ověřené domény v Resendu |
-| `CONTACT_EMAIL` | volitelný (výchozí `info@izodiamant.cz`) – kam chodí poptávky |
+| `CONTACT_EMAIL` | volitelný (výchozí `info@izodiamant.cz`) – kam chodí upozornění na poptávky z webu |
 | `TURNSTILE_SECRET_KEY` | volitelný; bez něj se token nekontroluje (preview: `1x0000000000000000000000000000000AA`) |
+
+**E-maily z webu** (upozornění na poptávku z formuláře/kalkulačky, potvrzení zákazníkovi,
+poděkování z `/sprava`) neodcházejí přes žádnou externí službu, ale přes quotes-worker
+(`POST /mail/send`) SMTP schránky z §3.2 – odesílatel je `MAILBOX_USER` se jménem
+`MAILBOX_SENDER_NAME` (produkce `info@izodiamant.cz`, preview testovací schránka). Potřebují
+tedy service binding `QUOTES` a v quotes-workeru nastavený `MAILBOX_PASSWORD`; bez nich
+formulář vrací 503. `SEND_ENABLED` se na ně nevztahuje (hlídá jen odesílání nabídek).
+Potvrzení zákazníkovi a poděkování se ukládají do Odeslaných, upozornění do vlastní schránky ne.
+Upozornění posílá schránka sama sobě, takže ho třídění pošty ignoruje (poptávka je už v evidenci
+`/sprava`).
 
 `AUTH_URL` **nenastavujte** – `trustHost: true` (`src/auth.ts`) odvodí adresu z požadavku, takže
 přihlášení funguje na izodiamant.cz, workers.dev i na aliasech větví.
@@ -351,7 +359,7 @@ Konfigurace je ve `quotes-worker/wrangler.toml` zvlášť pro produkci a `[env.p
 | `INBOX_LABEL` | štítek (IMAP keyword); nastaví se jen když ho server povolí (`PERMANENTFLAGS \*`) |
 | `INBOX_LOOKBACK_DAYS`, `INBOX_MAX_PER_RUN` | kolik dní zpět a kolik zpráv na jeden běh |
 | `DRAFTS_FOLDER`, `SENT_FOLDER` | prázdné = najde se podle IMAP special-use |
-| `SEND_ENABLED` | `true` = tlačítko „Odeslat klientovi“ (SMTP); jinak jen koncepty do schránky |
+| `SEND_ENABLED` | `true` = tlačítko „Odeslat klientovi“ (SMTP); jinak jen koncepty do schránky. E-mailů z webu (§1.1) se netýká |
 
 ```bash
 cd quotes-worker

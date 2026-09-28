@@ -21,6 +21,7 @@ import { queueAttachment } from './attachments';
 import { acquireLock, logQuoteMessage, releaseLock, setState } from './db';
 import { flag, mailboxConfigured, nowIso, type Env, type Job } from './env';
 import { ensureFolder, withImap } from './mailbox';
+import { htmlToText } from './util';
 
 const LOCK_KEY = 'inbox_lock';
 const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
@@ -88,17 +89,6 @@ JSON schéma:
 function category(x: Extracted): 'poptavka' | 'dotaz' | 'ostatni' {
   if (x.category === 'poptavka' || x.category === 'dotaz' || x.category === 'ostatni') return x.category;
   return x.isInquiry === true ? 'poptavka' : 'ostatni';
-}
-
-function htmlToText(html: string): string {
-  return html
-    .replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ')
-    .replace(/<br\s*\/?>|<\/p>|<\/div>/gi, '\n')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/[ \t]+/g, ' ')
-    .replace(/\n\s*\n+/g, '\n\n')
-    .trim();
 }
 
 function header(parsed: ParsedEmail, key: string): string {

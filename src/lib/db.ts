@@ -177,7 +177,8 @@ export async function logEmail(input: {
   toEmail: string;
   subject: string;
   status: 'sent' | 'error';
-  resendId?: string | null;
+  /** Message-ID odeslané zprávy (sloupec se jmenuje resend_id z dob Resendu). */
+  messageId?: string | null;
   error?: string | null;
   sentBy: string;
 }): Promise<void> {
@@ -194,7 +195,7 @@ export async function logEmail(input: {
         input.toEmail,
         input.subject,
         input.status,
-        input.resendId || null,
+        input.messageId || null,
         input.error || null,
         input.sentBy,
         new Date().toISOString(),
