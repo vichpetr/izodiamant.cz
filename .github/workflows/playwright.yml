@@ -7,10 +7,10 @@ on:
 jobs:
   test:
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - uses: actions/checkout@v7
+    - uses: actions/setup-node@v7
       with:
         node-version: lts/*
         cache: 'npm'
@@ -20,7 +20,7 @@ jobs:
       id: playwright-version
       run: echo "version=$(npx playwright --version | cut -d' ' -f2)" >> $GITHUB_OUTPUT
     - name: Cache Playwright browsers
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       id: playwright-cache
       with:
         path: ~/.cache/ms-playwright
@@ -49,7 +49,7 @@ jobs:
         NEXT_PUBLIC_FIRMY_PROFILE_URL: https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html
         NEXT_PUBLIC_REVIEWS_API_URL: https://izodiamant-reviews-api.vas-ucet.workers.dev
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: ${{ !cancelled() }}
       with:
         name: playwright-report
