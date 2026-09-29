@@ -172,7 +172,7 @@ export default function QuoteEditor({
       const km = regionDistance(pricing, region || null);
       return { ...prev, region, distance_km: keepKm ? prev.distance_km : toStr(km) };
     });
-    // Cestovné na den může mít kraj vlastní – u automatické dopravy vezmeme sazby nového kraje.
+    // Ubytování může mít kraj vlastní – u automatické dopravy vezmeme sazby nového kraje.
     if (calc) setCalc(transportCalcFor(pricing, region || null));
   };
   const detectedRegion = detectRegion(f.site_address, f.city);
@@ -804,7 +804,7 @@ export default function QuoteEditor({
   );
 }
 
-/** Rozpis automatické dopravy: dny práce, cesta, cestovné. */
+/** Rozpis automatické dopravy: dny práce, cesty, ubytování. */
 function TransportLine({ label, detail, calc, km }: { label?: string; detail: TransportBreakdown | null; calc: TransportCalc; km: number }) {
   if (!detail || detail.days === 0) {
     return <p className="text-sm text-amber-800">{label ? `${label}: ` : ''}Doplňte vzdálenost a plochu položek – doprava se z nich spočítá.</p>;
@@ -814,7 +814,8 @@ function TransportLine({ label, detail, calc, km }: { label?: string; detail: Tr
     <p className="text-sm text-neutral-dark/70">
       {label && <span className="font-bold text-neutral-dark">{label}: </span>}
       {n(detail.days, 'den', 'dny', 'dní')} práce · {detail.trips}× cesta tam a zpět (2 × {formatNumber(km)} km × {formatCzk(calc.kmRate)}/km) ={' '}
-      {formatCzk(detail.travel)} + {detail.days} × {formatCzk(calc.dayRate)} cestovné
+      {formatCzk(detail.travel)}
+      {detail.stay > 0 && ` + ${detail.days} × ${formatCzk(calc.dayRate ?? 0)} cestovné`}
       {detail.nights > 0 && ` + ${n(detail.nights, 'noc', 'noci', 'nocí')} × ${formatCzk(calc.nightRate)} ubytování`} ={' '}
       <strong className="text-neutral-dark">{formatCzk(detail.total)}</strong>
     </p>
