@@ -24,31 +24,24 @@ about the couplings *between* those files and the code that consumes them.
 
 ## 1. Prices are per **m² of cut area**
 
-**Files:** `src/data/pricing.json` · `src/lib/quotes/pricing.ts` · `src/data/services.json` ·
-`src/data/calculator.json` · `src/lib/pricing.ts` · `src/components/PricingCalculator.tsx` ·
-`src/app/api/cenik/route.ts` · `src/data/faq.json` · `public/llms.txt` · `src/app/api/send/route.ts`
+**Files:** `src/data/services.json` · `src/data/calculator.json` ·
+`src/lib/pricing.ts` · `src/components/PricingCalculator.tsx` · `src/data/faq.json` ·
+`public/llms.txt` · `src/app/api/send/route.ts`
 
-- **The price list lives in the admin, per region.** `/sprava/nabidky?nastaveni=cenik`
-  edits a JSON in D1 (`settings`, key `pricing`): a default price, m²/day and site needs
-  (water, 230/400 V) per service, optional price overrides + distance + per-day travel
-  per kraj (14), transport rates. `src/data/pricing.json` is the **default** used when D1
-  has nothing (local dev, fresh DB) and for everything built statically. All logic is in
-  `src/lib/quotes/pricing.ts` (shared with `quotes-worker/` – no `@/` imports there).
-- **The web shows a range = min…max across regions + default** (`priceRanges()`). The
-  calculator starts from `pricing.json` and then loads the live range from `/api/cenik`
-  (D1). `calculator.json` only says which service fits which masonry — **no prices in it**.
-- **Static "od … Kč/m²" texts follow `pricing.json`, not D1.** Service pages, FAQ,
-  `llms.txt`, meta descriptions and the two pricing articles hard-code the minimum; JSON-LD
-  (`serviceOffer()`) derives it from `pricing.json`. When the owner changes a regional
-  minimum in the admin, update `pricing.json` and those texts too — the audit test
-  „od … Kč/m² odpovídá minimu výchozího ceníku“ compares them against `pricing.json`.
-
+- **Two price lists, on purpose (for now).** The **public web** (calculator, JSON-LD,
+  "od … Kč/m²" texts) still reads `calculator.json` min/max — owner's call until the admin
+  price list is final. The **quotes module** reads the per-kraj price list edited at
+  `/sprava/nabidky?nastaveni=cenik` (D1 `settings`, key `pricing`; logic in
+  `src/lib/quotes/pricing.ts`; `src/data/pricing.json` is only a temporary fallback when
+  D1 has nothing, to be removed later). The admin shows both ranges side by side and
+  flags a difference — if the owner changes regional prices, update `calculator.json`
+  and the texts below by hand. Don't wire the public web to D1 without asking.
 - Every price is quoted **per m² of cut area (řezná plocha)**, never per bm. Cut area is
   **not** the wall's face area: it is `length (m) × thickness (cm) / 100`, i.e. the
   horizontal plane the saw or the injection line has to get through. `cutAreaM2()` in
   `src/lib/pricing.ts` is the single implementation — the calculator imports it, don't
   re-derive the formula inline. So `services.json` "od 4 200 Kč / m²" must equal the
-  minimum the calculator uses for 1 m² of cut area. If you change a rate in `pricing.json`,
+  minimum the calculator uses for 1 m² of cut area. If you change a rate in `calculator.json`,
   change the matching `services.json` string, the FAQ price answers, `llms.txt`, the
   service-page meta descriptions and the two pricing articles
   (`/clanky/kolik-stoji-podrezani-zdiva`, `/clanky/cena-sanace-vlhkeho-zdiva`).
@@ -59,11 +52,11 @@ about the couplings *between* those files and the code that consumes them.
   bug the owner reported. Don't reintroduce a `REFERENCE_THICKNESS_CM`: if a rate is per
   m², the thickness is already counted.
 - **The Service JSON-LD price is derived, not typed twice.** `serviceOffer()` in
-  `src/lib/pricing.ts` reads the numeric minimum straight from `pricing.json`, so
+  `src/lib/pricing.ts` reads the numeric `minPrice` straight from `calculator.json`, so
   structured data follows a rate change on its own. Don't hardcode a number into a
   page's `offers` — that's exactly the drift this helper removes. `unitCode` is **MTK**
   (square metre); `MTR` would claim a per-length price again.
-- **`calculator.json` rows have no `unit` field (and no prices).** All rates share the per-m² model,
+- **`calculator.json` rows have no `unit` field.** All rates share the per-m² model,
   injektáž included; a `unit` key would resurrect the old m²-vs-bm split that made
   injektáž cost more than diamond wire. Don't add it back.
 - **The calculator has one non-priced "inquiry" service — by design.** *Zednické a
@@ -71,7 +64,7 @@ about the couplings *between* those files and the code that consumes them.
   rate**. It lives as a hardcoded tile in `PricingCalculator.tsx` (`INQUIRY_ID`) that
   switches the calculator into an inquiry mode (no thickness/length/price) and posts a lead
   to `/api/send`, which routes it to `/sprava` with `source='zednictvi'`. Don't "fix" it by
-  adding a price row (in `calculator.json` or `pricing.json`) — the missing price is intentional. The three service pages stay per-m².
+  adding a price row (in `calculator.json` or the admin price list) — the missing price is intentional. The three service pages stay per-m².
 - **The lead e-mail and the CRM record carry the cut area too** (`/api/send`), so the
   owner can see what the estimate was computed from without redoing the arithmetic. Keep
   that field in step with `cutAreaM2()`.

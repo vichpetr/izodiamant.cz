@@ -3,8 +3,10 @@
 // Next.js / Cloudflare runtime (viz model.ts).
 //
 // Zdroj pravdy je nastavení v D1 (tabulka settings, klíč PRICING_KEY), které se
-// edituje v adminu. src/data/pricing.json je výchozí stav: platí, dokud v D1 nic
-// není (lokálně, nová DB), a chybějící pole se z něj doplní.
+// edituje v adminu – včetně „výchozího nastavení“ pro nepoznaný kraj.
+// src/data/pricing.json je jen dočasná záloha, dokud v D1 nic není (lokálně, nová
+// DB); po doladění ceníku se má odstranit. Veřejný web ceny odsud nebere (drží se
+// calculator.json).
 
 import defaults from '../../data/pricing.json';
 import { TECHNOLOGIES, type TechnologyId } from './model';
@@ -49,10 +51,8 @@ export interface ServiceSettings {
 export interface TransportSettings {
   /** Kč za km jízdy (počítá se tam i zpět). */
   kmRate: number;
-  /** Cestovné na jeden pracovní den (ubytování, stravné). */
+  /** Výchozí cestovné na jeden pracovní den (ubytování, stravné). */
   dayRate: number;
-  /** Kolik pracovních dní se odpracuje na jednu cestu (pak se jede domů). */
-  daysPerTrip: number;
   /** Vzdálenost pro výchozí nastavení (kraj nepoznaný); null = zadat ručně. */
   distanceKm: number | null;
 }
@@ -79,7 +79,6 @@ export interface Pricing {
 export interface TransportCalc {
   kmRate: number;
   dayRate: number;
-  daysPerTrip: number;
   m2PerDay: Record<TechnologyId, number>;
 }
 
@@ -109,7 +108,6 @@ export function parsePricing(raw: unknown, base: Pricing = DEFAULT_PRICING): Pri
     transport: {
       kmRate: num(transport.kmRate, 0, 1000) ?? base.transport.kmRate,
       dayRate: num(transport.dayRate, 0, 1_000_000) ?? base.transport.dayRate,
-      daysPerTrip: Math.round(num(transport.daysPerTrip, 1, 60) ?? base.transport.daysPerTrip),
       distanceKm: 'distanceKm' in transport ? num(transport.distanceKm, 0, 3000) : base.transport.distanceKm,
     },
     regions: {},
@@ -179,9 +177,9 @@ export function priceRanges(pricing: Pricing): Record<TechnologyId, { min: numbe
   return out;
 }
 
-/** Orientační vzdálenost pro kraj (jedna cesta); null = neznámá, zadat ručně. */
+/** Orientační vzdálenost pro kraj (jedna cesta), jinak z výchozího nastavení; null = zadat ručně. */
 export function regionDistance(pricing: Pricing, region: string | null | undefined): number | null {
-  return isRegion(region) ? pricing.regions[region].distanceKm : pricing.transport.distanceKm;
+  return (isRegion(region) ? pricing.regions[region].distanceKm : null) ?? pricing.transport.distanceKm;
 }
 
 /** Sazby dopravy pro kraj – ukládají se k nabídce jako snímek. */
@@ -190,7 +188,6 @@ export function transportCalcFor(pricing: Pricing, region: string | null | undef
   return {
     kmRate: pricing.transport.kmRate,
     dayRate: dayRate ?? pricing.transport.dayRate,
-    daysPerTrip: pricing.transport.daysPerTrip,
     m2PerDay: Object.fromEntries(TECHNOLOGIES.map((t) => [t.id, pricing.services[t.id].m2PerDay])) as Record<TechnologyId, number>,
   };
 }
@@ -201,12 +198,11 @@ export function parseTransportCalc(raw: string | null | undefined): TransportCal
     const v = JSON.parse(raw) as Record<string, unknown>;
     const kmRate = num(v.kmRate, 0, 1000);
     const dayRate = num(v.dayRate, 0, 1_000_000);
-    const daysPerTrip = num(v.daysPerTrip, 1, 60);
     const rates = (v.m2PerDay ?? {}) as Record<string, unknown>;
-    if (kmRate === null || dayRate === null || daysPerTrip === null) return null;
+    if (kmRate === null || dayRate === null) return null;
     const m2PerDay = {} as Record<TechnologyId, number>;
     for (const { id } of TECHNOLOGIES) m2PerDay[id] = num(rates[id], 0.1, 1000) ?? DEFAULT_PRICING.services[id].m2PerDay;
-    return { kmRate, dayRate, daysPerTrip: Math.round(daysPerTrip), m2PerDay };
+    return { kmRate, dayRate, m2PerDay };
   } catch {
     return null;
   }
@@ -215,26 +211,25 @@ export function parseTransportCalc(raw: string | null | undefined): TransportCal
 export interface TransportBreakdown {
   /** Pracovní dny potřebné na zakázku (plocha / denní výkon, zaokrouhleno nahoru). */
   days: number;
-  /** Počet cest tam a zpět (po `daysPerTrip` dnech se jede domů). */
-  trips: number;
+  /** Jízda tam a zpět. */
   travel: number;
+  /** Cestovné za všechny pracovní dny. */
   stay: number;
   total: number;
 }
 
 /**
- * Doprava = cesty × 2 × km × Kč/km + pracovní dny × cestovné na den.
- * Dny: každá technologie má svůj denní výkon (m²/den); u kombinace se časy
- * sčítají, výsledek se zaokrouhlí nahoru na celé dny. Celkem na stokoruny nahoru.
+ * Doprava = 2 × km × Kč/km (jedna cesta tam a zpět) + pracovní dny × cestovné
+ * na den. Dny: každá technologie má svůj denní výkon (m²/den); u kombinace se
+ * časy sčítají, výsledek se zaokrouhlí nahoru na celé dny. Celkem na stokoruny nahoru.
  */
 export function computeTransport(calc: TransportCalc, distanceKm: number, work: { technology: TechnologyId; area_m2: number }[]): TransportBreakdown {
   const rawDays = work.reduce((sum, w) => sum + (w.area_m2 > 0 ? w.area_m2 / calc.m2PerDay[w.technology] : 0), 0);
   // Drobné zaokrouhlovací zbytky (3,0000001 dne) nesmí přidat celý den.
   const days = rawDays > 0 ? Math.max(1, Math.ceil(rawDays - 1e-6)) : 0;
-  const trips = days > 0 ? Math.ceil(days / calc.daysPerTrip) : 0;
-  const travel = trips * 2 * distanceKm * calc.kmRate;
+  const travel = days > 0 ? 2 * distanceKm * calc.kmRate : 0;
   const stay = days * calc.dayRate;
-  return { days, trips, travel, stay, total: Math.ceil((travel + stay) / 100) * 100 };
+  return { days, travel, stay, total: Math.ceil((travel + stay) / 100) * 100 };
 }
 
 // ─── Podmínky na staveništi podle technologií ────────────────────────────────

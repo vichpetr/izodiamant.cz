@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { createHash } from 'crypto';
 import { allReferences, referenceMetaDescription } from '../src/lib/references';
-import { DEFAULT_PRICING, priceRanges } from '../src/lib/quotes/pricing';
+import calculatorData from '../src/data/calculator.json';
 
 /**
  * Regresní testy k auditu webu (2026-07).
@@ -138,10 +138,14 @@ test.describe('Audit: jednotky cen jsou všude m²', () => {
     }
   });
 
-  // Texty „od … Kč/m²“ jsou pevné, ceník žije v src/data/pricing.json (výchozí) a
-  // v adminu. Minimum z výchozího ceníku musí sedět se stránkou služby, FAQ i llms.txt.
-  test('„od … Kč/m²“ odpovídá minimu výchozího ceníku', async ({ request }) => {
-    const ranges = priceRanges(DEFAULT_PRICING);
+  // Texty „od … Kč/m²“ jsou pevné; kalkulačka a JSON-LD berou minimum z
+  // calculator.json. Musí sedět se stránkou služby, FAQ i llms.txt. (Ceník v adminu
+  // se na veřejný web zatím nepropisuje.)
+  test('„od … Kč/m²“ odpovídá minimu v calculator.json', async ({ request }) => {
+    const services = calculatorData.flatMap((m) => m.availableServices);
+    const ranges = Object.fromEntries(
+      ['diamantove-lano', 'retezova-pila', 'chemicka-injektaz'].map((id) => [id, { min: Math.min(...services.filter((s) => s.id === id).map((s) => s.minPrice)) }]),
+    );
     const faq = readFileSync(join(__dirname, '../src/data/faq.json'), 'utf8');
     const llms = readFileSync(join(__dirname, '../public/llms.txt'), 'utf8');
     for (const id of ['diamantove-lano', 'retezova-pila', 'chemicka-injektaz'] as const) {

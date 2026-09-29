@@ -717,7 +717,7 @@ export default function QuoteEditor({
                       ))
                     )}
                     <p className="text-[11px] text-neutral-dark/40">
-                      Denní výkon: {items.length ? [...new Set(items.map((i) => i.technology))].map((t) => `${technologyLabel(t)} ${formatNumber(calc.m2PerDay[t])} m²/den`).join(', ') : '—'} · po {calc.daysPerTrip} dnech cesta domů.
+                      Denní výkon: {items.length ? [...new Set(items.map((i) => i.technology))].map((t) => `${technologyLabel(t)} ${formatNumber(calc.m2PerDay[t])} m²/den`).join(', ') : '—'}.
                       {calcOutdated && (
                         <>
                           {' '}
@@ -803,7 +803,7 @@ export default function QuoteEditor({
   );
 }
 
-/** Rozpis automatické dopravy: dny, cesty, cestovné. */
+/** Rozpis automatické dopravy: dny práce, cesta, cestovné. */
 function TransportLine({ label, detail, calc, km }: { label?: string; detail: TransportBreakdown | null; calc: TransportCalc; km: number }) {
   if (!detail || detail.days === 0) {
     return <p className="text-sm text-amber-800">{label ? `${label}: ` : ''}Doplňte vzdálenost a plochu položek – doprava se z nich spočítá.</p>;
@@ -811,7 +811,7 @@ function TransportLine({ label, detail, calc, km }: { label?: string; detail: Tr
   return (
     <p className="text-sm text-neutral-dark/70">
       {label && <span className="font-bold text-neutral-dark">{label}: </span>}
-      {detail.days} {detail.days === 1 ? 'den' : detail.days < 5 ? 'dny' : 'dní'} práce · {detail.trips}× cesta tam a zpět {formatNumber(km)} km × {formatCzk(calc.kmRate)}/km ={' '}
+      {detail.days} {detail.days === 1 ? 'den' : detail.days < 5 ? 'dny' : 'dní'} práce · cesta tam a zpět 2 × {formatNumber(km)} km × {formatCzk(calc.kmRate)}/km ={' '}
       {formatCzk(detail.travel)} + {detail.days} × {formatCzk(calc.dayRate)} cestovné = <strong className="text-neutral-dark">{formatCzk(detail.total)}</strong>
     </p>
   );

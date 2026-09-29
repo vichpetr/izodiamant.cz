@@ -442,7 +442,7 @@ export async function savePricingAction(_prev: ActionState, formData: FormData):
     }
     await savePricing(parsePricing(raw), admin);
     revalidatePath(PATH);
-    return { ok: true, message: 'Ceník uložen. Nové ceny se použijí v nabídkách i v kalkulačce na webu.' };
+    return { ok: true, message: 'Ceník uložen. Nové ceny a sazby se použijí u nabídek (už vystavené se nemění).' };
   } catch (err) {
     return fail(err);
   }

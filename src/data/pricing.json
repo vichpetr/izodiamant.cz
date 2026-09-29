@@ -7,7 +7,6 @@
   "transport": {
     "kmRate": 12,
     "dayRate": 2500,
-    "daysPerTrip": 5,
     "distanceKm": null
   },
   "regions": {
