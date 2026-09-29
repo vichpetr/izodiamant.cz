@@ -31,6 +31,7 @@ export const QUOTE_STATUSES = {
 export type QuoteStatus = keyof typeof QUOTE_STATUSES;
 export type QuoteMode = 'kombinace' | 'varianty';
 
+/** Podmínky u starších nabídek; nové se skládají podle technologií (siteConditions v pricing.ts). */
 export const DEFAULT_CONDITIONS = [
   'Přístup ke zdivu z obou stran (dle zvolené technologie) zajistí zákazník.',
   'Zdroj vody v místě realizace zajistí zákazník.',
@@ -62,7 +63,17 @@ export interface Quote {
   thickness_cm: number | null;
   length_m: number | null;
   mode: QuoteMode;
+  /**
+   * Doprava v Kč. Při automatickém výpočtu (transport_calc) jen uložený výsledek
+   * pro přehled – platí to, co spočítá computeTotals().
+   */
   transport_price: number;
+  /** Kraj zakázky (RegionId z pricing.ts); null = výchozí nastavení ceníku. */
+  region: string | null;
+  /** Vzdálenost z Mokré Lhoty na místo (jedna cesta, km) – pro výpočet dopravy. */
+  distance_km: number | null;
+  /** JSON TransportCalc – sazby dopravy v době výpočtu; null = doprava zadaná ručně. */
+  transport_calc: string | null;
   intro: string | null;
   conditions: string | null;
   note: string | null;

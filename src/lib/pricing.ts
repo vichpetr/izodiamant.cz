@@ -1,7 +1,8 @@
-import calculatorData from '@/data/calculator.json';
+import { DEFAULT_PRICING, priceRanges } from '@/lib/quotes/pricing';
+import { isTechnology } from '@/lib/quotes/model';
 
 /**
- * Sazby v `calculator.json` jsou cenou za **metr čtvereční (m²) řezné plochy** –
+ * Sazby ceníku jsou cenou za **metr čtvereční (m²) řezné plochy** –
  * tedy za plochu, kterou je nutné zdivem prořezat nebo proinjektovat. Kalkulačka
  * ji spočítá jako `délka zdi × (tloušťka / 100)`; konstanta žije tady, aby ji
  * vedle kalkulačky mohla použít i strukturovaná data na stránkách služeb a obě
@@ -15,17 +16,13 @@ export function cutAreaM2(lengthM: number, thicknessCm: number): number {
 }
 
 /**
- * Nejnižší sazba za m² pro danou službu napříč typy zdiva – tedy to „od“, které
- * web uvádí v `services.json`. `null` u služby bez ceníkové sazby (zednické
- * práce jsou cena dohodou a v `calculator.json` schválně nejsou).
+ * Nejnižší sazba za m² pro danou službu napříč kraji – tedy to „od“, které web
+ * uvádí v `services.json`. Bere výchozí ceník z `src/data/pricing.json` (statické
+ * stránky se generují při buildu, D1 tu není). `null` u služby bez ceníkové sazby
+ * (zednické práce jsou cena dohodou a v ceníku schválně nejsou).
  */
 export function minPricePerM2(serviceId: string): number | null {
-  const rates = calculatorData
-    .flatMap((material) => material.availableServices)
-    .filter((service) => service.id === serviceId)
-    .map((service) => service.minPrice);
-
-  return rates.length > 0 ? Math.min(...rates) : null;
+  return isTechnology(serviceId) ? priceRanges(DEFAULT_PRICING)[serviceId].min : null;
 }
 
 /**

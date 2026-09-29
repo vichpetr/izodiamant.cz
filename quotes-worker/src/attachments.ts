@@ -11,7 +11,8 @@
 //
 // Všechno běží ve frontě (JOBS) – consumer má na úlohu 15 minut.
 
-import { cutArea, itemArea, missingInputs, recommendedTechnology, suggestedPricePerM2 } from '../../src/lib/quotes/calc';
+import { computeTotals, cutArea, itemArea, missingInputs, recommendedTechnology, suggestedPricePerM2 } from '../../src/lib/quotes/calc';
+import { loadPricing } from '../../src/lib/quotes/pricing';
 import {
   RELEVANT,
   effectiveRelevance,
@@ -192,6 +193,7 @@ async function autoApply(env: Env, quoteId: number, a: PlanAnalysis | VykazAnaly
   const itemThickness = byDims !== null ? thickness : null;
   const area = byDims ?? dims.areaM2;
   const items = await getItems(env, quoteId);
+  const pricing = await loadPricing(env.DB);
   const statements: D1PreparedStatement[] = [];
   const segments = a.kind === 'vykaz' ? vykazSegments(a) : [];
   if (segments.length > 1 && items.every((i) => !(itemArea(i) > 0))) {
@@ -210,7 +212,7 @@ async function autoApply(env: Env, quoteId: number, a: PlanAnalysis | VykazAnaly
           byDims !== null ? seg.lengthM : null,
           byDims !== null ? seg.thicknessCm : null,
           byDims ?? seg.areaM2 ?? 0,
-          suggestedPricePerM2(technology, material),
+          suggestedPricePerM2(technology, pricing, quote.region),
         ),
       );
     });
@@ -223,7 +225,7 @@ async function autoApply(env: Env, quoteId: number, a: PlanAnalysis | VykazAnaly
       statements.push(
         env.DB.prepare(
           'INSERT INTO quote_items (quote_id, position, technology, length_m, thickness_cm, area_m2, price_per_m2) VALUES (?, 0, ?, ?, ?, ?, ?)',
-        ).bind(quoteId, technology, itemLength, itemThickness, area, suggestedPricePerM2(technology, material)),
+        ).bind(quoteId, technology, itemLength, itemThickness, area, suggestedPricePerM2(technology, pricing, quote.region)),
       );
     } else {
       statements.push(
@@ -264,7 +266,12 @@ export async function maybeAutoGenerate(env: Env, quoteId: number): Promise<void
 
   const items = await getItems(env, quoteId);
   const missing = missingInputs(quote, items);
-  await updateQuote(env, quoteId, { missing: JSON.stringify(missing), status: missing.length ? 'ceka_na_udaje' : quote.status });
+  await updateQuote(env, quoteId, {
+    missing: JSON.stringify(missing),
+    status: missing.length ? 'ceka_na_udaje' : quote.status,
+    // Uložená doprava je jen pro přehled nabídek – po převzetí rozměrů ji přepočítáme.
+    transport_price: computeTotals(quote, items).transport,
+  });
   if (missing.length) return;
   await generateQuote(env, quoteId, { auto: true, createdBy: 'system' });
 }

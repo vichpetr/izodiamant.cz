@@ -221,7 +221,7 @@ function priceSummary(quote: Quote, items: QuoteItem[]): string {
       .join('\n');
   }
   const lines = totals.lines.map((l) => `- ${technologyLabel(l.technology)}: ${scope(l)} × ${formatCzk(l.price_per_m2)}/m² = ${formatCzk(l.workPrice)}`);
-  return [...lines, `- Doprava: ${formatCzk(quote.transport_price)}`, `Celkem: ${formatCzk(totals.total)}`].join('\n');
+  return [...lines, `- Doprava: ${formatCzk(totals.transport)}`, `Celkem: ${formatCzk(totals.total)}`].join('\n');
 }
 
 export function fallbackEmail(quote: Quote, items: QuoteItem[]): { email_subject: string; email_body: string } {

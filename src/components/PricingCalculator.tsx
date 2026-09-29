@@ -1,19 +1,22 @@
 'use client';
 
-import { useState, useMemo, useRef, useCallback } from 'react';
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { Icons } from './Icons';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import calculatorData from '@/data/calculator.json';
-import servicesData from '@/data/services.json';
 import { cutAreaM2 } from '@/lib/pricing';
+import { DEFAULT_PRICING, priceRanges } from '@/lib/quotes/pricing';
 import { trackLead } from '@/lib/analytics';
 import Turnstile, { TURNSTILE_ENABLED } from './Turnstile';
 
-// Ceny v calculator.json jsou sazby za m² řezné plochy (cutAreaM2 v lib/pricing –
-// stejný model používají i strukturovaná data na stránkách služeb). Plocha se
-// počítá jako délka zdi × tloušťka, takže u silnějšího zdiva roste cena úměrně
-// tloušťce.
+// Sazby jsou za m² řezné plochy (cutAreaM2 v lib/pricing – stejný model používají
+// i strukturovaná data na stránkách služeb). Plocha se počítá jako délka zdi ×
+// tloušťka, takže u silnějšího zdiva roste cena úměrně tloušťce.
+//
+// Rozmezí sazeb (nejnižší a nejvyšší cena napříč kraji) se načítá živě z ceníku
+// v adminu přes /api/cenik; do té doby (a bez D1) platí výchozí ceník
+// src/data/pricing.json. calculator.json určuje jen, které služby jdou na které zdivo.
 
 // Doplňková služba „Zednické a obkladačské práce" – cena je dohodou, takže do
 // kalkulačky patří jen jako poptávkový (nepočítaný) mód. Záměrně NENÍ v
@@ -24,9 +27,9 @@ const INQUIRY_LABEL = 'Zednické a obkladačské práce';
 interface Service {
   id: string;
   label: string;
-  minPrice: number;
-  maxPrice: number;
 }
+
+type Ranges = Record<string, { min: number; max: number }>;
 
 interface Material {
   id: string;
@@ -62,6 +65,21 @@ export default function PricingCalculator() {
 
   const sectionRef = useRef<HTMLDivElement>(null);
 
+  const [ranges, setRanges] = useState<Ranges>(() => priceRanges(DEFAULT_PRICING));
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/cenik')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { ranges?: Ranges } | null) => {
+        if (!cancelled && data?.ranges) setRanges((prev) => ({ ...prev, ...data.ranges }));
+      })
+      // Bez odpovědi zůstane výchozí ceník – kalkulačka funguje dál.
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // Selection logic
   const selectedMaterial = useMemo(() => 
     materialId ? (calculatorData as Material[]).find(m => m.id === materialId) : null
@@ -95,8 +113,10 @@ export default function PricingCalculator() {
     const prices: number[] = [];
     const factor = cutAreaM2(length, thickness);
     candidates.forEach(s => {
-      prices.push(s.minPrice * factor);
-      prices.push(s.maxPrice * factor);
+      const r = ranges[s.id];
+      if (!r) return;
+      prices.push(r.min * factor);
+      prices.push(r.max * factor);
     });
 
     return {
@@ -175,13 +195,13 @@ export default function PricingCalculator() {
     }
   };
 
-  // V tooltipu je titulek „Ceník", takže prefix „Orientační cena" je nadbytečný a
-  // dlouhý řetězec navíc přetékal z úzkého boxu. Zobrazujeme jen „od 4 500 Kč / m²".
-  const shortPrice = (p: string) => p.replace(/^Orientační cena\s*/i, '').trim();
+  // V tooltipu je titulek „Ceník", takže stačí krátké „od 4 200 Kč / m²" (delší
+  // řetězec přetékal z úzkého boxu). Minimum z živého ceníku, jako výpočet výše.
+  const fromPrice = (id: string) => `od ${(ranges[id]?.min ?? 0).toLocaleString('cs-CZ')} Kč / m²`;
   const priceListTooltip = [
-    { name: "Diamantové lano", price: shortPrice(servicesData["diamantove-lano"].priceRange), href: "/sluzby/diamantove-lano" },
-    { name: "Řetězová pila", price: shortPrice(servicesData["retezova-pila"].priceRange), href: "/sluzby/retezova-pila" },
-    { name: "Chemická injektáž", price: shortPrice(servicesData["chemicka-injektaz"].priceRange), href: "/sluzby/chemicka-injektaz" }
+    { name: "Diamantové lano", price: fromPrice("diamantove-lano"), href: "/sluzby/diamantove-lano" },
+    { name: "Řetězová pila", price: fromPrice("retezova-pila"), href: "/sluzby/retezova-pila" },
+    { name: "Chemická injektáž", price: fromPrice("chemicka-injektaz"), href: "/sluzby/chemicka-injektaz" }
   ];
 
   return (

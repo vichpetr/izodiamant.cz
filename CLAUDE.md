@@ -73,7 +73,14 @@ enforces them.
   purpose – every `/sprava/*` route is a separate ~0.5 MiB gz edge function). Domain logic
   (model, price math, PDF HTML template) lives in `src/lib/quotes/` and is shared with
   `quotes-worker/` via relative imports — **no `@/` aliases there**. Prices are always computed
-  by `computeTotals()`, never by AI.
+  by `computeTotals()`, never by AI. The price list (per-service default price, m²/day, site
+  needs; per-kraj price overrides, distance, travel per day; transport rates) is edited at
+  `/sprava/nabidky?nastaveni=cenik`, stored in D1 `settings` (key `pricing`), defaults in
+  `src/data/pricing.json`; logic in `src/lib/quotes/pricing.ts`. A quote's kraj is guessed
+  from the address (PSČ / town) and picks the prices; transport = trips × 2 × km × Kč/km +
+  work days × travel/day, days = cut area / m²-per-day of the technology. The rates are
+  snapshotted per quote (`quotes.transport_calc`), so later price-list edits don't change
+  issued quotes. `/api/cenik` serves the public min–max range for the web calculator.
 - `next.config.ts` declares legacy redirects (`/sluzby`, `/kontakt`, old service slugs,
   `/category/reference` → `/reference`, `/reference/strana/1` → `/reference`, `/clanky`,
   `/mesta`) — preserve them when restructuring URLs. Note `/reference` is a real page now,

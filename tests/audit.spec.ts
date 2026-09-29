@@ -3,6 +3,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { createHash } from 'crypto';
 import { allReferences, referenceMetaDescription } from '../src/lib/references';
+import { DEFAULT_PRICING, priceRanges } from '../src/lib/quotes/pricing';
 
 /**
  * Regresní testy k auditu webu (2026-07).
@@ -134,6 +135,22 @@ test.describe('Audit: jednotky cen jsou všude m²', () => {
       // Rozsah realizace v referencích (např. "52 bm podřezání") je v pořádku –
       // popisuje délku podřezaného úseku. Zakázaná je jen cena za bm.
       expect(html, `${path} uvádí cenu za bm`).not.toMatch(/Kč\s*\/?\s*bm/);
+    }
+  });
+
+  // Texty „od … Kč/m²“ jsou pevné, ceník žije v src/data/pricing.json (výchozí) a
+  // v adminu. Minimum z výchozího ceníku musí sedět se stránkou služby, FAQ i llms.txt.
+  test('„od … Kč/m²“ odpovídá minimu výchozího ceníku', async ({ request }) => {
+    const ranges = priceRanges(DEFAULT_PRICING);
+    const faq = readFileSync(join(__dirname, '../src/data/faq.json'), 'utf8');
+    const llms = readFileSync(join(__dirname, '../public/llms.txt'), 'utf8');
+    for (const id of ['diamantove-lano', 'retezova-pila', 'chemicka-injektaz'] as const) {
+      const min = ranges[id].min.toLocaleString('cs-CZ').replace(/\s/g, '[\\s\u00a0]');
+      const re = new RegExp(`od ${min} Kč\\s*/\\s*m²`);
+      const html = await (await request.get(`/sluzby/${id}`)).text();
+      expect(html, `/sluzby/${id} neuvádí „od ${ranges[id].min} Kč/m²“`).toMatch(re);
+      expect(llms, `llms.txt neuvádí „od ${ranges[id].min} Kč/m²“`).toMatch(re);
+      expect(faq, `faq.json neuvádí „od ${ranges[id].min} Kč/m²“`).toMatch(re);
     }
   });
 
