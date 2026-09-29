@@ -1,7 +1,7 @@
 'use client';
 
 // Nastavení ceníku (/sprava/nabidky?nastaveni=cenik): denní výkon služeb a
-// požadavky na staveniště, ceny / vzdálenosti / cestovné po krajích včetně
+// požadavky na staveniště, ceny / vzdálenosti / ubytování po krajích včetně
 // „výchozího nastavení“ (nepoznaný kraj, prázdná pole krajů) a Kč/km.
 // Z tohoto nastavení počítá editor nabídek; veřejný web se zatím drží calculator.json.
 
@@ -27,7 +27,7 @@ import { submitWithoutReset, useToastAction, type Action } from './useToastActio
 const str = (v: number | null | undefined) => (v === null || v === undefined ? '' : String(v).replace('.', ','));
 
 type ServiceDraft = { price: string; m2PerDay: string; water: boolean; power: Power };
-type RegionDraft = { prices: Record<TechnologyId, string>; distanceKm: string; dayRate: string; nightRate: string };
+type RegionDraft = { prices: Record<TechnologyId, string>; distanceKm: string; nightRate: string };
 
 function toDraft(p: Pricing) {
   return {
@@ -36,7 +36,6 @@ function toDraft(p: Pricing) {
     ) as Record<TechnologyId, ServiceDraft>,
     transport: {
       kmRate: str(p.transport.kmRate),
-      dayRate: str(p.transport.dayRate),
       nightRate: str(p.transport.nightRate),
       distanceKm: str(p.transport.distanceKm),
     },
@@ -46,7 +45,6 @@ function toDraft(p: Pricing) {
         {
           prices: Object.fromEntries(TECHNOLOGIES.map((t) => [t.id, str(p.regions[r.id].prices[t.id])])) as Record<TechnologyId, string>,
           distanceKm: str(p.regions[r.id].distanceKm),
-          dayRate: str(p.regions[r.id].dayRate),
           nightRate: str(p.regions[r.id].nightRate),
         },
       ]),
@@ -110,7 +108,7 @@ export default function PricingSettings({
       <section className={cardCls}>
         <h2 className={`${headingCls} mb-1`}>Služby</h2>
         <p className="text-xs text-neutral-dark/50 mb-4">
-          Výkon za den určuje počet pracovních dní na zakázce, a tím cestovné. Voda a elektřina se propíšou do technických podmínek
+          Výkon za den určuje počet pracovních dní na zakázce, a tím počet cest nebo nocí. Voda a elektřina se propíšou do technických podmínek
           nabídky. Ceny jsou v tabulce krajů níže.
         </p>
         <div className="overflow-x-auto">
@@ -181,7 +179,6 @@ export default function PricingSettings({
                   <th key={t.id} className="text-right py-2 px-2">{t.label} (Kč/m²)</th>
                 ))}
                 <th className="text-right py-2 px-2">Vzdálenost (km)</th>
-                <th className="text-right py-2 px-2">Cestovné / den (Kč)</th>
                 <th className="text-right py-2 pl-2">Ubytování / noc (Kč)</th>
               </tr>
             </thead>
@@ -211,16 +208,6 @@ export default function PricingSettings({
                         onChange={(e) => setRegion(r.id, { distanceKm: e.target.value })}
                         className={smallInput}
                         aria-label={`Vzdálenost – ${r.name}`}
-                      />
-                    </td>
-                    <td className="py-1.5 px-2 w-32">
-                      <input
-                        inputMode="numeric"
-                        value={row.dayRate}
-                        placeholder={str(parsed.transport.dayRate)}
-                        onChange={(e) => setRegion(r.id, { dayRate: e.target.value })}
-                        className={smallInput}
-                        aria-label={`Cestovné na den – ${r.name}`}
                       />
                     </td>
                     <td className="py-1.5 pl-2 w-32">
@@ -262,15 +249,6 @@ export default function PricingSettings({
                     aria-label={`Vzdálenost – ${DEFAULT_REGION_LABEL}`}
                   />
                 </td>
-                <td className="py-2 px-2 w-32">
-                  <input
-                    inputMode="numeric"
-                    value={d.transport.dayRate}
-                    onChange={(e) => setTransport('dayRate', e.target.value)}
-                    className={smallInput}
-                    aria-label={`Cestovné na den – ${DEFAULT_REGION_LABEL}`}
-                  />
-                </td>
                 <td className="py-2 pl-2 w-32">
                   <input
                     inputMode="numeric"
@@ -291,7 +269,7 @@ export default function PricingSettings({
         <p className="text-xs text-neutral-dark/50 mb-4">
           Pracovní dny = řezná plocha / výkon technologie za den (nahoru na celé dny). <strong>Ubytování / noc větší než 0</strong> = spí se
           na místě: jedna cesta tam a zpět + (dny − 1) nocí × ubytování. <strong>Ubytování 0</strong> = dojíždí se: každý den cesta tam a
-          zpět. V obou případech + dny × cestovné (i to může být 0). Cesta = 2 × vzdálenost × Kč/km.
+          zpět. Cesta = 2 × vzdálenost × Kč/km.
         </p>
         <div className="grid sm:grid-cols-3 gap-4">
           <label className="flex flex-col gap-1">
@@ -303,7 +281,7 @@ export default function PricingSettings({
           {examples.map(({ label, calc, km, t }) => (
             <p key={label}>
               Příklad – 30 m² pilou, {label} ({calc.nightRate > 0 ? 'spí se na místě' : 'dojíždí se'}, {formatNumber(km)} km): {t.days}{' '}
-              {t.days === 1 ? 'den' : t.days < 5 ? 'dny' : 'dní'} · {t.trips}× cesta {formatCzk(t.travel)} + cestovné {formatCzk(t.stay)}
+              {t.days === 1 ? 'den' : t.days < 5 ? 'dny' : 'dní'} · {t.trips}× cesta {formatCzk(t.travel)}
               {t.nights > 0 && ` + ${t.nights} ${t.nights === 1 ? 'noc' : t.nights < 5 ? 'noci' : 'nocí'} ${formatCzk(t.lodging)}`} ={' '}
               <strong>{formatCzk(t.total)}</strong>
             </p>

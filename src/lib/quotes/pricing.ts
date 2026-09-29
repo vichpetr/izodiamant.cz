@@ -51,8 +51,6 @@ export interface ServiceSettings {
 export interface TransportSettings {
   /** Kč za km jízdy (počítá se tam i zpět). */
   kmRate: number;
-  /** Výchozí cestovné (strava) na každý pracovní den. */
-  dayRate: number;
   /** Výchozí ubytování za noc; 0 = nespí se na místě, denně se dojíždí. */
   nightRate: number;
   /** Vzdálenost pro výchozí nastavení (kraj nepoznaný); null = zadat ručně. */
@@ -64,8 +62,6 @@ export interface RegionSettings {
   prices: Partial<Record<TechnologyId, number>>;
   /** Orientační vzdálenost z Mokré Lhoty (jedna cesta, km). */
   distanceKm: number | null;
-  /** Vlastní cestovné na den; null = výchozí. */
-  dayRate: number | null;
   /** Vlastní ubytování za noc (0 = dojíždí se); null = výchozí. */
   nightRate: number | null;
 }
@@ -82,7 +78,11 @@ export interface Pricing {
  */
 export interface TransportCalc {
   kmRate: number;
-  dayRate: number;
+  /**
+   * Cestovné na den – jen u snímků z doby, kdy ceník cestovné měl (nabídky
+   * spočítané 29. 9. 2026), ať se jejich doprava nezmění. Nové snímky ho nemají.
+   */
+  dayRate?: number;
   /** Ubytování za noc; 0 = nespí se na místě, každý den se jede tam a zpět. */
   nightRate: number;
   m2PerDay: Record<TechnologyId, number>;
@@ -113,7 +113,6 @@ export function parsePricing(raw: unknown, base: Pricing = DEFAULT_PRICING): Pri
     services: {},
     transport: {
       kmRate: num(transport.kmRate, 0, 1000) ?? base.transport.kmRate,
-      dayRate: num(transport.dayRate, 0, 1_000_000) ?? base.transport.dayRate,
       nightRate: num(transport.nightRate, 0, 1_000_000) ?? base.transport.nightRate,
       distanceKm: 'distanceKm' in transport ? num(transport.distanceKm, 0, 3000) : base.transport.distanceKm,
     },
@@ -142,7 +141,6 @@ export function parsePricing(raw: unknown, base: Pricing = DEFAULT_PRICING): Pri
     out.regions[id] = {
       prices,
       distanceKm: r ? num(r.distanceKm, 0, 3000) : b.distanceKm,
-      dayRate: r ? num(r.dayRate, 0, 1_000_000) : b.dayRate,
       nightRate: r ? num(r.nightRate, 0, 1_000_000) : b.nightRate,
     };
   }
@@ -195,7 +193,6 @@ export function transportCalcFor(pricing: Pricing, region: string | null | undef
   const r = isRegion(region) ? pricing.regions[region] : null;
   return {
     kmRate: pricing.transport.kmRate,
-    dayRate: r?.dayRate ?? pricing.transport.dayRate,
     nightRate: r?.nightRate ?? pricing.transport.nightRate,
     m2PerDay: Object.fromEntries(TECHNOLOGIES.map((t) => [t.id, pricing.services[t.id].m2PerDay])) as Record<TechnologyId, number>,
   };
@@ -208,11 +205,11 @@ export function parseTransportCalc(raw: string | null | undefined): TransportCal
     const kmRate = num(v.kmRate, 0, 1000);
     const dayRate = num(v.dayRate, 0, 1_000_000);
     const rates = (v.m2PerDay ?? {}) as Record<string, unknown>;
-    if (kmRate === null || dayRate === null) return null;
+    if (kmRate === null) return null;
     const m2PerDay = {} as Record<TechnologyId, number>;
     for (const { id } of TECHNOLOGIES) m2PerDay[id] = num(rates[id], 0.1, 1000) ?? DEFAULT_PRICING.services[id].m2PerDay;
     const nightRate = num(v.nightRate, 0, 1_000_000) ?? 0;
-    return { kmRate, dayRate, nightRate, m2PerDay };
+    return { kmRate, nightRate, m2PerDay, ...(dayRate ? { dayRate } : {}) };
   } catch {
     return null;
   }
@@ -227,7 +224,7 @@ export interface TransportBreakdown {
   nights: number;
   /** Jízdné (cesty × 2 × km × Kč/km). */
   travel: number;
-  /** Cestovné (strava) za všechny pracovní dny. */
+  /** Cestovné za pracovní dny – jen u starších snímků s `dayRate`, jinak 0. */
   stay: number;
   /** Ubytování (noci × Kč/noc). */
   lodging: number;
@@ -237,8 +234,8 @@ export interface TransportBreakdown {
 /**
  * Doprava podle ubytování za noc:
  * - ubytování > 0 → spí se na místě: 1 × cesta tam a zpět + (dny − 1) nocí × ubytování,
- * - ubytování 0 → dojíždí se: každý den cesta tam a zpět;
- * v obou případech + dny × cestovné (strava). Dny: každá technologie má svůj
+ * - ubytování 0 → dojíždí se: každý den cesta tam a zpět.
+ * Dny: každá technologie má svůj
  * denní výkon (m²/den); u kombinace se časy sčítají a zaokrouhlí nahoru na celé
  * dny. Celkem na stokoruny nahoru.
  */
@@ -250,7 +247,7 @@ export function computeTransport(calc: TransportCalc, distanceKm: number, work: 
   const trips = days === 0 ? 0 : overnight ? 1 : days;
   const nights = overnight && days > 1 ? days - 1 : 0;
   const travel = trips * 2 * distanceKm * calc.kmRate;
-  const stay = days * calc.dayRate;
+  const stay = days * (calc.dayRate ?? 0);
   const lodging = nights * calc.nightRate;
   return { days, trips, nights, travel, stay, lodging, total: Math.ceil((travel + stay + lodging) / 100) * 100 };
 }

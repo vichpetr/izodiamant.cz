@@ -72,12 +72,12 @@ enforces them.
   (model, price math, PDF HTML template) lives in `src/lib/quotes/` and is shared with
   `quotes-worker/` via relative imports — **no `@/` aliases there**. Prices are always computed
   by `computeTotals()`, never by AI. The quotes' price list (per-service m²/day and site needs; per-kraj prices, distance,
-  travel per day, lodging per night, plus an editable "Výchozí nastavení" row for unknown kraj / empty fields;
+  lodging per night, plus an editable "Výchozí nastavení" row for unknown kraj / empty fields;
   Kč/km) is edited at `/sprava/nabidky?nastaveni=cenik` and stored in D1 `settings` (key
   `pricing`); logic in `src/lib/quotes/pricing.ts`. `src/data/pricing.json` is a temporary
   fallback until D1 has a saved price list (to be removed). A quote's kraj is guessed from
   the address (PSČ / town) and picks the prices; days = cut area / m²-per-day of the
-  technology; transport = trips × 2 × km × Kč/km + days × travel/day + nights × lodging;
+  technology; transport = trips × 2 × km × Kč/km + nights × lodging;
   lodging > 0 means staying overnight (1 trip, days − 1 nights), lodging 0 means commuting
   (1 trip per day). The rates are snapshotted per
   quote (`quotes.transport_calc`), so later edits don't change issued quotes. The public web
