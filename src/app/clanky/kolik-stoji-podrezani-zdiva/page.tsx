@@ -8,7 +8,7 @@ import { isSlugPublished } from "@/lib/articles";
 
 const SLUG = "kolik-stoji-podrezani-zdiva";
 const TITLE = "Kolik stojí podřezání zdiva";
-const DESC = "Ceny podřezání a sanace zdiva: řetězová pila od 2 200 Kč/m², diamantové lano od 4 200 Kč/m², chemická injektáž od 3 900 Kč/m² (za m² řezné plochy). Nejsme plátci DPH.";
+const DESC = "Ceny podřezání a sanace zdiva: řetězová pila a chemická injektáž od 2 500 Kč/m², diamantové lano od 4 500 Kč/m² (za m² řezné plochy). Nejsme plátci DPH.";
 
 export const metadata: Metadata = {
   ...pageMetadata({ path: `/clanky/${SLUG}`, title: TITLE, description: DESC }),
@@ -25,9 +25,9 @@ const PRICES = [
 ];
 
 const SERVICES = [
-  { href: "/sluzby/retezova-pila", label: "Řetězová pila", note: "od 2 200 Kč/m² – cihelné zdivo." },
-  { href: "/sluzby/diamantove-lano", label: "Diamantové lano", note: "od 4 200 Kč/m² – kámen a beton." },
-  { href: "/sluzby/chemicka-injektaz", label: "Chemická injektáž", note: "od 3 900 Kč/m² – kde nelze řezat." },
+  { href: "/sluzby/retezova-pila", label: "Řetězová pila", note: "od 2 500 Kč/m² – cihelné zdivo." },
+  { href: "/sluzby/diamantove-lano", label: "Diamantové lano", note: "od 4 500 Kč/m² – kámen a beton." },
+  { href: "/sluzby/chemicka-injektaz", label: "Chemická injektáž", note: "od 2 500 Kč/m² – kde nelze řezat." },
 ];
 
 export default function Page() {
@@ -65,7 +65,6 @@ export default function Page() {
           "Tloušťka zdiva – u silnějších stěn roste řezná plocha, a tím i cena",
           "Délka podřezávaného úseku zdi",
           "Přístupnost a členitost stavby",
-          "Kraj realizace a doprava – podle vzdálenosti a počtu dní práce na místě",
         ].map((t) => (
           <li key={t} className="flex gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />{t}</li>
         ))}

@@ -32,7 +32,7 @@ export default function Page() {
     >
       <H2>1. Samotné přerušení vlhkosti: podřezání nebo injektáž</H2>
       <P>Jádrem každé sanace je vytvoření vodorovné izolace, která přeruší vzlínající vlhkost od základů. Podle materiálu a přístupnosti zdiva se volí metoda a od ní se odvíjí základní sazba.</P>
-      <P>Řetězovou pilou řežeme cihelné zdivo, diamantovým lanem kámen, beton a silné či smíšené zdivo bez omezení tloušťky. Tam, kde řezat nelze, nastupuje chemická injektáž. Řetězová pila je od 2 200 Kč/m², diamantové lano od 4 200 Kč/m² a chemická injektáž od 3 900 Kč/m².</P>
+      <P>Řetězovou pilou řežeme cihelné zdivo, diamantovým lanem kámen, beton a silné či smíšené zdivo bez omezení tloušťky. Tam, kde řezat nelze, nastupuje chemická injektáž. Řetězová pila a chemická injektáž jsou od 2 500 Kč/m², diamantové lano od 4 500 Kč/m².</P>
       <P>Uvedené sazby platí za metr čtvereční řezné plochy, tedy za délku podřezávaného úseku vynásobenou tloušťkou zdiva; u silnějšího zdiva je řezná plocha větší a cena úměrně roste. Nejsme plátci DPH, ceny jsou tedy konečné.</P>
 
       <H2>2. Navazující práce, které k sanaci patří</H2>

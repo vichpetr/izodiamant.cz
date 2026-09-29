@@ -7,13 +7,13 @@
       {
         "id": "retezova-pila",
         "label": "Řetězová pila",
-        "minPrice": 2200,
-        "maxPrice": 2600
+        "minPrice": 2500,
+        "maxPrice": 3500
       },
       {
         "id": "chemicka-injektaz",
         "label": "Chemická injektáž",
-        "minPrice": 3900,
+        "minPrice": 2500,
         "maxPrice": 3900
       }
     ]
@@ -26,13 +26,13 @@
       {
         "id": "diamantove-lano",
         "label": "Diamantové lano",
-        "minPrice": 4200,
-        "maxPrice": 4800
+        "minPrice": 4500,
+        "maxPrice": 6500
       },
       {
         "id": "chemicka-injektaz",
         "label": "Chemická injektáž",
-        "minPrice": 3900,
+        "minPrice": 2500,
         "maxPrice": 3900
       }
     ]
@@ -45,8 +45,8 @@
       {
         "id": "diamantove-lano",
         "label": "Diamantové lano",
-        "minPrice": 4200,
-        "maxPrice": 4800
+        "minPrice": 4500,
+        "maxPrice": 6500
       }
     ]
   }

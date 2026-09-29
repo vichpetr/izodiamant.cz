@@ -40,7 +40,7 @@ about the couplings *between* those files and the code that consumes them.
   **not** the wall's face area: it is `length (m) × thickness (cm) / 100`, i.e. the
   horizontal plane the saw or the injection line has to get through. `cutAreaM2()` in
   `src/lib/pricing.ts` is the single implementation — the calculator imports it, don't
-  re-derive the formula inline. So `services.json` "od 4 200 Kč / m²" must equal the
+  re-derive the formula inline. So `services.json` "od 4 500 Kč / m²" must equal the
   minimum the calculator uses for 1 m² of cut area. If you change a rate in `calculator.json`,
   change the matching `services.json` string, the FAQ price answers, `llms.txt`, the
   service-page meta descriptions and the two pricing articles
