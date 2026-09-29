@@ -11,6 +11,7 @@ import { addCustomer, getCustomer, getDB } from '@/lib/db';
 import {
   createQuote,
   deleteQuote,
+  savePricing,
   saveQuote,
   setEmailVersion,
   setFileIncluded,
@@ -30,7 +31,8 @@ import {
   type QuoteStatus,
   type Relevance,
 } from '@/lib/quotes/model';
-import { cutArea, variantsError } from '@/lib/quotes/calc';
+import { computeTotals, cutArea, variantsError } from '@/lib/quotes/calc';
+import { isRegion, parsePricing, parseTransportCalc } from '@/lib/quotes/pricing';
 import { isValidEmail } from '@/lib/validators';
 import type { ActionState } from '../ActionForm';
 
@@ -170,11 +172,21 @@ export async function saveQuoteAction(_prev: ActionState, formData: FormData): P
       length_m: number(formData, 'length_m', 0.1, 5000, 'Délka řezu'),
       mode: formData.get('mode') === 'varianty' ? 'varianty' : 'kombinace',
       transport_price: Math.round(number(formData, 'transport_price', 0, 1_000_000, 'Doprava') ?? 0),
+      region: isRegion(formData.get('region')) ? String(formData.get('region')) : null,
+      distance_km: number(formData, 'distance_km', 0, 3000, 'Vzdálenost'),
+      transport_calc: null,
       intro: text(formData, 'intro', 1500),
       conditions: JSON.stringify(conditions),
       note: text(formData, 'note', 2000),
     };
     const items = parseItems(formData);
+    // Automatická doprava: sazby (snímek z ceníku) přijdou z formuláře, cenu spočítáme
+    // tady – uložená transport_price je jen pro přehled nabídek.
+    const calc = parseTransportCalc(String(formData.get('transport_calc') ?? ''));
+    if (calc) {
+      fields.transport_calc = JSON.stringify(calc);
+      fields.transport_price = computeTotals(fields, items).transport;
+    }
     const variants = variantsError(fields.mode, items);
     if (variants) return { ok: false, message: variants };
     let sources: Record<string, string> | null = null;
@@ -412,6 +424,25 @@ export async function retryInboxAction(_prev: ActionState, formData: FormData): 
     await callQuotesWorker(`/inbox/${Number(formData.get('inbox_id'))}/retry`, { method: 'POST', admin });
     revalidatePath(PATH);
     return { ok: true, message: 'Zpráva se zpracuje při příští kontrole schránky.' };
+  } catch (err) {
+    return fail(err);
+  }
+}
+
+// ─── Ceník ──────────────────────────────────────────────────────────────────
+
+export async function savePricingAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  try {
+    const admin = await requireAdmin();
+    let raw: unknown;
+    try {
+      raw = JSON.parse(String(formData.get('pricing') ?? ''));
+    } catch {
+      return { ok: false, message: 'Neplatná data ceníku.' };
+    }
+    await savePricing(parsePricing(raw), admin);
+    revalidatePath(PATH);
+    return { ok: true, message: 'Ceník uložen. Nové ceny a sazby se použijí u nabídek (už vystavené se nemění).' };
   } catch (err) {
     return fail(err);
   }

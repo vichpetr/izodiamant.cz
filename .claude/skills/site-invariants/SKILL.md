@@ -28,15 +28,23 @@ about the couplings *between* those files and the code that consumes them.
 `src/lib/pricing.ts` · `src/components/PricingCalculator.tsx` · `src/data/faq.json` ·
 `public/llms.txt` · `src/app/api/send/route.ts`
 
+- **Two price lists, on purpose (for now).** The **public web** (calculator, JSON-LD,
+  "od … Kč/m²" texts) still reads `calculator.json` min/max — owner's call until the admin
+  price list is final. The **quotes module** reads the per-kraj price list edited at
+  `/sprava/nabidky?nastaveni=cenik` (D1 `settings`, key `pricing`; logic in
+  `src/lib/quotes/pricing.ts`; `src/data/pricing.json` is only a temporary fallback when
+  D1 has nothing, to be removed later). The admin shows both ranges side by side and
+  flags a difference — if the owner changes regional prices, update `calculator.json`
+  and the texts below by hand. Don't wire the public web to D1 without asking.
 - Every price is quoted **per m² of cut area (řezná plocha)**, never per bm. Cut area is
   **not** the wall's face area: it is `length (m) × thickness (cm) / 100`, i.e. the
   horizontal plane the saw or the injection line has to get through. `cutAreaM2()` in
   `src/lib/pricing.ts` is the single implementation — the calculator imports it, don't
-  re-derive the formula inline. So `services.json` "od 4 500 Kč / m²" must equal what the
-  calculator shows for 1 m² of cut area. If you change a rate in `calculator.json`, change
-  the matching `services.json` string, the FAQ price answers, `llms.txt`, and the two
-  pricing articles (`/clanky/kolik-stoji-podrezani-zdiva`,
-  `/clanky/cena-sanace-vlhkeho-zdiva`).
+  re-derive the formula inline. So `services.json` "od 4 500 Kč / m²" must equal the
+  minimum the calculator uses for 1 m² of cut area. If you change a rate in `calculator.json`,
+  change the matching `services.json` string, the FAQ price answers, `llms.txt`, the
+  service-page meta descriptions and the two pricing articles
+  (`/clanky/kolik-stoji-podrezani-zdiva`, `/clanky/cena-sanace-vlhkeho-zdiva`).
 - **Thickness is inside the unit, not a surcharge.** There is deliberately **no reference
   thickness** any more. The old model priced per bm at a fixed 45 cm and scaled
   `× (thickness / 45)`; when the site switched to that model the numbers were relabelled
@@ -56,7 +64,7 @@ about the couplings *between* those files and the code that consumes them.
   rate**. It lives as a hardcoded tile in `PricingCalculator.tsx` (`INQUIRY_ID`) that
   switches the calculator into an inquiry mode (no thickness/length/price) and posts a lead
   to `/api/send`, which routes it to `/sprava` with `source='zednictvi'`. Don't "fix" it by
-  adding a price row — the missing price is intentional. The three service pages stay per-m².
+  adding a price row (in `calculator.json` or the admin price list) — the missing price is intentional. The three service pages stay per-m².
 - **The lead e-mail and the CRM record carry the cut area too** (`/api/send`), so the
   owner can see what the estimate was computed from without redoing the arithmetic. Keep
   that field in step with `cutAreaM2()`.

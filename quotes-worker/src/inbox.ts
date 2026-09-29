@@ -14,8 +14,9 @@
 
 import PostalMime, { type Email as ParsedEmail } from 'postal-mime';
 import type { ImapFlow } from 'imapflow';
-import { cutArea, missingInputs, recommendedTechnology, suggestedPricePerM2 } from '../../src/lib/quotes/calc';
-import { DEFAULT_CONDITIONS, SPREADSHEET_TYPES, isTechnology, type QuoteItem, type TechnologyId } from '../../src/lib/quotes/model';
+import { computeTotals, cutArea, missingInputs, recommendedTechnology, suggestedPricePerM2 } from '../../src/lib/quotes/calc';
+import { detectRegion, loadPricing, regionDistance, siteConditions, transportCalcFor } from '../../src/lib/quotes/pricing';
+import { SPREADSHEET_TYPES, isTechnology, type QuoteItem, type TechnologyId } from '../../src/lib/quotes/model';
 import { num, runJson, str } from './ai';
 import { queueAttachment } from './attachments';
 import { acquireLock, logQuoteMessage, releaseLock, setState } from './db';
@@ -380,6 +381,14 @@ async function createQuoteFromEmail(
   // (kámen/beton nebo zeď od 50 cm → lano, jinak pila).
   const uniqueTech = technologies.length ? [...new Set(technologies)] : [recommendedTechnology(material, thicknessCm)];
   const now = nowIso();
+  // Ceny a doprava podle kraje z adresy; nepoznaný kraj = výchozí nastavení ceníku.
+  const pricing = await loadPricing(env.DB);
+  const siteAddress = str(x.siteAddress, 200);
+  const city = str(x.city, 80);
+  const region = detectRegion(siteAddress, city);
+  const distanceKm = region ? regionDistance(pricing, region) : null;
+  const transportCalc = JSON.stringify(transportCalcFor(pricing, region));
+  const mode = uniqueTech.length > 1 ? 'varianty' : 'kombinace';
 
   // Zákazník do CRM (stejná tabulka jako /sprava), existující podle e-mailu použijeme.
   let customer = await env.DB.prepare('SELECT id FROM customers WHERE lower(email) = ? ORDER BY created_at DESC LIMIT 1')
@@ -401,17 +410,21 @@ async function createQuoteFromEmail(
         length_m: lengthM,
         thickness_cm: thicknessCm,
         area_m2: area,
-        price_per_m2: suggestedPricePerM2(technology, material),
+        price_per_m2: suggestedPricePerM2(technology, pricing, region),
       }))
     : [];
   const quoteDraft = {
     client_name: name,
     client_email: fromEmail,
     client_phone: phone,
-    site_address: str(x.siteAddress, 200),
-    city: str(x.city, 80),
+    site_address: siteAddress,
+    city,
+    mode,
     transport_price: 0,
-  };
+    distance_km: distanceKm,
+    transport_calc: transportCalc,
+  } as const;
+  const transportPrice = computeTotals(quoteDraft, items).transport;
   const missing = missingInputs(quoteDraft, items);
   if (items.length === 0 && area === null) missing.push('rozměry zdiva');
 
@@ -430,8 +443,8 @@ async function createQuoteFromEmail(
 
   const res = await env.DB.prepare(
     `INSERT INTO quotes (customer_id, client_name, client_email, client_phone, site_name, site_address, city, material, thickness_cm, length_m,
-       mode, transport_price, conditions, note, status, missing, source, inbox_message_id, email_subject, field_sources, created_at, created_by, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, 'ceka_na_udaje', ?, 'email', ?, ?, ?, ?, 'system', ?)`,
+       mode, transport_price, region, distance_km, transport_calc, conditions, note, status, missing, source, inbox_message_id, email_subject, field_sources, created_at, created_by, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ceka_na_udaje', ?, 'email', ?, ?, ?, ?, 'system', ?)`,
   )
     .bind(
       customer.id,
@@ -444,8 +457,12 @@ async function createQuoteFromEmail(
       material,
       thicknessCm,
       lengthM,
-      uniqueTech.length > 1 ? 'varianty' : 'kombinace',
-      JSON.stringify(DEFAULT_CONDITIONS),
+      mode,
+      transportPrice,
+      region,
+      distanceKm,
+      transportCalc,
+      JSON.stringify(siteConditions(pricing, uniqueTech)),
       `Z e-mailu: ${str(x.summary, 500) ?? subject}`,
       JSON.stringify([...new Set(missing)]),
       inboxId,

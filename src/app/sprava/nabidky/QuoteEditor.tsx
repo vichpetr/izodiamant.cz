@@ -4,8 +4,10 @@
 // (technologie × m² × cena/m²), doprava a texty do PDF. Nahoře pruh se souhrnem
 // ceny a tlačítkem „Vygenerovat přílohy“; formulář se ukládá sám po každé změně.
 //
-// Cena za m² se předvyplní středem ceníku (calculator.json), ale poslední slovo
-// má uživatel – přepsanou cenu nic automaticky nemění. Návrhy z příloh (krok 1)
+// Cena za m² se předvyplní z ceníku v adminu podle kraje zakázky (kraj se odhadne
+// z adresy), ale poslední slovo má uživatel – přepsanou cenu nic automaticky
+// nemění. Doprava se počítá z vzdálenosti a počtu pracovních dní (plocha / denní
+// výkon technologie), nebo se zadá ručně. Návrhy z příloh (krok 1)
 // se do formuláře propíšou po kliknutí na „Použít“. U údajů, které doplnila AI,
 // je štítek s původem; po ruční změně a uložení zmizí.
 
@@ -23,6 +25,19 @@ import {
   suggestedPricePerM2,
   variantsError,
 } from '@/lib/quotes/calc';
+import {
+  DEFAULT_REGION_LABEL,
+  REGIONS,
+  detectRegion,
+  parseTransportCalc,
+  regionDistance,
+  regionName,
+  siteConditions,
+  transportCalcFor,
+  type Pricing,
+  type TransportBreakdown,
+  type TransportCalc,
+} from '@/lib/quotes/pricing';
 import {
   DEFAULT_CONDITIONS,
   MATERIALS,
@@ -75,10 +90,13 @@ export default function QuoteEditor({
   quote,
   items: initialItems,
   files,
+  pricing,
   saveAction,
 }: {
   quote: Quote;
   items: QuoteItem[];
+  /** Aktuální ceník z adminu – ceny podle kraje a sazby dopravy. */
+  pricing: Pricing;
   /** Přílohy s rozborem z kroku 1 – vpravo jako „Návrhy z podkladů“. */
   files: QuoteFile[];
   saveAction: Action;
@@ -95,11 +113,23 @@ export default function QuoteEditor({
     thickness_cm: toStr(quote.thickness_cm),
     length_m: toStr(quote.length_m),
     transport_price: quote.transport_price ? String(quote.transport_price) : '',
+    region: quote.region ?? '',
+    distance_km: toStr(quote.distance_km),
     intro: quote.intro ?? '',
     conditions: (quote.conditions !== null ? parseJsonArray(quote.conditions) : DEFAULT_CONDITIONS).join('\n'),
     note: quote.note ?? '',
   });
   const [mode, setMode] = useState<QuoteMode>(quote.mode);
+  // Sazby dopravy uložené u nabídky (snímek ceníku); null = doprava zadaná ručně.
+  const [calc, setCalc] = useState<TransportCalc | null>(() => parseTransportCalc(quote.transport_calc));
+  // Kraj vybraný ručně se podle adresy už nepřepisuje.
+  // Nabídka s hotovým PDF se sama nemění (změna kraje by ji označila za zastaralou).
+  const [regionTouched, setRegionTouched] = useState(Boolean(quote.region || quote.pdf_key));
+  // Podmínky se skládají podle technologií, dokud je člověk ručně nepřepíše.
+  const [conditionsAuto, setConditionsAuto] = useState(() => {
+    const text = (quote.conditions !== null ? parseJsonArray(quote.conditions) : DEFAULT_CONDITIONS).join('\n');
+    return [siteConditions(pricing, initialItems.map((i) => i.technology)), siteConditions(pricing, [])].some((c) => c.join('\n') === text);
+  });
   const [items, setItems] = useState<ItemDraft[]>(() =>
     initialItems.map((i) => ({
       key: nextKey++,
@@ -127,6 +157,30 @@ export default function QuoteEditor({
     setF((prev) => ({ ...prev, [key]: e.target.value }));
     dropSource(key);
   };
+  const price = (technology: TechnologyId, region = f.region) => suggestedPricePerM2(technology, pricing, region || null);
+
+  /**
+   * Změna kraje: ceny z ceníku (neupravené ručně) přepne na ceny nového kraje a
+   * vzdálenost, pokud je prázdná nebo odpovídá orientační vzdálenosti starého kraje.
+   */
+  const changeRegion = (region: string) => {
+    if (region === f.region) return;
+    setItems((prev) => prev.map((i) => (toNum(i.price) === price(i.technology) ? { ...i, price: String(price(i.technology, region)) } : i)));
+    setF((prev) => {
+      const oldKm = regionDistance(pricing, prev.region || null);
+      const keepKm = prev.distance_km !== '' && toNum(prev.distance_km) !== oldKm;
+      const km = regionDistance(pricing, region || null);
+      return { ...prev, region, distance_km: keepKm ? prev.distance_km : toStr(km) };
+    });
+    // Cestovné na den může mít kraj vlastní – u automatické dopravy vezmeme sazby nového kraje.
+    if (calc) setCalc(transportCalcFor(pricing, region || null));
+  };
+  const detectedRegion = detectRegion(f.site_address, f.city);
+  // Kraj podle adresy, dokud ho člověk nevybral ručně.
+  useEffect(() => {
+    if (!regionTouched && detectedRegion && detectedRegion !== f.region) changeRegion(detectedRegion);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- reaguje jen na změnu adresy
+  }, [detectedRegion, regionTouched]);
 
   const computedArea = cutArea(toNum(f.length_m), toNum(f.thickness_cm));
   const parsedItems: QuoteItem[] = items.map((i, position) => {
@@ -141,23 +195,30 @@ export default function QuoteEditor({
       price_per_m2: Math.round(toNum(i.price)),
     };
   });
-  const totals = computeTotals({ mode, transport_price: Math.round(toNum(f.transport_price)) }, parsedItems);
+  const transportFields = {
+    mode,
+    transport_price: Math.round(toNum(f.transport_price)),
+    distance_km: f.distance_km === '' ? null : toNum(f.distance_km),
+    transport_calc: calc ? JSON.stringify(calc) : null,
+  };
+  const totals = computeTotals(transportFields, parsedItems);
+  const currentCalc = transportCalcFor(pricing, f.region || null);
+  const calcOutdated = calc !== null && JSON.stringify(calc) !== JSON.stringify(currentCalc);
+  const autoConditions = siteConditions(pricing, items.map((i) => i.technology)).join('\n');
+  const conditionsText = conditionsAuto ? autoConditions : f.conditions;
 
   // Varianty: každá technologie jen jednou (u kombinace se opakovat může).
   const duplicates = duplicateVariantTechnologies(mode, parsedItems);
   const variantsProblem = variantsError(mode, parsedItems);
   const usedTechnologies = new Set(items.map((i) => i.technology));
   // Co chybí k vygenerování příloh – kontroluje se až při kliknutí na „Vygenerovat přílohy“.
-  const missing = missingInputs(
-    { ...f, transport_price: Math.round(toNum(f.transport_price)) },
-    parsedItems,
-  );
+  const missing = missingInputs({ ...f, ...transportFields }, parsedItems);
   const [triedGenerate, setTriedGenerate] = useState(false);
 
   // ─── Automatické ukládání ───────────────────────────────────────────────────
   // Otisk formuláře: když se liší od posledního uloženého, za chvíli se uloží sám.
   const formRef = useRef<HTMLFormElement>(null);
-  const snapshot = JSON.stringify([f, mode, parsedItems, sources]);
+  const snapshot = JSON.stringify([f, mode, parsedItems, sources, calc, conditionsText]);
   const [baseline] = useState(snapshot);
   const [autoState, autoAction, autoSaving] = useActionState<AutoSaveState, FormData>(async (prev, fd) => {
     const snap = String(fd.get('__snapshot') ?? '');
@@ -209,7 +270,7 @@ export default function QuoteEditor({
         length: fullLength ? f.length_m : '',
         thickness: f.thickness_cm,
         area: '',
-        price: String(suggestedPricePerM2(technology, f.material || null)),
+        price: String(price(technology)),
       },
     ]);
   };
@@ -219,8 +280,8 @@ export default function QuoteEditor({
         if (i.key !== key) return i;
         // Změna technologie: cenu z ceníku přepneme, jen když ji uživatel neupravil.
         const repriced =
-          patch.technology && toNum(i.price) === suggestedPricePerM2(i.technology, f.material || null)
-            ? { price: String(suggestedPricePerM2(patch.technology, f.material || null)) }
+          patch.technology && toNum(i.price) === price(i.technology)
+            ? { price: String(price(patch.technology)) }
             : {};
         return { ...i, ...repriced, ...patch };
       }),
@@ -259,7 +320,7 @@ export default function QuoteEditor({
             thickness: byDims ? toStr(seg.thicknessCm) : '',
             area: byDims ? '' : toStr(seg.areaM2),
             // Ručně upravenou cenu stejné technologie zachováme, jinak ceník.
-            price: same?.price ?? String(suggestedPricePerM2(technology, material || null)),
+            price: same?.price ?? String(price(technology)),
           };
         }),
       );
@@ -280,7 +341,7 @@ export default function QuoteEditor({
         const technology = isTechnology(a.technology)
           ? a.technology
           : recommendedTechnology(material || null, a.thicknessCm ?? (toNum(f.thickness_cm) || null));
-        return [{ key: nextKey++, technology, ...dims, price: String(suggestedPricePerM2(technology, material || null)) }];
+        return [{ key: nextKey++, technology, ...dims, price: String(price(technology)) }];
       });
     }
   };
@@ -311,7 +372,7 @@ export default function QuoteEditor({
                   </span>
                 ))}
                 <span className="text-neutral-dark/60 whitespace-nowrap">
-                  Doprava <span className="text-neutral-dark">{formatCzk(toNum(f.transport_price))}</span>
+                  Doprava <span className="text-neutral-dark">{formatCzk(totals.transport)}</span>
                 </span>
                 <span className="whitespace-nowrap font-black">
                   Celkem <span className="text-lg">{formatCzk(totals.total)}</span>
@@ -325,7 +386,9 @@ export default function QuoteEditor({
                     <strong>{formatCzk(totals.variantTotals[i])}</strong>
                   </span>
                 ))}
-                <span className="text-[11px] text-neutral-dark/40 whitespace-nowrap">vč. dopravy {formatCzk(toNum(f.transport_price))}</span>
+                <span className="text-[11px] text-neutral-dark/40 whitespace-nowrap">
+                  vč. dopravy {[...new Set(totals.variantTransports)].map((t) => formatCzk(t)).join(' / ')}
+                </span>
               </>
             )}
           </div>
@@ -378,6 +441,7 @@ export default function QuoteEditor({
             <input type="hidden" name="mode" value={mode} />
             <input type="hidden" name="items" value={JSON.stringify(parsedItems)} />
             <input type="hidden" name="field_sources" value={JSON.stringify(sources)} />
+            <input type="hidden" name="transport_calc" value={calc ? JSON.stringify(calc) : ''} />
 
             <section className={cardCls}>
               <h2 className={`${headingCls} mb-4`}>Klient a místo realizace</h2>
@@ -398,8 +462,40 @@ export default function QuoteEditor({
                   <input name="site_name" value={f.site_name} onChange={set('site_name')} placeholder="Bytový dům č.p. 575" className={inputCls} />
                 </Field>
                 <Field label="Adresa" className="sm:col-span-2" source={src('site_address')}>
-                  <input name="site_address" value={f.site_address} onChange={set('site_address')} placeholder="Ulice 1. máje, Polička" className={inputCls} />
+                  <input name="site_address" value={f.site_address} onChange={set('site_address')} placeholder="Ulice 1. máje, 572 01 Polička" className={inputCls} />
                 </Field>
+                <Field label="Kraj (ceník a doprava)" className="sm:col-span-1">
+                  <select
+                    name="region"
+                    value={f.region}
+                    onChange={(e) => {
+                      setRegionTouched(true);
+                      changeRegion(e.target.value);
+                    }}
+                    className={inputCls}
+                  >
+                    {REGIONS.map((r) => (
+                      <option key={r.id} value={r.id}>{r.name}</option>
+                    ))}
+                    <option value="">{DEFAULT_REGION_LABEL}</option>
+                  </select>
+                </Field>
+                <p className="sm:col-span-2 self-end pb-2 text-xs text-neutral-dark/50">
+                  {detectedRegion
+                    ? detectedRegion === f.region
+                      ? 'Kraj odhadnutý podle adresy (PSČ / obec) – zkontrolujte.'
+                      : (
+                        <>
+                          Podle adresy: {regionName(detectedRegion)}.{' '}
+                          <button type="button" onClick={() => changeRegion(detectedRegion)} className="font-black uppercase tracking-widest text-[11px] text-primary-ink hover:underline">
+                            Použít
+                          </button>
+                        </>
+                      )
+                    : f.site_address || f.city
+                      ? 'Kraj z adresy nepoznán – doplňte PSČ, nebo ho vyberte. Jinak platí výchozí nastavení ceníku.'
+                      : 'Kraj se odhadne z adresy; bez něj platí výchozí nastavení ceníku.'}
+                </p>
               </div>
             </section>
 
@@ -456,7 +552,7 @@ export default function QuoteEditor({
                 <div>
                   <h2 className={headingCls}>Technologie a ceny</h2>
                   <p className="text-[11px] text-neutral-dark/50 mt-1">
-                    Cena za m² je předvyplněná středem ceníku – zkontrolujte ji.
+                    Cena za m² je předvyplněná z ceníku ({f.region ? regionName(f.region) : DEFAULT_REGION_LABEL.toLowerCase()}) – zkontrolujte ji.
                     {src('items') && <SourceBadge source={src('items')!} prefix="plocha" />}
                   </p>
                 </div>
@@ -477,7 +573,7 @@ export default function QuoteEditor({
 
               <div className="space-y-3">
                 {items.map((item, idx) => {
-                  const suggested = suggestedPricePerM2(item.technology, f.material || null);
+                  const suggested = price(item.technology);
                   const line = totals.lines[idx];
                   return (
                     <div
@@ -552,7 +648,7 @@ export default function QuoteEditor({
                       </p>
                       {toNum(item.price) !== suggested && suggested > 0 && (
                         <p className="col-span-12 -mt-1 text-[11px] text-neutral-dark/50">
-                          Ceník (střed): {formatCzk(suggested)}/m²{' '}
+                          Ceník ({f.region ? regionName(f.region) : DEFAULT_REGION_LABEL.toLowerCase()}): {formatCzk(suggested)}/m²{' '}
                           <button type="button" onClick={() => updateItem(item.key, { price: String(suggested) })} className="font-black uppercase tracking-widest text-primary-ink hover:underline">
                             Použít
                           </button>
@@ -577,10 +673,75 @@ export default function QuoteEditor({
                 + Přidat technologii
               </button>
 
-              <div className="grid sm:grid-cols-3 gap-4 mt-6">
-                <Field label="Doprava (Kč)">
-                  <input name="transport_price" inputMode="numeric" value={f.transport_price} onChange={set('transport_price')} className={inputCls} />
-                </Field>
+              <div className="mt-6 rounded-2xl border-2 border-neutral-light p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                  <h3 className="text-[11px] font-black uppercase tracking-widest text-neutral-dark">Doprava</h3>
+                  <div className="flex rounded-xl border-2 border-neutral-light overflow-hidden text-[11px] font-black uppercase tracking-widest">
+                    {([true, false] as const).map((auto) => (
+                      <button
+                        key={String(auto)}
+                        type="button"
+                        onClick={() => {
+                          if (auto && !calc) {
+                            setCalc(currentCalc);
+                            if (f.distance_km === '') setF((prev) => ({ ...prev, distance_km: toStr(regionDistance(pricing, prev.region || null)) }));
+                          }
+                          if (!auto && calc) {
+                            // Ruční zadání začne z posledního výpočtu.
+                            setF((prev) => ({ ...prev, transport_price: String(totals.transport) }));
+                            setCalc(null);
+                          }
+                        }}
+                        className={`px-3 py-1.5 ${Boolean(calc) === auto ? 'bg-neutral-dark text-white' : 'text-neutral-dark/50'}`}
+                      >
+                        {auto ? 'Spočítat' : 'Zadat ručně'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {calc ? (
+                  <div className="space-y-3">
+                    <div className="grid sm:grid-cols-3 gap-4">
+                      <Field label="Vzdálenost – jedna cesta (km)">
+                        <input name="distance_km" inputMode="decimal" value={f.distance_km} onChange={set('distance_km')} className={inputCls} />
+                      </Field>
+                      <p className="sm:col-span-2 self-end pb-2 text-xs text-neutral-dark/50">
+                        {calc.nightRate > 0 ? `Spí se na místě (ubytování ${formatCzk(calc.nightRate)}/noc).` : 'Denně se dojíždí (bez ubytování).'} Předvyplněno z ceníku ({f.region ? regionName(f.region) : DEFAULT_REGION_LABEL.toLowerCase()}) – vzdálenost upravte podle skutečné
+                        trasy z Mokré Lhoty.
+                      </p>
+                    </div>
+                    {mode === 'kombinace' || totals.lines.length <= 1 ? (
+                      <TransportLine detail={totals.transportDetail} calc={calc} km={toNum(f.distance_km)} />
+                    ) : (
+                      totals.lines.map((l, i) => (
+                        <TransportLine key={i} label={`Varianta ${technologyLabel(l.technology)}`} detail={totals.variantTransportDetails[i]} calc={calc} km={toNum(f.distance_km)} />
+                      ))
+                    )}
+                    <p className="text-[11px] text-neutral-dark/40">
+                      Denní výkon: {items.length ? [...new Set(items.map((i) => i.technology))].map((t) => `${technologyLabel(t)} ${formatNumber(calc.m2PerDay[t])} m²/den`).join(', ') : '—'}.
+                      {calcOutdated && (
+                        <>
+                          {' '}
+                          <span className="text-amber-800">Sazby se od výpočtu v ceníku změnily.</span>{' '}
+                          <button type="button" onClick={() => setCalc(currentCalc)} className="font-black uppercase tracking-widest text-primary-ink hover:underline">
+                            Použít aktuální
+                          </button>
+                        </>
+                      )}
+                    </p>
+                    <input type="hidden" name="transport_price" value={totals.transport} />
+                  </div>
+                ) : (
+                  <div className="grid sm:grid-cols-3 gap-4">
+                    <Field label="Doprava (Kč)">
+                      <input name="transport_price" inputMode="numeric" value={f.transport_price} onChange={set('transport_price')} className={inputCls} />
+                    </Field>
+                    <input type="hidden" name="distance_km" value={f.distance_km} />
+                    <p className="sm:col-span-2 self-end pb-2 text-xs text-neutral-dark/50">
+                      {mode === 'varianty' ? 'Stejná částka se připočte ke každé variantě.' : 'Pevná částka za dopravu.'}
+                    </p>
+                  </div>
+                )}
               </div>
             </section>
 
@@ -591,8 +752,33 @@ export default function QuoteEditor({
                   <textarea name="intro" rows={3} value={f.intro} onChange={set('intro')} className={`${inputCls} resize-y`} />
                 </Field>
                 <Field label="Technické podmínky (každá na nový řádek)">
-                  <textarea name="conditions" rows={4} value={f.conditions} onChange={set('conditions')} className={`${inputCls} resize-y`} />
+                  <textarea
+                    name="conditions"
+                    rows={4}
+                    value={conditionsText}
+                    onChange={(e) => {
+                      setConditionsAuto(false);
+                      setF((prev) => ({ ...prev, conditions: e.target.value }));
+                    }}
+                    className={`${inputCls} resize-y`}
+                  />
                 </Field>
+                <p className="-mt-2 text-[11px] text-neutral-dark/50">
+                  {conditionsAuto ? (
+                    'Voda a elektřina podle použitých technologií (nastavení ceníku). Po ruční úpravě se už nemění.'
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setConditionsAuto(true);
+                        setF((prev) => ({ ...prev, conditions: autoConditions }));
+                      }}
+                      className="font-black uppercase tracking-widest text-primary-ink hover:underline"
+                    >
+                      Podmínky podle technologií
+                    </button>
+                  )}
+                </p>
                 <Field label="Interní poznámka (do PDF nejde)">
                   <textarea name="note" rows={2} value={f.note} onChange={set('note')} className={`${inputCls} resize-y`} />
                 </Field>
@@ -615,6 +801,23 @@ export default function QuoteEditor({
         )}
       </div>
     </div>
+  );
+}
+
+/** Rozpis automatické dopravy: dny práce, cesta, cestovné. */
+function TransportLine({ label, detail, calc, km }: { label?: string; detail: TransportBreakdown | null; calc: TransportCalc; km: number }) {
+  if (!detail || detail.days === 0) {
+    return <p className="text-sm text-amber-800">{label ? `${label}: ` : ''}Doplňte vzdálenost a plochu položek – doprava se z nich spočítá.</p>;
+  }
+  const n = (count: number, one: string, few: string, many: string) => `${count} ${count === 1 ? one : count < 5 ? few : many}`;
+  return (
+    <p className="text-sm text-neutral-dark/70">
+      {label && <span className="font-bold text-neutral-dark">{label}: </span>}
+      {n(detail.days, 'den', 'dny', 'dní')} práce · {detail.trips}× cesta tam a zpět (2 × {formatNumber(km)} km × {formatCzk(calc.kmRate)}/km) ={' '}
+      {formatCzk(detail.travel)} + {detail.days} × {formatCzk(calc.dayRate)} cestovné
+      {detail.nights > 0 && ` + ${n(detail.nights, 'noc', 'noci', 'nocí')} × ${formatCzk(calc.nightRate)} ubytování`} ={' '}
+      <strong className="text-neutral-dark">{formatCzk(detail.total)}</strong>
+    </p>
   );
 }
 

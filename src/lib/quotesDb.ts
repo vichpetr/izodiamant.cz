@@ -4,8 +4,8 @@
 
 import { getDB } from './db';
 import { fingerprintHash, missingInputs } from './quotes/calc';
+import { PRICING_KEY, loadPricing, siteConditions, transportCalcFor, type Pricing } from './quotes/pricing';
 import {
-  DEFAULT_CONDITIONS,
   fillableVykazIds,
   type Quote,
   type QuoteFile,
@@ -96,12 +96,24 @@ export async function createQuote(input: {
 }): Promise<number> {
   const db = requireDB();
   const now = new Date().toISOString();
+  // Nová nabídka počítá dopravu automaticky; kraj a vzdálenost doplní editor podle adresy.
+  const pricing = await getPricing();
   const res = await db
     .prepare(
-      `INSERT INTO quotes (customer_id, client_name, client_email, client_phone, mode, transport_price, conditions, status, source, created_at, created_by, updated_at)
-       VALUES (?, ?, ?, ?, 'kombinace', 0, ?, 'koncept', 'manual', ?, ?, ?)`,
+      `INSERT INTO quotes (customer_id, client_name, client_email, client_phone, mode, transport_price, transport_calc, conditions, status, source, created_at, created_by, updated_at)
+       VALUES (?, ?, ?, ?, 'kombinace', 0, ?, ?, 'koncept', 'manual', ?, ?, ?)`,
     )
-    .bind(input.customerId, input.clientName, input.clientEmail, input.clientPhone, JSON.stringify(DEFAULT_CONDITIONS), now, input.createdBy, now)
+    .bind(
+      input.customerId,
+      input.clientName,
+      input.clientEmail,
+      input.clientPhone,
+      JSON.stringify(transportCalcFor(pricing, null)),
+      JSON.stringify(siteConditions(pricing, [])),
+      now,
+      input.createdBy,
+      now,
+    )
     .run();
   return Number(res.meta.last_row_id);
 }
@@ -119,6 +131,9 @@ export type QuoteFormFields = Pick<
   | 'length_m'
   | 'mode'
   | 'transport_price'
+  | 'region'
+  | 'distance_km'
+  | 'transport_calc'
   | 'intro'
   | 'conditions'
   | 'note'
@@ -269,4 +284,30 @@ export async function listCustomerOptions(): Promise<{ id: number; name: string;
     .prepare('SELECT id, name, email, phone FROM customers ORDER BY created_at DESC LIMIT 500')
     .all<{ id: number; name: string; email: string | null; phone: string | null }>();
   return results;
+}
+
+// ─── Ceník (nastavení v adminu) ──────────────────────────────────────────────
+
+/** Ceník služeb po krajích a doprava; bez DB nebo záznamu výchozí z pricing.json. */
+export function getPricing(): Promise<Pricing> {
+  return loadPricing(getDB());
+}
+
+export async function savePricing(pricing: Pricing, by: string): Promise<void> {
+  await requireDB()
+    .prepare(
+      `INSERT INTO settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?)
+       ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at, updated_by = excluded.updated_by`,
+    )
+    .bind(PRICING_KEY, JSON.stringify(pricing), new Date().toISOString(), by)
+    .run();
+}
+
+/** Kdo a kdy ceník naposledy změnil (null = platí výchozí z repozitáře). */
+export async function pricingUpdatedInfo(): Promise<{ updated_at: string; updated_by: string | null } | null> {
+  try {
+    return (await getDB()?.prepare('SELECT updated_at, updated_by FROM settings WHERE key = ?').bind(PRICING_KEY).first<{ updated_at: string; updated_by: string | null }>()) ?? null;
+  } catch {
+    return null;
+  }
 }
