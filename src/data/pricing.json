@@ -1,28 +1,150 @@
 {
   "services": {
-    "diamantove-lano": { "price": 4800, "m2PerDay": 6, "water": true, "power": "400" },
-    "retezova-pila": { "price": 2600, "m2PerDay": 10, "water": false, "power": "230" },
-    "chemicka-injektaz": { "price": 3900, "m2PerDay": 10, "water": false, "power": "230" }
+    "diamantove-lano": {
+      "price": 4800,
+      "m2PerDay": 6,
+      "water": true,
+      "power": "400"
+    },
+    "retezova-pila": {
+      "price": 2600,
+      "m2PerDay": 10,
+      "water": false,
+      "power": "230"
+    },
+    "chemicka-injektaz": {
+      "price": 3900,
+      "m2PerDay": 10,
+      "water": false,
+      "power": "230"
+    }
   },
   "transport": {
     "kmRate": 12,
-    "dayRate": 2500,
+    "dayRate": 500,
+    "nightRate": 2000,
+    "overnight": true,
     "distanceKm": null
   },
   "regions": {
-    "pardubicky": { "prices": { "diamantove-lano": 4200, "retezova-pila": 2200 }, "distanceKm": 45, "dayRate": null },
-    "stredocesky": { "prices": { "diamantove-lano": 4200, "retezova-pila": 2200 }, "distanceKm": 120, "dayRate": null },
-    "kralovehradecky": { "prices": { "diamantove-lano": 4200, "retezova-pila": 2200 }, "distanceKm": 70, "dayRate": null },
-    "praha": { "prices": { "diamantove-lano": 4800, "retezova-pila": 2600 }, "distanceKm": 150, "dayRate": null },
-    "liberecky": { "prices": { "diamantove-lano": 4800, "retezova-pila": 2600 }, "distanceKm": 160, "dayRate": null },
-    "plzensky": { "prices": { "diamantove-lano": 4800, "retezova-pila": 2600 }, "distanceKm": 240, "dayRate": null },
-    "ustecky": { "prices": { "diamantove-lano": 4800, "retezova-pila": 2600 }, "distanceKm": 230, "dayRate": null },
-    "vysocina": { "prices": {}, "distanceKm": 85, "dayRate": null },
-    "jihomoravsky": { "prices": {}, "distanceKm": 120, "dayRate": null },
-    "jihocesky": { "prices": {}, "distanceKm": 200, "dayRate": null },
-    "karlovarsky": { "prices": {}, "distanceKm": 310, "dayRate": null },
-    "olomoucky": { "prices": {}, "distanceKm": 130, "dayRate": null },
-    "zlinsky": { "prices": {}, "distanceKm": 180, "dayRate": null },
-    "moravskoslezsky": { "prices": {}, "distanceKm": 220, "dayRate": null }
+    "pardubicky": {
+      "prices": {
+        "diamantove-lano": 4200,
+        "retezova-pila": 2200
+      },
+      "distanceKm": 45,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": false
+    },
+    "stredocesky": {
+      "prices": {
+        "diamantove-lano": 4200,
+        "retezova-pila": 2200
+      },
+      "distanceKm": 120,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    },
+    "kralovehradecky": {
+      "prices": {
+        "diamantove-lano": 4200,
+        "retezova-pila": 2200
+      },
+      "distanceKm": 70,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": false
+    },
+    "praha": {
+      "prices": {
+        "diamantove-lano": 4800,
+        "retezova-pila": 2600
+      },
+      "distanceKm": 150,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    },
+    "liberecky": {
+      "prices": {
+        "diamantove-lano": 4800,
+        "retezova-pila": 2600
+      },
+      "distanceKm": 160,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    },
+    "plzensky": {
+      "prices": {
+        "diamantove-lano": 4800,
+        "retezova-pila": 2600
+      },
+      "distanceKm": 240,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    },
+    "ustecky": {
+      "prices": {
+        "diamantove-lano": 4800,
+        "retezova-pila": 2600
+      },
+      "distanceKm": 230,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    },
+    "vysocina": {
+      "prices": {},
+      "distanceKm": 85,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    },
+    "jihomoravsky": {
+      "prices": {},
+      "distanceKm": 120,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    },
+    "jihocesky": {
+      "prices": {},
+      "distanceKm": 200,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    },
+    "karlovarsky": {
+      "prices": {},
+      "distanceKm": 310,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    },
+    "olomoucky": {
+      "prices": {},
+      "distanceKm": 130,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    },
+    "zlinsky": {
+      "prices": {},
+      "distanceKm": 180,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    },
+    "moravskoslezsky": {
+      "prices": {},
+      "distanceKm": 220,
+      "dayRate": null,
+      "nightRate": null,
+      "overnight": null
+    }
   }
 }

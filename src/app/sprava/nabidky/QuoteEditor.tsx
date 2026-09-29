@@ -203,7 +203,8 @@ export default function QuoteEditor({
   };
   const totals = computeTotals(transportFields, parsedItems);
   const currentCalc = transportCalcFor(pricing, f.region || null);
-  const calcOutdated = calc !== null && JSON.stringify(calc) !== JSON.stringify(currentCalc);
+  // Spaní na místě je volba nabídky – do porovnání sazeb s ceníkem nepatří.
+  const calcOutdated = calc !== null && JSON.stringify({ ...calc, overnight: currentCalc.overnight }) !== JSON.stringify(currentCalc);
   const autoConditions = siteConditions(pricing, items.map((i) => i.technology)).join('\n');
   const conditionsText = conditionsAuto ? autoConditions : f.conditions;
 
@@ -705,8 +706,20 @@ export default function QuoteEditor({
                       <Field label="Vzdálenost – jedna cesta (km)">
                         <input name="distance_km" inputMode="decimal" value={f.distance_km} onChange={set('distance_km')} className={inputCls} />
                       </Field>
-                      <p className="sm:col-span-2 self-end pb-2 text-xs text-neutral-dark/50">
-                        Předvyplněno orientačně z ceníku ({f.region ? regionName(f.region) : DEFAULT_REGION_LABEL.toLowerCase()}) – upravte podle skutečné trasy z Mokré Lhoty.
+                      <Field label="Vícedenní zakázka">
+                        <select
+                          value={calc.overnight ? 'ano' : 'ne'}
+                          onChange={(e) => setCalc({ ...calc, overnight: e.target.value === 'ano' })}
+                          className={inputCls}
+                          aria-label="Spí se na místě"
+                        >
+                          <option value="ano">spí se na místě (hotel)</option>
+                          <option value="ne">denně se dojíždí</option>
+                        </select>
+                      </Field>
+                      <p className="self-end pb-2 text-xs text-neutral-dark/50">
+                        Předvyplněno z ceníku ({f.region ? regionName(f.region) : DEFAULT_REGION_LABEL.toLowerCase()}) – vzdálenost upravte podle skutečné
+                        trasy z Mokré Lhoty.
                       </p>
                     </div>
                     {mode === 'kombinace' || totals.lines.length <= 1 ? (
@@ -808,11 +821,14 @@ function TransportLine({ label, detail, calc, km }: { label?: string; detail: Tr
   if (!detail || detail.days === 0) {
     return <p className="text-sm text-amber-800">{label ? `${label}: ` : ''}Doplňte vzdálenost a plochu položek – doprava se z nich spočítá.</p>;
   }
+  const n = (count: number, one: string, few: string, many: string) => `${count} ${count === 1 ? one : count < 5 ? few : many}`;
   return (
     <p className="text-sm text-neutral-dark/70">
       {label && <span className="font-bold text-neutral-dark">{label}: </span>}
-      {detail.days} {detail.days === 1 ? 'den' : detail.days < 5 ? 'dny' : 'dní'} práce · cesta tam a zpět 2 × {formatNumber(km)} km × {formatCzk(calc.kmRate)}/km ={' '}
-      {formatCzk(detail.travel)} + {detail.days} × {formatCzk(calc.dayRate)} cestovné = <strong className="text-neutral-dark">{formatCzk(detail.total)}</strong>
+      {n(detail.days, 'den', 'dny', 'dní')} práce · {detail.trips}× cesta tam a zpět (2 × {formatNumber(km)} km × {formatCzk(calc.kmRate)}/km) ={' '}
+      {formatCzk(detail.travel)} + {detail.days} × {formatCzk(calc.dayRate)} cestovné
+      {detail.nights > 0 && ` + ${n(detail.nights, 'noc', 'noci', 'nocí')} × ${formatCzk(calc.nightRate)} ubytování`} ={' '}
+      <strong className="text-neutral-dark">{formatCzk(detail.total)}</strong>
     </p>
   );
 }
