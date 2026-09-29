@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS email_log (
   to_email TEXT NOT NULL,
   subject TEXT NOT NULL,
   status TEXT NOT NULL,       -- 'sent' | 'error'
-  resend_id TEXT,             -- id z Resend odpovědi
+  resend_id TEXT,             -- Message-ID odeslané zprávy (název z dob Resendu)
   error TEXT,
   sent_by TEXT NOT NULL,      -- e-mail přihlášeného admina
   sent_at TEXT NOT NULL       -- ISO čas odeslání

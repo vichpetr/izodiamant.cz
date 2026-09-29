@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import { getDB } from '@/lib/db';
 import { loadPricing, priceRanges } from '@/lib/quotes/pricing';
 
-export const runtime = 'edge';
-
 /**
  * Rozmezí cen služeb (Kč/m² řezné plochy) z ceníku v adminu – pro kalkulačku na
  * webu. Veřejné: vrací jen min/max, ne ceny po krajích ani sazby dopravy.

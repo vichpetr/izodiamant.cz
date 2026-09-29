@@ -24,18 +24,18 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       TARGET: ${{ github.ref == 'refs/heads/master' && 'production' || 'preview' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Chybí secrets – přeskočeno
         if: env.CF_TOKEN == ''
         run: echo "CLOUDFLARE_API_TOKEN není nastaven → deploy přeskočen (viz deployment.MD)."
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: env.CF_TOKEN != ''
         with:
           node-version: 22

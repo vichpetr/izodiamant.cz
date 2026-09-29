@@ -39,7 +39,6 @@
     "node_modules",
     "worker",
     "quotes-worker",
-    ".open-next",
-    ".vercel"
+    ".open-next"
   ]
 }
