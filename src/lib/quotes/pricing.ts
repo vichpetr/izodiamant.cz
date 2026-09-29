@@ -53,10 +53,8 @@ export interface TransportSettings {
   kmRate: number;
   /** Výchozí cestovné (strava) na každý pracovní den. */
   dayRate: number;
-  /** Výchozí ubytování za noc – jen když se spí na místě. */
+  /** Výchozí ubytování za noc; 0 = nespí se na místě, denně se dojíždí. */
   nightRate: number;
-  /** Výchozí: u vícedenní zakázky se spí na místě (jinak se denně dojíždí). */
-  overnight: boolean;
   /** Vzdálenost pro výchozí nastavení (kraj nepoznaný); null = zadat ručně. */
   distanceKm: number | null;
 }
@@ -68,10 +66,8 @@ export interface RegionSettings {
   distanceKm: number | null;
   /** Vlastní cestovné na den; null = výchozí. */
   dayRate: number | null;
-  /** Vlastní ubytování za noc; null = výchozí. */
+  /** Vlastní ubytování za noc (0 = dojíždí se); null = výchozí. */
   nightRate: number | null;
-  /** Spí se na místě (true), denně se dojíždí (false); null = výchozí. */
-  overnight: boolean | null;
 }
 
 export interface Pricing {
@@ -87,9 +83,8 @@ export interface Pricing {
 export interface TransportCalc {
   kmRate: number;
   dayRate: number;
+  /** Ubytování za noc; 0 = nespí se na místě, každý den se jede tam a zpět. */
   nightRate: number;
-  /** U vícedenní zakázky se spí na místě; jinak se každý den jede tam a zpět. */
-  overnight: boolean;
   m2PerDay: Record<TechnologyId, number>;
 }
 
@@ -120,7 +115,6 @@ export function parsePricing(raw: unknown, base: Pricing = DEFAULT_PRICING): Pri
       kmRate: num(transport.kmRate, 0, 1000) ?? base.transport.kmRate,
       dayRate: num(transport.dayRate, 0, 1_000_000) ?? base.transport.dayRate,
       nightRate: num(transport.nightRate, 0, 1_000_000) ?? base.transport.nightRate,
-      overnight: typeof transport.overnight === 'boolean' ? transport.overnight : base.transport.overnight,
       distanceKm: 'distanceKm' in transport ? num(transport.distanceKm, 0, 3000) : base.transport.distanceKm,
     },
     regions: {},
@@ -150,7 +144,6 @@ export function parsePricing(raw: unknown, base: Pricing = DEFAULT_PRICING): Pri
       distanceKm: r ? num(r.distanceKm, 0, 3000) : b.distanceKm,
       dayRate: r ? num(r.dayRate, 0, 1_000_000) : b.dayRate,
       nightRate: r ? num(r.nightRate, 0, 1_000_000) : b.nightRate,
-      overnight: r ? (typeof r.overnight === 'boolean' ? r.overnight : null) : b.overnight,
     };
   }
   return out;
@@ -204,7 +197,6 @@ export function transportCalcFor(pricing: Pricing, region: string | null | undef
     kmRate: pricing.transport.kmRate,
     dayRate: r?.dayRate ?? pricing.transport.dayRate,
     nightRate: r?.nightRate ?? pricing.transport.nightRate,
-    overnight: r?.overnight ?? pricing.transport.overnight,
     m2PerDay: Object.fromEntries(TECHNOLOGIES.map((t) => [t.id, pricing.services[t.id].m2PerDay])) as Record<TechnologyId, number>,
   };
 }
@@ -219,11 +211,8 @@ export function parseTransportCalc(raw: string | null | undefined): TransportCal
     if (kmRate === null || dayRate === null) return null;
     const m2PerDay = {} as Record<TechnologyId, number>;
     for (const { id } of TECHNOLOGIES) m2PerDay[id] = num(rates[id], 0.1, 1000) ?? DEFAULT_PRICING.services[id].m2PerDay;
-    // Starší snímky (bez ubytování) počítaly jednu cestu a cestovné za každý den –
-    // tak je i čteme, ať se jejich cena nezmění.
     const nightRate = num(v.nightRate, 0, 1_000_000) ?? 0;
-    const overnight = typeof v.overnight === 'boolean' ? v.overnight : true;
-    return { kmRate, dayRate, nightRate, overnight, m2PerDay };
+    return { kmRate, dayRate, nightRate, m2PerDay };
   } catch {
     return null;
   }
@@ -232,7 +221,7 @@ export function parseTransportCalc(raw: string | null | undefined): TransportCal
 export interface TransportBreakdown {
   /** Pracovní dny potřebné na zakázku (plocha / denní výkon, zaokrouhleno nahoru). */
   days: number;
-  /** Cesty tam a zpět: 1 při spaní na místě, jinak jedna za každý den. */
+  /** Cesty tam a zpět: 1 při spaní na místě (ubytování > 0), jinak jedna za každý den. */
   trips: number;
   /** Noci na ubytování (dny − 1 při spaní na místě, jinak 0). */
   nights: number;
@@ -246,9 +235,9 @@ export interface TransportBreakdown {
 }
 
 /**
- * Doprava podle toho, jestli se spí na místě:
- * - spí se na místě: 1 × cesta tam a zpět + (dny − 1) nocí × ubytování,
- * - dojíždí se: každý den cesta tam a zpět, bez ubytování;
+ * Doprava podle ubytování za noc:
+ * - ubytování > 0 → spí se na místě: 1 × cesta tam a zpět + (dny − 1) nocí × ubytování,
+ * - ubytování 0 → dojíždí se: každý den cesta tam a zpět;
  * v obou případech + dny × cestovné (strava). Dny: každá technologie má svůj
  * denní výkon (m²/den); u kombinace se časy sčítají a zaokrouhlí nahoru na celé
  * dny. Celkem na stokoruny nahoru.
@@ -257,8 +246,9 @@ export function computeTransport(calc: TransportCalc, distanceKm: number, work: 
   const rawDays = work.reduce((sum, w) => sum + (w.area_m2 > 0 ? w.area_m2 / calc.m2PerDay[w.technology] : 0), 0);
   // Drobné zaokrouhlovací zbytky (3,0000001 dne) nesmí přidat celý den.
   const days = rawDays > 0 ? Math.max(1, Math.ceil(rawDays - 1e-6)) : 0;
-  const trips = days === 0 ? 0 : calc.overnight ? 1 : days;
-  const nights = calc.overnight && days > 1 ? days - 1 : 0;
+  const overnight = calc.nightRate > 0;
+  const trips = days === 0 ? 0 : overnight ? 1 : days;
+  const nights = overnight && days > 1 ? days - 1 : 0;
   const travel = trips * 2 * distanceKm * calc.kmRate;
   const stay = days * calc.dayRate;
   const lodging = nights * calc.nightRate;

@@ -23,7 +23,6 @@
     "kmRate": 12,
     "dayRate": 500,
     "nightRate": 2000,
-    "overnight": true,
     "distanceKm": null
   },
   "regions": {
@@ -34,8 +33,7 @@
       },
       "distanceKm": 45,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": false
+      "nightRate": 0
     },
     "stredocesky": {
       "prices": {
@@ -44,8 +42,7 @@
       },
       "distanceKm": 120,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     },
     "kralovehradecky": {
       "prices": {
@@ -54,8 +51,7 @@
       },
       "distanceKm": 70,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": false
+      "nightRate": 0
     },
     "praha": {
       "prices": {
@@ -64,8 +60,7 @@
       },
       "distanceKm": 150,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     },
     "liberecky": {
       "prices": {
@@ -74,8 +69,7 @@
       },
       "distanceKm": 160,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     },
     "plzensky": {
       "prices": {
@@ -84,8 +78,7 @@
       },
       "distanceKm": 240,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     },
     "ustecky": {
       "prices": {
@@ -94,57 +87,49 @@
       },
       "distanceKm": 230,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     },
     "vysocina": {
       "prices": {},
       "distanceKm": 85,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     },
     "jihomoravsky": {
       "prices": {},
       "distanceKm": 120,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     },
     "jihocesky": {
       "prices": {},
       "distanceKm": 200,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     },
     "karlovarsky": {
       "prices": {},
       "distanceKm": 310,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     },
     "olomoucky": {
       "prices": {},
       "distanceKm": 130,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     },
     "zlinsky": {
       "prices": {},
       "distanceKm": 180,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     },
     "moravskoslezsky": {
       "prices": {},
       "distanceKm": 220,
       "dayRate": null,
-      "nightRate": null,
-      "overnight": null
+      "nightRate": null
     }
   }
 }

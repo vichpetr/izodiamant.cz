@@ -203,8 +203,7 @@ export default function QuoteEditor({
   };
   const totals = computeTotals(transportFields, parsedItems);
   const currentCalc = transportCalcFor(pricing, f.region || null);
-  // Spaní na místě je volba nabídky – do porovnání sazeb s ceníkem nepatří.
-  const calcOutdated = calc !== null && JSON.stringify({ ...calc, overnight: currentCalc.overnight }) !== JSON.stringify(currentCalc);
+  const calcOutdated = calc !== null && JSON.stringify(calc) !== JSON.stringify(currentCalc);
   const autoConditions = siteConditions(pricing, items.map((i) => i.technology)).join('\n');
   const conditionsText = conditionsAuto ? autoConditions : f.conditions;
 
@@ -706,19 +705,8 @@ export default function QuoteEditor({
                       <Field label="Vzdálenost – jedna cesta (km)">
                         <input name="distance_km" inputMode="decimal" value={f.distance_km} onChange={set('distance_km')} className={inputCls} />
                       </Field>
-                      <Field label="Vícedenní zakázka">
-                        <select
-                          value={calc.overnight ? 'ano' : 'ne'}
-                          onChange={(e) => setCalc({ ...calc, overnight: e.target.value === 'ano' })}
-                          className={inputCls}
-                          aria-label="Spí se na místě"
-                        >
-                          <option value="ano">spí se na místě (hotel)</option>
-                          <option value="ne">denně se dojíždí</option>
-                        </select>
-                      </Field>
-                      <p className="self-end pb-2 text-xs text-neutral-dark/50">
-                        Předvyplněno z ceníku ({f.region ? regionName(f.region) : DEFAULT_REGION_LABEL.toLowerCase()}) – vzdálenost upravte podle skutečné
+                      <p className="sm:col-span-2 self-end pb-2 text-xs text-neutral-dark/50">
+                        {calc.nightRate > 0 ? `Spí se na místě (ubytování ${formatCzk(calc.nightRate)}/noc).` : 'Denně se dojíždí (bez ubytování).'} Předvyplněno z ceníku ({f.region ? regionName(f.region) : DEFAULT_REGION_LABEL.toLowerCase()}) – vzdálenost upravte podle skutečné
                         trasy z Mokré Lhoty.
                       </p>
                     </div>

@@ -27,12 +27,7 @@ import { submitWithoutReset, useToastAction, type Action } from './useToastActio
 const str = (v: number | null | undefined) => (v === null || v === undefined ? '' : String(v).replace('.', ','));
 
 type ServiceDraft = { price: string; m2PerDay: string; water: boolean; power: Power };
-/** Spaní na místě u kraje: '' = podle výchozího nastavení. */
-type Overnight = '' | 'ano' | 'ne';
-type RegionDraft = { prices: Record<TechnologyId, string>; distanceKm: string; dayRate: string; nightRate: string; overnight: Overnight };
-
-const toOvernight = (v: boolean | null): Overnight => (v === null ? '' : v ? 'ano' : 'ne');
-const fromOvernight = (v: Overnight): boolean | null => (v === '' ? null : v === 'ano');
+type RegionDraft = { prices: Record<TechnologyId, string>; distanceKm: string; dayRate: string; nightRate: string };
 
 function toDraft(p: Pricing) {
   return {
@@ -43,7 +38,6 @@ function toDraft(p: Pricing) {
       kmRate: str(p.transport.kmRate),
       dayRate: str(p.transport.dayRate),
       nightRate: str(p.transport.nightRate),
-      overnight: p.transport.overnight,
       distanceKm: str(p.transport.distanceKm),
     },
     regions: Object.fromEntries(
@@ -54,7 +48,6 @@ function toDraft(p: Pricing) {
           distanceKm: str(p.regions[r.id].distanceKm),
           dayRate: str(p.regions[r.id].dayRate),
           nightRate: str(p.regions[r.id].nightRate),
-          overnight: toOvernight(p.regions[r.id].overnight),
         },
       ]),
     ) as Record<RegionId, RegionDraft>,
@@ -68,7 +61,7 @@ function fromDraft(d: Draft): Pricing {
   return parsePricing({
     services: d.services,
     transport: d.transport,
-    regions: Object.fromEntries(REGIONS.map((r) => [r.id, { ...d.regions[r.id], overnight: fromOvernight(d.regions[r.id].overnight) }])),
+    regions: Object.fromEntries(REGIONS.map((r) => [r.id, d.regions[r.id]])),
   });
 }
 
@@ -100,7 +93,7 @@ export default function PricingSettings({
     setD((prev) => ({ ...prev, services: { ...prev.services, [id]: { ...prev.services[id], ...patch } } }));
   const setRegion = (id: RegionId, patch: Partial<RegionDraft>) =>
     setD((prev) => ({ ...prev, regions: { ...prev.regions, [id]: { ...prev.regions[id], ...patch } } }));
-  const setTransport = (key: keyof Draft['transport'], value: string | boolean) =>
+  const setTransport = (key: keyof Draft['transport'], value: string) =>
     setD((prev) => ({ ...prev, transport: { ...prev.transport, [key]: value } }));
 
   // Ukázkové výpočty dopravy: 30 m² pilou (3 dny) – se spaním na místě a s dojížděním.
@@ -109,7 +102,6 @@ export default function PricingSettings({
     { label: `${DEFAULT_REGION_LABEL.toLowerCase()}, 150 km`, calc: transportCalcFor(parsed, null), km: 150 },
     { label: 'Pardubický kraj', calc: transportCalcFor(parsed, 'pardubicky'), km: parsed.regions.pardubicky.distanceKm ?? 45 },
   ].map((e) => ({ ...e, t: computeTransport(e.calc, e.km, exampleWork) }));
-  const overnightLabel = (v: boolean) => (v ? 'ano' : 'ne');
 
   return (
     <form onSubmit={submitWithoutReset(formAction)} className="space-y-6">
@@ -178,7 +170,7 @@ export default function PricingSettings({
         <h2 className={`${headingCls} mb-1`}>Ceny a vzdálenosti po krajích</h2>
         <p className="text-xs text-neutral-dark/50 mb-4">
           Prázdné pole kraje = hodnota z řádku <strong>{DEFAULT_REGION_LABEL}</strong> (ten platí i tam, kde se kraj z adresy nepozná).
-          Vzdálenost je orientační (jedna cesta z Mokré Lhoty) a v nabídce jde přepsat.
+          Vzdálenost je orientační (jedna cesta z Mokré Lhoty) a v nabídce jde přepsat. Ubytování 0 = nespí se na místě, denně se dojíždí.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -190,7 +182,6 @@ export default function PricingSettings({
                 ))}
                 <th className="text-right py-2 px-2">Vzdálenost (km)</th>
                 <th className="text-right py-2 px-2">Cestovné / den (Kč)</th>
-                <th className="py-2 px-2">Spí se na místě</th>
                 <th className="text-right py-2 pl-2">Ubytování / noc (Kč)</th>
               </tr>
             </thead>
@@ -231,18 +222,6 @@ export default function PricingSettings({
                         className={smallInput}
                         aria-label={`Cestovné na den – ${r.name}`}
                       />
-                    </td>
-                    <td className="py-1.5 px-2 w-36">
-                      <select
-                        value={row.overnight}
-                        onChange={(e) => setRegion(r.id, { overnight: e.target.value as Overnight })}
-                        className={`${inputCls} !px-2 !py-1.5 text-sm ${row.overnight === '' ? 'text-neutral-dark/40' : ''}`}
-                        aria-label={`Spí se na místě – ${r.name}`}
-                      >
-                        <option value="">{overnightLabel(parsed.transport.overnight)} (výchozí)</option>
-                        <option value="ano">ano – hotel</option>
-                        <option value="ne">ne – dojíždí se</option>
-                      </select>
                     </td>
                     <td className="py-1.5 pl-2 w-32">
                       <input
@@ -292,17 +271,6 @@ export default function PricingSettings({
                     aria-label={`Cestovné na den – ${DEFAULT_REGION_LABEL}`}
                   />
                 </td>
-                <td className="py-2 px-2 w-36">
-                  <select
-                    value={d.transport.overnight ? 'ano' : 'ne'}
-                    onChange={(e) => setTransport('overnight', e.target.value === 'ano')}
-                    className={`${inputCls} !px-2 !py-1.5 text-sm`}
-                    aria-label={`Spí se na místě – ${DEFAULT_REGION_LABEL}`}
-                  >
-                    <option value="ano">ano – hotel</option>
-                    <option value="ne">ne – dojíždí se</option>
-                  </select>
-                </td>
                 <td className="py-2 pl-2 w-32">
                   <input
                     inputMode="numeric"
@@ -321,9 +289,9 @@ export default function PricingSettings({
       <section className={cardCls}>
         <h2 className={`${headingCls} mb-1`}>Doprava</h2>
         <p className="text-xs text-neutral-dark/50 mb-4">
-          Pracovní dny = řezná plocha / výkon technologie za den (nahoru na celé dny). Když se <strong>spí na místě</strong>: jedna cesta tam
-          a zpět + (dny − 1) nocí × ubytování. Když se <strong>dojíždí</strong>: každý den cesta tam a zpět, bez ubytování. V obou případech
-          + dny × cestovné. Cesta = 2 × vzdálenost × Kč/km. V nabídce jde spaní na místě přepnout.
+          Pracovní dny = řezná plocha / výkon technologie za den (nahoru na celé dny). <strong>Ubytování / noc větší než 0</strong> = spí se
+          na místě: jedna cesta tam a zpět + (dny − 1) nocí × ubytování. <strong>Ubytování 0</strong> = dojíždí se: každý den cesta tam a
+          zpět. V obou případech + dny × cestovné (i to může být 0). Cesta = 2 × vzdálenost × Kč/km.
         </p>
         <div className="grid sm:grid-cols-3 gap-4">
           <label className="flex flex-col gap-1">
@@ -334,7 +302,7 @@ export default function PricingSettings({
         <div className="text-xs text-neutral-dark/60 mt-3 space-y-0.5">
           {examples.map(({ label, calc, km, t }) => (
             <p key={label}>
-              Příklad – 30 m² pilou, {label} ({calc.overnight ? 'spí se na místě' : 'dojíždí se'}, {formatNumber(km)} km): {t.days}{' '}
+              Příklad – 30 m² pilou, {label} ({calc.nightRate > 0 ? 'spí se na místě' : 'dojíždí se'}, {formatNumber(km)} km): {t.days}{' '}
               {t.days === 1 ? 'den' : t.days < 5 ? 'dny' : 'dní'} · {t.trips}× cesta {formatCzk(t.travel)} + cestovné {formatCzk(t.stay)}
               {t.nights > 0 && ` + ${t.nights} ${t.nights === 1 ? 'noc' : t.nights < 5 ? 'noci' : 'nocí'} ${formatCzk(t.lodging)}`} ={' '}
               <strong>{formatCzk(t.total)}</strong>
