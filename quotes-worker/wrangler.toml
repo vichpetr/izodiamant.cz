@@ -91,8 +91,8 @@ INBOX_MAX_PER_RUN = "10"
 # Prázdné = složka se najde podle IMAP special-use (\Drafts, \Sent).
 DRAFTS_FOLDER = ""
 SENT_FOLDER = ""
-# Fáze 3b – přímé odeslání z aplikace. Do té doby jen koncepty do schránky.
-SEND_ENABLED = "false"
+# Fáze 3b – přímé odeslání z aplikace (tlačítko „Odeslat klientovi“ přes SMTP).
+SEND_ENABLED = "true"
 
 [env.preview]
 name = "izodiamant-quotes-preview"
@@ -149,4 +149,4 @@ INBOX_LOOKBACK_DAYS = "3"
 INBOX_MAX_PER_RUN = "10"
 DRAFTS_FOLDER = ""
 SENT_FOLDER = ""
-SEND_ENABLED = "false"
+SEND_ENABLED = "true"
