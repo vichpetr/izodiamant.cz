@@ -53,6 +53,11 @@ live in more than one file and must stay in sync. Before editing any of those, l
 coupling, the files involved, and how to keep them together. `tests/audit.spec.ts`
 enforces them.
 
+## CI
+
+Po každém pushi / vytvoření MR ověř pipeline a při chybě ji oprav – načti skill **`ci-check`**
+(`.claude/skills/ci-check/SKILL.md`). Remote je `github`, hlavní větev `master`.
+
 ## Architecture
 
 **Next.js 16 App Router + Tailwind 3.4 + TS strict.** Single-locale (cs-CZ) marketing site for a Czech masonry remediation company.
