@@ -193,6 +193,11 @@ async function QuoteDetail({ id, step, status }: { id: number; step: number; sta
                 mailbox={status?.mailbox ?? null}
                 mailboxReady={Boolean(status?.mailboxConfigured)}
                 sendEnabled={Boolean(status?.sendEnabled)}
+                lastSent={
+                  messages
+                    .filter((m) => m.kind === 'sent' && m.status === 'ok')
+                    .sort((a, b) => b.created_at.localeCompare(a.created_at))[0] ?? null
+                }
                 saveEmailAction={saveEmailAction}
                 regenerateEmailAction={regenerateEmailAction}
                 draftEmailAction={draftEmailAction}

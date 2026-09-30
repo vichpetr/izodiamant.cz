@@ -6,7 +6,7 @@
 
 import { useState } from 'react';
 import type { Quote } from '@/lib/quotes/model';
-import { cardCls, ghostBtn, headingCls, inputCls, labelCls, primarySmall } from './ui';
+import { cardCls, fmtDateTime, ghostBtn, headingCls, inputCls, labelCls, primarySmall } from './ui';
 import { submitWithoutReset, useToastAction, type Action } from './useToastAction';
 import Working from './Working';
 
@@ -17,6 +17,7 @@ export default function OutputPanel({
   mailbox,
   mailboxReady,
   sendEnabled,
+  lastSent,
   saveEmailAction,
   regenerateEmailAction,
   draftEmailAction,
@@ -29,6 +30,8 @@ export default function OutputPanel({
   mailbox: string | null;
   mailboxReady: boolean;
   sendEnabled: boolean;
+  /** Poslední úspěšně odeslaný e-mail (z historie), aby bylo vidět, kdy nabídka odešla. */
+  lastSent: { created_at: string; counterpart: string | null } | null;
   saveEmailAction: Action;
   regenerateEmailAction: Action;
   draftEmailAction: Action;
@@ -118,6 +121,12 @@ export default function OutputPanel({
                     {sending ? 'Odesílám…' : 'Odeslat klientovi'}
                   </button>
                 </form>
+              )}
+              {lastSent && (
+                <p className="w-full text-sm text-sky-800">
+                  Odesláno klientovi <strong>{fmtDateTime(lastSent.created_at)}</strong>
+                  {lastSent.counterpart ? ` na ${lastSent.counterpart}` : ''}.
+                </p>
               )}
               {(drafting || sending) && <Working label={drafting ? 'Ukládám koncept do schránky…' : 'Odesílám e-mail…'} hint="Připojuji se k poštovnímu serveru." className="w-full" />}
               {!canMail && (
