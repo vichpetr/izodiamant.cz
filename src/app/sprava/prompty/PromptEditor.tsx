@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { MAX_PROMPT_LENGTH, type PromptDef } from '@/lib/quotes/prompts';
 import { cn } from '@/lib/utils';
 import { fmtDateTime, ghostBtn, primarySmall } from '../nabidky/ui';
 import { submitWithoutReset, useToastAction } from '../nabidky/useToastAction';
 import { resetPromptAction, savePromptAction } from './actions';
+import Markdown from './Markdown';
 
 interface Props {
   def: PromptDef;
@@ -19,8 +20,31 @@ export default function PromptEditor({ def, override, model }: Props) {
   const [value, setValue] = useState(saved);
   const [save, saving] = useToastAction(savePromptAction);
   const [reset, resetting] = useToastAction(resetPromptAction, () => setValue(def.instructions));
+  const [preview, setPreview] = useState(false);
+  const area = useRef<HTMLTextAreaElement>(null);
   const dirty = value.trim() !== saved.trim();
   const busy = saving || resetting;
+
+  /** Vloží markdown kolem výběru (nebo na začátek řádků u seznamů a nadpisů). */
+  function format(kind: 'bold' | 'italic' | 'code' | 'h' | 'ul' | 'ol') {
+    const el = area.current;
+    if (!el) return;
+    const { selectionStart: a, selectionEnd: b } = el;
+    const sel = value.slice(a, b);
+    let next: string;
+    if (kind === 'bold') next = `**${sel || 'text'}**`;
+    else if (kind === 'italic') next = `*${sel || 'text'}*`;
+    else if (kind === 'code') next = `\`${sel || 'kód'}\``;
+    else {
+      const prefix = (n: number) => (kind === 'h' ? '## ' : kind === 'ul' ? '- ' : `${n + 1}. `);
+      next = (sel || 'text').split('\n').map((l, n) => prefix(n) + l).join('\n');
+    }
+    setValue(value.slice(0, a) + next + value.slice(b));
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(a, a + next.length);
+    });
+  }
 
   return (
     <div className="space-y-3">
@@ -39,15 +63,42 @@ export default function PromptEditor({ def, override, model }: Props) {
 
       <form action={save} onSubmit={submitWithoutReset(save)} className="space-y-3">
         <input type="hidden" name="key" value={def.key} />
+        <div className="flex flex-wrap items-center gap-1">
+          {(
+            [
+              ['bold', 'B', 'Tučně'],
+              ['italic', 'I', 'Kurzíva'],
+              ['code', '</>', 'Kód'],
+              ['h', 'H', 'Nadpis'],
+              ['ul', '•', 'Odrážky'],
+              ['ol', '1.', 'Číslovaný seznam'],
+            ] as const
+          ).map(([kind, label, title]) => (
+            <button key={kind} type="button" title={title} disabled={preview} onClick={() => format(kind)} className={cn(ghostBtn, 'min-w-9 !px-2')}>
+              {label}
+            </button>
+          ))}
+          <div className="ml-auto flex gap-1">
+            <button type="button" onClick={() => setPreview(false)} className={cn(ghostBtn, !preview && '!bg-primary/15 !text-primary-ink')}>Psaní</button>
+            <button type="button" onClick={() => setPreview(true)} className={cn(ghostBtn, preview && '!bg-primary/15 !text-primary-ink')}>Náhled</button>
+          </div>
+        </div>
+        {/* Textarea zůstává v DOM i při náhledu, ať se hodnota odešle s formulářem. */}
         <textarea
+          ref={area}
           name="content"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           rows={Math.min(28, Math.max(8, value.split('\n').length + 1))}
           maxLength={MAX_PROMPT_LENGTH}
           spellCheck={false}
-          className="w-full border-2 border-neutral-light rounded-xl px-4 py-3 font-mono text-[13px] leading-relaxed outline-none focus:border-primary bg-white"
+          className={cn('w-full border-2 border-neutral-light rounded-xl px-4 py-3 font-mono text-[13px] leading-relaxed outline-none focus:border-primary bg-white', preview && 'hidden')}
         />
+        {preview && (
+          <div className="border-2 border-neutral-light rounded-xl px-4 py-3 bg-white">
+            <Markdown source={value} />
+          </div>
+        )}
         <div className="flex flex-wrap items-center gap-2">
           <button type="submit" disabled={busy || !dirty} className={primarySmall}>
             {saving ? 'Ukládám…' : 'Uložit'}
