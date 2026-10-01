@@ -2,7 +2,7 @@
 
 // Klientské přihlášení přes next-auth/react. Volá REST endpointy /api/auth/*
 // (csrf → POST signin/google → redirect na Google). Používáme ho místo
-// server-action signIn(), který na Cloudflare Pages edge padá (generická
+// server-action signIn(), který na edge runtime Cloudflare Pages padal (generická
 // „This page couldn't load"). REST flow je ověřeně funkční.
 
 import { signIn } from 'next-auth/react';

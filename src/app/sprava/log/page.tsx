@@ -4,7 +4,6 @@ import { safeAuth, isAllowed } from '@/auth';
 import { listEmailLog } from '@/lib/db';
 import SpravaNav from '../SpravaNav';
 
-export const runtime = 'edge';
 export const metadata: Metadata = {
   title: 'Audit log e-mailů',
   robots: { index: false, follow: false },

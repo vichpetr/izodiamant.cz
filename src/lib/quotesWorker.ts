@@ -1,6 +1,6 @@
 // Volání quotes-workeru (PDF, AI, schránka) přes service binding `QUOTES`.
-// Workers: binding je ve `wrangler.jsonc` (produkce → izodiamant-quotes, env preview →
-// izodiamant-quotes-preview). Pages (dožívá): nastavení v dashboardu – viz deployment.MD.
+// Binding je ve `wrangler.toml` (produkce → izodiamant-quotes, env preview →
+// izodiamant-quotes-preview), viz deployment.MD.
 // Worker není na internetu, autorizaci řeší volající (admin).
 
 import { getCfEnv } from './cfEnv';
@@ -59,7 +59,7 @@ export async function rawQuotesWorker(path: string, init: RequestInit & { admin?
   const service = getService();
   if (!service) {
     throw new Error(
-      'Služba nabídek není připojená. QUOTES musí být Service binding (ne proměnná prostředí) na izodiamant-quotes, resp. izodiamant-quotes-preview – ve wrangler.jsonc (Workers) nebo v Pages → Settings → Bindings.',
+      'Služba nabídek není připojená. QUOTES musí být Service binding (ne proměnná prostředí) na izodiamant-quotes, resp. izodiamant-quotes-preview – viz wrangler.toml.',
     );
   }
   const { admin, ...rest } = init;

@@ -4,8 +4,8 @@
 // (čárkami oddělený seznam v env). Cizí Google účet se do sekce vůbec nedostane –
 // signIn callback ho odmítne. Přidání dalšího providera (Seznam) je snadné později.
 //
-// Vyžadované env (nastavit v Cloudflare Pages, viz deployment.MD):
-//   AUTH_SECRET, AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, ADMIN_EMAILS, AUTH_URL
+// Vyžadované env (secrety workeru – `wrangler secret put`, viz deployment.MD):
+//   AUTH_SECRET, AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, ADMIN_EMAILS (AUTH_URL volitelně)
 
 import NextAuth from 'next-auth';
 import type { Session } from 'next-auth';

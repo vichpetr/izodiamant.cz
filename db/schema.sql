@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS email_log (
   to_email TEXT NOT NULL,
   subject TEXT NOT NULL,
   status TEXT NOT NULL,       -- 'sent' | 'error'
-  resend_id TEXT,             -- id z Resend odpovědi
+  resend_id TEXT,             -- Message-ID odeslané zprávy (název z dob Resendu)
   error TEXT,
   sent_by TEXT NOT NULL,      -- e-mail přihlášeného admina
   sent_at TEXT NOT NULL       -- ISO čas odeslání
@@ -48,7 +48,10 @@ CREATE TABLE IF NOT EXISTS quotes (
   thickness_cm REAL,
   length_m REAL,
   mode TEXT NOT NULL DEFAULT 'kombinace', -- 'kombinace' (položky se sčítají) | 'varianty' (každá zvlášť)
-  transport_price INTEGER NOT NULL DEFAULT 0,
+  transport_price INTEGER NOT NULL DEFAULT 0, -- u automatické dopravy jen uložený výsledek (přehled)
+  region TEXT,                            -- kraj zakázky (pricing.ts REGIONS), NULL = výchozí nastavení
+  distance_km REAL,                       -- vzdálenost z Mokré Lhoty (jedna cesta) pro výpočet dopravy
+  transport_calc TEXT,                    -- JSON sazeb dopravy v době výpočtu; NULL = doprava zadaná ručně
   intro TEXT,                             -- úvodní odstavec do PDF (volitelný, jinak výchozí text)
   conditions TEXT,                        -- JSON pole textů „Technické podmínky“
   note TEXT,                              -- interní poznámka (do PDF nejde)
@@ -173,6 +176,15 @@ CREATE TABLE IF NOT EXISTS ai_usage (
 );
 
 CREATE INDEX IF NOT EXISTS idx_ai_usage_created ON ai_usage(created_at DESC);
+
+-- Nastavení z adminu (klíč 'pricing' = ceník služeb po krajích a doprava, JSON –
+-- viz src/lib/quotes/pricing.ts). Bez záznamu platí src/data/pricing.json.
+CREATE TABLE IF NOT EXISTS settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  updated_by TEXT
+);
 
 -- Upravené AI prompty z /sprava/prompty. Bez řádku platí výchozí text z kódu (src/lib/quotes/prompts.ts).
 CREATE TABLE IF NOT EXISTS ai_prompts (

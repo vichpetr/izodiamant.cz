@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation';
 import { safeAuth } from '@/auth';
 import GoogleSignInButton from './GoogleSignInButton';
 
-export const runtime = 'edge';
 export const metadata: Metadata = {
   title: 'Přihlášení',
   robots: { index: false, follow: false },
