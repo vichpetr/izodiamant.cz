@@ -29,7 +29,7 @@ export default async function PromptsPage() {
         <header className="space-y-2">
           <h1 className="text-lg font-black uppercase italic text-neutral-dark">AI prompty</h1>
           <p className="text-sm text-neutral-dark/60 font-medium max-w-2xl">
-            Pokyny, podle kterých AI třídí poštu, čte podklady a píše e-maily. Úprava platí od dalšího volání AI (bez nasazení).
+            Pokyny, podle kterých AI třídí poštu, čte podklady a píše e-maily. Text se píše a ukládá jako markdown (tučné, nadpisy, seznamy) a v záložce „Náhled“ se zobrazí formátovaně. Úprava platí od dalšího volání AI (bez nasazení).
             Výstup AI je vždy jen návrh – ceny počítá kód, ne model. Když se výsledek zhorší, tlačítkem „Vrátit výchozí text“ se vrátíte k původnímu znění.
           </p>
           {!isDbAvailable() && (
