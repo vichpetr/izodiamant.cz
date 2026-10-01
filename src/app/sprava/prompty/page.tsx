@@ -9,7 +9,6 @@ import SpravaNav from '../SpravaNav';
 import { cardCls, headingCls } from '../nabidky/ui';
 import PromptEditor from './PromptEditor';
 
-export const runtime = 'edge';
 export const metadata: Metadata = {
   title: 'AI prompty',
   robots: { index: false, follow: false },
