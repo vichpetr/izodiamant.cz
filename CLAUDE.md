@@ -87,6 +87,7 @@ Po každém pushi / vytvoření MR ověř pipeline a při chybě ji oprav – na
   (1 trip per day). The rates are snapshotted per
   quote (`quotes.transport_calc`), so later edits don't change issued quotes. The public web
   does **not** use this yet — it stays on `calculator.json` (owner's call).
+- `/sprava/prompty` — admin: editable AI prompts. Defaults + fixed JSON output schemas live in `src/lib/quotes/prompts.ts` (shared with `quotes-worker/` like the other quotes code); overrides are in D1 `ai_prompts` and `quotes-worker/src/prompts.ts` `getSystemPrompt()` reads them on every AI call. A new AI prompt = add it to that registry, don't inline it in the worker.
 - `next.config.ts` declares legacy redirects (`/sluzby`, `/kontakt`, old service slugs,
   `/category/reference` → `/reference`, `/reference/strana/1` → `/reference`, `/clanky`,
   `/mesta`) — preserve them when restructuring URLs. Note `/reference` is a real page now,

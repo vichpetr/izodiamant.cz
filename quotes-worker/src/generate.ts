@@ -24,6 +24,7 @@ import {
 } from '../../src/lib/quotes/model';
 import { renderQuoteHtml } from '../../src/lib/quotes/template';
 import { runJson, str } from './ai';
+import { getSystemPrompt } from './prompts';
 import { getItems, getQuote, updateQuote } from './db';
 import { nowIso, type Env } from './env';
 import { fillVykaz } from './vykaz';
@@ -257,15 +258,7 @@ export async function draftEmailText(
     const raw = await runJson<{ subject?: unknown; body?: unknown }>(env, {
       task: 'text',
       quoteId: quote.id,
-      system: `Píšeš e-maily za firmu IZODIAMANT (sanace vlhkého zdiva). Jménem Václava Ropka napiš krátký, věcný a zdvořilý průvodní e-mail k cenové nabídce, která je v příloze jako PDF.
-Pravidla:
-- Česky, vykání, bez zbytečných frází, max. ~120 slov.
-- Oslovení vždy neutrálně „Dobrý den,“ (klient může být i firma nebo SVJ).
-- Nevymýšlej nic, co v podkladu není (schůzky, prohlídky, termíny, předchozí jednání).
-- Ceny přepiš PŘESNĚ z podkladu, nic nepřepočítávej a nepřidávej jiná čísla.
-- Zmiň, že nejsme plátci DPH, že výslednou cenu potvrdíme po osobní prohlídce objektu a že konečná částka se stanoví podle skutečného rozsahu.
-- Podpis: ${QUOTE_AUTHOR.name}, IZODIAMANT – sanace zdiva, +420 737 017 012, info@izodiamant.cz.
-JSON schéma: {"subject": "předmět", "body": "text e-mailu s \\n pro nové řádky"}`,
+      system: await getSystemPrompt(env, 'email'),
       user: `Klient: ${quote.client_name}
 Místo: ${[quote.site_name, quote.site_address, quote.city].filter(Boolean).join(', ') || 'neuvedeno'}
 Číslo nabídky: ${quote.number}
