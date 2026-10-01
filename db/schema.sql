@@ -174,6 +174,14 @@ CREATE TABLE IF NOT EXISTS ai_usage (
 
 CREATE INDEX IF NOT EXISTS idx_ai_usage_created ON ai_usage(created_at DESC);
 
+-- Upravené AI prompty z /sprava/prompty. Bez řádku platí výchozí text z kódu (src/lib/quotes/prompts.ts).
+CREATE TABLE IF NOT EXISTS ai_prompts (
+  key TEXT PRIMARY KEY,                   -- triage | attachment | plan | vykaz | email
+  content TEXT NOT NULL,                  -- přepsané pokyny (schéma JSON zůstává v kódu)
+  updated_at TEXT NOT NULL,
+  updated_by TEXT
+);
+
 -- Drobný stav workeru (zámek pollingu, čas posledního běhu).
 CREATE TABLE IF NOT EXISTS app_state (
   key TEXT PRIMARY KEY,
