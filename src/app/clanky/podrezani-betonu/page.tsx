@@ -4,8 +4,8 @@ import { pageMetadata } from "@/lib/seo";
 import { isSlugPublished } from "@/lib/articles";
 
 const SLUG = "podrezani-betonu";
-const TITLE = "Podřezání betonu a základů";
-const DESC = "Řezání betonu a železobetonových základů diamantovým lanem – čistě, bez otřesů a bez omezení tvrdosti či tloušťky konstrukce. Vracíme zdraví vaší stavbě.";
+const TITLE = "Podřezání betonu diamantovým lanem";
+const DESC = "Řezání betonu a železobetonových základů diamantovým lanem – bez otřesů a bez omezení tvrdosti. Od 4 500 Kč/m² řezné plochy, jezdíme po celé ČR.";
 
 export const metadata: Metadata = {
   ...pageMetadata({ path: `/clanky/${SLUG}`, title: TITLE, description: DESC }),
@@ -26,6 +26,7 @@ export default function Page() {
       title={TITLE}
       description={DESC}
       published="2026-08-16"
+      related={["podrezani-kamenneho-zdiva", "lano-vs-retezova-pila", "kolik-stoji-podrezani-zdiva"]}
       intro={<>Beton a železobeton patří k nejpevnějším konstrukcím, na které při sanaci narazíte. Mechanicky je spolehlivě prořízne jen <strong className="text-neutral-dark">diamantové lano</strong> – bez ohledu na tvrdost i tloušťku.</>}
     >
       <H2>Proč diamantové lano na beton</H2>

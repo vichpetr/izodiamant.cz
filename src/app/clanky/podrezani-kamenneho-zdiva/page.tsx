@@ -26,6 +26,7 @@ export default function Page() {
       title={TITLE}
       description={DESC}
       published="2026-08-16"
+      related={["lano-vs-retezova-pila", "kolik-stoji-podrezani-zdiva", "podrezani-nebo-injektaz"]}
       intro={<>Kamenné a smíšené zdivo je tvrdé, nepravidelné a často velmi silné – běžná řetězová pila na něj nestačí. Řešením je <strong className="text-neutral-dark">podřezání diamantovým lanem</strong>, které si poradí s jakýmkoli materiálem bez ohledu na tloušťku stěny.</>}
     >
       <H2>Proč právě diamantové lano</H2>

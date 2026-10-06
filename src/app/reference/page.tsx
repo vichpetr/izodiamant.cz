@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     path: '/reference',
     title: 'Reference sanace zdiva',
     description:
-      'Realizace sanace vlhkého zdiva – podřezání diamantovým lanem, řetězovou pilou i chemická injektáž. Fotografie, rozsah prací a lokality. Vracíme zdraví vaší stavbě.',
+      'Realizace sanace vlhkého zdiva – diamantové lano, řetězová pila i chemická injektáž. Fotky, rozsah prací a lokality. Vracíme zdraví vaší stavbě.',
   }),
   keywords: [
     'reference sanace zdiva',

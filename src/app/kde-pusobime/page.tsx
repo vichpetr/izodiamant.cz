@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     path: "/kde-pusobime",
     title: "Kde působíme – sanace zdiva po celé ČR",
     description:
-      "Sanaci a podřezání vlhkého zdiva provádíme po celé České republice. Sídlíme v Nových Hradech, nejvíc zakázek máme ve východních Čechách. Přehled realizací podle lokality.",
+      "Sanaci a podřezání vlhkého zdiva děláme po celé ČR. Sídlíme v Nových Hradech, nejvíc zakázek máme ve východních Čechách.",
   }),
   keywords: [
     "sanace zdiva po celé ČR",

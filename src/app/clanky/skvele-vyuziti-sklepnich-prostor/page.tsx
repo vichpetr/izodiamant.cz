@@ -10,8 +10,8 @@ import { isSlugPublished } from "@/lib/articles";
 export const metadata: Metadata = {
   ...pageMetadata({
     path: '/clanky/skvele-vyuziti-sklepnich-prostor',
-    title: "Využití sklepních prostor: ze sklepa plnohodnotný prostor",
-    description: "Jak z vlhkého a nevyužitého sklepa udělat suchou spíž, dílnu nebo vinný sklep. Podmínkou je odstranění vzlínající vlhkosti – sanace zdiva. Vracíme zdraví vaší stavbě.",
+    title: "Využití sklepních prostor",
+    description: "Jak z vlhkého sklepa udělat suchou spíž, dílnu nebo vinný sklep. Podmínkou je odstranit vzlínající vlhkost, tedy sanaci zdiva.",
     images: ['/images/clanky/sklep.jpg'],
   }),
   robots: { index: isSlugPublished('skvele-vyuziti-sklepnich-prostor'), follow: true },

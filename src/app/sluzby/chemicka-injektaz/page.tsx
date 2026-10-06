@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   ...pageMetadata({
     path: '/sluzby/chemicka-injektaz',
     title: "Chemická injektáž zdiva – cena a postup",
-    description: "Chemická injektáž zdiva proti vzlínající vlhkosti. Orientační cena od 2 500 Kč/m², šetrná metoda bez narušení statiky – vhodná tam, kde nelze řezat. Spočítejte si cenu online.",
+    description: "Chemická injektáž zdiva proti vzlínající vlhkosti od 2 500 Kč/m² řezné plochy. Šetrná metoda tam, kde nelze řezat. Spočítejte si cenu online.",
     images: ['/images/sluzby/chemicka-injektaz.jpg'],
   }),
   keywords: ["chemická injektáž zdiva", "chemická injektáž zdiva cena", "injektáž zdiva cena", "injektáž zdiva", "injektáž zdiva proti vlhkosti", "krémová injektáž zdiva", "kolik stojí injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "Nové Hrady", "ČR"],
@@ -50,11 +50,11 @@ export default function ChemicalInjectionPage() {
     { name: "Chemická injektáž", path: "/sluzby/chemicka-injektaz" },
   ]);
 
-  // Cílené na dotazy „injektáž zdiva cena“ / „kolik stojí injektáž“ (dnes 2. strana).
+  // Cílené na dotazy „injektáž zdiva cena“ / „kolik stojí injektáž“ (dnes 4. strana).
   const faqItems = [
     {
       q: "Kolik stojí chemická injektáž zdiva?",
-      a: `${data.priceRange} zdi při tloušťce 45 cm; u silnějšího zdiva se cena úměrně navyšuje. Nejsme plátci DPH, uvedená částka se tedy o daň dále nenavyšuje. Nezávaznou kalkulaci si spočítáte online, závaznou nabídku zpracujeme po prohlídce objektu.`,
+      a: `${data.priceRange} řezné plochy, tedy délky zdi vynásobené tloušťkou zdiva – u 10 m dlouhé stěny silné 45 cm jde o 4,5 m². Nejsme plátci DPH, uvedená částka se tedy o daň dále nenavyšuje. Nezávaznou kalkulaci si spočítáte online, závaznou nabídku zpracujeme po prohlídce objektu.`,
     },
     {
       q: "Jak dlouho vydrží chemická injektáž zdiva?",
@@ -63,6 +63,14 @@ export default function ChemicalInjectionPage() {
     {
       q: "Kdy zvolit injektáž místo podřezání zdiva?",
       a: "Chemickou injektáž volíme tam, kde zdivo nelze mechanicky proříznout – u velmi silného, členitého nebo špatně přístupného zdiva, v rozích, u vnitřních příček nebo v blízkosti inženýrských sítí. Nejvhodnější metodu doporučíme podle materiálu a stavu konkrétní stavby.",
+    },
+    {
+      q: "Jak dlouho trvá, než zdivo po injektáži vyschne?",
+      a: "Clona zastaví vzlínání hned po aplikaci, voda ze stěny ale mizí postupně. Orientačním vodítkem je přibližně 1 cm tloušťky zdiva za měsíc – u tenké příčky jde o týdny, u silné obvodové stěny o řadu měsíců. Vysychání urychlí sanační omítky a pravidelné větrání.",
+    },
+    {
+      q: "Děláte chemickou injektáž i mimo východní Čechy?",
+      a: "Ano, sanaci vlhkého zdiva včetně injektáže děláme po celé České republice – realizace máme od Prahy a Kladna přes Most až po Vysočinu a Pardubicko. Cestovné počítáme podle vzdálenosti a řekneme ho dopředu v nabídce.",
     },
   ];
 
@@ -284,7 +292,8 @@ export default function ChemicalInjectionPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-black uppercase italic text-neutral-dark mb-6">Kolik stojí chemická injektáž zdiva?</h2>
           <p className="text-lg text-neutral-dark/70 font-medium leading-relaxed mb-8">
-            {data.priceRange} zdi při tloušťce 45 cm; u silnějšího zdiva se cena úměrně navyšuje.
+            {data.priceRange} řezné plochy, tedy délky zdi vynásobené tloušťkou zdiva – u 10 m dlouhé
+            stěny silné 45 cm jde o 4,5 m². Tloušťka je tak v ceně už započítaná.
             Nejsme plátci DPH, uvedená částka se tedy o daň dále nenavyšuje. Jde o orientační cenu –
             závaznou nabídku zpracujeme po nezávazné prohlídce objektu.
           </p>
