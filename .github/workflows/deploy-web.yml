@@ -1,8 +1,8 @@
 name: Deploy Web (Workers)
 
 # Web izodiamant.cz jako Cloudflare Worker (OpenNext).
-#   push na master      → produkce  izodiamant          (izodiamant.cz, izodiamant.<účet>.workers.dev)
-#   push na jinou větev → preview   izodiamant-preview  (<větev>-izodiamant-preview.<účet>.workers.dev)
+#   push na master      → produkce  izodiamant  (izodiamant.cz, izodiamant.<účet>.workers.dev)
+#   push na jinou větev → Preview větve pod stejným workerem (<větev>-izodiamant.<účet>.workers.dev)
 #   cron 04:10 UTC      → produkce  – denní rebuild kvůli článkům naplánovaným v articles.json
 # Potřebná nastavení (Variables, secrety workeru, OAuth): deployment.MD §1.
 #
@@ -90,11 +90,12 @@ jobs:
           if [ "$TARGET" = production ]; then
             npx opennextjs-cloudflare deploy
           else
-            # Alias pro stabilní URL větve: malá písmena, jen [a-z0-9-], max. 30 znaků.
-            ALIAS=$(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//' | cut -c1-30 | sed -E 's/-+$//')
-            # První nasazení preview workeru ho musí založit – versions upload na neexistující worker selže.
-            npx opennextjs-cloudflare upload --env preview --preview-alias "$ALIAS" \
-              || { npx opennextjs-cloudflare deploy --env preview && npx opennextjs-cloudflare upload --env preview --preview-alias "$ALIAS"; }
+            # Název Preview = větev: malá písmena, jen [a-z0-9-], max. 30 znaků.
+            PREVIEW=$(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//' | cut -c1-30 | sed -E 's/-+$//')
+            echo "PREVIEW=$PREVIEW" >> "$GITHUB_ENV"
+            # Build už proběhl v předchozím kroku, `wrangler preview` jen nahraje .open-next.
+            npx wrangler preview --name "$PREVIEW" --message "$GITHUB_SHA" --json > "$RUNNER_TEMP/preview.json"
+            cat "$RUNNER_TEMP/preview.json"
           fi
 
           OUT="$WRANGLER_OUTPUT_FILE_PATH"
@@ -103,10 +104,14 @@ jobs:
             URL=https://izodiamant.cz
             VERSION_URL=
           else
-            LAST=$(jq -cs '[.[] | select(.type == "version-upload")] | last // {}' "$OUT" 2>/dev/null || echo '{}')
-            VERSION=$(jq -r '.version_id // empty' <<<"$LAST")
-            VERSION_URL=$(jq -r '.preview_url // empty' <<<"$LAST")
-            URL=$(jq -r '.preview_alias_url // .preview_url // empty' <<<"$LAST")
+            # Tvar JSONu `wrangler preview` není v dokumentaci zaručený – bereme z něj všechny
+            # adresy workers.dev: první je Preview URL větve, druhá URL konkrétního nasazení.
+            URLS=$(jq -r '[.. | strings | select(test("^https://[^ ]+workers\\.dev"))] | unique | .[]' \
+              "$RUNNER_TEMP/preview.json" 2>/dev/null || true)
+            URL=$(grep -E "^https://${PREVIEW}-" <<<"$URLS" | head -n1)
+            VERSION_URL=$(grep -vE "^https://${PREVIEW}-" <<<"$URLS" | head -n1)
+            VERSION=$(jq -r '.. | objects | (.deployment_id // .version_id // empty)' \
+              "$RUNNER_TEMP/preview.json" 2>/dev/null | head -n1 || true)
           fi
           {
             echo "url=$URL"
@@ -118,7 +123,7 @@ jobs:
             echo
             echo "| | |"
             echo "|---|---|"
-            echo "| Worker | \`$([ "$TARGET" = production ] && echo izodiamant || echo izodiamant-preview)\` |"
+            echo "| Worker | \`izodiamant\`$([ "$TARGET" = production ] || echo " (Preview \`$PREVIEW\`)") |"
             echo "| Verze | \`${VERSION:-?}\` |"
             echo "| URL | ${URL:-?} |"
             [ -n "$VERSION_URL" ] && echo "| URL této verze | $VERSION_URL |"
@@ -136,6 +141,7 @@ jobs:
           URL: ${{ steps.deploy.outputs.url }}
           VERSION: ${{ steps.deploy.outputs.version }}
           VERSION_URL: ${{ steps.deploy.outputs.version_url }}
+          PREVIEW: ${{ env.PREVIEW }}
         run: |
           PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
           if [ -z "$PR" ]; then echo "Větev $BRANCH nemá otevřený PR – komentář přeskočen."; exit 0; fi
@@ -143,13 +149,13 @@ jobs:
           RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           BODY=$(cat <<MD
           $MARKER
-          ### ☁️ Preview nasazen – \`izodiamant-preview\`
+          ### ☁️ Preview nasazen – \`$PREVIEW\`
 
           | | |
           |---|---|
           | **Náhled větve** | ${URL:-–} |
-          | **URL této verze** | ${VERSION_URL:-–} |
-          | **ID verze** | \`${VERSION:-–}\` |
+          | **URL tohoto nasazení** | ${VERSION_URL:-–} |
+          | **ID nasazení** | \`${VERSION:-–}\` |
           | **Commit** | $GITHUB_SHA |
           | **Běh** | [Deploy Web (Workers) #$GITHUB_RUN_NUMBER]($RUN_URL) |
 
