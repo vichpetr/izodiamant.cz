@@ -40,7 +40,7 @@ no 500) when unset:
 - `AUTH_SECRET` — Auth.js JWT signing secret (random)
 - `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` — Google OAuth 2.0 web client
 - `AUTH_URL` — canonical origin, e.g. `https://izodiamant.cz`
-- `ADMIN_EMAILS` — comma-separated allowlist of Google accounts that may sign in
+- `ADMIN_EMAILS` — comma-separated allowlist of Google accounts that may sign in. A plain var (not a secret) in `wrangler.toml` `[vars]` + `[env.preview.vars]`; a value set only in the dashboard would be overwritten on deploy
 - **Cloudflare D1 binding `DB`** — in `wrangler.toml`; schema in `db/schema.sql`. Accessed via `getCfEnv()` (`src/lib/cfEnv.ts` → `src/lib/db.ts`, degrades to empty/no-op when absent).
 - **Service binding `QUOTES`** — `wrangler.toml` → `izodiamant-quotes` (production) / `izodiamant-quotes-preview` (preview). Needed by `/sprava/nabidky` for PDF, AI and mailbox (without it the section degrades to a plain form) **and by every e-mail the site sends** (`/api/send`, thank-you mail) (`src/lib/quotesWorker.ts`).
 
