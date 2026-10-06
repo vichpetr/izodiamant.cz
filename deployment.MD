@@ -56,11 +56,12 @@ npx wrangler versions secret put <NÁZEV> --env preview    # preview (izodiamant
 Na preview jde jen `versions secret put`: větve nahrávají verze (`versions upload`), žádná není
 „nasazená“, a obyčejný `secret put` to odmítne. Secret se přenáší do dalších verzí.
 
+`ADMIN_EMAILS` (povolené Google účty, čárkami) **není secret** – je v `wrangler.toml` → `[vars]` a `[env.preview.vars]`; přidání správce = úprava tam a deploy (hodnotu z dashboardu by deploy přepsal).
+
 | Secret | |
 |---|---|
 | `AUTH_SECRET` | povinný pro `/sprava` – `openssl rand -base64 32 \| npx wrangler secret put AUTH_SECRET --env=""` (nový = jen nové přihlášení) |
 | `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` | OAuth klient z kroku c) |
-| `ADMIN_EMAILS` | povolené Google účty, čárkami |
 | `CONTACT_EMAIL` | volitelný (výchozí `info@izodiamant.cz`) – kam chodí upozornění na poptávky z webu |
 | `TURNSTILE_SECRET_KEY` | volitelný; bez něj se token nekontroluje (preview: `1x0000000000000000000000000000000AA`) |
 
