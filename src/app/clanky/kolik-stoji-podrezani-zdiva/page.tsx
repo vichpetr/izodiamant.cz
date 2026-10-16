@@ -4,10 +4,14 @@ import { Icons } from "@/components/Icons";
 import ArticleLayout, { H2, P, ServiceLinks } from "@/components/ArticleLayout";
 import servicesData from "@/data/services.json";
 import { pageMetadata } from "@/lib/seo";
+import { minPriceLabel } from "@/lib/pricing";
 import { isSlugPublished } from "@/lib/articles";
 
 const SLUG = "kolik-stoji-podrezani-zdiva";
-const TITLE = "Kolik stojí podřezání zdiva";
+// Audit 16. 10.: 321 zobrazení, 1 proklik, pozice 8,6 – stránka je vidět, ale ve výpisu
+// nezaujme. Konkrétní částka v titulku je to jediné, čím se ceníkový výsledek odliší.
+const FROM = minPriceLabel("retezova-pila") ?? "2 500";
+const TITLE = `Kolik stojí podřezání zdiva: od ${FROM} Kč/m²`;
 const DESC = "Ceník podřezání zdiva: řetězová pila a injektáž od 2 500 Kč/m², diamantové lano od 4 500 Kč/m² řezné plochy. Nejsme plátci DPH, cenu spočítáte online.";
 
 export const metadata: Metadata = {

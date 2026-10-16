@@ -7,13 +7,13 @@ import Image from "next/image";
 import servicesData from "@/data/services.json";
 import referencesData from '@/data/references.json';
 import { pageMetadata, breadcrumbSchema } from "@/lib/seo";
-import { serviceOffer } from "@/lib/pricing";
+import { minPriceLabel, serviceOffer } from "@/lib/pricing";
 import ServiceArticles from "@/components/ServiceArticles";
 
 export const metadata: Metadata = {
   ...pageMetadata({
     path: '/sluzby/chemicka-injektaz',
-    title: "Chemická injektáž zdiva – cena a postup",
+    title: `Chemická injektáž zdiva od ${minPriceLabel("chemicka-injektaz") ?? "2 500"} Kč/m²`,
     description: "Chemická injektáž zdiva proti vzlínající vlhkosti od 2 500 Kč/m² řezné plochy. Šetrná metoda tam, kde nelze řezat. Spočítejte si cenu online.",
     images: ['/images/sluzby/chemicka-injektaz.jpg'],
   }),
