@@ -524,3 +524,16 @@ test.describe('Audit: články odkazují na další články', () => {
     });
   }
 });
+
+/**
+ * Měření 16. 10. 2026: /_next/static/* chodilo s „max-age=0, must-revalidate", takže
+ * vracející se návštěvník znovu ověřoval každý JS i CSS. Názvy těch souborů obsahují
+ * hash obsahu, takže je lze cachovat natrvalo. Hlídáno na souboru – _headers aplikuje
+ * až Cloudflare, ne `next start`.
+ */
+test.describe('Audit: cache statických assetů', () => {
+  test('/_next/static/* má immutable cache', () => {
+    const headers = readFileSync(join(process.cwd(), 'public/_headers'), 'utf-8');
+    expect(headers).toMatch(/^\/_next\/static\/\*\n\s+Cache-Control:[^\n]*immutable/m);
+  });
+});
