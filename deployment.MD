@@ -7,20 +7,29 @@ Tento dokument popisuje proces nasazení aplikace IZODIAMANT.cz a nastavení pom
 Web je Next.js nasazený jako Cloudflare Worker přes **OpenNext** (`@opennextjs/cloudflare`).
 Do září 2026 běžel na Cloudflare Pages (`@cloudflare/next-on-pages`).
 
-| | produkce | preview (ostatní větve) |
+Produkce i náhledy větví běží pod **jedním** workerem `izodiamant` – náhledy jako
+[Preview](https://developers.cloudflare.com/workers/previews/) (`npx wrangler preview`).
+Do října 2026 byl náhled samostatný worker `izodiamant-preview`; v dashboardu to byla druhá
+aplikace a Cloudflare od toho pro větve odrazuje.
+
+| | produkce | Preview (ostatní větve) |
 |---|---|---|
-| worker | `izodiamant` | `izodiamant-preview` |
-| adresa | `izodiamant.cz` (+ `www` → 301), `izodiamant.<účet>.workers.dev` | `<větev>-izodiamant-preview.<účet>.workers.dev` |
+| worker | `izodiamant` | `izodiamant` – Preview `<větev>` |
+| adresa | `izodiamant.cz` (+ `www` → 301), `izodiamant.<účet>.workers.dev` | `<větev>-izodiamant.<účet>.workers.dev` |
 | D1 `DB` | `izodiamant-db` | `izodiamant-preview-db` |
 | `QUOTES` | `izodiamant-quotes` | `izodiamant-quotes-preview` |
 | GitHub Environment | `production` | `preview` |
 
 - **Konfigurace:** `wrangler.toml` (bindingy, domény jako Custom Domains), `open-next.config.ts`
   (předrenderované stránky se čtou ze statických assetů – bez KV/R2 cache).
-- **Nasazení:** `.github/workflows/deploy-web.yml` – push na master → produkce, push na jinou
-  větev → nová preview verze s aliasem větve, cron 04:10 UTC → denní rebuild (články naplánované
-  v `articles.json` se zveřejní v den `date`). Nasazuje se přes `opennextjs-cloudflare deploy` /
-  `upload`, ne holým `wrangler deploy` – jen tak se naplní cache předrenderovaných stránek.
+- **Nasazení:** `.github/workflows/deploy-web.yml` – push na master → produkce
+  (`opennextjs-cloudflare deploy`), push na jinou větev → `npx wrangler preview --name <větev>`
+  nad hotovým buildem z `npm run build:worker`, cron 04:10 UTC → denní rebuild (články naplánované
+  v `articles.json` se zveřejní v den `date`). Produkci nasazujte přes `opennextjs-cloudflare`,
+  ne holým `wrangler deploy` – jen tak se naplní cache předrenderovaných stránek.
+- **Nastavení Preview** je v `wrangler.toml` v bloku `[previews]`. Nedědí se nic kromě
+  `assets` a `compatibility_*`, takže co má Preview mít (vars, D1, service binding), musí být
+  tam. Smazání náhledu: `npx wrangler preview delete --name <větev>`.
 - **Git integraci v Cloudflare (Workers Builds) nezapínat** – nasazuje GitHub Actions; druhá
   pipeline by build přepisovala (a bez `NEXT_PUBLIC_*` a OpenNext buildu).
 - **Informace o nasazení v PR** místo komentáře Workers Builds dodává sám workflow: komentář
@@ -50,13 +59,14 @@ Změna proměnné se projeví až novým buildem (Actions → Deploy Web (Worker
 
 **b) Secrety workeru** (serverové, přežijí deploy). Z kořene repa:
 ```bash
-npx wrangler secret put <NÁZEV> --env=""                  # produkce (izodiamant)
-npx wrangler versions secret put <NÁZEV> --env preview    # preview (izodiamant-preview)
+npx wrangler secret put <NÁZEV> --env=""                     # produkce (worker izodiamant)
+npx wrangler preview base-config secret put <NÁZEV>          # všechny budoucí Preview
+npx wrangler preview secret put <NÁZEV> --name <větev>       # jen jeden konkrétní Preview
 ```
-Na preview jde jen `versions secret put`: větve nahrávají verze (`versions upload`), žádná není
-„nasazená“, a obyčejný `secret put` to odmítne. Secret se přenáší do dalších verzí.
+Preview mají vlastní sadu secretů – produkční se do nich nepropisují. Base config platí pro
+Preview, které vzniknou později, takže ho nastavte dřív, než pustíte první větev.
 
-`ADMIN_EMAILS` (povolené Google účty, čárkami) **není secret** – je v `wrangler.toml` → `[vars]` a `[env.preview.vars]`; přidání správce = úprava tam a deploy (hodnotu z dashboardu by deploy přepsal).
+`ADMIN_EMAILS` (povolené Google účty, čárkami) **není secret** – je v `wrangler.toml` → `[vars]` a `[previews.vars]`; přidání správce = úprava tam a deploy (hodnotu z dashboardu by deploy přepsal).
 
 | Secret | |
 |---|---|
@@ -83,8 +93,8 @@ client ID → *Web application*) – *Authorized redirect URIs*:
 - `https://izodiamant.cz/api/auth/callback/google`
 - `https://izodiamant.<účet>.workers.dev/api/auth/callback/google`
 - `http://localhost:8787/api/auth/callback/google` (lokální `npm run preview:worker`)
-- testujete-li admin na větvi: `https://<alias>-izodiamant-preview.<účet>.workers.dev/api/auth/callback/google`
-  (alias = název větve malými písmeny, jiné znaky → `-`, max. 30 znaků). Google nepodporuje
+- testujete-li admin na větvi: `https://<větev>-izodiamant.<účet>.workers.dev/api/auth/callback/google`
+  (název Preview = větev malými písmeny, jiné znaky → `-`, max. 30 znaků). Google nepodporuje
   wildcardy – každou testovanou větev přidat zvlášť.
 
 **d) D1:** databáze `izodiamant-db` / `izodiamant-preview-db` jsou ve `wrangler.toml`; schéma
@@ -94,7 +104,7 @@ aplikuje CI quotes-workeru (§3.1), ručně `npm run db:schema:remote` / `db:sch
 dovnitř se dostane jen e-mail z `ADMIN_EMAILS`. Bez secretů se veřejný web chová normálně a
 `/sprava` jen ukáže přihlášení.
 
-**Lokálně:** `npm run preview:worker` (build + workerd s bindingy `env.preview`, lokální D1),
+**Lokálně:** `npm run preview:worker` (build + workerd s bindingy z `wrangler.toml`, lokální D1),
 secrety do `.dev.vars` (`AUTH_SECRET=…` apod.), schéma `npm run db:schema:local`.
 Pro čistý frontend stačí `npm run dev`.
 

@@ -4,10 +4,13 @@
 # json → jsonc → toml, každý název zvlášť přes celý strom. Kořenový wrangler.jsonc by tak
 # zastínil quotes-worker/wrangler.toml i worker/wrangler.toml (deploy by vzal konfiguraci webu).
 #
-# Dvě prostředí se samostatnými daty (stejně jako quotes-worker):
-#   production → izodiamant          (D1 izodiamant-db,         QUOTES → izodiamant-quotes)
-#   preview    → izodiamant-preview  (D1 izodiamant-preview-db, QUOTES → izodiamant-quotes-preview)
-# Nasazuje .github/workflows/deploy-web.yml (master → production, ostatní větve → preview).
+# Jeden worker `izodiamant` – produkce i větvové náhledy (Preview podle doporučení Cloudflare,
+# https://developers.cloudflare.com/workers/previews/). Dřív byl náhled samostatný worker
+# `izodiamant-preview` (wrangler env) – to je v dashboardu druhá aplikace a Cloudflare od toho
+# pro náhledy větví odrazuje.
+#   produkce → aktivní deployment workeru (D1 izodiamant-db,         QUOTES → izodiamant-quotes)
+#   Preview  → `npx wrangler preview`     (D1 izodiamant-preview-db, QUOTES → izodiamant-quotes-preview)
+# Nasazuje .github/workflows/deploy-web.yml (master → produkce, ostatní větve → Preview větve).
 #
 # Domény izodiamant.cz a www jsou Custom Domains (DNS záznamy typu Worker spravuje Cloudflare).
 # www → izodiamant.cz přesměrovává pravidlo zóny, ne worker.
@@ -15,10 +18,11 @@
 # Secrety (nejsou tady, nastavují se zvlášť pro každé prostředí, viz deployment.MD §1.1):
 #   CONTACT_EMAIL, TURNSTILE_SECRET_KEY,
 #   AUTH_SECRET, AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET
+# Preview má vlastní sadu: `npx wrangler preview base-config secret put <NÁZEV>`.
 # ADMIN_EMAILS není secret – je níže ve [vars] (hodnota z dashboardu by se při deployi přepsala).
 # NEXT_PUBLIC_* se do kódu zapékají při buildu – bere je CI z GitHub Variables.
 #
-# Bindingy a vars se NEDĚDÍ do [env.preview] – při změně je upravte v obou blocích.
+# Bindingy a vars se do [previews] NEDĚDÍ – při změně je upravte v obou blocích.
 
 name = "izodiamant"
 main = ".open-next/worker.js"
@@ -50,25 +54,24 @@ database_id = "ab044201-17db-44d4-8826-adfc65a4c18d"
 binding = "QUOTES"
 service = "izodiamant-quotes"
 
-[env.preview]
-name = "izodiamant-preview"
-# routes se dědí z top-level – bez tohohle by preview převzal produkční domény.
-routes = []
-workers_dev = true
-# <větev>-izodiamant-preview.<účet>.workers.dev – alias nastavuje CI (--preview-alias).
-preview_urls = true
+# Preview větví – `npx wrangler preview --name <větev>`. Běží pod stejným workerem,
+# jen s vlastní adresou <větev>-izodiamant.<účet>.workers.dev a vlastními daty.
+# Nedědí se nic kromě assets/compatibility_* – co má Preview mít, musí být tady.
+[previews]
 
-[env.preview.observability]
-enabled = true
-
-[env.preview.vars]
+[previews.vars]
 ADMIN_EMAILS = "vichpetr@gmail.com,lcervenak843@gmail.com,vaclavropek31@gmail.com"
 
-[[env.preview.d1_databases]]
+[previews.observability]
+enabled = true
+
+[[previews.d1_databases]]
 binding = "DB"
 database_name = "izodiamant-preview-db"
 database_id = "fb43aba4-c91a-4d90-8758-e473815ddee1"
 
-[[env.preview.services]]
+# Service binding míří na aktivní deployment cílového workeru – proto testovací quotes-worker
+# (vlastní schránka, D1 i R2), ne produkční.
+[[previews.services]]
 binding = "QUOTES"
 service = "izodiamant-quotes-preview"
