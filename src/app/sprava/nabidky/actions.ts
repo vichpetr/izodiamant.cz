@@ -342,6 +342,23 @@ export async function regenerateEmailAction(_prev: ActionState, formData: FormDa
   }
 }
 
+/** Návrh přeformulovaného úvodního odstavce – jen vrací text, do nabídky ho uloží až editor. */
+export async function rewriteIntroAction(id: number, draft: string): Promise<{ ok: true; text: string } | { ok: false; message: string }> {
+  try {
+    const admin = await requireAdmin();
+    if (!Number.isInteger(id)) return { ok: false, message: 'Neplatná nabídka.' };
+    const res = await callQuotesWorker<{ text: string }>(`/quotes/${id}/rewrite-intro`, {
+      method: 'POST',
+      admin,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: draft }),
+    });
+    return { ok: true, text: res.text };
+  } catch (err) {
+    return { ok: false, message: err instanceof Error ? err.message : 'Došlo k chybě.' };
+  }
+}
+
 export async function draftEmailAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   try {
     const admin = await requireAdmin();

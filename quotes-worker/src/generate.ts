@@ -23,7 +23,7 @@ import {
   versionVykazFiles,
 } from '../../src/lib/quotes/model';
 import { renderQuoteHtml } from '../../src/lib/quotes/template';
-import { runJson, str } from './ai';
+import { runJson, runText, str } from './ai';
 import { getSystemPrompt } from './prompts';
 import { getItems, getQuote, updateQuote } from './db';
 import { nowIso, type Env } from './env';
@@ -264,7 +264,7 @@ Místo: ${[quote.site_name, quote.site_address, quote.city].filter(Boolean).join
 Číslo nabídky: ${quote.number}
 Režim: ${quote.mode === 'varianty' ? 'varianty (klient platí jen jednu z nich)' : 'kombinace technologií (položky se sčítají)'}
 Ceny:
-${priceSummary(quote, items)}`,
+${priceSummary(quote, items)}${quote.intro?.trim() ? `\nÚvodní text v PDF (e-mail mu nesmí odporovat, neopakuj ho): ${quote.intro.trim()}` : ''}`,
     });
     const subject = str(raw.subject, 200);
     const body = str(raw.body, 5000);
@@ -274,4 +274,34 @@ ${priceSummary(quote, items)}`,
     console.warn('Návrh e-mailu přes AI selhal, použije se šablona:', err instanceof Error ? err.message : err);
     return fallback;
   }
+}
+
+// ─── Přeformulování textu do PDF ─────────────────────────────────────────────
+
+/**
+ * Z hrubého textu od majitele (např. ústní domluva) udělá odstavec do PDF.
+ * Do kontextu dostane údaje nabídky a vypočtené ceny, ale žádná čísla si nesmí
+ * přidat ani změnit – ceny počítá computeTotals(), AI jen formuluje.
+ */
+export async function rewriteIntro(env: Env, quote: Quote, items: QuoteItem[], draft: string): Promise<string> {
+  const text = await runText(env, {
+    task: 'text',
+    quoteId: quote.id,
+    maxTokens: 1500,
+    system: await getSystemPrompt(env, 'intro'),
+    user: `Hrubý text od majitele:
+${draft}
+
+Údaje nabídky:
+Klient: ${quote.client_name}
+Místo: ${[quote.site_name, quote.site_address, quote.city].filter(Boolean).join(', ') || 'neuvedeno'}
+Režim: ${quote.mode === 'varianty' ? 'varianty (zákazník platí jen jednu z nich)' : 'kombinace technologií (položky se sčítají)'}
+Ceny (počítá aplikace):
+${priceSummary(quote, items)}${quote.note?.trim() ? `\nInterní poznámka (jen kontext, nepřepisovat do textu): ${quote.note.trim()}` : ''}`,
+  });
+  // Modely občas obalí odpověď do uvozovek nebo ```.
+  const clean = text.replace(/^```\w*\n?|```$/g, '').trim().replace(/^[„"“](.*)[“"”]$/s, '$1').trim();
+  const result = str(clean, 1500);
+  if (!result) throw new Error('AI nevrátila žádný text.');
+  return result;
 }

@@ -52,10 +52,11 @@ import {
   type TechnologyId,
 } from '@/lib/quotes/model';
 import { toast } from '../toast';
+import { rewriteIntroAction } from './actions';
 import { useWizard, type Dims } from './QuoteWizard';
 import SuggestionsPanel from './SuggestionsPanel';
 import Working from './Working';
-import { cardCls, headingCls, inputCls, labelCls } from './ui';
+import { cardCls, ghostBtn, headingCls, inputCls, labelCls } from './ui';
 import { submitWithoutReset, useToastAction, type Action } from './useToastAction';
 
 interface ItemDraft {
@@ -181,6 +182,25 @@ export default function QuoteEditor({
     if (!regionTouched && detectedRegion && detectedRegion !== f.region) changeRegion(detectedRegion);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- reaguje jen na změnu adresy
   }, [detectedRegion, regionTouched]);
+
+  // Přeformulování úvodního odstavce přes AI: původní text se drží, ať jde vrátit.
+  const [rewriting, setRewriting] = useState(false);
+  const [introBackup, setIntroBackup] = useState<string | null>(null);
+  const rewriteIntro = async () => {
+    setRewriting(true);
+    try {
+      const res = await rewriteIntroAction(quote.id, f.intro);
+      if (!res.ok) return toast(res.message, 'error');
+      setIntroBackup(f.intro);
+      setF((prev) => ({ ...prev, intro: res.text }));
+      dropSource('intro');
+      toast('Text přeformulován – zkontrolujte ho, uloží se automaticky.');
+    } catch {
+      toast('Přeformulování se nepodařilo, zkuste to znovu.', 'error');
+    } finally {
+      setRewriting(false);
+    }
+  };
 
   const computedArea = cutArea(toNum(f.length_m), toNum(f.thickness_cm));
   const parsedItems: QuoteItem[] = items.map((i, position) => {
@@ -749,8 +769,28 @@ export default function QuoteEditor({
               <h2 className={`${headingCls} mb-4`}>Texty do PDF</h2>
               <div className="space-y-4">
                 <Field label="Úvodní odstavec (prázdné = výchozí text)">
-                  <textarea name="intro" rows={3} value={f.intro} onChange={set('intro')} className={`${inputCls} resize-y`} />
+                  <textarea name="intro" rows={4} value={f.intro} onChange={set('intro')} className={`${inputCls} resize-y`} />
                 </Field>
+                <div className="-mt-2 flex flex-wrap items-center gap-2">
+                  <button type="button" onClick={rewriteIntro} disabled={rewriting || !f.intro.trim()} className={ghostBtn}>
+                    {rewriting ? 'AI přeformulovává…' : '✨ Přeformulovat pomocí AI'}
+                  </button>
+                  {introBackup !== null && !rewriting && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setF((prev) => ({ ...prev, intro: introBackup }));
+                        setIntroBackup(null);
+                      }}
+                      className={ghostBtn}
+                    >
+                      Vrátit původní text
+                    </button>
+                  )}
+                  <span className="text-[11px] text-neutral-dark/50">
+                    Napište hrubě, co chcete říct (i ústní domluvu) – AI to upraví do nabídky a vezme v úvahu údaje a ceny. Čísla si nevymyslí.
+                  </span>
+                </div>
                 <Field label="Technické podmínky (každá na nový řádek)">
                   <textarea
                     name="conditions"

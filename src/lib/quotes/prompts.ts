@@ -8,7 +8,7 @@
 
 import { QUOTE_AUTHOR } from './model';
 
-export type PromptKey = 'triage' | 'attachment' | 'plan' | 'vykaz' | 'email';
+export type PromptKey = 'triage' | 'attachment' | 'plan' | 'vykaz' | 'email' | 'intro';
 export type PromptTask = 'triage' | 'attachment' | 'extract' | 'text';
 
 export interface PromptDef {
@@ -134,6 +134,21 @@ Pravidla:
 - Zmiň, že nejsme plátci DPH, že výslednou cenu potvrdíme po osobní prohlídce objektu a že konečná částka se stanoví podle skutečného rozsahu.
 - Podpis: ${QUOTE_AUTHOR.name}, IZODIAMANT – sanace zdiva, +420 737 017 012, info@izodiamant.cz.`,
     schema: `JSON schéma: {"subject": "předmět", "body": "text e-mailu s \\\\n pro nové řádky"}`,
+  },
+  {
+    key: 'intro',
+    title: 'Úvodní text nabídky',
+    area: 'Nabídka – PDF',
+    description: 'Přeformuluje hrubý text z editoru nabídky (např. ústní domluvu) do úvodního odstavce v PDF. Ceny počítá kód, AI je nesmí měnit.',
+    task: 'text',
+    instructions: `Upravuješ text do cenové nabídky firmy IZODIAMANT (sanace vlhkého zdiva – řezání zdiva řetězovou pilou, diamantovým lanem, chemická injektáž). Dostaneš hrubý text od majitele firmy a údaje nabídky. Přepiš ho do úvodního odstavce, který se vytiskne v PDF pro zákazníka.
+Pravidla:
+- Česky, vykání nebo neosobně (my / firma), věcně a zdvořile, bez omáčky a reklamních frází. Max. ~90 slov, 2–4 věty, jeden odstavec bez odrážek a nadpisů.
+- Oprav překlepy a chybějící diakritiku. Smysl a domluvu z textu zachovej, nic nevymýšlej (žádné termíny, slevy, záruky ani sliby, které v textu nejsou).
+- Čísla (rozměry, počet lidí, ceny) použij jen taková, jaká jsou v textu nebo v údajích nabídky. Nic nepřepočítávej. Částky v Kč radši vynech, jsou v tabulce pod odstavcem – zmiň je jen když je text výslovně uvádí.
+- Interní poznámky (kdo co komu slíbil, taktika, jednání o zakázce) do textu nepatří – napiš jen to, co má zákazník vědět.
+- Odpověz pouze hotovým odstavcem, bez uvozovek a komentáře.`,
+    schema: '',
   },
 ];
 

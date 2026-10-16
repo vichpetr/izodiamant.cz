@@ -8,7 +8,7 @@ import { SPREADSHEET_TYPES, attachedVykazFiles, isSpreadsheet, versionFilename, 
 import { maybeAutoGenerate, queueAttachment, runAttachmentJob } from './attachments';
 import { getFile, getItems, getQuote, getState, logQuoteMessage, updateQuote } from './db';
 import { flag, mailboxConfigured, nowIso, type Env, type Job } from './env';
-import { UserError, draftEmailText, emailVersion, generateQuote } from './generate';
+import { UserError, draftEmailText, emailVersion, generateQuote, rewriteIntro } from './generate';
 import { pollInbox } from './inbox';
 import { saveDraft, sendMail, sendTransactional, type OutgoingMail } from './mailbox';
 import { pdfToImages } from './plans';
@@ -154,6 +154,16 @@ async function handle(request: Request, env: Env): Promise<Response> {
     const text = await draftEmailText(env, quote, await getItems(env, quoteId));
     await updateQuote(env, quoteId, text);
     return json({ ok: true, ...text });
+  }
+
+  // POST /quotes/:id/rewrite-intro { text } – návrh přeformulovaného úvodního odstavce (neukládá se).
+  if (method === 'POST' && action === 'rewrite-intro') {
+    const quote = await getQuote(env, quoteId);
+    if (!quote) return json({ error: 'Nabídka neexistuje.' }, 404);
+    const { text } = (await request.json().catch(() => ({}))) as { text?: unknown };
+    const draft = typeof text === 'string' ? text.trim().slice(0, 3000) : '';
+    if (!draft) throw new UserError('Napište do pole alespoň pár slov, AI je přeformuluje.');
+    return json({ ok: true, text: await rewriteIntro(env, quote, await getItems(env, quoteId), draft) });
   }
 
   // POST /quotes/:id/plans – multipart `files` (+ volitelně `hint`): uloží do R2 a zařadí ke čtení.
