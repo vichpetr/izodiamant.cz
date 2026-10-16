@@ -13,6 +13,12 @@ const inter = Inter({
   // "optional": text se vykreslí systémovým fallbackem hned (LCP = FCP) a nečeká
   // na stažení Inter přes pomalou síť. next/font metrikami sladí fallback (bez CLS).
   display: "optional",
+  // Bez preloadu: oba řezy Interu (85 + 48 kB) se přednačítaly s vysokou prioritou
+  // a na pomalé lince braly pásmo render-blocking CSS. U "optional" se navíc font,
+  // který nestihne dorazit, stejně pro tohle zobrazení zahodí – platilo se tedy
+  // pásmo za písmo, které se často ani nepoužije. Takhle dojde po kritické cestě
+  // a uplatní se při další návštěvě z cache.
+  preload: false,
 });
 
 export const metadata: Metadata = {
