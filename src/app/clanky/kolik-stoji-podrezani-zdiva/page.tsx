@@ -8,7 +8,7 @@ import { isSlugPublished } from "@/lib/articles";
 
 const SLUG = "kolik-stoji-podrezani-zdiva";
 const TITLE = "Kolik stojí podřezání zdiva";
-const DESC = "Ceny podřezání a sanace zdiva: řetězová pila a chemická injektáž od 2 500 Kč/m², diamantové lano od 4 500 Kč/m² (za m² řezné plochy). Nejsme plátci DPH.";
+const DESC = "Ceník podřezání zdiva: řetězová pila a injektáž od 2 500 Kč/m², diamantové lano od 4 500 Kč/m² řezné plochy. Nejsme plátci DPH, cenu spočítáte online.";
 
 export const metadata: Metadata = {
   ...pageMetadata({ path: `/clanky/${SLUG}`, title: TITLE, description: DESC }),
@@ -37,6 +37,7 @@ export default function Page() {
       title={TITLE}
       description={DESC}
       published="2026-08-16"
+      related={["cena-sanace-vlhkeho-zdiva", "podrezani-nebo-injektaz", "jak-probiha-podrezani-domu"]}
       intro={<>Cena podřezání se počítá za <strong className="text-neutral-dark">metr čtvereční (m²) řezné plochy</strong> – tedy za délku zdi vynásobenou její tloušťkou. Níže najdete orientační sazby a co všechno konečnou cenu ovlivňuje.</>}
     >
       <H2>Orientační ceny</H2>

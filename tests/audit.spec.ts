@@ -478,3 +478,49 @@ test.describe('Audit: public/_headers', () => {
     expect(headers).not.toMatch(/^\/\*\n\s+X-Robots-Tag:\s*index/m);
   });
 });
+
+/**
+ * SEO audit 2026-09/10: pět stránek mělo meta description nad 160 znaků (Google
+ * popis utne) a jedna titulek na 70 znaků. Dřív to hlídal jen seznam PAGES a
+ * detaily referencí, takže nová stránka proklouzla. Tohle jde přes celou sitemapu.
+ */
+test.describe('Audit: délka titulků a popisů na všech stránkách', () => {
+  test('každá URL ze sitemapy má titulek ≤ 60 a popis 110–160 znaků', async ({ request }) => {
+    const xml = await (await request.get('/sitemap.xml')).text();
+    const paths = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
+      (m) => m[1].replace('https://izodiamant.cz', '') || '/',
+    );
+    expect(paths.length, 'sitemap je prázdná').toBeGreaterThan(5);
+
+    const decode = (s: string) =>
+      s.replace(/&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&');
+
+    for (const path of paths) {
+      const html = await (await request.get(path)).text();
+      const title = decode(html.match(/<title>(.*?)<\/title>/s)?.[1] ?? '');
+      const description = decode(html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '');
+
+      expect(title.length, `${path}: titulek „${title}" je dlouhý`).toBeLessThanOrEqual(60);
+      expect(description.length, `${path}: popis „${description}" je dlouhý`).toBeLessThanOrEqual(160);
+      expect(description.length, `${path}: popis „${description}" je krátký`).toBeGreaterThanOrEqual(110);
+    }
+  });
+});
+
+/**
+ * Články na sebe navzájem neodkazovaly – 2–3 odkazy na článek proti 45 na
+ * stránku služby. Sekci „Další z rádce“ vykresluje ArticleLayout všem článkům.
+ */
+test.describe('Audit: články odkazují na další články', () => {
+  for (const slug of ['podrezani-nebo-injektaz', 'podrezani-betonu', 'kolik-stoji-podrezani-zdiva']) {
+    test(`/clanky/${slug} má sekci s dalšími články`, async ({ request }) => {
+      const html = await (await request.get(`/clanky/${slug}`)).text();
+      expect(html, 'chybí sekce Další z rádce').toContain('Další z rádce');
+
+      const links = new Set(
+        [...html.matchAll(/href="\/clanky\/([a-z0-9-]+)"/g)].map((m) => m[1]).filter((s) => s !== slug),
+      );
+      expect(links.size, `${slug} neodkazuje na jiné články`).toBeGreaterThanOrEqual(3);
+    });
+  }
+});
