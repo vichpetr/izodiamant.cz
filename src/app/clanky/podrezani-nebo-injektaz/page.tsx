@@ -29,13 +29,13 @@ export default function Page() {
       description={DESC}
       published="2026-08-16"
       related={["kolik-stoji-podrezani-zdiva", "podrezani-kamenneho-zdiva", "vysychani-zdiva"]}
-      intro={<>Obě metody řeší stejný problém – <strong className="text-neutral-dark">vzlínající zemní vlhkost</strong> – ale úplně jiným principem. Která je pro vaši stavbu vhodnější? Rozhoduje hlavně to, jestli jde zdivo mechanicky proříznout.</>}
+      intro={<><Link href="/sluzby/chemicka-injektaz" className="text-primary-ink font-bold hover:underline">Chemická injektáž</Link> i <Link href="/sluzby/diamantove-lano" className="text-primary-ink font-bold hover:underline">mechanické podřezání</Link> řeší stejný problém – <strong className="text-neutral-dark">vzlínající zemní vlhkost</strong> – ale úplně jiným principem. Která je pro vaši stavbu vhodnější? Rozhoduje hlavně to, jestli jde zdivo mechanicky proříznout.</>}
     >
       <H2>Mechanické podřezání (řetězová pila, diamantové lano)</H2>
       <P>Při podřezání se zdivo fyzicky prořízne ve vodorovné spáře a do řezu se ihned vloží celistvá hydroizolační bariéra (PE fólie nebo sklolaminátové desky). Vzniká tak souvislá clona, která zemní vlhkost spolehlivě a trvale přeruší. Je to nejtrvanlivější řešení a volíme ho všude, kde se dá zdivo proříznout.</P>
 
       <H2>Chemická injektáž</H2>
-      <P>Injektáž nasytí zdivo hydrofobní látkou (krém nebo gel na bázi silanů a siloxanů), která v pórech vytvoří vodoodpudivou clonu. Nevkládá se žádná fyzická izolace – proto ji volíme tam, kde mechanické řezání nelze provést: u velmi silného, členitého nebo špatně přístupného zdiva, v rozích, u vnitřních příček nebo v blízkosti inženýrských sítí.</P>
+      <P><Link href="/sluzby/chemicka-injektaz" className="text-primary-ink font-bold hover:underline">Chemická injektáž</Link> nasytí zdivo hydrofobní látkou (krém nebo gel na bázi silanů a siloxanů), která v pórech vytvoří vodoodpudivou clonu. Nevkládá se žádná fyzická izolace – proto ji volíme tam, kde mechanické řezání nelze provést: u velmi silného, členitého nebo špatně přístupného zdiva, v rozích, u vnitřních příček nebo v blízkosti inženýrských sítí.</P>
 
       <H2>Kdy zvolit co</H2>
       <div className="grid sm:grid-cols-2 gap-4">

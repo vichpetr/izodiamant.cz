@@ -29,6 +29,16 @@ export function minPricePerM2(serviceId: string): number | null {
 }
 
 /**
+ * Sazba „od“ naformátovaná do textu („2 500“) pro titulky a popisy. Číslo se bere
+ * z `calculator.json` přes `minPricePerM2()`, takže se meta tagy nemůžou rozejít
+ * s ceníkem – to je přesně ten druh drift, který hlídá skill site-invariants.
+ */
+export function minPriceLabel(serviceId: string): string | null {
+  const price = minPricePerM2(serviceId);
+  return price === null ? null : price.toLocaleString('cs-CZ').replace(/\u00a0/g, ' ');
+}
+
+/**
  * `offers` do Service JSON-LD s **číselnou** cenou, ne jen s textem. Bez čísla
  * Google cenu z nabídky nepřečte (dřív tu byl jen `description`), takže se
  * nemohla objevit ve výsledku vyhledávání.

@@ -4,11 +4,18 @@ import { Icons } from "@/components/Icons";
 import ArticleLayout, { H2, P, ServiceLinks } from "@/components/ArticleLayout";
 import servicesData from "@/data/services.json";
 import { pageMetadata } from "@/lib/seo";
+import { minPriceLabel } from "@/lib/pricing";
 import { isSlugPublished } from "@/lib/articles";
 
 const SLUG = "kolik-stoji-podrezani-zdiva";
-const TITLE = "Kolik stojí podřezání zdiva";
-const DESC = "Ceník podřezání zdiva: řetězová pila a injektáž od 2 500 Kč/m², diamantové lano od 4 500 Kč/m² řezné plochy. Nejsme plátci DPH, cenu spočítáte online.";
+// Audit 16. 10.: 321 zobrazení, 1 proklik, pozice 8,6 – stránka je vidět, ale ve výpisu
+// nezaujme. Kontrola SERPu ukázala proč: konkurence kotuje za běžný metr (600–1 400 Kč)
+// nebo „bez DPH", takže naše sazba za m² řezné plochy vypadá na první pohled násobně
+// dražší, i když u 45cm zdi vychází srovnatelně. Samotné číslo v titulku by ten dojem
+// zhoršilo – proto titulek drží dotaz a popis vysvětluje jednotku a že se DPH nepřipočítá.
+const FROM = minPriceLabel("retezova-pila") ?? "2 500";
+const TITLE = "Kolik stojí podřezání zdiva: ceník";
+const DESC = `Ceník podřezání zdiva za m² řezné plochy (délka zdi × tloušťka): od ${FROM} Kč/m². Nejsme plátci DPH, nic se nepřipočítává. Kalkulačka spočítá cenu vaší zdi.`;
 
 export const metadata: Metadata = {
   ...pageMetadata({ path: `/clanky/${SLUG}`, title: TITLE, description: DESC }),
