@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Logo manuál IZODIAMANT</title>
+<meta name="description" content="Pravidla pro používání loga IZODIAMANT – varianty, barvy, ochranná zóna, podklady a soubory ke stažení.">
+<link rel="icon" href="logo/svg/izodiamant-ikona-barevne.svg" type="image/svg+xml">
+<style>
+@font-face{font-family:"Inter";src:url(fonts/inter-latin-ext.woff2) format("woff2");font-weight:100 900;font-display:swap;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Inter";src:url(fonts/inter-latin.woff2) format("woff2");font-weight:100 900;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+:root{
+  --lime:#C4D600; --olive:#5C6A00; --hover:#A3B200; --graphite:#1A1A1A; --black:#000000; --white:#FFFFFF;
+  --grey-1:#F8F9FA; --grey-2:#DADDE0; --grey-text:#4D4D4D;
+  --font:"Inter",Arial,sans-serif;
+  --pad:clamp(20px,5vw,64px);
+  --measure:68ch;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(64px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--white);color:var(--graphite);font:400 17px/1.6 var(--font);-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--olive);outline-offset:3px}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:10;background:var(--graphite);color:var(--white);padding-top:env(safe-area-inset-top,0px)}
+.nav-in{display:flex;align-items:center;gap:24px;padding:0 var(--pad);height:56px}
+.nav img{height:30px;width:auto;flex:none}
+.nav ul{display:flex;gap:4px;margin:0;padding:0;list-style:none;overflow-x:auto;scrollbar-width:none}
+.nav ul::-webkit-scrollbar{display:none}
+.nav a{display:block;padding:6px 10px;font-weight:600;font-size:15px;text-decoration:none;white-space:nowrap}
+.nav ul a:hover{background:rgba(255,255,255,.12);color:var(--lime)}
+
+/* hero */
+.hero{padding:clamp(40px,8vw,96px) var(--pad) 0;display:grid;grid-template-columns:minmax(0,1fr);gap:32px}
+@media (min-width:900px){.hero{grid-template-columns:minmax(0,1fr) minmax(0,.8fr);align-items:center}}
+.hero-logo{width:min(440px,100%);justify-self:center;background:var(--graphite);padding:36px;border-radius:12px}
+.hero h1{margin:0 0 12px;font-size:clamp(44px,7vw,84px);line-height:.98;font-weight:800;letter-spacing:-.03em}
+.hero p{margin:0;max-width:var(--measure);font-size:19px;color:var(--grey-text)}
+.bar{margin-top:clamp(40px,6vw,72px);background:var(--graphite);color:var(--white);padding:22px var(--pad);display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;border-top:6px solid var(--lime)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:12px 20px;background:var(--lime);color:var(--black);font-weight:700;font-size:17px;text-decoration:none;border:0;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--hover)}
+.bar small{font-size:15px;color:#C8C8C8}
+
+/* sections */
+main{padding:0 var(--pad) 80px}
+section{padding-top:clamp(56px,8vw,96px);max-width:1200px}
+h2{display:flex;gap:14px;align-items:baseline;margin:0 0 20px;font-size:clamp(30px,4vw,44px);line-height:1.08;font-weight:800;letter-spacing:-.02em}
+h2 .n{color:var(--olive);font-size:.62em;font-weight:700;border:2px solid var(--lime);background:var(--lime);color:var(--black);min-width:1.7em;text-align:center;line-height:1.5;border-radius:50%}
+h3{margin:36px 0 10px;font-size:22px;line-height:1.2;font-weight:700}
+p,li{max-width:var(--measure)}
+.lead{font-size:19px}
+ul.rules{padding-left:1.1em}
+ul.rules li{margin:5px 0}
+code{font:600 .88em var(--font);background:var(--grey-1);border:1px solid var(--grey-2);padding:1px 6px;border-radius:3px}
+
+/* tiles */
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr))}
+.g3{grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.g4{grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr))}
+.tile{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:16/10;overflow:hidden;border:1px solid var(--grey-2)}
+.tile img{width:auto;max-width:76%;max-height:76%}
+.tile.wide img{width:76%;max-height:none}
+.cap{margin-top:8px;font-size:15px;line-height:1.4}
+.cap b{display:block;font-weight:700}
+.dl{display:flex;gap:8px;margin-top:8px}
+.dl a{padding:4px 12px;border:2px solid var(--graphite);font-weight:700;font-size:14px;text-decoration:none}
+.dl a:hover{background:var(--graphite);color:var(--white)}
+.mark{position:absolute;top:10px;left:10px;z-index:2;width:30px;height:30px;display:grid;place-items:center;font-weight:700;font-size:17px;line-height:1;background:var(--white);color:var(--black);border:2px solid var(--black);border-radius:50%}
+.mark.no{background:var(--black);color:var(--white);border-color:var(--white)}
+.dark{background:var(--graphite)}
+.photo{background:#222 url(img/foto-tmava.jpg) center/cover}
+.photo::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.45)}
+.photo img{position:relative}
+.busy{background:#444 url(img/foto-rusna.jpg) center/cover}
+.fam{margin-top:40px}
+.fam:first-of-type{margin-top:24px}
+.fam h3{margin:0 0 4px}
+.fam p{margin:0 0 14px;color:var(--grey-text)}
+
+/* parts */
+.parts{counter-reset:p;padding-left:0;list-style:none}
+.parts li{counter-increment:p;position:relative;padding-left:44px;margin:12px 0}
+.parts li::before{content:counter(p);position:absolute;left:0;top:0;width:30px;height:30px;display:grid;place-items:center;background:var(--lime);color:var(--black);font-weight:700;border-radius:50%}
+.anatomy{display:grid;gap:32px;align-items:center;margin-top:28px}
+@media (min-width:900px){.anatomy{grid-template-columns:minmax(0,420px) minmax(0,1fr)}}
+.anatomy .tile{aspect-ratio:1/1}
+
+/* clear space */
+.zone-wrap{--w:min(440px,calc(100vw - 2*var(--pad) - 120px));margin-top:24px}
+.zone{position:relative;display:inline-block;padding:calc(var(--w)*.061);outline:2px dashed var(--olive);background:var(--white)}
+.zone img{width:var(--w);height:var(--w)}
+.zone .inner{position:absolute;inset:calc(var(--w)*.061);outline:1px solid var(--grey-2);pointer-events:none}
+.xm{position:absolute;left:calc(var(--w)*.061 + var(--w) + 12px);top:calc(var(--w)*.061 + var(--w)*.747);width:3px;height:calc(var(--w)*.122);background:var(--black)}
+.xm::before,.xm::after{content:"";position:absolute;left:-6px;width:15px;height:3px;background:var(--black)}
+.xm::before{top:0}.xm::after{bottom:0}
+.xl{position:absolute;left:calc(var(--w)*.061 + var(--w) + 24px);top:calc(var(--w)*.061 + var(--w)*.747 + var(--w)*.122/2 - 14px);font-weight:700;font-size:20px}
+.hm{position:absolute;top:0;left:50%;width:3px;height:calc(var(--w)*.061);background:var(--olive)}
+.hl{position:absolute;top:calc(var(--w)*.061/2 - 12px);left:calc(50% + 10px);font-weight:700;font-size:16px;color:var(--olive)}
+.zone-wrap{padding-right:90px}
+
+/* min size */
+.mins{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-end;margin-top:24px}
+.mins .box{padding:16px;border:1px solid var(--grey-2);background:var(--graphite)}
+
+/* colors */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:20px;margin-top:24px}
+.sw{border:1px solid var(--grey-2)}
+.sw .chip{height:140px;display:flex;align-items:flex-end;padding:12px}
+.sw .chip button{font:700 15px var(--font);padding:6px 12px;border:2px solid currentColor;background:transparent;color:inherit;cursor:pointer}
+.sw dl{margin:0;padding:14px 16px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:15px}
+.sw dt{font-weight:700}
+.sw dd{margin:0}
+.sw h3{margin:0;padding:14px 16px 0;font-size:20px}
+.sw .role{padding:2px 16px 0;margin:0;font-size:14px;color:var(--grey-text)}
+.bal{display:flex;height:56px;margin-top:20px;max-width:640px;border:1px solid var(--grey-2)}
+.bal span{display:block}
+
+/* tables */
+.tw{overflow-x:auto;margin-top:16px}
+table{border-collapse:collapse;min-width:640px;font-size:16px}
+th,td{text-align:left;vertical-align:top;padding:10px 16px 10px 0;border-bottom:1px solid var(--grey-2)}
+th{font-weight:700;border-bottom:2px solid var(--graphite)}
+
+/* type */
+.specimen{margin-top:20px;border-top:2px solid var(--graphite)}
+.specimen div{display:grid;grid-template-columns:minmax(120px,200px) 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--grey-2);align-items:baseline}
+.specimen span:first-child{font-size:15px;color:var(--grey-text)}
+.t-d{font-size:clamp(34px,5vw,56px);font-weight:800;line-height:1.02;letter-spacing:-.03em}
+.t-h1{font-size:38px;font-weight:800;line-height:1.1;letter-spacing:-.02em}
+.t-h2{font-size:26px;font-weight:700}
+.t-claim{font-size:15px;font-weight:600;letter-spacing:.5em;text-transform:uppercase}
+.t-body{font-size:17px}
+
+.note{margin-top:16px;padding:14px 18px;background:var(--grey-1);border-left:4px solid var(--lime);max-width:var(--measure);font-size:16px}
+
+footer{padding:32px var(--pad) calc(32px + env(safe-area-inset-bottom,0px));background:var(--graphite);color:var(--white);display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;align-items:center;font-size:15px}
+footer img{height:34px;width:auto}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--graphite);color:var(--white);padding:10px 18px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Obsah">
+  <div class="nav-in">
+    <a href="#top" aria-label="Na začátek"><img src="logo/svg/izodiamant-ikona-barevne.svg" alt="IZODIAMANT"></a>
+    <ul>
+      <li><a href="#logo">Logo</a></li>
+      <li><a href="#varianty">Varianty</a></li>
+      <li><a href="#zona">Ochranná zóna</a></li>
+      <li><a href="#velikost">Velikost</a></li>
+      <li><a href="#barvy">Barvy</a></li>
+      <li><a href="#podklady">Podklady</a></li>
+      <li><a href="#chyby">Nesprávné použití</a></li>
+      <li><a href="#pismo">Písmo</a></li>
+      <li><a href="#vyroba">Výroba</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div>
+    <h1>Logo manuál</h1>
+    <p>Pravidla pro používání loga IZODIAMANT na webu, v dokumentech, na autech, oblečení i na stavbách. Pošlete odkaz každému, kdo s logem pracuje.</p>
+  </div>
+  <img class="hero-logo" src="logo/svg/izodiamant-logo-barevne.svg" alt="Logo IZODIAMANT – izolace, sanace">
+</header>
+<div class="bar">
+  <a class="btn" href="download/izodiamant-loga.zip" download>Stáhnout všechna loga (ZIP)</a>
+  <small>SVG pro tisk a výrobu, PNG pro kancelář a web</small>
+</div>
+
+<main>
+
+<section id="logo">
+  <h2><span class="n">1</span>Logo a jeho části</h2>
+  <p class="lead">Logo spojuje diamant, kapku, kruhový oblouk s nápisem IZOLACE SANACE a jméno IZODIAMANT. Části loga se nikdy neoddělují ani nepřeskupují, kromě předpřipravených variant z oddílu 2.</p>
+  <div class="anatomy">
+    <div class="tile dark"><img src="logo/svg/izodiamant-logo-barevne.svg" alt="Logo IZODIAMANT" style="max-width:88%;max-height:88%"></div>
+    <ol class="parts">
+      <li><b>Diamant</b> je obrys brilantu z tlusté linky. Odkazuje na diamantové řezání zdiva, se kterým firma pracuje.</li>
+      <li><b>Kapka</b> uprostřed diamantu značí vlhkost a izolaci proti ní.</li>
+      <li><b>Kruhový oblouk</b> s nápisem IZOLACE SANACE. Nápis je vyříznutý do oblouku, takže barvu mu dává podklad.</li>
+      <li><b>Jméno IZODIAMANT</b> mezi dvěma linkami. Jméno je kreslené, není to písmo – nikdy ho nepřepisujte fontem.</li>
+    </ol>
+  </div>
+  <p class="note">Slogan firmy <b>Vracíme zdraví vaší stavbě.</b> (s tečkou) není součástí loga. Pište ho vedle loga jako samostatný text písmem z oddílu 8, nikdy ho nevkládejte dovnitř loga.</p>
+</section>
+
+<section id="varianty">
+  <h2><span class="n">2</span>Varianty a soubory</h2>
+  <p>Logo má čtyři tvary a každý ve třech barvách. Vždy začněte hlavním logem. Menší tvary použijte, když hlavní logo nemá dost místa nebo by v malé velikosti zhoustlo.</p>
+
+  <div class="fam">
+    <h3>Hlavní logo (kulaté)</h3>
+    <p>Výchozí varianta. Titulní strany, cedule, polepy, profilový obrázek.</p>
+    <div class="grid g3">
+      <div><div class="tile dark"><img src="logo/svg/izodiamant-logo-barevne.svg" alt=""></div>
+        <div class="cap"><b>Barevné</b>Tmavé podklady.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-logo-barevne.svg" download>SVG</a><a href="logo/png/izodiamant-logo-barevne.png" download>PNG</a></div></div>
+      <div><div class="tile" style="background:var(--white)"><img src="logo/svg/izodiamant-logo-cerne.svg" alt=""></div>
+        <div class="cap"><b>Černé</b>Bílé a světlé podklady, limetkový podklad.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-logo-cerne.svg" download>SVG</a><a href="logo/png/izodiamant-logo-cerne.png" download>PNG</a></div></div>
+      <div><div class="tile photo"><img src="logo/svg/izodiamant-logo-bile.svg" alt=""></div>
+        <div class="cap"><b>Bílé</b>Tmavé fotografie a barevné plochy.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-logo-bile.svg" download>SVG</a><a href="logo/png/izodiamant-logo-bile.png" download>PNG</a></div></div>
+    </div>
+  </div>
+
+  <div class="fam">
+    <h3>Horizontální logo s claimem</h3>
+    <p>Jméno IZODIAMANT s nápisem IZOLACE SANACE pod ním. Hlavičky dokumentů, e-mail, web, široké plochy.</p>
+    <div class="grid g3">
+      <div><div class="tile dark wide"><img src="logo/svg/izodiamant-logo-horizontalni-barevne.svg" alt=""></div>
+        <div class="cap"><b>Barevné</b>Tmavé podklady.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-logo-horizontalni-barevne.svg" download>SVG</a><a href="logo/png/izodiamant-logo-horizontalni-barevne.png" download>PNG</a></div></div>
+      <div><div class="tile wide" style="background:var(--white)"><img src="logo/svg/izodiamant-logo-horizontalni-cerne.svg" alt=""></div>
+        <div class="cap"><b>Černé</b>Bílé a světlé podklady.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-logo-horizontalni-cerne.svg" download>SVG</a><a href="logo/png/izodiamant-logo-horizontalni-cerne.png" download>PNG</a></div></div>
+      <div><div class="tile wide photo"><img src="logo/svg/izodiamant-logo-horizontalni-bile.svg" alt=""></div>
+        <div class="cap"><b>Bílé</b>Tmavé fotografie.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-logo-horizontalni-bile.svg" download>SVG</a><a href="logo/png/izodiamant-logo-horizontalni-bile.png" download>PNG</a></div></div>
+    </div>
+  </div>
+
+  <div class="fam">
+    <h3>Nápis IZODIAMANT</h3>
+    <p>Jen jméno, bez claimu. Úzké a malé formáty: patička, záhlaví tabulky, pásek na oděvu.</p>
+    <div class="grid g3">
+      <div><div class="tile dark wide"><img src="logo/svg/izodiamant-napis-barevne.svg" alt=""></div>
+        <div class="cap"><b>Barevný</b>Tmavé podklady.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-napis-barevne.svg" download>SVG</a><a href="logo/png/izodiamant-napis-barevne.png" download>PNG</a></div></div>
+      <div><div class="tile wide" style="background:var(--white)"><img src="logo/svg/izodiamant-napis-cerne.svg" alt=""></div>
+        <div class="cap"><b>Černý</b>Bílé a světlé podklady.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-napis-cerne.svg" download>SVG</a><a href="logo/png/izodiamant-napis-cerne.png" download>PNG</a></div></div>
+      <div><div class="tile wide photo"><img src="logo/svg/izodiamant-napis-bile.svg" alt=""></div>
+        <div class="cap"><b>Bílý</b>Tmavé fotografie.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-napis-bile.svg" download>SVG</a><a href="logo/png/izodiamant-napis-bile.png" download>PNG</a></div></div>
+    </div>
+  </div>
+
+  <div class="fam">
+    <h3>Ikona (diamant s kapkou)</h3>
+    <p>Nejmenší formáty: ikona webu, profilový obrázek, razítko, výšivka, vodoznak na fotografiích.</p>
+    <div class="grid g3">
+      <div><div class="tile dark"><img src="logo/svg/izodiamant-ikona-barevne.svg" alt=""></div>
+        <div class="cap"><b>Barevná</b>Tmavé podklady.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-ikona-barevne.svg" download>SVG</a><a href="logo/png/izodiamant-ikona-barevne.png" download>PNG</a></div></div>
+      <div><div class="tile" style="background:var(--white)"><img src="logo/svg/izodiamant-ikona-cerne.svg" alt=""></div>
+        <div class="cap"><b>Černá</b>Bílé a světlé podklady, razítko.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-ikona-cerne.svg" download>SVG</a><a href="logo/png/izodiamant-ikona-cerne.png" download>PNG</a></div></div>
+      <div><div class="tile photo"><img src="logo/svg/izodiamant-ikona-bile.svg" alt=""></div>
+        <div class="cap"><b>Bílá</b>Tmavé fotografie, vodoznak.</div>
+        <div class="dl"><a href="logo/svg/izodiamant-ikona-bile.svg" download>SVG</a><a href="logo/png/izodiamant-ikona-bile.png" download>PNG</a></div></div>
+    </div>
+  </div>
+  <p class="note">Všechny tvary jsou jednobarevné, mění se jen barva. Soubory SVG jsou vektorizované z dodaných PNG, takže jemné hrany písmen mohou být o desetinu milimetru odlišné od původního návrhu. Pro velkoformátový tisk nebo výrobu s přesností na milimetry si nechte připravit čistý vektorový originál.</p>
+</section>
+
+<section id="zona">
+  <h2><span class="n">3</span>Ochranná zóna</h2>
+  <p>X je výška písmen nápisu IZODIAMANT (u všech tvarů). Kolem loga musí zůstat volné místo alespoň ½ X ze všech stran. Do zóny nesmí zasahovat text, jiné logo, okraj stránky ani hrana fotografie. Víc místa je vždy v pořádku.</p>
+  <div class="zone-wrap">
+    <div class="zone">
+      <img src="logo/svg/izodiamant-logo-cerne.svg" alt="Logo s vyznačenou ochrannou zónou">
+      <span class="inner"></span><span class="xm"></span><span class="xl">X</span><span class="hm"></span><span class="hl">½ X</span>
+    </div>
+  </div>
+</section>
+
+<section id="velikost">
+  <h2><span class="n">4</span>Minimální velikost</h2>
+  <p>Pod tyto rozměry se tenké linky, nápis v oblouku a claim slévají. Tabulka platí pro tisk a pro obrazovku.</p>
+  <div class="mins">
+    <div><div class="box"><img src="logo/svg/izodiamant-logo-barevne.svg" style="width:140px" alt=""></div><div class="cap"><b>Hlavní logo</b>30 mm v tisku, 140 px na obrazovce</div></div>
+    <div><div class="box"><img src="logo/svg/izodiamant-logo-horizontalni-barevne.svg" style="width:260px" alt=""></div><div class="cap"><b>Horizontální s claimem</b>60 mm v tisku, 260 px na obrazovce</div></div>
+    <div><div class="box"><img src="logo/svg/izodiamant-napis-barevne.svg" style="width:150px" alt=""></div><div class="cap"><b>Nápis</b>30 mm v tisku, 150 px na obrazovce</div></div>
+    <div><div class="box"><img src="logo/svg/izodiamant-ikona-barevne.svg" style="width:48px" alt=""></div><div class="cap"><b>Ikona</b>10 mm v tisku, 32 px na obrazovce</div></div>
+  </div>
+</section>
+
+<section id="barvy">
+  <h2><span class="n">5</span>Barvy</h2>
+  <p>Limetková pochází přímo ze souborů loga, grafitová a olivová z webu izodiamant.cz. Kliknutím na tlačítko zkopírujete HEX kód.</p>
+  <div class="swatches">
+    <div class="sw"><div class="chip" style="background:#C4D600;color:#000"><button data-copy="#C4D600">#C4D600</button></div>
+      <h3>IZODIAMANT limetková</h3><p class="role">Značková barva loga</p>
+      <dl><dt>RGB</dt><dd>196 214 0</dd><dt>CMYK</dt><dd>8 0 100 16</dd><dt>Pantone</dt><dd>přibližně 382 C</dd></dl></div>
+    <div class="sw"><div class="chip" style="background:#1A1A1A;color:#fff"><button data-copy="#1A1A1A">#1A1A1A</button></div>
+      <h3>Grafitová</h3><p class="role">Tmavé podklady a text</p>
+      <dl><dt>RGB</dt><dd>26 26 26</dd><dt>CMYK</dt><dd>0 0 0 90</dd><dt>Pantone</dt><dd>Black 7 C (přibližně)</dd></dl></div>
+    <div class="sw"><div class="chip" style="background:#000;color:#fff"><button data-copy="#000000">#000000</button></div>
+      <h3>Černá</h3><p class="role">Jednobarevné logo</p>
+      <dl><dt>RGB</dt><dd>0 0 0</dd><dt>CMYK</dt><dd>0 0 0 100</dd><dt>Pantone</dt><dd>Black C</dd></dl></div>
+    <div class="sw"><div class="chip" style="background:#fff;color:#000;border-bottom:1px solid var(--grey-2)"><button data-copy="#FFFFFF">#FFFFFF</button></div>
+      <h3>Bílá</h3><p class="role">Světlé plochy, bílé logo</p>
+      <dl><dt>RGB</dt><dd>255 255 255</dd><dt>CMYK</dt><dd>0 0 0 0</dd></dl></div>
+    <div class="sw"><div class="chip" style="background:#5C6A00;color:#fff"><button data-copy="#5C6A00">#5C6A00</button></div>
+      <h3>Olivová</h3><p class="role">Doplňková: text a odkazy na světlém</p>
+      <dl><dt>RGB</dt><dd>92 106 0</dd><dt>CMYK</dt><dd>13 0 100 58</dd></dl></div>
+    <div class="sw"><div class="chip" style="background:#A3B200;color:#000"><button data-copy="#A3B200">#A3B200</button></div>
+      <h3>Tmavší limetková</h3><p class="role">Doplňková: tlačítka při najetí</p>
+      <dl><dt>RGB</dt><dd>163 178 0</dd><dt>CMYK</dt><dd>8 0 100 30</dd></dl></div>
+  </div>
+  <h3>Poměr barev</h3>
+  <div class="bal" role="img" aria-label="Převažuje bílá, grafitová doplňuje, limetková je akcent"><span style="flex:55;background:#fff"></span><span style="flex:25;background:#1A1A1A"></span><span style="flex:15;background:#C4D600"></span><span style="flex:5;background:#5C6A00"></span></div>
+  <ul class="rules" style="margin-top:24px">
+    <li>CMYK a Pantone jsou přepočty, ne hodnoty změřené ze vzorníku. Limetková je zářivá a v CMYK vychází výrazně tmavší než na obrazovce. Před větší zakázkou (polep auta, cedule, potisk oděvu) si nechte udělat nátisk nebo porovnejte se vzorníkem.</li>
+    <li>Limetková je akcent značky, ne pozadí všeho. Převažuje bílá, doplňuje grafitová, limetková se používá na logo a drobné prvky.</li>
+    <li><b>Kontrast, který rozhoduje o použití loga:</b> limetková na grafitové 10,7 : 1 a černá na limetkové 13 : 1 jsou výborné. Limetková na bílé má jen 1,6 : 1, proto se tam barevné logo ani limetkový text nepoužívají.</li>
+    <li>Text na světlém pište grafitově nebo olivově (olivová na bílé 6,0 : 1). Text na limetkové pište vždy černě nebo grafitově.</li>
+    <li>Velké černé plochy v ofsetu tiskněte jako sytou černou 60 40 40 100, drobný text jen 0 0 0 100.</li>
+  </ul>
+</section>
+
+<section id="podklady">
+  <h2><span class="n">6</span>Podklady</h2>
+  <p>Logo musí být vždy dobře čitelné. Barevné (limetkové) logo patří na tmavé podklady, černé na světlé a na limetkovou. Bílé na tmavé fotografie. Na rušnou fotografii vždy s klidným panelem.</p>
+  <div class="grid g3" style="margin-top:24px">
+    <div><div class="tile dark"><span class="mark" aria-label="správně">✓</span><img src="logo/svg/izodiamant-logo-barevne.svg" alt=""></div><div class="cap">Grafitová – barevné logo</div></div>
+    <div><div class="tile" style="background:var(--black)"><span class="mark" aria-label="správně">✓</span><img src="logo/svg/izodiamant-logo-barevne.svg" alt=""></div><div class="cap">Černá – barevné logo</div></div>
+    <div><div class="tile" style="background:var(--white)"><span class="mark" aria-label="správně">✓</span><img src="logo/svg/izodiamant-logo-cerne.svg" alt=""></div><div class="cap">Bílá – černé logo</div></div>
+    <div><div class="tile" style="background:var(--grey-1)"><span class="mark" aria-label="správně">✓</span><img src="logo/svg/izodiamant-logo-cerne.svg" alt=""></div><div class="cap">Světle šedá – černé logo</div></div>
+    <div><div class="tile" style="background:var(--lime)"><span class="mark" aria-label="správně">✓</span><img src="logo/svg/izodiamant-logo-cerne.svg" alt=""></div><div class="cap">Limetková – černé logo</div></div>
+    <div><div class="tile photo"><span class="mark" aria-label="správně">✓</span><img src="logo/svg/izodiamant-logo-bile.svg" alt=""></div><div class="cap">Tmavá fotografie – bílé logo</div></div>
+    <div><div class="tile busy"><span class="mark" aria-label="správně">✓</span><div style="position:relative;background:var(--white);padding:4% 6%;width:70%"><img src="logo/svg/izodiamant-logo-horizontalni-cerne.svg" alt="" style="max-width:none;width:100%"></div></div><div class="cap">Rušné pozadí – logo na bílém panelu</div></div>
+  </div>
+</section>
+
+<section id="chyby">
+  <h2><span class="n">7</span>Nesprávné použití</h2>
+  <p>Logo nikdy neupravujte. Jediné povolené změny jsou velikost (se zachováním poměru stran) a výběr varianty z oddílu 2.</p>
+  <div class="grid g4" style="margin-top:24px">
+    <div><div class="tile dark"><span class="mark no" aria-label="špatně">✕</span><img src="logo/svg/izodiamant-ikona-barevne.svg" alt="" style="transform:scaleX(1.35)"></div><div class="cap">Nenatahujte ani nestlačujte</div></div>
+    <div><div class="tile dark"><span class="mark no" aria-label="špatně">✕</span><img src="logo/svg/izodiamant-ikona-barevne.svg" alt="" style="transform:rotate(-14deg)"></div><div class="cap">Neotáčejte</div></div>
+    <div><div class="tile dark"><span class="mark no" aria-label="špatně">✕</span><img src="logo/svg/izodiamant-ikona-barevne.svg" alt="" style="filter:hue-rotate(150deg) saturate(1.2)"></div><div class="cap">Nepřebarvujte</div></div>
+    <div><div class="tile dark"><span class="mark no" aria-label="špatně">✕</span><img src="logo/svg/izodiamant-ikona-barevne.svg" alt="" style="filter:drop-shadow(6px 6px 3px rgba(0,0,0,.9)) drop-shadow(0 0 10px #fff)"></div><div class="cap">Nepřidávejte stíny ani efekty</div></div>
+    <div><div class="tile" style="background:var(--white)"><span class="mark no" aria-label="špatně">✕</span><img src="logo/svg/izodiamant-logo-barevne.svg" alt=""></div><div class="cap">Limetkové logo nedávejte na bílou</div></div>
+    <div><div class="tile busy"><span class="mark no" aria-label="špatně">✕</span><img src="logo/svg/izodiamant-logo-bile.svg" alt=""></div><div class="cap">Nepokládejte na rušné pozadí bez panelu</div></div>
+    <div><div class="tile dark"><span class="mark no" aria-label="špatně">✕</span><img src="logo/svg/izodiamant-logo-barevne.svg" alt="" style="clip-path:inset(0 0 24% 0)"></div><div class="cap">Neodstraňujte části loga</div></div>
+    <div><div class="tile dark"><span class="mark no" aria-label="špatně">✕</span><img src="logo/svg/izodiamant-logo-cerne.svg" alt=""></div><div class="cap">Černou verzi nedávejte na tmavé</div></div>
+  </div>
+</section>
+
+<section id="pismo">
+  <h2><span class="n">8</span>Písmo</h2>
+  <p>Písmo značky je Inter – stejné jako na webu izodiamant.cz. Je zdarma (licence SIL Open Font) a lze ho stáhnout z Google Fonts. Když ho nejde nainstalovat, použijte Arial. Jméno a claim v logu jsou kreslené, k písmu značky nepatří.</p>
+  <div class="specimen">
+    <div><span>Titulek, ExtraBold</span><span class="t-d">Vracíme zdraví vaší stavbě.</span></div>
+    <div><span>Nadpis 1, ExtraBold</span><span class="t-h1">Sanace vlhkého zdiva</span></div>
+    <div><span>Nadpis 2, Bold</span><span class="t-h2">Diamantové lano, řetězová pila</span></div>
+    <div><span>Štítek ve stylu claimu</span><span class="t-claim">Izolace sanace</span></div>
+    <div><span>Text, Regular</span><span class="t-body">Odstraňujeme příčinu vlhkosti zdiva. Bez vykopávek, v hloubce a bez poškození stavby.</span></div>
+  </div>
+  <p class="note">Název firmy v textu pište IZODIAMANT – jedním slovem, verzálkami. Web izodiamant.cz. Slogan pište celý včetně tečky: <b>Vracíme zdraví vaší stavbě.</b></p>
+</section>
+
+<section id="vyroba">
+  <h2><span class="n">9</span>Umístění a výroba</h2>
+  <p>V dokumentech patří logo vlevo nahoru nebo na střed (titulní strany, cedule). Na A4 má hlavní logo šířku 30–40 mm, horizontální logo 60–80 mm, na A3 přibližně dvojnásobek, na vizitce 25–30 mm hlavní logo nebo ikona. Na stránce je logo jen jednou.</p>
+  <div class="tw">
+  <table>
+    <thead><tr><th>Použití</th><th>Varianta</th><th>Poznámka</th></tr></thead>
+    <tbody>
+      <tr><td>Web, sociální sítě</td><td>SVG barevné nebo bílé</td><td>Profilový obrázek: hlavní logo na grafitovém kruhu nebo čtverci. Ikona webu (favicon): ikona barevná.</td></tr>
+      <tr><td>Word, PowerPoint, e-mailový podpis</td><td>PNG</td><td>V podpisu e-mailu horizontální černé logo, šířka asi 220 px.</td></tr>
+      <tr><td>Tiskoviny</td><td>SVG nebo PDF z SVG</td><td>Černé logo na bílém papíře. Barvy podle oddílu 5, u větších zakázek nátisk.</td></tr>
+      <tr><td>Polep vozidla</td><td>SVG barevné na tmavé, nebo černé na limetkové</td><td>Folie co nejblíže #C4D600 (Pantone 382 C), ochranná zóna od hran a klik. Barevné logo nedávejte na bílý lak.</td></tr>
+      <tr><td>Cedule a tabule na stavbě</td><td>Hlavní nebo horizontální logo</td><td>Tmavý podklad s barevným logem, nebo limetkový podklad s černým. Šířka alespoň 30 cm, aby bylo vidět z ulice.</td></tr>
+      <tr><td>Pracovní oděv: potisk</td><td>Barevné nebo bílé</td><td>Šířka hlavního loga alespoň 70 mm. Na světlé triko černé.</td></tr>
+      <tr><td>Pracovní oděv: výšivka</td><td>Ikona nebo nápis, jednobarevné</td><td>Šířka alespoň 50 mm. Nápis v oblouku a tenké linky hlavního loga výšivka neunese.</td></tr>
+      <tr><td>Laser, plazma, gravírování</td><td>Jednobarevné černé</td><td>Vnitřky písmen O, D a A a kapka potřebují můstky – připraví výrobce ze SVG.</td></tr>
+      <tr><td>Razítko</td><td>Černá ikona nebo nápis</td><td>Ikona šířky 25–30 mm, nápis 40–50 mm.</td></tr>
+      <tr><td>Vodoznak na fotografiích z realizací</td><td>Bílá ikona</td><td>Do rohu, šířka 8–12 % fotografie, průhlednost 60–80 %. Nikdy přes místo, o kterém fotografie vypráví.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <img src="logo/svg/izodiamant-napis-barevne.svg" alt="IZODIAMANT">
+  <span>Logo manuál IZODIAMANT, verze 1.0, říjen 2026</span>
+  <a href="https://izodiamant.cz">izodiamant.cz</a>
+</footer>
+
+<div class="toast" role="status" aria-live="polite"></div>
+<script>
+document.querySelectorAll('[data-copy]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var v=b.getAttribute('data-copy'), t=document.querySelector('.toast');
+    function done(ok){t.textContent=ok?'Zkopírováno: '+v:'Kód barvy: '+v;t.classList.add('on');setTimeout(function(){t.classList.remove('on')},1600)}
+    if(navigator.clipboard){navigator.clipboard.writeText(v).then(function(){done(true)},function(){done(false)})}else{done(false)}
+  });
+});
+</script>
+</body>
+</html>
