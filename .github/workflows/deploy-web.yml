@@ -14,11 +14,13 @@ name: Deploy Web (Workers)
 on:
   push:
     paths-ignore:
+      - 'logo-manual/**'
       - 'worker/**'
       - 'quotes-worker/**'
       - 'tests/**'
       - '.github/workflows/deploy-worker.yml'
       - '.github/workflows/deploy-quotes-worker.yml'
+      - '.github/workflows/deploy-logo-manual.yml'
   schedule:
     - cron: '10 4 * * *'
   workflow_dispatch: {}
