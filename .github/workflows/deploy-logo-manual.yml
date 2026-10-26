@@ -29,3 +29,6 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: logo-manual
+          # wrangler 3.x nezná wrangler.jsonc a sáhl by po wrangler.toml hlavního webu o adresář výš.
+          wranglerVersion: '4'
+          command: deploy --config wrangler.jsonc
