@@ -2,7 +2,8 @@ name: Deploy Web (Workers)
 
 # Web izodiamant.cz jako Cloudflare Worker (OpenNext) – náhrada Cloudflare Pages.
 #   push na master      → produkce  izodiamant          (izodiamant.<účet>.workers.dev; po přepnutí i izodiamant.cz)
-#   push na jinou větev → preview   izodiamant-preview  (<větev>-izodiamant-preview.<účet>.workers.dev)
+#   jiná větev          → jen ručně (workflow_dispatch) jako preview izodiamant-preview;
+#                         push na větve mimo master se nenasazuje
 #   cron 04:10 UTC      → produkce  – denní rebuild kvůli článkům naplánovaným v articles.json
 #                                     (Pages dělá totéž přes deploy hook ve scheduled-rebuild.yml)
 # Postup přechodu z Pages a potřebná nastavení: deployment.MD §1.3.
@@ -14,12 +15,15 @@ name: Deploy Web (Workers)
 # Serverové secrety (RESEND_API_KEY, AUTH_*, …) jsou uložené přímo ve workeru, deploy je zachová.
 on:
   push:
+    branches: [master]
     paths-ignore:
+      - 'logo-manual/**'
       - 'worker/**'
       - 'quotes-worker/**'
       - 'tests/**'
       - '.github/workflows/deploy-worker.yml'
       - '.github/workflows/deploy-quotes-worker.yml'
+      - '.github/workflows/deploy-logo-manual.yml'
   schedule:
     - cron: '10 4 * * *'
   workflow_dispatch: {}
