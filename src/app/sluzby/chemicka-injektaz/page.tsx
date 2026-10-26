@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: "Chemická injektáž zdiva: cena a postup",
     // Konkurence v SERPu inzeruje „od 690 Kč/bm" – proto u naší sazby vždy jednotka
     // (m² řezné plochy) a informace o DPH, jinak číslo vypadá násobně dražší.
-    description: `Chemická injektáž zdiva proti vzlínající vlhkosti od ${minPriceLabel("chemicka-injektaz") ?? "2 500"} Kč/m² řezné plochy. Nejsme plátci DPH. Šetrná metoda tam, kde nelze řezat.`,
+    description: `Chemická injektáž zdiva proti vzlínající vlhkosti od ${minPriceLabel("chemicka-injektaz") ?? "3 900"} Kč/m² řezné plochy. Nejsme plátci DPH. Šetrná metoda tam, kde nelze řezat.`,
     images: ['/images/sluzby/chemicka-injektaz.jpg'],
   }),
   keywords: ["chemická injektáž zdiva", "chemická injektáž zdiva cena", "injektáž zdiva cena", "injektáž zdiva", "injektáž zdiva proti vlhkosti", "krémová injektáž zdiva", "kolik stojí injektáž zdiva", "sanace vlhkosti", "hydrofobní gel", "Nové Hrady", "ČR"],

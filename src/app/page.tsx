@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     path: '',
     title: "Podřezání a sanace vlhkého zdiva po celé ČR",
     // ≤ 160 znaků, jinak Google popis utne (i se sloganem na konci) a přepíše si ho sám.
-    description: "Podřezání a sanace vlhkého zdiva – diamantové lano, řetězová pila, chemická injektáž. Od 2 500 Kč/m², jezdíme po celé ČR. Vracíme zdraví vaší stavbě.",
+    description: "Podřezání a sanace vlhkého zdiva – diamantové lano, řetězová pila, chemická injektáž. Od 2 200 Kč/m², jezdíme po celé ČR. Vracíme zdraví vaší stavbě.",
   }),
   // Homepage je kořenový segment – title.template z layoutu se na něj NEAPLIKUJE,
   // takže značku „| IZODIAMANT" musíme doplnit ručně. (Nezdvojí se: OG title si

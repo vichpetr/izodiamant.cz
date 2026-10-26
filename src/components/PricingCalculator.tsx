@@ -176,7 +176,7 @@ export default function PricingCalculator() {
   };
 
   // V tooltipu je titulek „Ceník", takže prefix „Orientační cena" je nadbytečný a
-  // dlouhý řetězec navíc přetékal z úzkého boxu. Zobrazujeme jen „od 4 500 Kč / m²".
+  // dlouhý řetězec navíc přetékal z úzkého boxu. Zobrazujeme jen „od 4 200 Kč / m²".
   const shortPrice = (p: string) => p.replace(/^Orientační cena\s*/i, '').trim();
   const priceListTooltip = [
     { name: "Diamantové lano", price: shortPrice(servicesData["diamantove-lano"].priceRange), href: "/sluzby/diamantove-lano" },
