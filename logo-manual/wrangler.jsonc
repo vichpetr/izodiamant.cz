@@ -1,0 +1,15 @@
+// Worker izodiamant-logo-manual – statické soubory logo manuálu (bez kódu).
+// Nasazuje .github/workflows/deploy-logo-manual.yml při změně logo-manual/** na master.
+// Doména logo-manual.izodiamant.cz se při nasazení připojí sama (custom_domain),
+// zóna izodiamant.cz musí být ve stejném účtu Cloudflare.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "izodiamant-logo-manual",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "."
+  },
+  "routes": [
+    { "pattern": "logo-manual.izodiamant.cz", "custom_domain": true }
+  ]
+}
