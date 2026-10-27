@@ -170,6 +170,7 @@ export default function Footer() {
           <div className="flex gap-8">
             <Link href="/ochrana-udaju" className="hover:text-primary transition-colors">{content.privacy}</Link>
             <Link href="/cookies" className="hover:text-primary transition-colors">{content.cookies}</Link>
+            <a href="https://logo-manual.izodiamant.cz" target="_blank" rel="noopener nofollow" className="text-white/30 hover:text-primary transition-colors">Logo manuál</a>
             <Link href="/sprava" className="text-white/30 hover:text-primary transition-colors">Správa</Link>
           </div>
         </div>
