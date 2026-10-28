@@ -1,7 +1,7 @@
 'use client';
 
 // Klientské odhlášení (next-auth/react) – stejný důvod jako u přihlášení:
-// server-action signOut() na Cloudflare Pages edge padá.
+// server-action signOut() na edge runtime Cloudflare Pages padala.
 
 import { signOut } from 'next-auth/react';
 

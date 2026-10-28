@@ -16,16 +16,21 @@ export default function ServiceArticles({
   slugs,
   limit = 3,
   title = 'K tématu čtěte',
+  exclude,
 }: {
   slugs: string[];
   limit?: number;
   title?: string;
+  /** Slug stránky, na které sekce stojí – článek neodkazuje sám na sebe. */
+  exclude?: string;
 }) {
   const curated = slugs
     .map((slug) => allArticles.find((a) => a.slug === slug))
-    .filter((a): a is Article => !!a && isArticlePublished(a));
+    .filter((a): a is Article => !!a && a.slug !== exclude && isArticlePublished(a));
 
-  const filler = publishedArticles.filter((a) => !curated.some((c) => c.slug === a.slug));
+  const filler = publishedArticles.filter(
+    (a) => a.slug !== exclude && !curated.some((c) => c.slug === a.slug),
+  );
   const articles = [...curated, ...filler].slice(0, limit);
 
   if (articles.length === 0) return null;

@@ -8,7 +8,6 @@ import { type AdminArticle } from '../ArticlesAdminList';
 import { type AdminReference } from '../ReferencesAdminList';
 import SpravaContentTabs from '../SpravaContentTabs';
 
-export const runtime = 'edge';
 export const metadata: Metadata = {
   title: 'Obsah pro FB',
   robots: { index: false, follow: false },

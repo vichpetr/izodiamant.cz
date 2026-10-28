@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { safeAuth, isAllowed } from '@/auth';
 import { isDbAvailable } from '@/lib/db';
-import { getQuoteBundle, listCustomerOptions, listInbox, listQuotes } from '@/lib/quotesDb';
+import { getPricing, getQuoteBundle, listCustomerOptions, listInbox, listQuotes, pricingUpdatedInfo } from '@/lib/quotesDb';
 import { getWorkerStatus } from '@/lib/quotesWorker';
 import { computeTotals, fingerprintHash, formatArea, formatCzk, formatNumber } from '@/lib/quotes/calc';
 import {
@@ -19,6 +19,7 @@ import {
   type Quote,
   type QuoteItem,
 } from '@/lib/quotes/model';
+import { regionName } from '@/lib/quotes/pricing';
 import SpravaNav from '../SpravaNav';
 import {
   createQuoteAction,
@@ -29,6 +30,7 @@ import {
   regenerateEmailAction,
   retryInboxAction,
   saveEmailAction,
+  savePricingAction,
   saveQuoteAction,
   sendEmailAction,
   setEmailVersionAction,
@@ -42,6 +44,7 @@ import EmailPanel from './EmailPanel';
 import InboxPanel from './InboxPanel';
 import NewQuoteModal from './NewQuoteModal';
 import OutputPanel from './OutputPanel';
+import PricingSettings from './PricingSettings';
 import QuoteActions from './QuoteActions';
 import QuoteEditor from './QuoteEditor';
 import QuoteWizard, { NextStepButton, type Step } from './QuoteWizard';
@@ -49,19 +52,17 @@ import QuotesTable from './QuotesTable';
 import VersionsPanel from './VersionsPanel';
 import { StatusBadge, cardCls, fmtDateTime, headingCls } from './ui';
 
-export const runtime = 'edge';
 export const metadata: Metadata = {
   title: 'Cenové nabídky',
   robots: { index: false, follow: false },
 };
 
-// Seznam i detail jsou jedna route (detail = ?id=…&krok=1|2|3). Každá /sprava/*
-// route je samostatná edge funkce a zvětšuje worker Pages – viz deployment.MD.
-export default async function NabidkyPage({ searchParams }: { searchParams: Promise<{ id?: string; krok?: string }> }) {
+// Seznam, detail i ceník jsou jedna route (detail = ?id=…&krok=1|2|3, ceník = ?nastaveni=cenik).
+export default async function NabidkyPage({ searchParams }: { searchParams: Promise<{ id?: string; krok?: string; nastaveni?: string }> }) {
   const session = await safeAuth();
   if (!session?.user || !isAllowed(session.user.email)) redirect('/sprava/prihlaseni');
 
-  const { id, krok } = await searchParams;
+  const { id, krok, nastaveni } = await searchParams;
   const status = await getWorkerStatus();
 
   return (
@@ -73,7 +74,13 @@ export default async function NabidkyPage({ searchParams }: { searchParams: Prom
             <strong>Databáze není připojená.</strong> Chybí binding <code>DB</code> (Cloudflare D1).
           </div>
         )}
-        {id ? <QuoteDetail id={Number(id)} step={Number(krok)} status={status} /> : <QuoteList status={status} />}
+        {nastaveni ? (
+          <PricingPage />
+        ) : id ? (
+          <QuoteDetail id={Number(id)} step={Number(krok)} status={status} />
+        ) : (
+          <QuoteList status={status} />
+        )}
       </div>
     </main>
   );
@@ -85,7 +92,15 @@ async function QuoteList({ status }: { status: Awaited<ReturnType<typeof getWork
     <>
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-black uppercase italic text-neutral-dark tracking-tight">Cenové nabídky</h1>
-        <NewQuoteModal customers={customers} action={createQuoteAction} />
+        <div className="flex items-center gap-3">
+          <Link
+            href="/sprava/nabidky?nastaveni=cenik"
+            className="text-[11px] font-black uppercase tracking-widest px-3 py-2 rounded-lg bg-white border border-neutral-dark/10 text-neutral-dark/70 hover:text-neutral-dark"
+          >
+            Ceník a doprava
+          </Link>
+          <NewQuoteModal customers={customers} action={createQuoteAction} />
+        </div>
       </div>
       <InboxPanel status={status} inbox={inbox} pollAction={pollInboxAction} retryAction={retryInboxAction} />
       <QuotesTable quotes={quotes} />
@@ -93,8 +108,22 @@ async function QuoteList({ status }: { status: Awaited<ReturnType<typeof getWork
   );
 }
 
+async function PricingPage() {
+  const [pricing, updated] = await Promise.all([getPricing(), pricingUpdatedInfo()]);
+  return (
+    <>
+      <div>
+        <Link href="/sprava/nabidky" className="text-[11px] font-black uppercase tracking-widest text-neutral-dark/40 hover:text-neutral-dark">← Všechny nabídky</Link>
+        <h1 className="text-2xl font-black uppercase italic text-neutral-dark tracking-tight mt-1">Ceník a doprava</h1>
+        <p className="text-xs text-neutral-dark/50 mt-1">Ceny za m² řezné plochy. Nejsme plátci DPH – ceny jsou konečné.</p>
+      </div>
+      <PricingSettings key={updated?.updated_at ?? 'default'} pricing={pricing} updated={updated} saveAction={savePricingAction} />
+    </>
+  );
+}
+
 async function QuoteDetail({ id, step, status }: { id: number; step: number; status: Awaited<ReturnType<typeof getWorkerStatus>> }) {
-  const bundle = Number.isInteger(id) ? await getQuoteBundle(id) : null;
+  const [bundle, pricing] = await Promise.all([Number.isInteger(id) ? getQuoteBundle(id) : null, getPricing()]);
   if (!bundle) {
     return (
       <div className={cardCls}>
@@ -180,7 +209,7 @@ async function QuoteDetail({ id, step, status }: { id: number; step: number; sta
             )}
           </>
         }
-        step2={<QuoteEditor key={quote.id} quote={quote} items={items} files={files} saveAction={saveQuoteAction} />}
+        step2={<QuoteEditor key={quote.id} quote={quote} items={items} files={files} pricing={pricing} saveAction={saveQuoteAction} />}
         step3={
           <div className="grid lg:grid-cols-3 gap-6 items-start">
             <div className="lg:col-span-2 space-y-6">
@@ -193,6 +222,11 @@ async function QuoteDetail({ id, step, status }: { id: number; step: number; sta
                 mailbox={status?.mailbox ?? null}
                 mailboxReady={Boolean(status?.mailboxConfigured)}
                 sendEnabled={Boolean(status?.sendEnabled)}
+                lastSent={
+                  messages
+                    .filter((m) => m.kind === 'sent' && m.status === 'ok')
+                    .sort((a, b) => b.created_at.localeCompare(a.created_at))[0] ?? null
+                }
                 saveEmailAction={saveEmailAction}
                 regenerateEmailAction={regenerateEmailAction}
                 draftEmailAction={draftEmailAction}
@@ -244,6 +278,7 @@ function QuoteSummary({ quote, items }: { quote: Quote; items: QuoteItem[] }) {
       <p className="font-bold">{quote.client_name}</p>
       <p className="text-neutral-dark/60">{[quote.client_email, quote.client_phone].filter(Boolean).join(' · ') || 'bez kontaktu'}</p>
       {place && <p className="text-neutral-dark/60 mt-1">{place}</p>}
+      <p className="text-neutral-dark/60">Ceník: {regionName(quote.region)}</p>
       {(quote.material || quote.thickness_cm || quote.length_m) && (
         <p className="text-neutral-dark/60 mt-1">
           {[materialLabel(quote.material), quote.thickness_cm ? `${quote.thickness_cm} cm` : null, quote.length_m ? `${quote.length_m} m` : null]
@@ -263,8 +298,13 @@ function QuoteSummary({ quote, items }: { quote: Quote; items: QuoteItem[] }) {
           </div>
         ))}
         <div className="flex justify-between gap-2">
-          <dt className="text-neutral-dark/60">Doprava{quote.mode === 'varianty' ? ' (v každé variantě)' : ''}</dt>
-          <dd className="whitespace-nowrap">{formatCzk(quote.transport_price)}</dd>
+          <dt className="text-neutral-dark/60">
+            Doprava{quote.mode === 'varianty' ? ' (v každé variantě)' : ''}
+            {totals.transportDetail ? ` · ${totals.transportDetail.days} dní, ${formatNumber(quote.distance_km ?? 0)} km` : ''}
+          </dt>
+          <dd className="whitespace-nowrap">
+            {quote.mode === 'varianty' ? [...new Set(totals.variantTransports)].map((t) => formatCzk(t)).join(' / ') : formatCzk(totals.transport)}
+          </dd>
         </div>
         {quote.mode === 'kombinace' && (
           <div className="flex justify-between gap-2 pt-2 mt-1 border-t border-neutral-light font-black">

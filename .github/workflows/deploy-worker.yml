@@ -13,12 +13,12 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       # Přeneseme secret do env, abychom podle něj mohli podmínit krok.
       CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Dokud nejsou nastavené repo secrets, deploy se přeskočí (workflow zůstane
       # zelený). Po přidání CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID se nasadí.
@@ -28,7 +28,7 @@ jobs:
 
       - name: Deploy to Cloudflare Workers
         if: env.CF_TOKEN != ''
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

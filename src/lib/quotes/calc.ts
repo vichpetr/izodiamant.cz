@@ -1,8 +1,8 @@
 // Výpočty a formátování nabídek. Ceny počítá výhradně tenhle kód – AI do čísel
 // nesahá (jen navrhuje rozměry, které člověk potvrdí).
 
-import calculatorData from '../../data/calculator.json';
 import { technologyLabel, type Quote, type QuoteItem, type TechnologyId } from './model';
+import { computeTransport, parseTransportCalc, regionalPrice, type Pricing, type TransportBreakdown, type TransportCalc } from './pricing';
 
 /** Tloušťka zdiva, od které řetězová pila nestačí a nasazuje se diamantové lano. */
 export const LANO_THICKNESS_CM = 50;
@@ -19,46 +19,62 @@ export function recommendedTechnology(material: string | null, thicknessCm: numb
 }
 
 /**
- * Předvyplněná cena za m²: střed ceníkového rozpětí z calculator.json (stejná data
- * jako kalkulačka na webu), zaokrouhlený na stovky. Když technologie pro daný
- * materiál v ceníku není, vezme se rozpětí napříč všemi materiály.
+ * Předvyplněná cena za m² podle ceníku v adminu: cena kraje zakázky, jinak
+ * výchozí cena služby. Uživatel ji v nabídce může přepsat.
  */
-export function suggestedPricePerM2(technology: TechnologyId, material: string | null): number {
-  const forMaterial = calculatorData
-    .find((m) => m.id === material)
-    ?.availableServices.find((s) => s.id === technology);
-  const all = calculatorData.flatMap((m) => m.availableServices).filter((s) => s.id === technology);
-  const min = forMaterial?.minPrice ?? Math.min(...all.map((s) => s.minPrice));
-  const max = forMaterial?.maxPrice ?? Math.max(...all.map((s) => s.maxPrice));
-  if (!Number.isFinite(min) || !Number.isFinite(max)) return 0;
-  return Math.round((min + max) / 2 / 100) * 100;
+export function suggestedPricePerM2(technology: TechnologyId, pricing: Pricing, region: string | null | undefined): number {
+  return regionalPrice(pricing, technology, region);
 }
 
 export interface QuoteLine extends QuoteItem {
   workPrice: number;
 }
 
+export type TransportFields = Pick<Quote, 'mode' | 'transport_price' | 'distance_km' | 'transport_calc'>;
+
 export interface QuoteTotals {
   lines: QuoteLine[];
   /** Režim „kombinace“: práce všech položek + doprava. */
   workTotal: number;
+  /** Doprava kombinace (u variant nejdražší z variant – jen pro přehled). */
+  transport: number;
   total: number;
-  /** Režim „varianty“: každá položka je samostatná varianta včetně dopravy. */
+  /** Režim „varianty“: každá položka je samostatná varianta včetně své dopravy. */
   variantTotals: number[];
+  variantTransports: number[];
+  /** Rozpis automatické dopravy (kombinace, resp. po variantách); null = zadaná ručně. */
+  transportDetail: TransportBreakdown | null;
+  variantTransportDetails: (TransportBreakdown | null)[];
 }
 
-export function computeTotals(quote: Pick<Quote, 'mode' | 'transport_price'>, items: QuoteItem[]): QuoteTotals {
-  const transport = Math.max(0, Math.round(quote.transport_price || 0));
+/** Automatická doprava je zapnutá a má vše, co potřebuje (sazby i vzdálenost). */
+export function transportAuto(quote: Pick<Quote, 'distance_km' | 'transport_calc'>): { calc: TransportCalc; km: number } | null {
+  const calc = parseTransportCalc(quote.transport_calc);
+  return calc && quote.distance_km !== null && quote.distance_km !== undefined ? { calc, km: quote.distance_km } : null;
+}
+
+export function computeTotals(quote: TransportFields, items: QuoteItem[]): QuoteTotals {
+  const manual = Math.max(0, Math.round(quote.transport_price || 0));
+  const auto = transportAuto(quote);
   const lines = items.map((item) => {
     const area_m2 = itemArea(item);
     return { ...item, area_m2, workPrice: Math.round(area_m2 * item.price_per_m2) };
   });
   const workTotal = lines.reduce((sum, l) => sum + l.workPrice, 0);
+  // Kombinace = jedna zakázka, dny všech položek se sčítají; varianta = jen její technologie.
+  const transportDetail = auto ? computeTransport(auto.calc, auto.km, lines) : null;
+  const variantTransportDetails = lines.map((l) => (auto ? computeTransport(auto.calc, auto.km, [l]) : null));
+  const variantTransports = variantTransportDetails.map((d) => d?.total ?? manual);
+  const transport = quote.mode === 'varianty' && auto ? Math.max(0, ...variantTransports) : (transportDetail?.total ?? manual);
   return {
     lines,
     workTotal,
+    transport,
     total: workTotal + transport,
-    variantTotals: lines.map((l) => l.workPrice + transport),
+    variantTotals: lines.map((l, i) => l.workPrice + variantTransports[i]),
+    variantTransports,
+    transportDetail,
+    variantTransportDetails,
   };
 }
 
@@ -180,13 +196,31 @@ export function nextDaySequence(prefix: string, existing: string[]): number {
  */
 export type FingerprintFields = Pick<
   Quote,
-  'client_name' | 'client_email' | 'client_phone' | 'site_name' | 'site_address' | 'city' | 'material' | 'thickness_cm' | 'length_m' | 'mode' | 'transport_price' | 'intro' | 'conditions'
+  | 'client_name'
+  | 'client_email'
+  | 'client_phone'
+  | 'site_name'
+  | 'site_address'
+  | 'city'
+  | 'material'
+  | 'thickness_cm'
+  | 'length_m'
+  | 'mode'
+  | 'transport_price'
+  | 'intro'
+  | 'conditions'
+  | 'region'
+  | 'distance_km'
+  | 'transport_calc'
 >;
 
 /** Zvýšit, když se změní, co z týchž údajů vzniká (např. výkaz po variantách) – vznikne nová verze. */
 const FINGERPRINT_VERSION = 3;
 
 export function quoteFingerprint(quote: FingerprintFields, items: QuoteItem[], attachments: number[] = []): string {
+  // Kraj a automatická doprava jen když jsou vyplněné – starší nabídky tak otisk
+  // nezmění a jejich PDF nezačnou hlásit „zastaralá“.
+  const transport = quote.region || quote.distance_km !== null || quote.transport_calc ? [[quote.region, quote.distance_km, quote.transport_calc]] : [];
   return JSON.stringify([
     FINGERPRINT_VERSION,
     quote.client_name,
@@ -204,6 +238,7 @@ export function quoteFingerprint(quote: FingerprintFields, items: QuoteItem[], a
     quote.conditions,
     items.map((i) => [i.technology, i.length_m ?? null, i.thickness_cm ?? null, itemArea(i), i.price_per_m2]),
     [...attachments].sort((a, b) => a - b),
+    ...transport,
   ]);
 }
 
@@ -218,7 +253,7 @@ export async function fingerprintHash(quote: FingerprintFields, items: QuoteItem
  * řídí stav „čeká na údaje“, generování PDF to neblokuje (to hlídá worker).
  */
 export function missingInputs(
-  quote: Pick<Quote, 'client_name' | 'client_email' | 'client_phone' | 'site_address' | 'city' | 'transport_price'>,
+  quote: Pick<Quote, 'client_name' | 'client_email' | 'client_phone' | 'site_address' | 'city'> & TransportFields,
   items: QuoteItem[],
 ): string[] {
   const missing: string[] = [];
@@ -227,6 +262,8 @@ export function missingInputs(
   if (!quote.site_address && !quote.city) missing.push('místo realizace');
   if (items.length === 0) missing.push('technologie a plocha (m²)');
   else if (items.some((i) => !(itemArea(i) > 0))) missing.push('délka a tloušťka u všech položek');
-  if (!(quote.transport_price > 0)) missing.push('cena dopravy');
+  if (quote.transport_calc) {
+    if (quote.distance_km === null || quote.distance_km === undefined) missing.push('vzdálenost pro dopravu (km)');
+  } else if (!(quote.transport_price > 0)) missing.push('cena dopravy');
   return missing;
 }

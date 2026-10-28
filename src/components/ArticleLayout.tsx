@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { Icons } from "@/components/Icons";
 import Link from "next/link";
 import { breadcrumbSchema } from "@/lib/seo";
+import ServiceArticles from "@/components/ServiceArticles";
 
 /**
  * Společný obal článku (/clanky/<slug>) – hlavička, návrat na přehled, hero,
@@ -15,6 +16,7 @@ export default function ArticleLayout({
   description,
   published,
   eyebrow = "Rádce · Sanace zdiva",
+  related = [],
   intro,
   children,
 }: {
@@ -23,6 +25,12 @@ export default function ArticleLayout({
   description: string;
   published: string;
   eyebrow?: string;
+  /**
+   * Ručně vybrané navazující články. Sekce se vykreslí vždy – nevyplněný výběr
+   * se doplní nejnovějšími. Články na sebe jinak neodkazovaly (2–3 odkazy na
+   * článek proti 45 na stránku služby), takže stály stranou od zbytku webu.
+   */
+  related?: string[];
   intro: React.ReactNode;
   children: React.ReactNode;
 }) {
@@ -91,6 +99,8 @@ export default function ArticleLayout({
           </div>
         </div>
       </article>
+
+      <ServiceArticles slugs={related} exclude={slug} title="Další z rádce" />
 
       <Footer />
     </main>

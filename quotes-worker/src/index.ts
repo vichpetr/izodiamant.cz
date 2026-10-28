@@ -1,16 +1,16 @@
 // izodiamant-quotes – interní API pro cenové nabídky.
 //
-// Není na internetu (workers_dev = false, žádné routy): volá ho jen Pages admin
-// /sprava přes service binding QUOTES (autorizaci řeší Pages – Google login +
-// ADMIN_EMAILS) a cron. Kdo akci spustil, posílá Pages v hlavičce X-Admin-Email.
+// Není na internetu (workers_dev = false, žádné routy): volá ho jen admin webu
+// /sprava přes service binding QUOTES (autorizaci řeší web – Google login +
+// ADMIN_EMAILS) a cron. Kdo akci spustil, posílá web v hlavičce X-Admin-Email.
 
 import { SPREADSHEET_TYPES, attachedVykazFiles, isSpreadsheet, versionFilename, vykazFilename, type QuoteFile } from '../../src/lib/quotes/model';
 import { maybeAutoGenerate, queueAttachment, runAttachmentJob } from './attachments';
 import { getFile, getItems, getQuote, getState, logQuoteMessage, updateQuote } from './db';
 import { flag, mailboxConfigured, nowIso, type Env, type Job } from './env';
-import { UserError, draftEmailText, emailVersion, generateQuote } from './generate';
+import { UserError, draftEmailText, emailVersion, generateQuote, rewriteIntro } from './generate';
 import { pollInbox } from './inbox';
-import { saveDraft, sendMail, type OutgoingMail } from './mailbox';
+import { saveDraft, sendMail, sendTransactional, type OutgoingMail } from './mailbox';
 import { pdfToImages } from './plans';
 
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
@@ -55,6 +55,25 @@ async function handle(request: Request, env: Env): Promise<Response> {
 
   if (method === 'POST' && url.pathname === '/inbox/poll') {
     return json({ ok: true, result: await pollInbox(env, { manual: true }) });
+  }
+
+  // POST /mail/send { to, subject, html, replyTo?, saveToSent? } – e-maily z webu přes SMTP schránky.
+  if (method === 'POST' && url.pathname === '/mail/send') {
+    const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+    const isEmail = (v: unknown): v is string => typeof v === 'string' && v.length <= 254 && /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(v);
+    const { to, subject, html, replyTo } = body;
+    if (!isEmail(to)) return json({ error: 'Neplatný příjemce.' }, 400);
+    if (typeof subject !== 'string' || !subject.trim() || subject.length > 300) return json({ error: 'Neplatný předmět.' }, 400);
+    if (typeof html !== 'string' || !html.trim() || html.length > 200_000) return json({ error: 'Chybí text e-mailu.' }, 400);
+    if (replyTo != null && replyTo !== '' && !isEmail(replyTo)) return json({ error: 'Neplatná adresa pro odpověď.' }, 400);
+    const result = await sendTransactional(env, {
+      to,
+      subject: subject.replace(/[\r\n]+/g, ' ').trim(),
+      html,
+      replyTo: (replyTo as string | null | undefined) || null,
+      saveToSent: body.saveToSent !== false,
+    });
+    return json({ ok: true, ...result });
   }
 
   // POST /inbox/:id/retry – smaže záznam o chybném zpracování, příští běh zprávu zpracuje znovu.
@@ -135,6 +154,16 @@ async function handle(request: Request, env: Env): Promise<Response> {
     const text = await draftEmailText(env, quote, await getItems(env, quoteId));
     await updateQuote(env, quoteId, text);
     return json({ ok: true, ...text });
+  }
+
+  // POST /quotes/:id/rewrite-intro { text } – návrh přeformulovaného úvodního odstavce (neukládá se).
+  if (method === 'POST' && action === 'rewrite-intro') {
+    const quote = await getQuote(env, quoteId);
+    if (!quote) return json({ error: 'Nabídka neexistuje.' }, 404);
+    const { text } = (await request.json().catch(() => ({}))) as { text?: unknown };
+    const draft = typeof text === 'string' ? text.trim().slice(0, 3000) : '';
+    if (!draft) throw new UserError('Napište do pole alespoň pár slov, AI je přeformuluje.');
+    return json({ ok: true, text: await rewriteIntro(env, quote, await getItems(env, quoteId), draft) });
   }
 
   // POST /quotes/:id/plans – multipart `files` (+ volitelně `hint`): uloží do R2 a zařadí ke čtení.

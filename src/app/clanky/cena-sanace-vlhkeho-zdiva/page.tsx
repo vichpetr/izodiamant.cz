@@ -28,6 +28,7 @@ export default function Page() {
       title={TITLE}
       description={DESC}
       published="2026-11-01"
+      related={["kolik-stoji-podrezani-zdiva", "vyplati-se-sanace", "podrezani-nebo-injektaz"]}
       intro={<>Když se řekne <strong className="text-neutral-dark">cena sanace vlhkého zdiva</strong>, mnoho lidí si představí jen sazbu za jeden metr řezu. Skutečný rozpočet je ale širší: k samotnému přerušení vzlínající vlhkosti patří i navazující práce a řada faktorů, které konečnou částku posouvají. V tomto článku rozkládáme cenu na jednotlivé položky, abyste věděli, za co platíte a proč.</>}
     >
       <H2>1. Samotné přerušení vlhkosti: podřezání nebo injektáž</H2>

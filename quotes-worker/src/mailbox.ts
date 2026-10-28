@@ -2,11 +2,12 @@
 // Seznam Email Profi nemá API – jen standardní IMAP (imap.seznam.cz:993) a SMTP
 // (smtp.seznam.cz:465). Oboje běží přímo ve Workers přes TCP sockety
 // (imapflow přes nodejs_compat, worker-mailer přes cloudflare:sockets).
+// Stejnou cestou odchází i e-maily z webu (formulář, kalkulačka, poděkování) – viz sendTransactional.
 
 import { ImapFlow } from 'imapflow';
 import { Email, WorkerMailer, type EmailOptions } from 'worker-mailer';
 import { flag, mailboxConfigured, type Env } from './env';
-import { toBase64 } from './util';
+import { htmlToText, toBase64 } from './util';
 
 export async function withImap<T>(env: Env, fn: (client: ImapFlow) => Promise<T>): Promise<T> {
   if (!mailboxConfigured(env)) throw new Error('Schránka není nastavená (MAILBOX_USER / secret MAILBOX_PASSWORD).');
@@ -57,6 +58,8 @@ export interface OutgoingMail {
   to: string;
   subject: string;
   text: string;
+  html?: string;
+  replyTo?: string | null;
   inReplyTo?: string | null;
   /** PDF nabídky, případně vyplněný výkaz výměr. */
   attachments?: { filename: string; data: ArrayBuffer; mimeType: string }[];
@@ -73,6 +76,8 @@ function mailOptions(env: Env, mail: OutgoingMail, messageId: string): EmailOpti
     to: mail.to,
     subject: mail.subject,
     text: mail.text,
+    html: mail.html,
+    reply: mail.replyTo || undefined,
     headers,
     attachments: mail.attachments?.length
       ? mail.attachments.map((a) => ({ filename: a.filename, content: toBase64(a.data), mimeType: a.mimeType }))
@@ -92,12 +97,8 @@ export async function saveDraft(env: Env, mail: OutgoingMail): Promise<{ message
   return { messageId, folder };
 }
 
-/** Fáze 3b: odeslání přes SMTP + kopie do Odeslaných (Seznam ji sám neukládá). */
-export async function sendMail(env: Env, mail: OutgoingMail): Promise<{ messageId: string }> {
-  if (!flag(env.SEND_ENABLED)) throw new Error('Přímé odesílání je vypnuté (SEND_ENABLED=false). Použijte koncept.');
-  if (!mailboxConfigured(env)) throw new Error('Schránka není nastavená.');
-  const messageId = newMessageId(env);
-  const options = mailOptions(env, mail, messageId);
+async function smtpSend(env: Env, options: EmailOptions): Promise<void> {
+  if (!mailboxConfigured(env)) throw new Error('Schránka není nastavená (MAILBOX_USER / secret MAILBOX_PASSWORD).');
   await WorkerMailer.send(
     {
       host: env.SMTP_HOST,
@@ -108,6 +109,9 @@ export async function sendMail(env: Env, mail: OutgoingMail): Promise<{ messageI
     },
     options,
   );
+}
+
+async function copyToSent(env: Env, options: EmailOptions): Promise<void> {
   try {
     await withImap(env, async (client) => {
       const sent = await resolveFolder(client, env.SENT_FOLDER, '\\Sent', 'Sent');
@@ -117,5 +121,30 @@ export async function sendMail(env: Env, mail: OutgoingMail): Promise<{ messageI
     // E-mail už odešel – chybějící kopie v Odeslaných nesmí akci shodit.
     console.warn('Uložení do Odeslaných selhalo:', err instanceof Error ? err.message : err);
   }
+}
+
+/** Fáze 3b: odeslání přes SMTP + kopie do Odeslaných (Seznam ji sám neukládá). */
+export async function sendMail(env: Env, mail: OutgoingMail): Promise<{ messageId: string }> {
+  if (!flag(env.SEND_ENABLED)) throw new Error('Přímé odesílání je vypnuté (SEND_ENABLED=false). Použijte koncept.');
+  const messageId = newMessageId(env);
+  const options = mailOptions(env, mail, messageId);
+  await smtpSend(env, options);
+  await copyToSent(env, options);
+  return { messageId };
+}
+
+/**
+ * E-maily z webu (upozornění na poptávku, potvrzení zákazníkovi, poděkování).
+ * SEND_ENABLED se na ně nevztahuje – ten hlídá jen odesílání nabídek.
+ * `saveToSent: false` pro zprávy do vlastní schránky (upozornění na poptávku).
+ */
+export async function sendTransactional(
+  env: Env,
+  mail: { to: string; subject: string; html: string; replyTo?: string | null; saveToSent?: boolean },
+): Promise<{ messageId: string }> {
+  const messageId = newMessageId(env);
+  const options = mailOptions(env, { ...mail, text: htmlToText(mail.html) }, messageId);
+  await smtpSend(env, options);
+  if (mail.saveToSent !== false) await copyToSent(env, options);
   return { messageId };
 }

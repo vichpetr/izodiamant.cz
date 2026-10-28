@@ -1,5 +1,4 @@
-// Auth.js handlery (edge runtime – Cloudflare Pages).
+// Auth.js handlery (/api/auth/*).
 import { handlers } from '@/auth';
 
-export const runtime = 'edge';
 export const { GET, POST } = handlers;

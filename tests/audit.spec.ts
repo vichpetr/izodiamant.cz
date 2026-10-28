@@ -3,6 +3,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { createHash } from 'crypto';
 import { allReferences, referenceMetaDescription } from '../src/lib/references';
+import calculatorData from '../src/data/calculator.json';
 
 /**
  * Regresní testy k auditu webu (2026-07).
@@ -134,6 +135,26 @@ test.describe('Audit: jednotky cen jsou všude m²', () => {
       // Rozsah realizace v referencích (např. "52 bm podřezání") je v pořádku –
       // popisuje délku podřezaného úseku. Zakázaná je jen cena za bm.
       expect(html, `${path} uvádí cenu za bm`).not.toMatch(/Kč\s*\/?\s*bm/);
+    }
+  });
+
+  // Texty „od … Kč/m²“ jsou pevné; kalkulačka a JSON-LD berou minimum z
+  // calculator.json. Musí sedět se stránkou služby, FAQ i llms.txt. (Ceník v adminu
+  // se na veřejný web zatím nepropisuje.)
+  test('„od … Kč/m²“ odpovídá minimu v calculator.json', async ({ request }) => {
+    const services = calculatorData.flatMap((m) => m.availableServices);
+    const ranges = Object.fromEntries(
+      ['diamantove-lano', 'retezova-pila', 'chemicka-injektaz'].map((id) => [id, { min: Math.min(...services.filter((s) => s.id === id).map((s) => s.minPrice)) }]),
+    );
+    const faq = readFileSync(join(__dirname, '../src/data/faq.json'), 'utf8');
+    const llms = readFileSync(join(__dirname, '../public/llms.txt'), 'utf8');
+    for (const id of ['diamantove-lano', 'retezova-pila', 'chemicka-injektaz'] as const) {
+      const min = ranges[id].min.toLocaleString('cs-CZ').replace(/\s/g, '[\\s\u00a0]');
+      const re = new RegExp(`od ${min} Kč\\s*/\\s*m²`);
+      const html = await (await request.get(`/sluzby/${id}`)).text();
+      expect(html, `/sluzby/${id} neuvádí „od ${ranges[id].min} Kč/m²“`).toMatch(re);
+      expect(llms, `llms.txt neuvádí „od ${ranges[id].min} Kč/m²“`).toMatch(re);
+      expect(faq, `faq.json neuvádí „od ${ranges[id].min} Kč/m²“`).toMatch(re);
     }
   });
 
@@ -443,7 +464,7 @@ test.describe('Audit: délka meta description homepage', () => {
 /**
  * GSC 2026-09: /.well-known/oauth-protected-resource skončil v „Procházeno –
  * momentálně neindexováno". Soubory pro agenty do výsledků hledání nepatří.
- * _headers aplikuje až Cloudflare Pages (ne `next start`), proto se testuje
+ * _headers aplikuje až Cloudflare (statické assety workeru, ne `next start`), proto se testuje
  * přímo soubor.
  */
 test.describe('Audit: public/_headers', () => {
@@ -455,5 +476,64 @@ test.describe('Audit: public/_headers', () => {
 
   test('žádné globální X-Robots-Tag: index (spojilo by se s noindex čárkou)', () => {
     expect(headers).not.toMatch(/^\/\*\n\s+X-Robots-Tag:\s*index/m);
+  });
+});
+
+/**
+ * SEO audit 2026-09/10: pět stránek mělo meta description nad 160 znaků (Google
+ * popis utne) a jedna titulek na 70 znaků. Dřív to hlídal jen seznam PAGES a
+ * detaily referencí, takže nová stránka proklouzla. Tohle jde přes celou sitemapu.
+ */
+test.describe('Audit: délka titulků a popisů na všech stránkách', () => {
+  test('každá URL ze sitemapy má titulek ≤ 60 a popis 110–160 znaků', async ({ request }) => {
+    const xml = await (await request.get('/sitemap.xml')).text();
+    const paths = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
+      (m) => m[1].replace('https://izodiamant.cz', '') || '/',
+    );
+    expect(paths.length, 'sitemap je prázdná').toBeGreaterThan(5);
+
+    const decode = (s: string) =>
+      s.replace(/&#x27;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&');
+
+    for (const path of paths) {
+      const html = await (await request.get(path)).text();
+      const title = decode(html.match(/<title>(.*?)<\/title>/s)?.[1] ?? '');
+      const description = decode(html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '');
+
+      expect(title.length, `${path}: titulek „${title}" je dlouhý`).toBeLessThanOrEqual(60);
+      expect(description.length, `${path}: popis „${description}" je dlouhý`).toBeLessThanOrEqual(160);
+      expect(description.length, `${path}: popis „${description}" je krátký`).toBeGreaterThanOrEqual(110);
+    }
+  });
+});
+
+/**
+ * Články na sebe navzájem neodkazovaly – 2–3 odkazy na článek proti 45 na
+ * stránku služby. Sekci „Další z rádce“ vykresluje ArticleLayout všem článkům.
+ */
+test.describe('Audit: články odkazují na další články', () => {
+  for (const slug of ['podrezani-nebo-injektaz', 'podrezani-betonu', 'kolik-stoji-podrezani-zdiva']) {
+    test(`/clanky/${slug} má sekci s dalšími články`, async ({ request }) => {
+      const html = await (await request.get(`/clanky/${slug}`)).text();
+      expect(html, 'chybí sekce Další z rádce').toContain('Další z rádce');
+
+      const links = new Set(
+        [...html.matchAll(/href="\/clanky\/([a-z0-9-]+)"/g)].map((m) => m[1]).filter((s) => s !== slug),
+      );
+      expect(links.size, `${slug} neodkazuje na jiné články`).toBeGreaterThanOrEqual(3);
+    });
+  }
+});
+
+/**
+ * Měření 16. 10. 2026: /_next/static/* chodilo s „max-age=0, must-revalidate", takže
+ * vracející se návštěvník znovu ověřoval každý JS i CSS. Názvy těch souborů obsahují
+ * hash obsahu, takže je lze cachovat natrvalo. Hlídáno na souboru – _headers aplikuje
+ * až Cloudflare, ne `next start`.
+ */
+test.describe('Audit: cache statických assetů', () => {
+  test('/_next/static/* má immutable cache', () => {
+    const headers = readFileSync(join(process.cwd(), 'public/_headers'), 'utf-8');
+    expect(headers).toMatch(/^\/_next\/static\/\*\n\s+Cache-Control:[^\n]*immutable/m);
   });
 });

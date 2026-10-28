@@ -27,6 +27,7 @@ export default function Page() {
       title={TITLE}
       description={DESC}
       published="2026-09-13"
+      related={["priciny-vlhkeho-zdiva", "podrezani-nebo-injektaz", "vysychani-zdiva"]}
       intro={<>Vlhké zdivo může mít víc příčin a každá se řeší jinak. <strong className="text-neutral-dark">Vzlínající vlhkost</strong> stoupá kapilárami z podloží nahoru, kondenzace se sráží na chladném povrchu a zatékání přichází zvenčí. Než se pustíte do oprav, potřebujete vědět, s čím máte tu čest.</>}
     >
       <H2>Typické příznaky vzlínající vlhkosti</H2>

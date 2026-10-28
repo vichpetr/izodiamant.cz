@@ -2,15 +2,15 @@
 
 // Server actions pro admin sekci /sprava. Každá NEJDŘÍV ověří přihlášení a to,
 // že e-mail je v allowlistu (auth() + isAllowed) – to je skutečná bezpečnostní
-// hranice, ne middleware. Teprve pak sáhne na D1 / Resend.
+// hranice, ne middleware. Teprve pak sáhne na D1 / e-mail.
 //
 // Akce vracejí { ok, message } (pro useActionState + toast v UI). Chyby se
 // nevyhazují, ale vracejí jako { ok:false, message }.
 
 import { revalidatePath } from 'next/cache';
-import { Resend } from 'resend';
 import { safeAuth, isAllowed } from '@/auth';
 import { addCustomer, deleteCustomer, getCustomer, logEmail, thankYouAlreadySent, updateRealizedAt } from '@/lib/db';
+import { isMailerAvailable, sendWebMail } from '@/lib/mailer';
 import { thankYouHtml, thankYouSubject } from '@/lib/thankYouEmail';
 import { isValidEmail, isValidPhone, isValidDate } from '@/lib/validators';
 import type { ActionState } from './ActionForm';
@@ -105,25 +105,16 @@ export async function sendThankYouAction(_prev: ActionState, formData: FormData)
     if (!customer.realized_at) return { ok: false, message: 'Nejdřív vyplňte datum realizace.' };
     if (await thankYouAlreadySent(id)) return { ok: false, message: 'Poděkování už bylo odesláno.' };
 
-    const apiKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.FROM_EMAIL || 'IZODIAMANT <onboarding@resend.dev>';
     const subject = thankYouSubject();
 
-    if (!apiKey) {
-      await logEmail({ customerId: id, toEmail: customer.email, subject, status: 'error', error: 'RESEND_API_KEY chybí', sentBy: admin });
-      return { ok: false, message: 'E-mailová služba není nastavená (RESEND_API_KEY).' };
+    if (!isMailerAvailable()) {
+      await logEmail({ customerId: id, toEmail: customer.email, subject, status: 'error', error: 'Chybí service binding QUOTES', sentBy: admin });
+      return { ok: false, message: 'E-mailová služba není připojená (service binding QUOTES).' };
     }
 
-    const resend = new Resend(apiKey);
-    const { data, error } = await resend.emails.send({
-      from: fromEmail,
-      to: [customer.email],
-      subject,
-      html: thankYouHtml(customer.name),
-    });
-    if (error) throw new Error(error.message || 'Resend error');
+    const { messageId } = await sendWebMail({ to: customer.email, subject, html: thankYouHtml(customer.name) });
 
-    await logEmail({ customerId: id, toEmail: customer.email, subject, status: 'sent', resendId: data?.id ?? null, sentBy: admin });
+    await logEmail({ customerId: id, toEmail: customer.email, subject, status: 'sent', messageId, sentBy: admin });
     revalidatePath('/sprava');
     revalidatePath('/sprava/log');
     return { ok: true, message: `Poděkování odesláno na ${customer.email}.` };

@@ -8,6 +8,14 @@
 /.well-known/*
   X-Robots-Tag: noindex
 
+# Soubory s hashem v názvu (/_next/static/*) jsou neměnné – při změně obsahu se mění
+# i název. OpenNext je ale servíruje s „max-age=0, must-revalidate", takže se každý
+# JS, CSS i font při každé návštěvě znovu ověřuje. Měření 16. 10. (Slow 4G, 4× CPU):
+# CSS bundle blokuje vykreslení a stahuje se 3,1 s. Rok s immutable to u vracejících
+# se návštěvníků odstraní úplně.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
 # Skrytá admin sekce – nikdy neindexovat.
 /sprava
   X-Robots-Tag: noindex, nofollow

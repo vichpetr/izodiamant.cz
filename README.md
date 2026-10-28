@@ -8,7 +8,7 @@ Tento projekt představuje kompletní modernizaci webu IZODIAMANT.cz. Aplikace j
 - **Jazyk:** TypeScript
 - **Styling:** Tailwind CSS 3.4
 - **Animace:** Framer Motion
-- **E-mailové služby:** Resend.io
+- **E-maily:** SMTP schránky na Seznamu přes quotes-worker (service binding `QUOTES`)
 - **Datové zdroje:** JSON soubory (pro snadnou úpravu obsahu)
 - **Externí integrace:** Cloudflare Worker (pro živé recenze z Firmy.cz)
 
@@ -17,9 +17,6 @@ Tento projekt představuje kompletní modernizaci webu IZODIAMANT.cz. Aplikace j
 Aplikace vyžaduje pro svůj běh následující environmentální proměnné. Bez jejich definice aplikace vyhodí chybu (striktní mód).
 
 ```env
-# API klíč ze služby resend.com pro odesílání formulářů
-RESEND_API_KEY=re_123456789
-
 # URL vašeho Cloudflare Workeru, který vrací JSON s recenzemi
 NEXT_PUBLIC_REVIEWS_API_URL=https://izodiamant-reviews-api.vas-ucet.workers.dev
 

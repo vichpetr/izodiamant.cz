@@ -67,8 +67,6 @@ export function renderQuoteHtml(quote: Quote, items: QuoteItem[], issuedAt: Date
     specRows.push([hasCutting ? 'Řezná plocha' : 'Plocha', formatArea(areas[0])]);
   }
 
-  const transportRow = `<div class="row"><span>Doprava</span><strong>${formatCzk(quote.transport_price)}</strong></div>`;
-
   const pricing =
     quote.mode === 'varianty'
       ? `<div class="variants cols-${Math.min(items.length, 3)}">
@@ -80,7 +78,7 @@ export function renderQuoteHtml(quote: Quote, items: QuoteItem[], issuedAt: Date
                 ${l.length_m && l.thickness_cm ? `<div class="row"><span>Rozsah</span><strong>${esc(dimsLabel(l))}</strong></div>` : ''}
                 <div class="row"><span>Cena za m² řezné plochy</span><strong>${formatCzk(l.price_per_m2)}</strong></div>
                 <div class="row"><span>Cena za práce (${formatArea(l.area_m2)} × ${formatCzk(l.price_per_m2)})</span><strong>${formatCzk(l.workPrice)}</strong></div>
-                ${transportRow}
+                <div class="row"><span>Doprava</span><strong>${formatCzk(totals.variantTransports[idx])}</strong></div>
                 <div class="total"><span>Cena celkem</span><strong>${formatCzk(totals.variantTotals[idx])}</strong></div>
               </div>`,
             )
@@ -102,7 +100,7 @@ export function renderQuoteHtml(quote: Quote, items: QuoteItem[], issuedAt: Date
                 )
                 .join('')}
               <tr><td colspan="4" class="tag">Řezná plocha = délka zdi × tloušťka zdi.</td></tr>
-              <tr><td colspan="3">Doprava</td><td><strong>${formatCzk(quote.transport_price)}</strong></td></tr>
+              <tr><td colspan="3">Doprava</td><td><strong>${formatCzk(totals.transport)}</strong></td></tr>
             </tbody>
           </table>
           <div class="total"><span>Cena celkem</span><strong>${formatCzk(totals.total)}</strong></div>

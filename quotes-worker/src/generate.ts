@@ -23,7 +23,8 @@ import {
   versionVykazFiles,
 } from '../../src/lib/quotes/model';
 import { renderQuoteHtml } from '../../src/lib/quotes/template';
-import { runJson, str } from './ai';
+import { runJson, runText, str } from './ai';
+import { getSystemPrompt } from './prompts';
 import { getItems, getQuote, updateQuote } from './db';
 import { nowIso, type Env } from './env';
 import { fillVykaz } from './vykaz';
@@ -221,7 +222,7 @@ function priceSummary(quote: Quote, items: QuoteItem[]): string {
       .join('\n');
   }
   const lines = totals.lines.map((l) => `- ${technologyLabel(l.technology)}: ${scope(l)} × ${formatCzk(l.price_per_m2)}/m² = ${formatCzk(l.workPrice)}`);
-  return [...lines, `- Doprava: ${formatCzk(quote.transport_price)}`, `Celkem: ${formatCzk(totals.total)}`].join('\n');
+  return [...lines, `- Doprava: ${formatCzk(totals.transport)}`, `Celkem: ${formatCzk(totals.total)}`].join('\n');
 }
 
 export function fallbackEmail(quote: Quote, items: QuoteItem[]): { email_subject: string; email_body: string } {
@@ -257,21 +258,13 @@ export async function draftEmailText(
     const raw = await runJson<{ subject?: unknown; body?: unknown }>(env, {
       task: 'text',
       quoteId: quote.id,
-      system: `Píšeš e-maily za firmu IZODIAMANT (sanace vlhkého zdiva). Jménem Václava Ropka napiš krátký, věcný a zdvořilý průvodní e-mail k cenové nabídce, která je v příloze jako PDF.
-Pravidla:
-- Česky, vykání, bez zbytečných frází, max. ~120 slov.
-- Oslovení vždy neutrálně „Dobrý den,“ (klient může být i firma nebo SVJ).
-- Nevymýšlej nic, co v podkladu není (schůzky, prohlídky, termíny, předchozí jednání).
-- Ceny přepiš PŘESNĚ z podkladu, nic nepřepočítávej a nepřidávej jiná čísla.
-- Zmiň, že nejsme plátci DPH, že výslednou cenu potvrdíme po osobní prohlídce objektu a že konečná částka se stanoví podle skutečného rozsahu.
-- Podpis: ${QUOTE_AUTHOR.name}, IZODIAMANT – sanace zdiva, +420 737 017 012, info@izodiamant.cz.
-JSON schéma: {"subject": "předmět", "body": "text e-mailu s \\n pro nové řádky"}`,
+      system: await getSystemPrompt(env, 'email'),
       user: `Klient: ${quote.client_name}
 Místo: ${[quote.site_name, quote.site_address, quote.city].filter(Boolean).join(', ') || 'neuvedeno'}
 Číslo nabídky: ${quote.number}
 Režim: ${quote.mode === 'varianty' ? 'varianty (klient platí jen jednu z nich)' : 'kombinace technologií (položky se sčítají)'}
 Ceny:
-${priceSummary(quote, items)}`,
+${priceSummary(quote, items)}${quote.intro?.trim() ? `\nÚvodní text v PDF (e-mail mu nesmí odporovat, neopakuj ho): ${quote.intro.trim()}` : ''}`,
     });
     const subject = str(raw.subject, 200);
     const body = str(raw.body, 5000);
@@ -281,4 +274,34 @@ ${priceSummary(quote, items)}`,
     console.warn('Návrh e-mailu přes AI selhal, použije se šablona:', err instanceof Error ? err.message : err);
     return fallback;
   }
+}
+
+// ─── Přeformulování textu do PDF ─────────────────────────────────────────────
+
+/**
+ * Z hrubého textu od majitele (např. ústní domluva) udělá odstavec do PDF.
+ * Do kontextu dostane údaje nabídky a vypočtené ceny, ale žádná čísla si nesmí
+ * přidat ani změnit – ceny počítá computeTotals(), AI jen formuluje.
+ */
+export async function rewriteIntro(env: Env, quote: Quote, items: QuoteItem[], draft: string): Promise<string> {
+  const text = await runText(env, {
+    task: 'text',
+    quoteId: quote.id,
+    maxTokens: 1500,
+    system: await getSystemPrompt(env, 'intro'),
+    user: `Hrubý text od majitele:
+${draft}
+
+Údaje nabídky:
+Klient: ${quote.client_name}
+Místo: ${[quote.site_name, quote.site_address, quote.city].filter(Boolean).join(', ') || 'neuvedeno'}
+Režim: ${quote.mode === 'varianty' ? 'varianty (zákazník platí jen jednu z nich)' : 'kombinace technologií (položky se sčítají)'}
+Ceny (počítá aplikace):
+${priceSummary(quote, items)}${quote.note?.trim() ? `\nInterní poznámka (jen kontext, nepřepisovat do textu): ${quote.note.trim()}` : ''}`,
+  });
+  // Modely občas obalí odpověď do uvozovek nebo ```.
+  const clean = text.replace(/^```\w*\n?|```$/g, '').trim().replace(/^[„"“](.*)[“"”]$/s, '$1').trim();
+  const result = str(clean, 1500);
+  if (!result) throw new Error('AI nevrátila žádný text.');
+  return result;
 }
