@@ -1,0 +1,127 @@
+{
+  "info": {
+    "name": "Seznam Webmaster API",
+    "description": "Veřejné API Seznam Webmaster (https://reporter.seznam.cz/wm-api, oficiální spec: /wm-api/swagger.json).\n\nPostup:\n1. V Seznam Webmaster otevřete API → Klíč k API a vygenerujte klíč (pro reindexaci s právem zápisu; nový klíč se aktivuje až do cca 24 h).\n2. V proměnných kolekce vyplňte `apiKey` (Current value) a `siteUrl`. Klíč je vázaný na jeden web – pro další web si udělejte kopii kolekce/prostředí.\n3. Nejdůležitější je `Stránky: počty a vzorky` – v `error.urls` jsou URL s chybou.\n\nLimity (na uživatele i web): 5 dotazů/s, 100 dotazů/min, reindexace max 500×/den.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://reporter.seznam.cz/wm-api", "type": "string" },
+    { "key": "apiKey", "value": "", "type": "secret" },
+    { "key": "siteUrl", "value": "https://izodiamant.cz/", "type": "string" },
+    { "key": "dateFrom", "value": "2026-09-28", "type": "string" },
+    { "key": "dateTo", "value": "2026-10-28", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Web: přehled a historie",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/web?key={{apiKey}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["web"],
+          "query": [{ "key": "key", "value": "{{apiKey}}" }]
+        },
+        "description": "Celkový přehled webu: `documents` (content/redirect/index/error s počty a vzorkem URL) a `history` (počty po dnech). 204 = data zatím nejsou k dispozici."
+      }
+    },
+    {
+      "name": "Stránky: počty a vzorky (error URL)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "const d = pm.response.json();",
+              "['content', 'redirect', 'index', 'error'].forEach(k => {",
+              "  if (d[k]) console.log(k + ': ' + d[k].count + ' stránek');",
+              "});",
+              "const errs = (d.error && d.error.urls) || [];",
+              "console.log('--- URL s chybou (' + errs.length + ') ---\\n' + errs.join('\\n'));",
+              "pm.visualizer.set('<h3>URL s chybou ({{count}})</h3><ul>{{#each urls}}<li>{{this}}</li>{{/each}}</ul>', { count: errs.length, urls: errs });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/web/documents?key={{apiKey}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["web", "documents"],
+          "query": [{ "key": "key", "value": "{{apiKey}}" }]
+        },
+        "description": "Počty stránek podle kategorie a vzorek URL (max. ~1000 na kategorii). `error.urls` = stránky s chybou, `redirect.urls` = přesměrované. Výsledek vidíte v záložce Visualize a v Postman Console."
+      }
+    },
+    {
+      "name": "Historie počtu stránek",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/web/documents-history?key={{apiKey}}&date_from={{dateFrom}}&date_to={{dateTo}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["web", "documents-history"],
+          "query": [
+            { "key": "key", "value": "{{apiKey}}" },
+            { "key": "date_from", "value": "{{dateFrom}}", "description": "YYYY-MM-DD, volitelné" },
+            { "key": "date_to", "value": "{{dateTo}}", "description": "YYYY-MM-DD, volitelné" }
+          ]
+        },
+        "description": "Počty stránek po dnech (error, indexed, redirected, content/doc_count) – data pro graf „Vývoj webu v čase“."
+      }
+    },
+    {
+      "name": "Detail jedné stránky",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/web/document?key={{apiKey}}&url={{siteUrl}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["web", "document"],
+          "query": [
+            { "key": "key", "value": "{{apiKey}}" },
+            { "key": "url", "value": "{{siteUrl}}", "description": "Celá URL stránky; přepište na konkrétní URL" }
+          ]
+        },
+        "description": "Stav konkrétní URL: isIndexed / isError / isRedirect, časy stažení a indexace, title, meta, OpenGraph a response hlavičky, které robot dostal. Ideální na diagnostiku URL z error seznamu."
+      }
+    },
+    {
+      "name": "Vynutit reindexaci stránky (POST)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/web/document/reindex?key={{apiKey}}&url={{siteUrl}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["web", "document", "reindex"],
+          "query": [
+            { "key": "key", "value": "{{apiKey}}" },
+            { "key": "url", "value": "{{siteUrl}}", "description": "Celá URL stránky k reindexaci" }
+          ]
+        },
+        "description": "Požádá Seznam o nové stažení stránky. Vyžaduje klíč s právem zápisu, limit 500 dotazů za den. Po úspěchu vrací 200 s prázdným tělem."
+      }
+    },
+    {
+      "name": "Informace o databázi",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/database-info",
+          "host": ["{{baseUrl}}"],
+          "path": ["database-info"]
+        },
+        "description": "Datum poslední aktualizace dat (`release`). Bez API klíče."
+      }
+    }
+  ]
+}

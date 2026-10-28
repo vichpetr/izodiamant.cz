@@ -15,7 +15,7 @@ export default function HeroBadges() {
     process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL || 'https://g.page/r/CUCprMsY1UeiEBM/review';
   const firmyReviewUrl =
     process.env.NEXT_PUBLIC_FIRMY_REVIEW_URL ||
-    'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady.html#hodnoceni';
+    'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html#hodnoceni';
 
   const badges = [
     summary.firmy.count > 0 && {
