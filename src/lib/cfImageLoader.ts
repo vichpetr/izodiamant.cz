@@ -19,6 +19,9 @@ export default function cloudflareImageLoader({ src, width, quality }: LoaderArg
   if (process.env.NEXT_PUBLIC_CF_IMAGES !== 'true' || !src.startsWith('/')) {
     return src;
   }
-  const options = `format=auto,width=${width},quality=${quality ?? 75}`;
+  // Oddělovač voleb je %2C, ne čárka: SeznamBot parsuje srcset po čárkách i uvnitř URL
+  // a ze `…/format=auto,width=640,quality=75/logo.png` si udělal relativní odkaz
+  // `/quality=75/logo.png` (404 v Seznam Webmaster). Cloudflare %2C dekóduje stejně.
+  const options = `format=auto%2Cwidth=${width}%2Cquality=${quality ?? 75}`;
   return `/cdn-cgi/image/${options}${src}`;
 }
