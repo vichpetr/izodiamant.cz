@@ -71,6 +71,9 @@ export default function Footer() {
                 <Icons.FileText className="w-3 h-3 text-primary" />
                 IČO: 74650726
               </div>
+              <div className="text-xs font-medium normal-case tracking-normal text-white/60">
+                Fyzická osoba zapsaná v živnostenském rejstříku
+              </div>
             </div>
           </div>
 

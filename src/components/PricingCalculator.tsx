@@ -439,6 +439,9 @@ export default function PricingCalculator() {
                       {isSubmitting ? 'Odesílám...' : 'Odeslat nezávaznou poptávku'}
                       <Icons.Send className="w-5 h-5" />
                     </button>
+                    <p className="text-xs text-neutral-dark/50 font-medium leading-relaxed text-center">
+                      Odesláním poptávky berete na vědomí, že vaše údaje zpracováváme za účelem vyřízení poptávky. Podrobnosti najdete v <Link href="/ochrana-udaju" className="underline hover:text-primary">zásadách ochrany osobních údajů</Link>.
+                    </p>
                   </form>
                 )}
               </div>

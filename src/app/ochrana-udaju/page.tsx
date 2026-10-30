@@ -85,11 +85,21 @@ export default function PrivacyPolicy() {
                 <li>Právo na omezení zpracování: V určitých situacích můžete požádat o pozastavení nakládání s vašimi daty.</li>
                 <li>Právo na přenositelnost: Můžete od nás získat své údaje ve strukturovaném, běžně používaném formátu.</li>
                 <li>Právo vznést námitku: Máte právo kdykoliv namítat proti zpracování založeném na oprávněném zájmu.</li>
+                <li>Právo odvolat souhlas: Souhlas s analytickými cookies můžete kdykoliv odvolat, a to smazáním dat webu v prohlížeči (lišta se pak zobrazí znovu). Odvolání nemá vliv na zákonnost zpracování před jeho odvoláním.</li>
+                <li>Právo podat stížnost: Máte právo podat stížnost u dozorového úřadu, kterým je Úřad pro ochranu osobních údajů, Pplk. Sochora 27, 170 00 Praha 7, <a href="https://www.uoou.gov.cz" className="underline" rel="noopener noreferrer">www.uoou.gov.cz</a>.</li>
+                <li>Poskytnutí údajů ve formuláři je dobrovolné, bez jména a kontaktu však nemůžeme poptávku vyřídit.</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">6. Závěrečná ustanovení</h2>
+              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">6. Mimosoudní řešení spotřebitelských sporů</h2>
+              <p>
+                Pokud se nám nepodaří spor se spotřebitelem vyřešit přímo, může spotřebitel podat návrh na mimosoudní řešení sporu. Věcně příslušným subjektem je Česká obchodní inspekce, Štěpánská 567/15, 120 00 Praha 2, internetová adresa: <a href="https://www.coi.gov.cz" className="underline" rel="noopener noreferrer">www.coi.gov.cz</a>. Řešení sporu je bezplatné.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-black uppercase tracking-tight text-neutral-dark mb-4">7. Závěrečná ustanovení</h2>
               <p>
                 Odesláním poptávkového formuláře potvrzujete, že jste se seznámili s těmito podmínkami ochrany osobních údajů a že je v celém rozsahu přijímáte. Tyto zásady jsou pravidelně revidovány tak, aby odpovídaly aktuální legislativě a technickému vývoji našeho webu.
               </p>

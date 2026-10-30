@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Technology from "@/components/Technology";
 import AboutSection from "@/components/AboutSection";
+import Partners from "@/components/Partners";
 import { SectionSkeleton } from "@/components/Skeleton";
 import { Metadata } from 'next';
 import Link from "next/link";
@@ -241,6 +242,7 @@ export default function Page() {
       <HomeArticles />
       <FAQ />
       <ContactForm />
+      <Partners />
       <Footer />
     </main>
   );
