@@ -179,6 +179,9 @@ export default function ContactForm() {
                     {isSubmitting ? 'Odesílám...' : 'Odeslat zprávu'}
                     <Icons.Send className="w-6 h-6" />
                   </button>
+                  <p className="text-xs text-neutral-dark/50 font-medium leading-relaxed text-center">
+                    Odesláním zprávy berete na vědomí, že vaše údaje zpracováváme za účelem vyřízení poptávky. Podrobnosti najdete v <a href="/ochrana-udaju" className="underline hover:text-primary">zásadách ochrany osobních údajů</a>.
+                  </p>
                 </form>
               ) : (
                 <div key="success-contact" className="flex flex-col items-center justify-center text-center py-20 text-white">
