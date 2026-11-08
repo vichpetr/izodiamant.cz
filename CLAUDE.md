@@ -105,7 +105,7 @@ Po každém pushi / vytvoření MR ověř pipeline a při chybě ji oprav – na
 - `<WebMCP />` mounts a Web-MCP shim in the layout.
 - The middleware matcher excludes `api`, `_next/static`, `_next/image`, `.well-known`, `favicon.ico` — `.well-known/*` files are served as static assets from `public/`.
 
-**Forms:** `ContactForm` uses `react-hook-form` + `zod` and POSTs to `/api/send`. The route is the only server-side endpoint in the project. **E-mail goes out without any third-party service:** `src/lib/mailer.ts` → quotes-worker `POST /mail/send` over the `QUOTES` binding → SMTP of the Seznam mailbox (`MAILBOX_USER`, the same one the inbox poller reads). Same path for the `/sprava` thank-you mail. Without the binding `/api/send` returns 503. `CONTACT_EMAIL` (optional) is where lead notifications go.
+**Forms:** `ContactForm` is a plain controlled form (no form or validation library) and POSTs to `/api/send`. The route is the only server-side endpoint in the project. **E-mail goes out without any third-party service:** `src/lib/mailer.ts` → quotes-worker `POST /mail/send` over the `QUOTES` binding → SMTP of the Seznam mailbox (`MAILBOX_USER`, the same one the inbox poller reads). Same path for the `/sprava` thank-you mail. Without the binding `/api/send` returns 503. `CONTACT_EMAIL` (optional) is where lead notifications go.
 
 **Consent / GA:** Consent Mode v2 is initialized inline in `layout.tsx` before any GA tag, gated by `localStorage['cookie-consent']`. `CookieConsent` component updates that flag; GA component only mounts if the env var is present.
 

@@ -24,20 +24,18 @@
     "db:schema:preview:remote": "npx wrangler d1 execute izodiamant-preview-db --remote --file=db/schema.sql"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.10.0",
     "@next/third-parties": "^16.1.6",
     "@opennextjs/cloudflare": "1.20.6",
     "@react-email/render": "^2.0.5",
     "@tailwindcss/postcss": "^4.0.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.2",
-    "next": "16.3.6",
+    "next": "16.4.5",
     "next-auth": "^5.0.0-beta.32",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-hook-form": "^7.71.2",
-    "tailwind-merge": "^2.6.1",
-    "zod": "^3.25.76"
+    "tailwind-merge": "^2.6.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
