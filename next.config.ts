@@ -30,6 +30,22 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // Bezpečnostní hlavičky pro všechny odpovědi Next.js (HTML, API). CSP je záměrně zvlášť
+      // (hrozí rozbití Consent Mode, GA a Turnstile) – nejdřív v Report-Only.
+      // HSTS bez includeSubDomains a s kratším max-age (30 dní); zvýšit po ověření provozu.
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'Strict-Transport-Security', value: 'max-age=2592000' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+          },
+        ],
+      },
       // Link hlavička na „/“ se nastavuje v src/middleware.ts (tady by se zdvojila).
       {
         source: '/llms.txt',
