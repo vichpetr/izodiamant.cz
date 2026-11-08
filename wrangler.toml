@@ -54,6 +54,13 @@ database_id = "ab044201-17db-44d4-8826-adfc65a4c18d"
 binding = "QUOTES"
 service = "izodiamant-quotes"
 
+# Rate limit stránek na jednoho klienta (src/lib/rateLimit.ts, volá src/middleware.ts).
+# Mimo produkci binding není – kód pak nic neomezuje.
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 200, period = 60 }
+
 # Preview větví – `npx wrangler preview --name <větev>`. Běží pod stejným workerem,
 # jen s vlastní adresou <větev>-izodiamant.<účet>.workers.dev a vlastními daty.
 # Nedědí se nic kromě assets/compatibility_* – co má Preview mít, musí být tady.

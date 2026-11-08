@@ -2,9 +2,19 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 import { LLMS_MD } from '@/lib/llms';
+import { allowRequest } from '@/lib/rateLimit';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Pojistka proti zahlcení jedním klientem (viz src/lib/rateLimit.ts). Statické soubory se
+  // nepočítají; bez bindingu RATE_LIMITER (dev, testy) požadavek vždy projde.
+  if (!pathname.includes('.') && !(await allowRequest(request.headers.get('cf-connecting-ip')))) {
+    return new NextResponse('Too Many Requests', {
+      status: 429,
+      headers: { 'Retry-After': '30', 'Cache-Control': 'no-store' },
+    });
+  }
   const acceptHeader = request.headers.get('accept') || '';
 
   // 0. Skrytá admin sekce /sprava: rychlý UX redirect nepřihlášených na login.
