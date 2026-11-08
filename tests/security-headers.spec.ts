@@ -14,3 +14,23 @@ test.describe('Security headers', () => {
     });
   }
 });
+
+test.describe('Content-Security-Policy (Report-Only)', () => {
+  test('hlavní stránka posílá CSP v režimu Report-Only s report-uri', async ({ request }) => {
+    const h = (await request.get('/')).headers();
+    const csp = h['content-security-policy-report-only'] ?? '';
+    expect(csp).toContain("object-src 'none'");
+    expect(csp).toContain("frame-ancestors 'self'");
+    expect(csp).toContain('report-uri /api/csp-report');
+    // vynucující CSP tu zatím být nemá – nejdřív sledujeme hlášení
+    expect(h['content-security-policy']).toBeUndefined();
+  });
+
+  test('/api/csp-report přijme hlášení a vrátí 204', async ({ request }) => {
+    const res = await request.post('/api/csp-report', {
+      data: '{"csp-report":{"violated-directive":"script-src"}}',
+      headers: { 'content-type': 'application/csp-report' },
+    });
+    expect(res.status()).toBe(204);
+  });
+});
