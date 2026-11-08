@@ -8,6 +8,21 @@ const articleSlugs = (articlesData as { slug: string }[]).map((a) => a.slug);
 // Non-capturing skupina (?:…) – Next.js v source nepovoluje capturing skupiny.
 const clankyKeepRegex = `(?!(?:${articleSlugs.join("|")})$).*`;
 
+const CSP_REPORT_ONLY = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://challenges.cloudflare.com https://static.cloudflareinsights.com",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://images.unsplash.com https://www.google-analytics.com https://www.googletagmanager.com",
+  "font-src 'self' data:",
+  "connect-src 'self' https://izodiamant-reviews-api.petr-c3c.workers.dev https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://challenges.cloudflare.com https://cloudflareinsights.com",
+  "frame-src https://challenges.cloudflare.com",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+  'report-uri /api/csp-report',
+].join('; ');
+
 const nextConfig: NextConfig = {
   images: {
     loaderFile: './src/lib/cfImageLoader.ts',
@@ -39,6 +54,10 @@ const nextConfig: NextConfig = {
           { key: 'Strict-Transport-Security', value: 'max-age=2592000' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          // CSP zatím jen hlásí (Report-Only) do /api/csp-report. Stránky jsou SSG, nonce tedy
+          // nejde použít a inline skripty (Consent Mode, Next bootstrap) vyžadují 'unsafe-inline'.
+          // Po týdnu bez hlášení přepnout na Content-Security-Policy a zvážit zpřísnění.
+          { key: 'Content-Security-Policy-Report-Only', value: CSP_REPORT_ONLY },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           {
             key: 'Permissions-Policy',
