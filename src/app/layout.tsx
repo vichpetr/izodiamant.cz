@@ -204,6 +204,8 @@ export default function RootLayout({
             gtag('consent', 'default', {
               'analytics_storage': storedConsent === 'true' ? 'granted' : 'denied',
               'ad_storage': storedConsent === 'true' ? 'granted' : 'denied',
+              'ad_user_data': storedConsent === 'true' ? 'granted' : 'denied',
+              'ad_personalization': storedConsent === 'true' ? 'granted' : 'denied',
               'wait_for_update': 500
             });
           `}
