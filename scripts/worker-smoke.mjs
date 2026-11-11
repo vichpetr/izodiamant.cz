@@ -17,6 +17,7 @@ const checks = [
 
 const dev = spawn('npx', ['wrangler', 'dev', '--config', 'wrangler.toml', '--port', String(PORT), '--local'], {
   stdio: ['ignore', 'pipe', 'pipe'],
+  detached: true, // vlastní skupina procesů, ať jde zabít celý strom (npx -> wrangler -> workerd)
 });
 let log = '';
 dev.stdout.on('data', (d) => (log += d));
@@ -47,9 +48,15 @@ try {
   failed = true;
   console.error(String(e));
 } finally {
-  dev.kill('SIGTERM');
+  // Bez zabití celé skupiny zůstane workerd běžet a krok v CI visí až do timeoutu.
+  try {
+    process.kill(-dev.pid, 'SIGKILL');
+  } catch {
+    /* proces už skončil */
+  }
 }
 if (failed) {
   console.error('\n--- log wrangler dev (posledních 40 řádků) ---\n' + log.split('\n').slice(-40).join('\n'));
   process.exit(1);
 }
+process.exit(0);
