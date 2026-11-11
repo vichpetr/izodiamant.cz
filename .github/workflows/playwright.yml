@@ -49,6 +49,16 @@ jobs:
         NEXT_PUBLIC_FIRMY_PROFILE_URL: https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html
         NEXT_PUBLIC_REVIEWS_API_URL: https://izodiamant-reviews-api.vas-ucet.workers.dev
 
+    # Smoke test skutečného Workeru: Playwright jede proti `next start` a chyby specifické pro
+    # Workers runtime (OpenNext) nezachytí.
+    - name: Build Worker
+      run: npm run build:worker
+      env:
+        NEXT_PUBLIC_FIRMY_PROFILE_URL: https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html
+        NEXT_PUBLIC_REVIEWS_API_URL: https://izodiamant-reviews-api.vas-ucet.workers.dev
+    - name: Smoke test Workeru
+      run: npm run smoke:worker
+
     - uses: actions/upload-artifact@v7
       if: ${{ !cancelled() }}
       with:

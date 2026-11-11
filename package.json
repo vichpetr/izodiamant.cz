@@ -14,6 +14,7 @@
     "build": "next build",
     "start": "next start",
     "build:worker": "opennextjs-cloudflare build",
+    "smoke:worker": "node scripts/worker-smoke.mjs",
     "preview:worker": "npm run build:worker && opennextjs-cloudflare preview",
     "sync:llms": "node scripts/sync-llms.mjs",
     "indexnow": "node scripts/indexnow.mjs",
