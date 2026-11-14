@@ -56,8 +56,9 @@ Hashová hlavička respektuje režim `CSP_ENFORCE` a nesmí překročit 16 kB.
 Generování selže při chybějící CSP, HTML nebo očekávaných skriptech, aby build
 nemohl tiše nasadit nefunkční politiku. OpenNext následně přebírá upravený manifest.
 
-Dynamické `/sprava/*`, API a chybové stránky si zatím ponechávají základní CSP;
-jejich zpřísnění vyžaduje nonce navázané na jednotlivé odpovědi. Nastavení
+Chybové stránky používají hashe buildových šablon `_not-found` a `_global-error`
+v základní CSP. API odpovědi dědí tuto politiku bez `unsafe-inline` v script-src.
+Dynamické `/sprava/*` používají samostatný nonce režim popsaný níže. Nastavení
 `style-src` se nemění. GA se inicializuje z klientského modulu bez inline
 skriptů a externí gtag.js se nadále načítá výhradně po souhlasu.
 
@@ -65,6 +66,26 @@ Produkce bez GitHub Variable `CSP_HASHES=true` v prostředí `production` hashov
 hlavičky nepoužívá. Zapnutí i vypnutí vyžaduje nový build. Změny verzí Next/OpenNext
 musí projít bezpečnostními testy i Worker smoke testem, protože se při buildu
 pracuje s jejich generovaným manifestem.
+
+### Nonce dynamické administrace
+
+Preview a CI navíc nastavují `CSP_NONCES=true`. Middleware pro `/sprava` a
+`/sprava/*` vytváří pro každou odpověď nový 128bitový nonce přes Web Crypto,
+předává CSP a `x-nonce` renderovacímu procesu Next.js a přepisuje stejnojmenné
+příchozí hlavičky. Next připojí nonce k vlastním framework skriptům.
+Při zapnutém nonce režimu se obecné CSP pravidlo manifestu na správu
+nevztahuje, aby v OpenNext nepřepsalo odpověď middleware. Ostatní bezpečnostní
+hlavičky se nadále nastavují globálně. Odpovědi jsou `private, no-store`; nepřihlášený klient se nadále přesměruje na
+přihlášení a skutečnou autentizaci stále ověřují serverové komponenty/actions.
+Nonce je určený pouze pro dynamickou administraci; veřejné stránky zůstávají SSG.
+
+Produkce tento režim zapne až po nastavení `CSP_NONCES=true` v GitHub Variables
+prostředí `production` a novém buildu. Proměnné `CSP_NONCES` a `CSP_ENFORCE`
+jsou neškodné buildové přepínače vložené i do middleware bundlu přes Next env;
+nonce hodnoty se generují až za běhu a nikdy nejsou buildovou konstantou.
+Režim respektuje `CSP_ENFORCE`; při jeho vypnutí pouze reportuje porušení.
+CI kontroluje nový nonce na každém načtení, odmítnutí podvržené hlavičky,
+shodu s HTML skripty, hydrataci přihlášení a zablokování cizího inline skriptu.
 
 ### Řízené zpřísnění bezpečnostních hlaviček
 

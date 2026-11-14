@@ -10,6 +10,16 @@ if (process.env.CSP_HASHES === 'true') {
   const baseHeader = manifest.headers.flatMap(rule => rule.headers).find(header =>
     ['content-security-policy', 'content-security-policy-report-only'].includes(header.key.toLowerCase()));
   if (!baseHeader) throw new Error('Missing base CSP header');
+  const fallbackHashes = new Set();
+  for (const name of ['_not-found', '_global-error']) {
+    const html = readFileSync(join(root, 'server', 'app', `${name}.html`), 'utf8');
+    for (const [, attributes, content] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+      if (!/\bsrc\s*=/i.test(attributes) && content.length > 0) {
+        fallbackHashes.add(`'sha256-${createHash('sha256').update(content).digest('base64')}'`);
+      }
+    }
+  }
+  if (fallbackHashes.size === 0) throw new Error('No error page CSP hashes found');
   let count = 0;
   for (const [route, entry] of Object.entries(prerender.routes)) {
     if (entry.routeType !== 'page' || route.startsWith('/_')) continue;
@@ -30,6 +40,9 @@ if (process.env.CSP_HASHES === 'true') {
     count += 1;
   }
   if (count === 0) throw new Error('No prerendered pages received CSP hashes');
+  baseHeader.value = baseHeader.value.split(';').map(directive =>
+    directive.trim().startsWith('script-src ')
+      ? directive.replace("'unsafe-inline'", [...fallbackHashes].join(' ')) : directive).join(';');
   writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
   console.log(`CSP hashes generated for ${count} prerendered pages`);
 }
