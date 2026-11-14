@@ -41,7 +41,9 @@ const nextConfig: NextConfig = {
   },
   // This helps with modern JS output
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    // warn/error zůstávají: /api/csp-report je loguje přes console.warn a bez nich bychom
+    // porušení CSP v produkci neviděli.
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
   async headers() {
     return [

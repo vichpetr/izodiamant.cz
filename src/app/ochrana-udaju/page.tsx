@@ -37,13 +37,13 @@ export default function PrivacyPolicy() {
               <p>Zpracováváme pouze ty osobní údaje, které jsou nezbytně nutné pro profesionální poskytování našich služeb sanace a izolace staveb:</p>
               <ul className="list-disc pl-6 space-y-4">
                 <li>
-                  Kontaktní formulář: Při odeslání poptávky zpracováváme vaše jméno, příjmení, e-mailovou adresu, telefonní číslo a doplňující technické parametry stavby (např. tloušťka zdiva, materiál, lokalita). Tyto údaje jsou klíčové pro přípravu přesné a nezávazné cenové nabídky na podřezání zdiva nebo chemickou injektáž. Právním základem je zde plnění smlouvy nebo provedení opatření před uzavřením smlouvy na vaši žádost.
+                  Kontaktní formulář: Při odeslání poptávky zpracováváme vaše jméno, příjmení, e-mailovou adresu, telefonní číslo a doplňující technické parametry stavby (např. tloušťka zdiva, materiál, lokalita). Tyto údaje jsou klíčové pro přípravu přesné a nezávazné cenové nabídky na podřezání zdiva nebo chemickou injektáž. Právním základem je provedení opatření před uzavřením smlouvy na vaši žádost (čl. 6 odst. 1 písm. b) GDPR). Odeslaná poptávka se předává e-mailem a ukládá se v naší evidenci poptávek.
                 </li>
                 <li>
-                  Realizace zakázky: V případě uzavření dohody o provedení práce zpracováváme také fakturační údaje (adresa bydliště, IČO) a adresu místa realizace sanace. Tyto údaje uchováváme pro účely řádného plnění smluvních závazků a následné fakturace dle platných zákonů ČR.
+                  Realizace zakázky: V případě uzavření dohody o provedení práce zpracováváme také fakturační údaje (adresa bydliště, IČO) a adresu místa realizace sanace. Tyto údaje uchováváme pro účely řádného plnění smluvních závazků a následné fakturace dle platných zákonů ČR. Právním základem je plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR) a plnění zákonných povinností, zejména účetních a daňových (čl. 6 odst. 1 písm. c) GDPR).
                 </li>
                 <li>
-                  Analýza návštěvnosti: Na našem webu využíváme nástroje pro analýzu chování uživatelů (např. Google Analytics). Tyto údaje jsou anonymizované a pomáhají nám lépe pochopit, o které technologie sanace je největší zájem, abychom mohli obsah webu neustále vylepšovat. Právním základem je náš oprávněný zájem na rozvoji podnikání nebo váš dobrovolný souhlas s analytickými cookies.
+                  Analýza návštěvnosti: Na našem webu využíváme nástroje pro analýzu chování uživatelů (např. Google Analytics). Měření se spustí až poté, co v cookie liště udělíte souhlas; bez souhlasu se Google Analytics vůbec nenačte a do Googlu se neodesílají žádné údaje. Statistiky pomáhají nám lépe pochopit, o které technologie sanace je největší zájem, abychom mohli obsah webu neustále vylepšovat. Právním základem je váš dobrovolný souhlas (čl. 6 odst. 1 písm. a) GDPR), který můžete kdykoliv odvolat.
                 </li>
               </ul>
             </section>
@@ -66,10 +66,15 @@ export default function PrivacyPolicy() {
                 Vaše data jsou u nás v maximálním bezpečí. Neprodáváme je, nepronajímáme ani nepředáváme žádným třetím stranám pro účely marketingu. Přístup k údajům mají pouze prověřené subjekty, které nám pomáhají s provozem:
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Poskytovatelé technického řešení webu a cloudového hostingu (Cloudflare, GitHub).</li>
-                <li>Poskytovatelé analytických a měřicích služeb (Google LLC).</li>
+                <li>Poskytovatelé technického řešení webu a cloudového hostingu (Cloudflare, GitHub). Cloudflare zajišťuje také ochranu formuláře před roboty (Turnstile) a zabezpečení webu proti zneužití.</li>
+                <li>Poskytovatel odesílání e-mailů z kontaktního formuláře (Resend) a poskytovatel e-mailové schránky, kam poptávky doručujeme.</li>
+                <li>Poskytovatelé nástrojů pro zpracování poptávek: AI asistent pro třídění došlé pošty a přípravu cenových nabídek (OpenCode Zen, Cloudflare Workers AI). Nabídku vždy kontroluje a schvaluje člověk.</li>
+                <li>Poskytovatelé analytických a měřicích služeb (Google LLC), a to jen pokud udělíte souhlas s analytickými cookies.</li>
                 <li>Externí účetní kancelář (pouze v případě smluvního vztahu).</li>
               </ul>
+              <p className="mt-4">
+                Někteří z uvedených poskytovatelů (Cloudflare, GitHub, Resend, Google) sídlí ve Spojených státech amerických nebo tam údaje zpracovávají. Předání údajů do USA probíhá na základě rozhodnutí Evropské komise o odpovídající úrovni ochrany (EU-US Data Privacy Framework), případně na základě standardních smluvních doložek Evropské komise (čl. 45 a 46 GDPR). Kopii záruk vám na požádání poskytneme.
+              </p>
               <p className="mt-4">
                 Web izodiamant.cz je plně šifrován pomocí bezpečnostního certifikátu SSL (HTTPS), což zajišťuje, že veškerá data přenášená mezi vaším prohlížečem a naším serverem jsou chráněna proti odposlechu.
               </p>
@@ -88,6 +93,7 @@ export default function PrivacyPolicy() {
                 <li>Právo odvolat souhlas: Souhlas s analytickými cookies můžete kdykoliv odvolat, a to smazáním dat webu v prohlížeči (lišta se pak zobrazí znovu). Odvolání nemá vliv na zákonnost zpracování před jeho odvoláním.</li>
                 <li>Právo podat stížnost: Máte právo podat stížnost u dozorového úřadu, kterým je Úřad pro ochranu osobních údajů, Pplk. Sochora 27, 170 00 Praha 7, <a href="https://www.uoou.gov.cz" className="underline" rel="noopener noreferrer">www.uoou.gov.cz</a>.</li>
                 <li>Poskytnutí údajů ve formuláři je dobrovolné, bez jména a kontaktu však nemůžeme poptávku vyřídit.</li>
+                <li>Nedochází k automatizovanému rozhodování ani k profilování ve smyslu čl. 22 GDPR.</li>
               </ul>
             </section>
 

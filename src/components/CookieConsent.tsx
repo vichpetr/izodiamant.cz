@@ -21,9 +21,13 @@ export default function CookieConsent() {
     if (typeof window !== 'undefined' && gtag) {
       gtag('consent', 'update', {
         'analytics_storage': isAccepted ? 'granted' : 'denied',
-        'ad_storage': isAccepted ? 'granted' : 'denied'
+        'ad_storage': isAccepted ? 'granted' : 'denied',
+        'ad_user_data': isAccepted ? 'granted' : 'denied',
+        'ad_personalization': isAccepted ? 'granted' : 'denied'
       });
     }
+    // DeferredAnalytics načte Google Analytics až po souhlasu.
+    window.dispatchEvent(new Event('cookie-consent-change'));
     
     setShow(false);
   };
