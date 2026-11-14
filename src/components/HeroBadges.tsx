@@ -18,7 +18,7 @@ export default function HeroBadges() {
     'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html#hodnoceni';
 
   const badges = [
-    summary.firmy.count > 0 && {
+    summary.firmy && {
       key: 'firmy',
       label: 'Mapy.com',
       rating: summary.firmy.rating,
@@ -152,9 +152,9 @@ export default function HeroBadges() {
         >
           Mapy.com
         </a>
-        <span className="text-neutral-dark/30">
+        {badges.length > 0 && (<span className="text-neutral-dark/30">
           ({badges.reduce((sum, b) => sum + b.count, 0)} hodnocení)
-        </span>
+        </span>)}
       </div>
     </div>
   );

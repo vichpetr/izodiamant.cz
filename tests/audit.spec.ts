@@ -36,10 +36,17 @@ test.describe('Audit: og:url na podstránkách', () => {
 });
 
 test.describe('Audit: recenze jen z živého workeru (bez fallbacku)', () => {
-  // Statický fallback (reviews.json) byl odstraněn – recenze se zobrazí jen
-  // tehdy, když ji vrátí živý worker. Raději nic než neaktuální/nereálná data.
-  // Lokálně/CI je nastavena placeholder worker URL (…vás-účet…), kterou
-  // komponenty přeskakují, takže se nesmí objevit žádná recenze.
+  test.beforeEach(async ({ page }) => {
+    await page.route('**/*', async (route) => {
+      if (route.request().resourceType() === 'fetch' &&
+          new URL(route.request().url()).origin !== new URL(page.url()).origin) {
+        await route.abort();
+      } else {
+        await route.continue();
+      }
+    });
+  });
+
   test('/reference/zleby nezobrazí žádnou (záložní) recenzi bez workeru', async ({ page }) => {
     await page.goto('/reference/zleby');
     // Počkáme na vyrenderovaný nadpis reference – jistota, že klientský JS
@@ -52,10 +59,34 @@ test.describe('Audit: recenze jen z živého workeru (bez fallbacku)', () => {
 
   test('sekce hodnocení na homepage se bez workeru nevykreslí', async ({ page }) => {
     await page.goto('/');
-    // #reviews se v SSR vykreslí jako skeleton (status 'loading') a po dojití
-    // klientského efektu (placeholder worker → 'empty') zmizí. toHaveCount(0)
-    // retryuje přes tento přechod, takže žádný networkidle nepotřebujeme.
     await expect(page.locator('#reviews')).toHaveCount(0, { timeout: 15000 });
+  });
+});
+
+test.describe('Audit: živé souhrny hodnocení', () => {
+  const apiUrl = process.env.NEXT_PUBLIC_REVIEWS_API_URL;
+  test.skip(!apiUrl || apiUrl.includes('vas-ucet') || apiUrl.includes('vás-účet'), 'Vyžaduje build s URL recenzního API.');
+
+  test('souhrn rozlišuje počty jednotlivých zdrojů', async ({ page }) => {
+    await page.route(apiUrl!, (route) => route.fulfill({ json: {
+      rating: 5, count: 32, reviews: [],
+      sources: {
+        firmy: { rating: 5, count: 26, error: null },
+        google: { rating: 5, count: 6, error: null },
+      },
+    } }));
+    await page.goto('/');
+    await expect(page.getByText('26 hodnocení na Mapy.com', { exact: true })).toBeVisible();
+    await expect(page.getByText('6 hodnocení na Google', { exact: true })).toBeVisible();
+    await expect(page.getByText('12 hodnocení na Mapy.com', { exact: true })).toHaveCount(0);
+  });
+
+  test('při výpadku API se neukazuje zastaralý počet ani nula', async ({ page }) => {
+    await page.route(apiUrl!, (route) => route.fulfill({ status: 503, json: {} }));
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByText(/\d+ hodnocení na (Mapy\.com|Google)/)).toHaveCount(0);
+    await expect(page.getByText('(0 hodnocení)', { exact: true })).toHaveCount(0);
   });
 });
 

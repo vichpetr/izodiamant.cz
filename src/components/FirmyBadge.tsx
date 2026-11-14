@@ -23,7 +23,7 @@ export default function FirmyBadge() {
 
   return (
     <div className="flex flex-col gap-3">
-      <a
+      {summary.firmy && (<a
         href={summary.firmy.url}
         target="_blank"
         rel="noopener noreferrer"
@@ -38,7 +38,7 @@ export default function FirmyBadge() {
             {summary.firmy.count} hodnocení na Mapy.com
           </div>
         </div>
-      </a>
+      </a>)}
 
       {summary.google && (
         <a
