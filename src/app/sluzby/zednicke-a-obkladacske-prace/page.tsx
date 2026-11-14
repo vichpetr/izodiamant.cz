@@ -72,7 +72,7 @@ export default function MasonryPage() {
               sanaci, domluvíme se na konkrétním řešení i ceně.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
+              <Link href="/#contact" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
                 Nezávazná poptávka
               </Link>
               <a href="tel:+420737017012" className="inline-flex items-center gap-2 py-4 px-8 rounded-xl border-2 border-neutral-dark/10 font-black uppercase tracking-widest text-sm text-neutral-dark hover:border-primary/40 transition-colors">
@@ -98,7 +98,8 @@ export default function MasonryPage() {
               <h2 className="text-xl font-black text-neutral-dark uppercase mb-2">Cena</h2>
               <p className="text-neutral-dark/70 font-medium leading-relaxed">
                 {data.priceRange}. Rozsah a náročnost prací se případ od případu liší, proto cenu stanovíme
-                individuálně po upřesnění zadání, případně po prohlídce. Pošlete nezávaznou poptávku a ozveme se.
+                individuálně po upřesnění zadání, případně po prohlídce. Podmínky prohlídky domluvíme předem;
+                prohlídka zdarma se vztahuje na sanaci vlhkého zdiva. Pošlete nezávaznou poptávku a ozveme se.
               </p>
             </div>
             <div className="bg-neutral-dark text-white p-8 rounded-3xl relative overflow-hidden">
@@ -131,7 +132,7 @@ export default function MasonryPage() {
               ))}
             </div>
             <div className="mt-10">
-              <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20 inline-flex items-center gap-3">
+              <Link href="/#contact" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20 inline-flex items-center gap-3">
                 Poslat nezávaznou poptávku <Icons.Send className="w-5 h-5" />
               </Link>
             </div>

@@ -23,6 +23,7 @@ const SERVICES = [
 export default function Page() {
   return (
     <ArticleLayout
+      service="zednicke"
       slug={SLUG}
       title={TITLE}
       description={DESC}

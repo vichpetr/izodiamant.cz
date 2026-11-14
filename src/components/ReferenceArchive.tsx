@@ -176,8 +176,9 @@ export default function ReferenceArchive({ page }: { page: number }) {
               Máte podobný projekt?
             </h2>
             <p className="text-white/60 font-medium max-w-2xl mx-auto mb-8">
-              Prohlídka objektu a nezávazná cenová nabídka jsou zdarma. Spočítejte si orientační
-              cenu podřezání, nebo nám rovnou zavolejte.
+              Prohlídka a nezávazná nabídka sanace vlhkého zdiva jsou zdarma. U zednických a
+              obkladačských prací podmínky prohlídky domluvíme individuálně. Orientační cenu
+              podřezání spočítáte v kalkulačce, nebo nám rovnou zavolejte.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

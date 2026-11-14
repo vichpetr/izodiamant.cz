@@ -123,9 +123,9 @@ export default function ContactForm() {
             </div>
 
             <div className="p-8 bg-neutral-light rounded-3xl border-2 border-neutral-dark/5">
-              <h3 className="font-black uppercase tracking-tight mb-4 italic text-neutral-dark">Konzultace zdarma</h3>
+              <h3 className="font-black uppercase tracking-tight mb-4 italic text-neutral-dark">Prohlídka sanace zdarma</h3>
               <p className="text-neutral-dark/70 text-sm font-medium leading-relaxed">
-                Náš odborný technik vás navštíví, provede přesné měření vlhkosti a navrhne nejvhodnější technologický postup přímo na míru vaší stavbě. Vše zcela zdarma a nezávazně.
+                Při sanaci vlhkého zdiva vás navštívíme, změříme vlhkost a navrhneme vhodný postup. Prohlídka a nezávazná nabídka jsou zdarma. U zednických a obkladačských prací podmínky prohlídky domluvíme individuálně.
               </p>
             </div>
           </div>
