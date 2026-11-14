@@ -96,7 +96,9 @@ jobs:
             PREVIEW=$(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//' | cut -c1-30 | sed -E 's/-+$//')
             echo "PREVIEW=$PREVIEW" >> "$GITHUB_ENV"
             # Build už proběhl v předchozím kroku, `wrangler preview` jen nahraje .open-next.
-            npx wrangler preview --name "$PREVIEW" --message "$GITHUB_SHA" --json > "$RUNNER_TEMP/preview.json"
+            npx wrangler preview --name "$PREVIEW" --message "$GITHUB_SHA" --json > "$RUNNER_TEMP/preview-output.txt"
+            sed -n '/^{/,$p' "$RUNNER_TEMP/preview-output.txt" > "$RUNNER_TEMP/preview.json"
+            jq -e '.preview and .deployment' "$RUNNER_TEMP/preview.json" > /dev/null
             cat "$RUNNER_TEMP/preview.json"
           fi
 
