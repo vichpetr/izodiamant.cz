@@ -45,6 +45,14 @@ try {
   if (!(await waitUp())) throw new Error('wrangler dev nenaběhl do 2 minut');
   for (const c of checks) {
     const res = await fetch(BASE + c.req[0], c.req[1]);
+    if (process.env.CSP_HASHES === 'true' && c.expect === 200) {
+      const policy = res.headers.get('content-security-policy') ?? res.headers.get('content-security-policy-report-only') ?? '';
+      const scripts = policy.split(';').find(value => value.trim().startsWith('script-src ')) ?? '';
+      if (!scripts.includes("'sha256-") || scripts.includes("'unsafe-inline'")) {
+        failed = true;
+        console.error(`FAIL Hashová CSP chybí na ${c.req[0]}`);
+      }
+    }
     await res.arrayBuffer();
     const ok = res.status === c.expect;
     if (!ok) failed = true;

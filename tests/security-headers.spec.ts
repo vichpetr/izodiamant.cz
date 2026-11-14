@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { createHash } from 'node:crypto';
 
 const enforced = process.env.CSP_ENFORCE === 'true';
 const hstsMaxAge = process.env.HSTS_ONE_YEAR === 'true' ? 31536000 : 2592000;
@@ -70,4 +71,40 @@ test('CSP povolí Google Analytics až po souhlasu', async ({ page }) => {
   await page.getByRole('button', { name: 'Povolit vše' }).click();
   await expect.poll(() => scriptRequests).toBe(1);
   await expect.poll(() => page.evaluate(() => 'securityTestGoogleLoaded' in window)).toBe(true);
+});
+
+test.describe('Hashová CSP veřejných stránek', () => {
+  test.skip(process.env.CSP_HASHES !== 'true', 'Vyžaduje build s CSP_HASHES=true.');
+
+  for (const path of ['/', '/clanky', '/reference/zleby', '/sluzby/diamantove-lano']) {
+    test(`${path} povoluje konkrétní inline hashe místo unsafe-inline`, async ({ request }) => {
+      const response = await request.get(path);
+      const header = enforced ? 'content-security-policy' : 'content-security-policy-report-only';
+      const scriptPolicy = response.headers()[header]?.split(';').find(value => value.trim().startsWith('script-src '));
+      expect(scriptPolicy).toContain("'sha256-");
+      expect(scriptPolicy).not.toContain("'unsafe-inline'");
+      const html = await response.text();
+      for (const [, attributes, content] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+        if (/\bsrc\s*=/i.test(attributes) || !content) continue;
+        expect(scriptPolicy).toContain(`'sha256-${createHash('sha256').update(content).digest('base64')}'`);
+      }
+    });
+  }
+
+  test('cizí inline skript se zablokuje a hydratovaná cookie lišta funguje', async ({ page }) => {
+    test.skip(!enforced, 'Vyžaduje vynucující CSP.');
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Odmítnout', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Odmítnout', exact: true })).toHaveCount(0);
+    const violation = await page.evaluate(() => new Promise<string>(resolve => {
+      document.addEventListener('securitypolicyviolation', event => {
+        if (event.blockedURI === 'inline') resolve(event.disposition);
+      });
+      const script = document.createElement('script');
+      script.textContent = 'window.untrustedInlineExecuted = true;';
+      document.head.appendChild(script);
+    }));
+    expect(violation).toBe('enforce');
+    expect(await page.evaluate(() => 'untrustedInlineExecuted' in window)).toBe(false);
+  });
 });

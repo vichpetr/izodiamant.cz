@@ -46,6 +46,26 @@ Tento krok je nutný i pro Preview nasazované přes `wrangler preview` a pro sm
 test s holým `wrangler dev`. Bez něj dochází k cache missům a pokusům zapisovat
 do read-only cache.
 
+### Hashová CSP předrenderovaných veřejných stránek
+
+Preview a CI používají `CSP_HASHES=true`. `npm run build` po kompilaci načte
+předrenderované HTML a doplní do `.next/routes-manifest.json` přesné CSP hlavičky
+pro jednotlivé veřejné stránky. Každý inline skript dostane SHA-256 hash jeho
+skutečného obsahu; `script-src` na těchto stránkách neobsahuje `unsafe-inline`.
+Hashová hlavička respektuje režim `CSP_ENFORCE` a nesmí překročit 16 kB.
+Generování selže při chybějící CSP, HTML nebo očekávaných skriptech, aby build
+nemohl tiše nasadit nefunkční politiku. OpenNext následně přebírá upravený manifest.
+
+Dynamické `/sprava/*`, API a chybové stránky si zatím ponechávají základní CSP;
+jejich zpřísnění vyžaduje nonce navázané na jednotlivé odpovědi. Nastavení
+`style-src` se nemění. GA se inicializuje z klientského modulu bez inline
+skriptů a externí gtag.js se nadále načítá výhradně po souhlasu.
+
+Produkce bez GitHub Variable `CSP_HASHES=true` v prostředí `production` hashové
+hlavičky nepoužívá. Zapnutí i vypnutí vyžaduje nový build. Změny verzí Next/OpenNext
+musí projít bezpečnostními testy i Worker smoke testem, protože se při buildu
+pracuje s jejich generovaným manifestem.
+
 ### Řízené zpřísnění bezpečnostních hlaviček
 
 Preview build automaticky nastavuje `CSP_ENFORCE=true` a `HSTS_ONE_YEAR=true`.
