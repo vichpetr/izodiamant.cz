@@ -1,15 +1,3 @@
-/**
- * Měření konverzí (GA4 → import do Google Ads).
- *
- * Volat lze kdykoli. GA se načítá až při první interakci (`DeferredAnalytics`)
- * a jen se souhlasem, takže `gtag` v okamžiku události **nemusí existovat** –
- * událost se pak zařadí do `dataLayer` a gtag.js ji po načtení přehraje.
- * Bez souhlasu ji Consent Mode zahodí, takže se nikdy neměří bez svolení.
- *
- * Názvy `generate_lead` a `click_to_call` jsou doporučené události GA4 –
- * GA je rozpozná samo a jdou přímo označit jako klíčové a importovat do Ads.
- */
-
 type EventParams = Record<string, string | number | boolean | undefined>;
 
 declare global {
@@ -19,30 +7,42 @@ declare global {
   }
 }
 
-export function trackEvent(name: string, params: EventParams = {}): void {
-  if (typeof window === 'undefined') return;
-
-  // gtag je definován inline v layoutu (Consent Mode) – pokud tam z jakéhokoli
-  // důvodu ještě není, zapíšeme událost do fronty ve stejném tvaru, jaký gtag
-  // používá (`dataLayer.push(arguments)`), aby ji gtag.js po načtení zpracoval.
-  if (typeof window.gtag === 'function') {
-    window.gtag('event', name, params);
-    return;
+export function hasAnalyticsConsent(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.localStorage.getItem('cookie-consent') === 'true';
+  } catch {
+    return false;
   }
-
-  window.dataLayer = window.dataLayer ?? [];
-  window.dataLayer.push(['event', name, params]);
 }
 
-/** Odeslaná poptávka. `source` rozliší kontaktní formulář od kalkulačky. */
+export function trackEvent(name: string, params: EventParams = {}): void {
+  if (!hasAnalyticsConsent()) return;
+  const eventParams = { ...params, page_path: window.location.pathname };
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', name, eventParams);
+    return;
+  }
+  window.dataLayer = window.dataLayer ?? [];
+  const queue = function (...args: unknown[]) {
+    void args;
+    // eslint-disable-next-line prefer-rest-params -- gtag consumes Arguments commands.
+    window.dataLayer!.push(arguments);
+  };
+  queue('event', name, eventParams);
+}
+
 export function trackLead(
   source: 'kontaktni-formular' | 'kalkulacka',
   params: EventParams = {},
 ): void {
-  trackEvent('generate_lead', { form_source: source, ...params });
+  trackEvent('generate_lead', { ...params, form_source: source });
 }
 
-/** Kliknutí na telefonní číslo – u řemesla nejčastější cesta k poptávce. */
-export function trackPhoneClick(phone: string): void {
-  trackEvent('click_to_call', { phone_number: phone });
+export function trackPhoneClick(): void {
+  trackEvent('click_to_call', { contact_method: 'phone' });
+}
+
+export function trackEmailClick(): void {
+  trackEvent('click_to_email', { contact_method: 'email' });
 }
