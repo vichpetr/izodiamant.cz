@@ -64,6 +64,8 @@ jobs:
         if: env.CF_TOKEN != ''
         run: npm run build:worker
         env:
+          CSP_ENFORCE: ${{ env.TARGET == 'preview' && 'true' || vars.CSP_ENFORCE }}
+          HSTS_ONE_YEAR: ${{ env.TARGET == 'preview' && 'true' || vars.HSTS_ONE_YEAR }}
           NEXT_PUBLIC_REVIEWS_API_URL: ${{ vars.NEXT_PUBLIC_REVIEWS_API_URL }}
           NEXT_PUBLIC_FIRMY_PROFILE_URL: ${{ vars.NEXT_PUBLIC_FIRMY_PROFILE_URL }}
           NEXT_PUBLIC_FIRMY_REVIEW_URL: ${{ vars.NEXT_PUBLIC_FIRMY_REVIEW_URL }}

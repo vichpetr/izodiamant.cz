@@ -46,6 +46,21 @@ Tento krok je nutný i pro Preview nasazované přes `wrangler preview` a pro sm
 test s holým `wrangler dev`. Bez něj dochází k cache missům a pokusům zapisovat
 do read-only cache.
 
+### Řízené zpřísnění bezpečnostních hlaviček
+
+Preview build automaticky nastavuje `CSP_ENFORCE=true` a `HSTS_ONE_YEAR=true`.
+Tím se vynucuje stávající CSP a HSTS používá `max-age=31536000`, bez
+`includeSubDomains` a `preload`. CI testuje tento režim včetně blokace nepovoleného skriptu.
+
+Produkce má bez těchto proměnných nadále CSP Report-Only a HSTS na 30 dní.
+Po vyhodnocení CSP hlášení a ověření HTTPS provozu lze nezávisle nastavit GitHub
+Variables `CSP_ENFORCE=true` a `HSTS_ONE_YEAR=true` v prostředí `production`
+a spustit produkční build. Samotné sloučení této změny produkční režim nezpřísní.
+Proměnné se vyhodnocují při buildu; změna Worker vars bez rebuildu nestačí.
+Návrat k původnímu režimu vyžaduje odstranění příslušné GitHub proměnné nebo
+hodnotu `false` a nový build. Již přijaté HSTS zůstává v prohlížeči platné do
+vypršení; snížení hodnoty se projeví až při další návštěvě přes HTTPS.
+
 Veřejný web žádné secrety navíc nepotřebuje.
 
 ### 1.1 Proměnné, secrety a přihlášení

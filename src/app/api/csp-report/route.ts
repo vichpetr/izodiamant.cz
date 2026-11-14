@@ -1,4 +1,3 @@
-// Příjem hlášení o porušení Content-Security-Policy (hlavička je zatím jen Report-Only).
 // Hlášení se jen zapíše do logu Workeru (Workers Observability) – nic se neukládá.
 // Tělo se ořezává, ať endpoint nejde zneužít k plnění logu.
 
