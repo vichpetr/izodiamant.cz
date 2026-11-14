@@ -22,7 +22,8 @@
     "test": "playwright test",
     "db:schema:local": "npx wrangler d1 execute izodiamant-db --local --file=db/schema.sql",
     "db:schema:remote": "npx wrangler d1 execute izodiamant-db --remote --file=db/schema.sql",
-    "db:schema:preview:remote": "npx wrangler d1 execute izodiamant-preview-db --remote --file=db/schema.sql"
+    "db:schema:preview:remote": "npx wrangler d1 execute izodiamant-preview-db --remote --file=db/schema.sql",
+    "test:build-deps": "node --test scripts/build-deps.test.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^16.1.6",
@@ -51,5 +52,13 @@
     "tailwindcss": "3.4",
     "typescript": "^5.9.3",
     "wrangler": "^4.158.0"
+  },
+  "overrides": {
+    "@opennextjs/cloudflare": {
+      "glob": "14.0.6"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "11.0.8"
+    }
   }
 }
