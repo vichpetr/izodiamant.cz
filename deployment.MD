@@ -38,6 +38,14 @@ aplikace a Cloudflare od toho pro větve odrazuje.
   z `WRANGLER_OUTPUT_FILE_PATH`. Na úplně první push větve, dřív než vznikne PR, komentář
   nepřibude – objeví se po dalším nasazení.
 
+`npm run build:worker` také spouští `opennextjs-cloudflare populateCache local`,
+který před nasazením vloží předrenderovanou cache z `.open-next/cache` do
+`.open-next/assets/cdn-cgi/_next_cache`. U používané statické cache jde jen o
+přípravu lokálních souborů; nepřistupuje k produkční databázi ani vzdálené cache.
+Tento krok je nutný i pro Preview nasazované přes `wrangler preview` a pro smoke
+test s holým `wrangler dev`. Bez něj dochází k cache missům a pokusům zapisovat
+do read-only cache.
+
 Veřejný web žádné secrety navíc nepotřebuje.
 
 ### 1.1 Proměnné, secrety a přihlášení

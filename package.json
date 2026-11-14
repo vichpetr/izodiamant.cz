@@ -13,7 +13,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "build:worker": "opennextjs-cloudflare build",
+    "build:worker": "opennextjs-cloudflare build && opennextjs-cloudflare populateCache local",
     "smoke:worker": "node scripts/worker-smoke.mjs",
     "preview:worker": "npm run build:worker && opennextjs-cloudflare preview",
     "sync:llms": "node scripts/sync-llms.mjs",
@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@next/third-parties": "^16.1.6",
-    "@opennextjs/cloudflare": "1.20.16",
+    "@opennextjs/cloudflare": "1.20.17",
     "@react-email/render": "^2.0.5",
     "@tailwindcss/postcss": "^4.0.0",
     "clsx": "^2.1.1",

@@ -13,6 +13,8 @@ const Footer = dynamic(() => import('@/components/Footer'));
  * proto se tady generují až strany od dvojky – /reference/strana/1 má v
  * next.config.ts trvalé přesměrování na /reference.
  */
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return Array.from({ length: Math.max(0, referencePageCount - 1) }, (_, i) => ({
     cislo: String(i + 2),
