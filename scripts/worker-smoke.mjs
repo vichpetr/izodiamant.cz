@@ -10,6 +10,11 @@ const BASE = `http://localhost:${PORT}`;
 
 const checks = [
   { name: 'GET /', req: ['/'], expect: 200 },
+  { name: 'GET /reference/zleby', req: ['/reference/zleby'], expect: 200 },
+  { name: 'GET /reference/strana/2', req: ['/reference/strana/2'], expect: 200 },
+  { name: 'GET /reference/dum-ve-zleby-u-caslavi', req: ['/reference/dum-ve-zleby-u-caslavi'], expect: 404 },
+  { name: 'GET /reference/strana/99999', req: ['/reference/strana/99999'], expect: 404 },
+  { name: 'GET /reference/strana/02', req: ['/reference/strana/02'], expect: 404 },
   { name: 'GET /sprava (redirect na přihlášení)', req: ['/sprava', { redirect: 'manual' }], expect: 307 },
   { name: 'POST /api/csp-report', req: ['/api/csp-report', { method: 'POST', body: '{"a":1}', headers: { 'content-type': 'application/csp-report' } }], expect: 204 },
   { name: 'POST /api/send (prázdná data = validace, ne 500)', req: ['/api/send', { method: 'POST', body: '{}', headers: { 'content-type': 'application/json' } }], expect: 400 },
@@ -40,9 +45,14 @@ try {
   if (!(await waitUp())) throw new Error('wrangler dev nenaběhl do 2 minut');
   for (const c of checks) {
     const res = await fetch(BASE + c.req[0], c.req[1]);
+    await res.arrayBuffer();
     const ok = res.status === c.expect;
     if (!ok) failed = true;
     console.log(`${ok ? 'OK  ' : 'FAIL'} ${c.name}: ${res.status} (čekáno ${c.expect})`);
+  }
+  if (log.includes('Failed to set to read-only cache')) {
+    failed = true;
+    console.error('FAIL Worker se pokusil zapisovat do read-only cache');
   }
 } catch (e) {
   failed = true;

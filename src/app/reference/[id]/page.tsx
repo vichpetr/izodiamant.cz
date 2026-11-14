@@ -57,6 +57,8 @@ export async function generateMetadata({
   });
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return referencesData.map((project) => ({
     id: project.id,

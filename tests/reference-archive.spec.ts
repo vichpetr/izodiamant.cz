@@ -54,6 +54,13 @@ test.describe('Archiv referencí', () => {
     expect(res.status()).toBe(404);
   });
 
+  test('neznámé ID reference a nekanonické číslo strany vrací 404', async ({ request }) => {
+    for (const path of ['/reference/dum-ve-zleby-u-caslavi', '/reference/strana/02']) {
+      const res = await request.get(path, { maxRedirects: 0 });
+      expect(res.status(), path).toBe(404);
+    }
+  });
+
   test('homepage ukazuje jen výběr a odkazuje na archiv', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator(`#reference ${cards}`)).toHaveCount(3);
