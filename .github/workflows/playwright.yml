@@ -43,6 +43,8 @@ jobs:
       env:
         NEXT_PUBLIC_FIRMY_PROFILE_URL: https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html
         NEXT_PUBLIC_REVIEWS_API_URL: https://izodiamant-reviews-api.vas-ucet.workers.dev
+    - name: Run analytics unit tests
+      run: node --test tests/unit/analytics.test.mjs
     - name: Run Playwright tests
       run: npx playwright test
       env:
