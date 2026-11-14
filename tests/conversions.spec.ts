@@ -1,20 +1,9 @@
 import { test, expect, type Page } from '@playwright/test';
 
-/**
- * Měření konverzí pro Google Ads.
- *
- * Události se posílají přes gtag, ale GA se načítá až při interakci a jen se
- * souhlasem – proto se tady čte přímo `window.dataLayer`, kam `trackEvent`
- * událost zařadí i bez načteného gtag.js. Testujeme tedy to, na čem záleží:
- * že se událost vůbec vytvoří a se správnými parametry.
- */
-
-/**
- * Cookie lišta je `fixed bottom-8 z-50` a na tabletu/mobilu překrývá odesílací
- * tlačítko formuláře (klik pak vyprší). Uložený souhlas ji nevykreslí vůbec.
- */
-async function skipCookieBanner(page: Page) {
-  await page.addInitScript(() => localStorage.setItem('cookie-consent', 'false'));
+async function setAnalyticsConsent(page: Page, consent: boolean) {
+  await page.addInitScript((allowed) => {
+    localStorage.setItem('cookie-consent', String(allowed));
+  }, consent);
 }
 
 /** Vytáhne z dataLayer události daného jména (obě podoby zápisu gtag). */
@@ -41,7 +30,7 @@ async function submitContactForm(page: Page, message: string) {
 
 test.describe('Konverze: klik na telefon', () => {
   test('klik na tel: odkaz odešle click_to_call', async ({ page }) => {
-    await skipCookieBanner(page);
+    await setAnalyticsConsent(page, true);
     await page.goto('/');
 
     // Nutně `:visible` – první tel: odkaz v pořadí je ten z desktopové hlavičky,
@@ -60,13 +49,15 @@ test.describe('Konverze: klik na telefon', () => {
       .toBeGreaterThan(0);
 
     const events = await eventsNamed(page, 'click_to_call');
-    expect(String(events[0].phone_number)).toMatch(/^\+?\d+$/);
+    expect(events[0].contact_method).toBe('phone');
+    expect(events[0].page_path).toBe('/');
+    expect(events[0]).not.toHaveProperty('phone_number');
   });
 });
 
 test.describe('Konverze: odeslání poptávky', () => {
   test('úspěšný kontaktní formulář odešle generate_lead', async ({ page }) => {
-    await skipCookieBanner(page);
+    await setAnalyticsConsent(page, true);
     await page.route('**/api/send', (route) =>
       route.fulfill({ status: 200, body: JSON.stringify({ ok: true }) }),
     );
@@ -84,7 +75,7 @@ test.describe('Konverze: odeslání poptávky', () => {
   test('při chybě serveru se konverze NEodešle (kalkulačka hlásila úspěch i po selhání)', async ({
     page,
   }) => {
-    await skipCookieBanner(page);
+    await setAnalyticsConsent(page, true);
     await page.route('**/api/send', (route) => route.fulfill({ status: 500, body: '{}' }));
     page.on('dialog', (d) => d.dismiss());
 
@@ -97,5 +88,27 @@ test.describe('Konverze: odeslání poptávky', () => {
       (await eventsNamed(page, 'generate_lead')).length,
       'konverze se změřila i při selhání odeslání',
     ).toBe(0);
+  });
+});
+
+test.describe('Konverze bez souhlasu', () => {
+  test('klik na telefon nevytvoří událost', async ({ page }) => {
+    await setAnalyticsConsent(page, false);
+    await page.goto('/');
+    await page.locator('#contact-name').fill('Jan Novák');
+    await expect(page.locator('#contact-name')).toHaveValue('Jan Novák');
+    await page.locator('a[href^="tel:"]:visible').first().click({ force: true });
+    expect(await eventsNamed(page, 'click_to_call')).toEqual([]);
+  });
+
+  test('úspěšná poptávka nevytvoří událost', async ({ page }) => {
+    await setAnalyticsConsent(page, false);
+    await page.route('**/api/send', (route) =>
+      route.fulfill({ status: 200, body: JSON.stringify({ ok: true }) }),
+    );
+    await page.goto('/');
+    await submitContactForm(page, 'Poptávka bez analytického souhlasu.');
+    await expect(page.getByText(/Děkujeme|Odesláno|brzy/i).first()).toBeVisible();
+    expect(await eventsNamed(page, 'generate_lead')).toEqual([]);
   });
 });
