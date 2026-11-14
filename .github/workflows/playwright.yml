@@ -7,6 +7,7 @@ on:
 jobs:
   test:
     env:
+      CSP_HASHES: 'true'
       CSP_ENFORCE: 'true'
       HSTS_ONE_YEAR: 'true'
       NEXT_PUBLIC_GA_MEASUREMENT_ID: G-TESTSECURITY123

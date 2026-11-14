@@ -1,7 +1,6 @@
 import { FACEBOOK_URL } from '@/lib/social';
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Script from "next/script";
 import DeferredAnalytics from "@/components/DeferredAnalytics";
 import MotionProvider from "@/components/MotionProvider";
 import WebMCP from "@/components/WebMCP";
@@ -193,25 +192,6 @@ export default function RootLayout({
         <link rel="openid-configuration" href="/.well-known/openid-configuration" />
         <link rel="oauth-protected-resource" href="/.well-known/oauth-protected-resource" />
         <link rel="agent-card" href="/.well-known/agent-card.json" />
-        {/* Google Analytics Consent Mode Initialization */}
-        <Script id="ga-consent" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            
-            // Check if we already have consent stored
-            const storedConsent = typeof window !== 'undefined' ? localStorage.getItem('cookie-consent') : null;
-            
-            gtag('consent', 'default', {
-              'analytics_storage': storedConsent === 'true' ? 'granted' : 'denied',
-              'ad_storage': storedConsent === 'true' ? 'granted' : 'denied',
-              'ad_user_data': storedConsent === 'true' ? 'granted' : 'denied',
-              'ad_personalization': storedConsent === 'true' ? 'granted' : 'denied',
-              'wait_for_update': 500
-            });
-          `}
-        </Script>
-
         {/* JSON-LD musí být v serverovém HTML – přes next/script se vloží až po
             hydrataci a crawleři, kteří nespouštějí JS (Seznam, část AI botů), ho neuvidí. */}
         <script
