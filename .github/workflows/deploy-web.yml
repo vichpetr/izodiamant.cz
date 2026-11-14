@@ -112,8 +112,12 @@ jobs:
               "$RUNNER_TEMP/preview.json" 2>/dev/null || true)
             URL=$(grep -E "^https://${PREVIEW}-" <<<"$URLS" | head -n1)
             VERSION_URL=$(grep -vE "^https://${PREVIEW}-" <<<"$URLS" | head -n1)
-            VERSION=$(jq -r '.. | objects | (.deployment_id // .version_id // empty)' \
+            VERSION=$(jq -r '.deployment.id // .deployment_id // .version_id // empty' \
               "$RUNNER_TEMP/preview.json" 2>/dev/null | head -n1 || true)
+          fi
+          if [ "$TARGET" = preview ] && [ -z "$URL" ]; then
+            echo "::error::Preview nemá veřejnou URL. Ověřte preview_urls a nastavení hostu workeru."
+            exit 1
           fi
           {
             echo "url=$URL"
