@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import firmyFallback from '@/data/firmy.json';
 import { reviewsApiUrl } from './reviewsApi';
 
 export interface SourceSummary {
@@ -11,7 +10,7 @@ export interface SourceSummary {
 }
 
 export interface ReviewSummary {
-  firmy: SourceSummary;
+  firmy: SourceSummary | null;
   google: SourceSummary | null;
 }
 
@@ -19,21 +18,12 @@ export interface ReviewSummary {
 const GOOGLE_URL =
   process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL || 'https://www.google.com/maps?cid=11693549259963803968';
 
-/**
- * Souhrnné hodnocení podle zdroje z review workeru.
- *
- * - Nový worker vrací `sources: { firmy, google }` – použijeme je přímo, Google
- *   ukážeme jen když má nějaká hodnocení.
- * - Starý worker vrací jen top-level `rating`/`count` (vše = Firmy.cz/Mapy.com) –
- *   degradujeme na jediný zdroj Mapy.com.
- * - Bez workeru zůstává statický fallback z firmy.json.
- */
 export function useReviewSummary(): ReviewSummary {
-  const firmyUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || '#';
+  const firmyUrl = process.env.NEXT_PUBLIC_FIRMY_PROFILE_URL || 'https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html';
   const workerUrl = reviewsApiUrl();
 
   const [summary, setSummary] = useState<ReviewSummary>({
-    firmy: { rating: firmyFallback.rating, count: firmyFallback.count, url: firmyUrl },
+    firmy: null,
     google: null,
   });
 
@@ -48,33 +38,19 @@ export function useReviewSummary(): ReviewSummary {
         const json = await res.json();
         if (cancelled) return;
 
-        if (json.sources) {
-          const f = json.sources.firmy || {};
-          const g = json.sources.google || {};
-          setSummary({
-            firmy: {
-              rating: typeof f.rating === 'number' ? f.rating : firmyFallback.rating,
-              count: typeof f.count === 'number' ? f.count : firmyFallback.count,
-              url: firmyUrl,
-            },
-            google:
-              typeof g.rating === 'number' && g.count > 0
-                ? { rating: g.rating, count: g.count, url: g.sourceUrl || GOOGLE_URL }
-                : null,
-          });
-        } else {
-          // Starý worker: top-level rating/count = Firmy.cz/Mapy.com.
-          setSummary({
-            firmy: {
-              rating: typeof json.rating === 'number' ? json.rating : firmyFallback.rating,
-              count: typeof json.count === 'number' ? json.count : firmyFallback.count,
-              url: firmyUrl,
-            },
-            google: null,
-          });
-        }
+        const sourceSummary = (source: { rating?: unknown; count?: unknown; error?: unknown } | undefined, url: string): SourceSummary | null =>
+          source && !source.error && typeof source.rating === 'number' &&
+          Number.isFinite(source.rating) && source.rating >= 1 && source.rating <= 5 &&
+          typeof source.count === 'number' && Number.isInteger(source.count) && source.count > 0
+            ? { rating: source.rating, count: source.count, url }
+            : null;
+
+        setSummary({
+          firmy: sourceSummary(json.sources ? json.sources.firmy : json, firmyUrl),
+          google: sourceSummary(json.sources?.google, GOOGLE_URL),
+        });
       } catch {
-        // ponecháme fallback
+        if (!cancelled) setSummary({ firmy: null, google: null });
       }
     })();
 

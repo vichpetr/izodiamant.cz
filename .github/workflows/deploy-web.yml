@@ -96,7 +96,9 @@ jobs:
             PREVIEW=$(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//' | cut -c1-30 | sed -E 's/-+$//')
             echo "PREVIEW=$PREVIEW" >> "$GITHUB_ENV"
             # Build už proběhl v předchozím kroku, `wrangler preview` jen nahraje .open-next.
-            npx wrangler preview --name "$PREVIEW" --message "$GITHUB_SHA" --json > "$RUNNER_TEMP/preview.json"
+            npx wrangler preview --name "$PREVIEW" --message "$GITHUB_SHA" --json > "$RUNNER_TEMP/preview-output.txt"
+            sed -n '/^{/,$p' "$RUNNER_TEMP/preview-output.txt" > "$RUNNER_TEMP/preview.json"
+            jq -e '.preview and .deployment' "$RUNNER_TEMP/preview.json" > /dev/null
             cat "$RUNNER_TEMP/preview.json"
           fi
 
@@ -112,8 +114,12 @@ jobs:
               "$RUNNER_TEMP/preview.json" 2>/dev/null || true)
             URL=$(grep -E "^https://${PREVIEW}-" <<<"$URLS" | head -n1)
             VERSION_URL=$(grep -vE "^https://${PREVIEW}-" <<<"$URLS" | head -n1)
-            VERSION=$(jq -r '.. | objects | (.deployment_id // .version_id // empty)' \
+            VERSION=$(jq -r '.deployment.id // .deployment_id // .version_id // empty' \
               "$RUNNER_TEMP/preview.json" 2>/dev/null | head -n1 || true)
+          fi
+          if [ "$TARGET" = preview ] && [ -z "$URL" ]; then
+            echo "::error::Preview nemá veřejnou URL. Ověřte preview_urls a nastavení hostu workeru."
+            exit 1
           fi
           {
             echo "url=$URL"

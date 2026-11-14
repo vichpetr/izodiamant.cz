@@ -7,14 +7,14 @@ import Image from "next/image";
 import servicesData from "@/data/services.json";
 import referencesData from '@/data/references.json';
 import { pageMetadata, breadcrumbSchema } from "@/lib/seo";
-import { serviceOffer } from "@/lib/pricing";
+import { minPriceLabel, serviceOffer } from "@/lib/pricing";
 import ServiceArticles from "@/components/ServiceArticles";
 
 export const metadata: Metadata = {
   ...pageMetadata({
     path: '/sluzby/diamantove-lano',
-    title: "Podřezání zdiva a betonu diamantovým lanem",
-    description: "Podřezání diamantovým lanem – kamenné, betonové i silné smíšené zdivo bez omezení tloušťky. Šetrná metoda s minimem otřesů. Orientační cena od 4 500 Kč/m².",
+    title: `Podřezání diamantovým lanem od ${minPriceLabel("diamantove-lano")} Kč/m²`,
+    description: `Podřezání kamene, betonu i smíšeného zdiva od ${minPriceLabel("diamantove-lano")} Kč/m² řezné plochy. Výpočet: délka × tloušťka zdi. Spočítejte si orientační cenu.`,
     images: ['/images/sluzby/diamantove-lano.jpg'],
   }),
   keywords: ["diamantové lano", "podřezání zdiva diamantovým lanem", "izolace vlhkého zdiva diamantovým lanem", "podřezání kamenného zdiva", "podřezání smíšeného zdiva", "podřezání betonu", "řezání betonu", "řezání železobetonu", "sanace kamenného zdiva", "izolace betonu", "podřezání zdiva cena", "Nové Hrady", "ČR"],
@@ -76,6 +76,12 @@ export default function DiamondWirePage() {
               </h1>
               <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-10">
                 Podřezání zdiva diamantovým lanem je vysoce šetrnou volbou pro sanaci kamenného, smíšeného nebo velmi tvrdého zdiva, kde už běžná pila nestačí. Budova se tak staticky bezpečně odřízne od vzlínající zemní vlhkosti.
+              </p>
+              <p className="text-lg text-neutral-dark/80 font-medium leading-relaxed mb-8">
+                Orientační cena od {minPriceLabel("diamantove-lano")} Kč/m² řezné plochy.
+                Plochu spočítáte jako délku zdi × její tloušťku v metrech:
+                zeď dlouhá 10 m a silná 45 cm má 4,5 m² řezné plochy.
+                Konečnou cenu určíme po prohlídce podle materiálu a přístupnosti zdiva. Nejsme plátci DPH.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">

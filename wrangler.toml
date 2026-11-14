@@ -29,7 +29,7 @@ main = ".open-next/worker.js"
 compatibility_date = "2026-07-29"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 workers_dev = true
-preview_urls = false
+preview_urls = true
 routes = [
   { pattern = "izodiamant.cz", custom_domain = true },
   { pattern = "www.izodiamant.cz", custom_domain = true },

@@ -7,14 +7,14 @@ import Image from "next/image";
 import servicesData from "@/data/services.json";
 import referencesData from '@/data/references.json';
 import { pageMetadata, breadcrumbSchema } from "@/lib/seo";
-import { serviceOffer } from "@/lib/pricing";
+import { minPriceLabel, serviceOffer } from "@/lib/pricing";
 import ServiceArticles from "@/components/ServiceArticles";
 
 export const metadata: Metadata = {
   ...pageMetadata({
     path: '/sluzby/retezova-pila',
-    title: "Podřezávání zdiva řetězovou pilou",
-    description: "Podřezání zdiva řetězovou pilou – nejrychlejší metoda pro cihelné zdivo, vložení hydroizolace s životností přes 50 let. Orientační cena od 2 500 Kč/m².",
+    title: `Podřezání zdiva pilou od ${minPriceLabel("retezova-pila")} Kč/m²`,
+    description: `Podřezání cihelného zdiva pilou od ${minPriceLabel("retezova-pila")} Kč/m² řezné plochy. Výpočet: délka × tloušťka zdi. Spočítejte si orientační cenu.`,
     images: ['/images/sluzby/retezova-pila.jpg'],
   }),
   keywords: ["řetězová pila", "řetězová pila na zdivo", "pila na podřezání zdiva", "izolace vlhkého zdiva podřezáním", "podřezávání cihelného zdiva", "podřezání zdiva řetězovou pilou", "sanace vlhkého zdiva", "izolace proti vlhkosti", "podřezání domu cena", "Nové Hrady", "ČR"],
@@ -76,6 +76,12 @@ export default function ChainSawPage() {
               </h1>
               <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-10">
                 Strojní podřezání řetězovou pilou patří mezi nejefektivnější a nejrychlejší způsoby, jak trvale odizolovat cihelné zdivo. Pilou vytvoříme ve stěně přesný řez, do kterého obratem vložíme odolnou hydroizolační fólii a zdivo pečlivě zajistíme statickými klíny.
+              </p>
+              <p className="text-lg text-neutral-dark/80 font-medium leading-relaxed mb-8">
+                Orientační cena od {minPriceLabel("retezova-pila")} Kč/m² řezné plochy.
+                Plochu spočítáte jako délku zdi × její tloušťku v metrech:
+                zeď dlouhá 10 m a silná 45 cm má 4,5 m² řezné plochy.
+                Konečnou cenu určíme po prohlídce podle materiálu a přístupnosti zdiva. Nejsme plátci DPH.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">

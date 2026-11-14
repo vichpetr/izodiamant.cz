@@ -1,3 +1,4 @@
+import { FACEBOOK_URL } from '@/lib/social';
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
@@ -173,7 +174,7 @@ export default function RootLayout({
         }
       ]
     },
-    "sameAs": [firmyUrl, googleMapsUrl].filter(Boolean),
+    "sameAs": [firmyUrl, googleMapsUrl, FACEBOOK_URL].filter(Boolean),
   };
 
   return (

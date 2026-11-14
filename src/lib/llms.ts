@@ -9,7 +9,7 @@ export const LLMS_MD = `# IZODIAMANT - Sanace a podřezávání zdiva
 Specialisté na profesionální sanace vlhkého zdiva po celé České republice. Vracíme zdraví vaší stavbě.
 
 Provozovatel: Václav Ropek, IČO 74650726, Mokrá Lhota 26, 539 44 Nové Hrady. Nejsme plátci DPH.
-Hodnocení: 5,0 z 5 (12 hodnocení na Firmy.cz).
+Aktuální hodnocení: https://www.firmy.cz/detail/13505805-izodiamant-nove-hrady-mokra-lhota.html#hodnoceni
 
 ## Hlavní Služby
 - [Podřezávání diamantovým lanem](https://izodiamant.cz/sluzby/diamantove-lano): Ideální pro kamenné, betonové a silné smíšené zdivo. Šetrná metoda s minimem otřesů. Rozhodujícím kritériem je materiál zdiva, nikoli jeho tloušťka – lano zvládne tvrdý kámen i u tenkých stěn a zároveň nemá limit tloušťky (i přes dva metry). Orientační cena od 4 500 Kč/m², realizace 3–5 pracovních dnů.
