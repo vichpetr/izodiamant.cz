@@ -8,7 +8,10 @@ const articleSlugs = (articlesData as { slug: string }[]).map((a) => a.slug);
 // Non-capturing skupina (?:…) – Next.js v source nepovoluje capturing skupiny.
 const clankyKeepRegex = `(?!(?:${articleSlugs.join("|")})$).*`;
 
-const CSP_REPORT_ONLY = [
+const CSP_ENFORCE = process.env.CSP_ENFORCE === 'true';
+const HSTS_ONE_YEAR = process.env.HSTS_ONE_YEAR === 'true';
+
+const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://challenges.cloudflare.com https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline'",
@@ -47,19 +50,16 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
-      // Bezpečnostní hlavičky pro všechny odpovědi Next.js (HTML, API). CSP je záměrně zvlášť
-      // (hrozí rozbití Consent Mode, GA a Turnstile) – nejdřív v Report-Only.
-      // HSTS bez includeSubDomains a s kratším max-age (30 dní); zvýšit po ověření provozu.
       {
         source: '/:path*',
         headers: [
-          { key: 'Strict-Transport-Security', value: 'max-age=2592000' },
+          { key: 'Strict-Transport-Security', value: HSTS_ONE_YEAR ? 'max-age=31536000' : 'max-age=2592000' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-          // CSP zatím jen hlásí (Report-Only) do /api/csp-report. Stránky jsou SSG, nonce tedy
-          // nejde použít a inline skripty (Consent Mode, Next bootstrap) vyžadují 'unsafe-inline'.
-          // Po týdnu bez hlášení přepnout na Content-Security-Policy a zvážit zpřísnění.
-          { key: 'Content-Security-Policy-Report-Only', value: CSP_REPORT_ONLY },
+          {
+            key: CSP_ENFORCE ? 'Content-Security-Policy' : 'Content-Security-Policy-Report-Only',
+            value: CONTENT_SECURITY_POLICY,
+          },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           {
             key: 'Permissions-Policy',

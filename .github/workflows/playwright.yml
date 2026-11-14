@@ -6,6 +6,10 @@ on:
     branches: [ main, master ]
 jobs:
   test:
+    env:
+      CSP_ENFORCE: 'true'
+      HSTS_ONE_YEAR: 'true'
+      NEXT_PUBLIC_GA_MEASUREMENT_ID: G-TESTSECURITY123
     timeout-minutes: 60
     runs-on: ubuntu-24.04
     steps:
