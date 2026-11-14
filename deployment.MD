@@ -500,3 +500,21 @@ npx wrangler dev --env preview --persist-to ../.wrangler/state      # bez OPENCO
 - R2: PDF ~0,4 MB (každá verze zvlášť) → stovky nabídek ročně jsou hluboko ve free tieru (10 GB).
 - Browser Rendering: ~5–10 s na PDF / náhled, v rámci 10 h/měs. zahrnutých v Paid plánu.
 - Queues: jednotky tisíc zpráv měsíčně, v rámci Paid plánu.
+
+## Bezpečnost build závislostí
+
+Kořenový package.json cíleně přepisuje pouze glob pod @opennextjs/cloudflare
+na 14.0.6 a minimatch pod @typescript-eslint/typescript-estree na 11.0.8.
+Jde o opravy GHSA-3g3m-2fjr-6pw4 a GHSA-g3hv-75wg-m249, které upstream
+závislosti zatím nepřebírají. Ostatní větve minimatch, například ESLint 3.x,
+nejsou přepisované. OpenNext zůstává na 1.20.17.
+
+Protože overrides překračují hlavní verze deklarované rodiči, CI před buildem
+spouští npm run test:build-deps: skutečné glob/globSync z větve OpenNext a
+TypeScript ESLint project service s povoleným i zakázaným glob vzorem.
+Následují standardní Next/OpenNext buildy, browser testy a Worker smoke.
+CI také vyžaduje npm audit --audit-level=moderate.
+
+Až upstream přejde na opravené závislosti, lze jednotlivé overrides odstranit
+a ověřit čistý npm ci, audit i všechny kontroly. Nepoužívat npm audit fix --force
+a neprovádět kvůli těmto nálezům downgrade OpenNext.
