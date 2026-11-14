@@ -5,7 +5,7 @@
 
 import { spawn } from 'node:child_process';
 
-const PORT = 8799;
+const PORT = Number(process.env.SMOKE_PORT || 8799);
 const BASE = `http://localhost:${PORT}`;
 
 const checks = [
@@ -15,6 +15,7 @@ const checks = [
   { name: 'GET /reference/dum-ve-zleby-u-caslavi', req: ['/reference/dum-ve-zleby-u-caslavi'], expect: 404 },
   { name: 'GET /reference/strana/99999', req: ['/reference/strana/99999'], expect: 404 },
   { name: 'GET /reference/strana/02', req: ['/reference/strana/02'], expect: 404 },
+  { name: 'GET /sprava/prihlaseni', req: ['/sprava/prihlaseni'], expect: 200 },
   { name: 'GET /sprava (redirect na přihlášení)', req: ['/sprava', { redirect: 'manual' }], expect: 307 },
   { name: 'POST /api/csp-report', req: ['/api/csp-report', { method: 'POST', body: '{"a":1}', headers: { 'content-type': 'application/csp-report' } }], expect: 204 },
   { name: 'POST /api/send (prázdná data = validace, ne 500)', req: ['/api/send', { method: 'POST', body: '{}', headers: { 'content-type': 'application/json' } }], expect: 400 },
@@ -45,12 +46,19 @@ try {
   if (!(await waitUp())) throw new Error('wrangler dev nenaběhl do 2 minut');
   for (const c of checks) {
     const res = await fetch(BASE + c.req[0], c.req[1]);
-    if (process.env.CSP_HASHES === 'true' && c.expect === 200) {
+    if (process.env.CSP_HASHES === 'true' && c.expect === 200 && c.req[0] !== '/sprava/prihlaseni') {
       const policy = res.headers.get('content-security-policy') ?? res.headers.get('content-security-policy-report-only') ?? '';
       const scripts = policy.split(';').find(value => value.trim().startsWith('script-src ')) ?? '';
       if (!scripts.includes("'sha256-") || scripts.includes("'unsafe-inline'")) {
         failed = true;
         console.error(`FAIL Hashová CSP chybí na ${c.req[0]}`);
+      }
+    }
+    if (process.env.CSP_NONCES === 'true' && c.req[0] === '/sprava/prihlaseni') {
+      const policy = res.headers.get('content-security-policy') ?? res.headers.get('content-security-policy-report-only') ?? '';
+      if (!policy.includes("'nonce-") || policy.split(';').find(value => value.trim().startsWith('script-src '))?.includes("'unsafe-inline'")) {
+        failed = true;
+        console.error('FAIL Nonce CSP chybí na přihlášení');
       }
     }
     await res.arrayBuffer();

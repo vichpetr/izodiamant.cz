@@ -76,7 +76,7 @@ test('CSP povolí Google Analytics až po souhlasu', async ({ page }) => {
 test.describe('Hashová CSP veřejných stránek', () => {
   test.skip(process.env.CSP_HASHES !== 'true', 'Vyžaduje build s CSP_HASHES=true.');
 
-  for (const path of ['/', '/clanky', '/reference/zleby', '/sluzby/diamantove-lano']) {
+  for (const path of ['/', '/clanky', '/reference/zleby', '/sluzby/diamantove-lano', '/reference/neexistujici-csp-test']) {
     test(`${path} povoluje konkrétní inline hashe místo unsafe-inline`, async ({ request }) => {
       const response = await request.get(path);
       const header = enforced ? 'content-security-policy' : 'content-security-policy-report-only';
@@ -106,5 +106,57 @@ test.describe('Hashová CSP veřejných stránek', () => {
     }));
     expect(violation).toBe('enforce');
     expect(await page.evaluate(() => 'untrustedInlineExecuted' in window)).toBe(false);
+  });
+});
+
+test.describe('Nonce CSP administrace', () => {
+  test.skip(process.env.CSP_NONCES !== 'true', 'Vyžaduje build s CSP_NONCES=true.');
+
+  test('nonce odpovídá framework skriptům, mění se a nelze podvrhnout', async ({ request }) => {
+    const header = enforced ? 'content-security-policy' : 'content-security-policy-report-only';
+    const nonces = [];
+    for (let i = 0; i < 2; i++) {
+      const response = await request.get('/sprava/prihlaseni', { headers: {
+        'x-nonce': 'attacker', 'content-security-policy': "script-src 'nonce-attacker'",
+      } });
+      expect(response.status()).toBe(200);
+      const policy = response.headers()[header] ?? '';
+      const scriptPolicy = policy.split(';').find(value => value.trim().startsWith('script-src ')) ?? '';
+      expect(scriptPolicy).not.toContain("'unsafe-inline'");
+      const nonce = scriptPolicy.match(/'nonce-([^']+)'/)?.[1];
+      expect(nonce).toMatch(/^[A-Za-z0-9+/]{22}==$/);
+      expect(nonce).not.toBe('attacker');
+      nonces.push(nonce);
+      expect(response.headers()['cache-control']).toContain('no-store');
+      const html = await response.text();
+      let scripts = 0;
+      for (const [, attributes, content] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+        if (!content || /type="application\/ld\+json"/i.test(attributes)) continue;
+        expect(attributes).toContain(`nonce="${nonce}"`);
+        scripts += 1;
+      }
+      expect(scripts).toBeGreaterThan(0);
+    }
+    expect(nonces[0]).not.toBe(nonces[1]);
+  });
+
+  test('přihlašovací klient se hydratuje a blokuje cizí inline skript', async ({ page }) => {
+    test.skip(!enforced, 'Vyžaduje vynucující CSP.');
+    await page.goto('/sprava/prihlaseni');
+    await expect(page.getByRole('button', { name: 'Přihlásit přes Google' })).toBeVisible();
+    const violation = await page.evaluate(() => new Promise<string>(resolve => {
+      document.addEventListener('securitypolicyviolation', event => {
+        if (event.blockedURI === 'inline') resolve(event.disposition);
+      });
+      const script = document.createElement('script');
+      script.textContent = 'window.adminInjectedScript = true;';
+      document.head.appendChild(script);
+    }));
+    expect(violation).toBe('enforce');
+    expect(await page.evaluate(() => 'adminInjectedScript' in window)).toBe(false);
+    await page.route('**/api/auth/**', route => route.fulfill({ json: {} }));
+    const request = page.waitForRequest('**/api/auth/providers');
+    await page.getByRole('button', { name: 'Přihlásit přes Google' }).click();
+    await request;
   });
 });

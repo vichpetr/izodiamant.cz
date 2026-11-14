@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 
 import { LLMS_MD } from '@/lib/llms';
 import { allowRequest } from '@/lib/rateLimit';
+import { contentSecurityPolicy } from '@/lib/csp';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -22,12 +23,24 @@ export async function middleware(request: NextRequest) {
   //    tady jen kontrolujeme přítomnost session cookie, ať se nepřihlášený uživatel
   //    hned vrátí na přihlášení.) Musí být PŘED markdown negociací, aby ji
   //    Accept: text/markdown nemohl obejít.
-  if (pathname.startsWith('/sprava') && pathname !== '/sprava/prihlaseni') {
+  if (pathname === '/sprava' || pathname.startsWith('/sprava/')) {
     const hasSession =
       request.cookies.has('authjs.session-token') ||
       request.cookies.has('__Secure-authjs.session-token');
-    if (!hasSession) {
+    if (pathname !== '/sprava/prihlaseni' && !hasSession) {
       return NextResponse.redirect(new URL('/sprava/prihlaseni', request.url));
+    }
+    if (process.env.CSP_NONCES === 'true') {
+      const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
+      const policy = contentSecurityPolicy(`'nonce-${nonce}'`);
+      const headers = new Headers(request.headers);
+      headers.set('x-nonce', nonce);
+      headers.set('Content-Security-Policy', policy);
+      const response = NextResponse.next({ request: { headers } });
+      response.headers.set(process.env.CSP_ENFORCE === 'true'
+        ? 'Content-Security-Policy' : 'Content-Security-Policy-Report-Only', policy);
+      response.headers.set('Cache-Control', 'private, no-store');
+      return response;
     }
     return NextResponse.next();
   }

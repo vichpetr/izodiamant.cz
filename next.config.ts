@@ -1,3 +1,4 @@
+import { contentSecurityPolicy } from './src/lib/csp';
 import type { NextConfig } from "next";
 import articlesData from "./src/data/articles.json";
 
@@ -8,25 +9,17 @@ const articleSlugs = (articlesData as { slug: string }[]).map((a) => a.slug);
 // Non-capturing skupina (?:…) – Next.js v source nepovoluje capturing skupiny.
 const clankyKeepRegex = `(?!(?:${articleSlugs.join("|")})$).*`;
 
+const CSP_NONCES = process.env.CSP_NONCES === 'true';
 const CSP_ENFORCE = process.env.CSP_ENFORCE === 'true';
 const HSTS_ONE_YEAR = process.env.HSTS_ONE_YEAR === 'true';
 
-const CONTENT_SECURITY_POLICY = [
-  "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://challenges.cloudflare.com https://static.cloudflareinsights.com",
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://images.unsplash.com https://www.google-analytics.com https://www.googletagmanager.com",
-  "font-src 'self' data:",
-  "connect-src 'self' https://izodiamant-reviews-api.petr-c3c.workers.dev https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://challenges.cloudflare.com https://cloudflareinsights.com",
-  "frame-src https://challenges.cloudflare.com",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "frame-ancestors 'self'",
-  'report-uri /api/csp-report',
-].join('; ');
+const CONTENT_SECURITY_POLICY = contentSecurityPolicy();
 
 const nextConfig: NextConfig = {
+  env: {
+    CSP_NONCES: process.env.CSP_NONCES || '',
+    CSP_ENFORCE: process.env.CSP_ENFORCE || '',
+  },
   images: {
     loaderFile: './src/lib/cfImageLoader.ts',
     remotePatterns: [
@@ -56,16 +49,19 @@ const nextConfig: NextConfig = {
           { key: 'Strict-Transport-Security', value: HSTS_ONE_YEAR ? 'max-age=31536000' : 'max-age=2592000' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-          {
-            key: CSP_ENFORCE ? 'Content-Security-Policy' : 'Content-Security-Policy-Report-Only',
-            value: CONTENT_SECURITY_POLICY,
-          },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
           },
         ],
+      },
+      {
+        source: CSP_NONCES ? '/:path((?!sprava(?:/|$)).*)' : '/:path*',
+        headers: [{
+          key: CSP_ENFORCE ? 'Content-Security-Policy' : 'Content-Security-Policy-Report-Only',
+          value: CONTENT_SECURITY_POLICY,
+        }],
       },
       // Link hlavička na „/“ se nastavuje v src/middleware.ts (tady by se zdvojila).
       {
