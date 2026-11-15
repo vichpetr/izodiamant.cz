@@ -83,9 +83,14 @@ export default function DiamondWirePage() {
                 zeď dlouhá 10 m a silná 45 cm má 4,5 m² řezné plochy.
                 Konečnou cenu určíme po prohlídce podle materiálu a přístupnosti zdiva. Nejsme plátci DPH.
               </p>
+              <p className="text-lg text-neutral-dark/80 font-medium leading-relaxed mb-8">
+                Diamantové řezání nabízíme i jako samostatnou zakázku po celé ČR, například pro otvory ve zdivu nebo řezání betonových skruží. Proveditelnost posoudíme podle konkrétní konstrukce. Cenu, dopravu i prohlídku domluvíme individuálně.
+                Předběžný odhad sanace zjistíte v kalkulačce, pro konkrétní zakázku si můžete
+                <Link href="/#contact" className="underline font-bold"> vyžádat cenovou nabídku</Link>.
+              </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
-                  Nezávazná kalkulace zdarma
+                  Orientační kalkulace
                 </Link>
               </div>
             </div>

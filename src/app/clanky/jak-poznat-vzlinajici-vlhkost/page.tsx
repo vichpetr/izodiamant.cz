@@ -57,7 +57,7 @@ export default function Page() {
 
       <H2>Kdy zavolat odborníka</H2>
       <P>Domácí testy dají orientaci, ale přesnou míru zavlhčení a hloubku vlhkosti ve zdivu určí až měření gravimetrickou nebo odporovou metodou. Odborná prohlídka posoudí i souběh více příčin, který u starších domů není výjimkou.</P>
-      <P>Správná diagnóza rozhoduje o řešení: u vzlínající zemní vlhkosti je namístě obnovit vodorovnou hydroizolační bariéru mechanickým podřezáním nebo chemickou injektáží, zatímco kondenzaci řeší větrání a odstranění tepelných mostů. Nezávaznou prohlídku a kalkulaci u nás pořídíte zdarma.</P>
+      <P>Správná diagnóza rozhoduje o řešení: u vzlínající zemní vlhkosti je namístě obnovit vodorovnou hydroizolační bariéru mechanickým podřezáním nebo chemickou injektáží, zatímco kondenzaci řeší větrání a odstranění tepelných mostů. Cenu, dopravu i prohlídku domluvíme individuálně předem.</P>
 
       <H2>Naše metody</H2>
       <ServiceLinks items={SERVICES} />

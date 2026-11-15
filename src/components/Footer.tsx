@@ -24,7 +24,7 @@ export default function Footer() {
   }
 
   const content = {
-    desc: "Specialisté na sanaci vlhkého zdiva a podřezávání diamantovým lanem. Vracíme zdraví vaší stavbě.",
+    desc: "Sanace, diamantové řezání, řezání pilou a chemická injektáž po celé ČR. Cena, doprava a prohlídka individuálně po dohodě.",
     nav: "Navigace",
     services: "Služby",
     contact: "Kontakt",

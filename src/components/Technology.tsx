@@ -5,7 +5,7 @@ export default function Technology() {
   const content = {
     h2: "Žádné kompromisy, jen čistý řez.",
     h3: "Sanace pro 21. století",
-    sub: "Díky dlouholetým zkušenostem našich techniků získáte z moderních sanačních metod maximum bez ohrožení statiky vaší nemovitosti.",
+    sub: "Sanace i samostatné diamantové řezání, řezání pilou a chemická injektáž po celé ČR. Rozsah prací, cenu, dopravu i prohlídku domluvíme individuálně.",
     tech1_title: "Diamantové lano",
     tech1_desc: "Tato technika umožňuje šetrné proříznutí zdiva a vytvoření přesné ložné spáry pro uložení nepropustné izolace i u těch nejnáročnějších materiálů.",
     tech1_features: ['Pro kámen, beton i smíšené zdivo', 'Milimetrová přesnost', 'Bez limitu tloušťky zdi'],

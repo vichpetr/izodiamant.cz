@@ -38,14 +38,14 @@ export default function ArticleLayout({
 }) {
   const cta = service === "zednicke" ? {
     title: "Plánujete stavební práce?",
-    text: "Zednické a obkladačské práce provádíme do cca 50 km od Nových Hradů. Rozsah, podmínky prohlídky i cenu domluvíme předem.",
+    text: "Zednické a obkladačské práce provádíme do cca 50 km od Nových Hradů. Rozsah, cenu, dopravu i prohlídku domluvíme individuálně předem.",
     href: "/#contact",
     label: "Domluvit rozsah prací",
   } : {
     title: "Řešíte vlhké zdivo?",
-    text: "Ozvěte se nám na nezávaznou prohlídku sanace zdarma. Změříme vlhkost a navrhneme nejvhodnější postup na míru vaší stavbě. Vracíme zdraví vaší stavbě.",
+    text: "Požádejte o cenovou nabídku nebo si spočítejte předběžný odhad v kalkulačce. Cenu, dopravu i prohlídku domluvíme individuálně předem.",
     href: "/#calculator",
-    label: "Nezávazná kalkulace zdarma",
+    label: "Orientační kalkulace",
   };
   const url = `https://izodiamant.cz/clanky/${slug}`;
   const articleSchema = {

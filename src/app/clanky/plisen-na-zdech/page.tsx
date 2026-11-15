@@ -55,7 +55,7 @@ export default function Page() {
 
       <H2>Jak zjistit příčinu a začít</H2>
       <P>Podle umístění a rozsahu plísně lze odhadnout, zda jde o kondenzaci, nebo o vzlínající vlhkost, spolehlivé určení ale patří do rukou odborníka přímo na místě. Podle příčiny se pak volí správný postup, aby se plíseň nevracela.</P>
-      <P>Pokud za plísní stojí vlhké zdivo, nezávazná prohlídka a kalkulace jsou zdarma. Orientační cenu sanace podle metody a rozsahu si můžete spočítat v naší online kalkulačce.</P>
+      <P>Pokud za plísní stojí vlhké zdivo, cenu, dopravu i prohlídku domluvíme individuálně předem. Orientační cenu sanace podle metody a rozsahu si můžete spočítat v naší online kalkulačce.</P>
 
       <H2>Naše metody</H2>
       <ServiceLinks items={SERVICES} />

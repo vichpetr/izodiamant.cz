@@ -50,7 +50,7 @@ export default function Page() {
 
       <H2>Jak postupovat dál</H2>
       <P>Jednotlivé příčiny se často prolínají, proto se vyplatí začít správnou diagnózou a teprve podle ní volit opatření. U kondenzace a zatékání jde hlavně o větrání, zateplení a odvedení vody, u poruch izolace o jejich opravu.</P>
-      <P>Pokud je za vlhkostí vzlínající zemní voda, je řešením obnova vodorovné bariéry mechanickým podřezáním nebo chemickou injektáží s navazujícími sanačními omítkami. Orientační cenu si spočítáte v naší online kalkulačce, nezávaznou prohlídku a kalkulaci nabízíme zdarma.</P>
+      <P>Pokud je za vlhkostí vzlínající zemní voda, je řešením obnova vodorovné bariéry mechanickým podřezáním nebo chemickou injektáží s navazujícími sanačními omítkami. Orientační cenu si spočítáte v naší online kalkulačce, cenu, dopravu i prohlídku domluvíme individuálně předem.</P>
 
       <H2>Naše metody</H2>
       <ServiceLinks items={SERVICES} />

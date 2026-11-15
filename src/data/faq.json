@@ -29,7 +29,7 @@
   },
   {
     "question": "V jaké oblasti působíte?",
-    "answer": "Sanace provádíme po celé České republice. Nejčastěji realizujeme zakázky v Pardubickém, Královéhradeckém a Středočeském kraji – například v Pardubicích, Chrudimi, Hradci Králové, Ústí nad Orlicí, Vysokém Mýtě, Litomyšli, Poličce a Svitavách – a pravidelně vyjíždíme i do Prahy a Brna. Prohlídka objektu a zpracování nabídky sanace vlhkého zdiva jsou nezávazné a zdarma. U zednických a obkladačských prací podmínky prohlídky domluvíme individuálně."
+    "answer": "Sanace provádíme po celé České republice. Nejčastěji realizujeme zakázky v Pardubickém, Královéhradeckém a Středočeském kraji – například v Pardubicích, Chrudimi, Hradci Králové, Ústí nad Orlicí, Vysokém Mýtě, Litomyšli, Poličce a Svitavách – a pravidelně vyjíždíme i do Prahy a Brna. Cenu, dopravu i prohlídku domluvíme individuálně předem. Předběžný odhad poskytne kalkulačka na webu, nebo si nechte vypracovat cenovou nabídku."
   },
   {
     "question": "Práší se při podřezávání v interiéru?",
@@ -58,5 +58,9 @@
   {
     "question": "Jak funguje program „Doporuč a získej odměnu“?",
     "answer": "Pokud nám doporučíte nového zákazníka, náleží vám finanční odměna. Podmínkou je, že váš tip musíme obdržet jako první – tedy dříve, než nás doporučený klient sám kontaktuje. Odměna je vyplacena po řádném dokončení a proplacení zakázky doporučeným klientem. Podrobnosti najdete na stránce programu Doporuč a získej odměnu."
+  },
+  {
+    "question": "Nabízíte i samostatné řezání a jak domluvíme cenu?",
+    "answer": "Ano, samostatné diamantové řezání, řezání pilou a chemickou injektáž nabízíme po celé ČR. Cenu, dopravu i prohlídku domluvíme individuálně podle konkrétní zakázky. Předběžný odhad sanace zjistíte přes kalkulačku na webu nebo nás požádejte o vypracování cenové nabídky. Pro samostatné řezy a nestandardní konstrukce připravíme nabídku podle dodaných podkladů."
   }
 ]

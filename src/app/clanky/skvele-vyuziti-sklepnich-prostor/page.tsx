@@ -163,12 +163,12 @@ export default function CellarArticlePage() {
             <div className="relative z-10">
               <h2 className="text-2xl md:text-3xl font-black uppercase italic mb-3">Máte vlhký sklep?</h2>
               <p className="text-white/70 font-medium mb-8 max-w-xl">
-                Ozvěte se nám na nezávaznou prohlídku zdarma. Změříme vlhkost, navrhneme nejvhodnější postup a
+                Cenu, dopravu i prohlídku domluvíme individuálně předem. Posoudíme vlhkost, navrhneme vhodný postup a
                 pomůžeme vám ze sklepa udělat suchý a využitelný prostor. Vracíme zdraví vaší stavbě.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
-                  Nezávazná kalkulace zdarma
+                  Orientační kalkulace
                 </Link>
                 <a href="tel:+420737017012" className="inline-flex items-center gap-2 py-4 px-8 rounded-xl border-2 border-white/15 font-black uppercase tracking-widest text-sm text-white hover:border-primary/40 transition-colors">
                   <Icons.Phone className="w-4 h-4 text-primary" /> +420 737 017 012

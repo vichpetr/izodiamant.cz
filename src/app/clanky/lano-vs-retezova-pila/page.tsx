@@ -52,7 +52,7 @@ export default function Page() {
 
       <H2>Rozhodnutí padne až na místě</H2>
       <P>Kterou metodu zvolit, se nejlépe pozná při prohlídce. Změříme vlhkost, posoudíme materiál, tloušťku a stav spár a navrhneme postup, který na dané zdivo sedne.</P>
-      <P>Prohlídka i kalkulace jsou zdarma, orientační cenu si můžete předběžně spočítat i v kalkulačce na webu. Cílem je odstranit příčinu vlhkosti, ne jen její následky.</P>
+      <P>Cenu, dopravu i prohlídku domluvíme individuálně předem. Orientační cenu si můžete předběžně spočítat v kalkulačce na webu. Cílem je odstranit příčinu vlhkosti, ne jen její následky.</P>
 
       <H2>Naše metody</H2>
       <ServiceLinks items={SERVICES} />
