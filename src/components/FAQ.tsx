@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Icons } from './Icons';
 import faqData from '@/data/faq.json';
 
@@ -61,12 +61,16 @@ export default function FAQ() {
 
 function FAQItem({ question, answer }: { question: string, answer: string }) {
   const [isOpen, setIsOpen] = useState(false);
+  const answerId = useId();
 
   return (
     <div className="bg-white border-2 border-transparent hover:border-primary/20 rounded-2xl overflow-hidden transition-all shadow-sm">
       <button
+        type="button"
+        aria-expanded={isOpen}
+        aria-controls={answerId}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-8 py-6 flex items-center justify-between text-left focus:outline-none"
+        className="w-full px-8 py-6 flex items-center justify-between text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-neutral-dark"
       >
         <span className="font-black text-neutral-dark uppercase tracking-tight pr-4">{question}</span>
         <div className="flex-shrink-0 w-10 h-10 rounded-full bg-neutral-light flex items-center justify-center text-primary transition-transform shadow-inner">
@@ -75,6 +79,8 @@ function FAQItem({ question, answer }: { question: string, answer: string }) {
       </button>
       {/* CSS akordeon (grid-rows 0fr→1fr) místo framer-motion – bez JS knihovny. */}
       <div
+        id={answerId}
+        aria-hidden={!isOpen}
         className="grid transition-[grid-template-rows] duration-300 ease-in-out"
         style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
       >
