@@ -56,7 +56,7 @@ export default function Page() {
 
       <H2>Jak zjistit orientační a jak závaznou cenu</H2>
       <P>Nezávazný odhad si spočítáte během chvíle v naší online kalkulačce: zadáte metodu, délku zdiva a tloušťku, kalkulačka z nich odvodí řeznou plochu v m² a získáte představu o řádu nákladů na přerušení vlhkosti.</P>
-      <P>Závaznou nabídku dáváme až po prohlídce na místě. Teprve tam se dá spolehlivě posoudit materiál a tvrdost zdiva, přístupnost, míra zasolení a rozsah navazujících prací, tedy vše, co online odhad z principu nevidí. Prohlídka i kalkulace jsou zdarma.</P>
+      <P>Závaznou nabídku dáváme až po prohlídce na místě. Teprve tam se dá spolehlivě posoudit materiál a tvrdost zdiva, přístupnost, míra zasolení a rozsah navazujících prací, tedy vše, co online odhad z principu nevidí. Cenu, dopravu i prohlídku domluvíme individuálně předem.</P>
 
       <H2>Spočítejte si nezávaznou cenu</H2>
       <P>Orientační cenu si spočítáte během chvíle v naší online kalkulačce; závaznou nabídku zpracujeme po prohlídce objektu.</P>

@@ -5,8 +5,8 @@ import HeroBadges from './HeroBadges';
 export default function Hero() {
   const content = {
     h1: "Sanace a podřezávání zdiva. Váš dům si zaslouží suché základy.",
-    desc: "Vás i váš dům trvale zbavíme vzlínající vlhkosti a plísní. Odborně podřezáváme a izolujeme vlhké zdivo pro suché základy a zdravé bydlení po celé ČR. Vracíme zdraví vaší stavbě.",
-    cta_calc: "Nezávazná kalkulace zdarma",
+    desc: "Sanace vlhkého zdiva, samostatné diamantové řezání, řezání pilou a chemická injektáž po celé ČR. Cenu, dopravu i prohlídku domluvíme individuálně. Předběžný odhad zjistíte v kalkulačce nebo nás požádejte o cenovou nabídku.",
+    cta_calc: "Orientační kalkulace",
   };
 
   // Hero je stavěný tak, aby se hodnocení i počet referencí vešly nad ohyb i na

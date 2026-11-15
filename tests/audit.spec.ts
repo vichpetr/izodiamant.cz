@@ -393,13 +393,11 @@ test.describe('Audit: nedoložitelná tvrzení', () => {
     });
   }
 
-  test('nikde neslibujeme dopravu zdarma (cestovné si platí zákazník)', async ({ page }) => {
-    // Majitel potvrdil: cestovné se účtuje. Web dřív tvrdil „Doprava a prohlídka
-    // objektu … jsou zdarma“ – zdarma je jen prohlídka a cenová nabídka.
+  test('nikde neslibujeme dopravu ani prohlídku zdarma', async ({ page }) => {
     for (const path of PAGES) {
       await page.goto(path);
       const body = await page.locator('body').innerText();
-      expect(body, `${path} slibuje dopravu zdarma`).not.toMatch(/doprav\w*[^.!?]{0,60}zdarma/i);
+      expect(body, `${path} slibuje službu zdarma`).not.toMatch(/(?:doprav|prohlíd|obhlíd)[^.!?]{0,120}zdarma/i);
     }
   });
 

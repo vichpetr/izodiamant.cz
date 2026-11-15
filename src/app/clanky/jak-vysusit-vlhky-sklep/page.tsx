@@ -60,7 +60,7 @@ export default function Page() {
         <li className="flex gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" /><span>Držte se sezónního režimu větrání a případně si veďte jednoduchý přehled vlhkosti.</span></li>
         <li className="flex gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" /><span>Sledujte první signály – vlhký pás u podlahy, výkvěty solí, zatuchlý pach – a reagujte hned.</span></li>
         <li className="flex gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" /><span>Nezakrývejte sanační omítku parotěsnými nátěry ani obklady, které by bránily odparu.</span></li>
-        <li className="flex gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" /><span>Při nejistotě si nechte stav zdiva posoudit odborně; prohlídka a kalkulace jsou zdarma.</span></li>
+        <li className="flex gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" /><span>Při nejistotě si nechte stav zdiva posoudit odborně; cenu, dopravu i prohlídku domluvíme individuálně předem.</span></li>
       </ul>
 
       <H2>Naše metody</H2>

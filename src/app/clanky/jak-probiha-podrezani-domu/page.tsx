@@ -31,7 +31,7 @@ export default function Page() {
     >
       <H2>1. Prohlídka, měření vlhkosti a zaměření</H2>
       <P>Vše začíná obhlídkou stavby na místě. Změříme vlhkost zdiva, posoudíme materiál a tloušťku stěn, stav omítek a míru zasolení. Podle toho se rozhodne, jestli je vhodná řetězová pila, diamantové lano, nebo chemická injektáž tam, kde mechanicky řezat nelze.</P>
-      <P>Prohlídka a kalkulace jsou zdarma. Výstupem je návrh metody a rozsahu prací i orientační cena – tu si můžete předběžně spočítat i v kalkulačce na webu.</P>
+      <P>Cenu, dopravu i prohlídku domluvíme individuálně předem. Výstupem je návrh metody a rozsahu prací i orientační cena – tu si můžete předběžně spočítat i v kalkulačce na webu.</P>
 
       <H2>2. Příprava a osazení techniky</H2>
       <P>Před řezáním připravíme pracovní prostor a osadíme techniku podle zvolené metody. U diamantového lana i řetězové pily jde o vodní chlazení, které drží nízkou prašnost a chrání nástroj i zdivo.</P>

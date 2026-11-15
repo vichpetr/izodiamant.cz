@@ -58,7 +58,7 @@ export default function Page() {
 
       <H2>Nechte si dům prohlédnout ještě před koupí</H2>
       <P>Prohlídku a orientační měření vlhkosti staršího domu pro vás rádi provedeme ještě před podpisem smlouvy. Řekneme vám, zda jde o vzlínající vlhkost, jaký má rozsah a jaká metoda sanace připadá v úvahu.</P>
-      <P>Nezávaznou prohlídku i kalkulaci nabízíme zdarma, takže do jednání o koupi půjdete s reálnou představou o stavu zdiva i o nákladech, které vás mohou čekat.</P>
+      <P>Cenu, dopravu i prohlídku domluvíme individuálně předem. Po posouzení budete mít podklady o stavu zdiva a předpokládaných nákladech.</P>
 
       <H2>Naše metody</H2>
       <ServiceLinks items={SERVICES} />

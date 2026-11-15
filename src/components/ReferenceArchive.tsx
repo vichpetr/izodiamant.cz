@@ -176,16 +176,15 @@ export default function ReferenceArchive({ page }: { page: number }) {
               Máte podobný projekt?
             </h2>
             <p className="text-white/60 font-medium max-w-2xl mx-auto mb-8">
-              Prohlídka a nezávazná nabídka sanace vlhkého zdiva jsou zdarma. U zednických a
-              obkladačských prací podmínky prohlídky domluvíme individuálně. Orientační cenu
-              podřezání spočítáte v kalkulačce, nebo nám rovnou zavolejte.
+              Cenu zakázky, dopravu i prohlídku domluvíme individuálně předem. Předběžnou cenu
+              podřezání spočítáte v kalkulačce, nebo si nechte vypracovat cenovou nabídku.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/#calculator"
                 className="w-full sm:w-auto btn-primary py-4 px-10 uppercase tracking-widest inline-flex items-center justify-center gap-3"
               >
-                Nezávazná kalkulace zdarma
+                Orientační kalkulace
                 <Icons.Calculator className="w-5 h-5" />
               </Link>
               <a

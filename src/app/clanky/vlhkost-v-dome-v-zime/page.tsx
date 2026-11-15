@@ -62,7 +62,7 @@ export default function Page() {
 
       <H2>Nejste si jistí příčinou? Přijedeme změřit</H2>
       <P>Rozlišit kondenzaci a vzlínající vlhkost na dálku nelze, proto vlhkost změříme přímo u vás a řekneme vám, odkud pochází. Podle toho navrhneme buď úpravu větrání a vytápění, nebo sanaci zdiva.</P>
-      <P>Prohlídku i kalkulaci nabízíme zdarma a nezávazně, abyste neinvestovali do řešení, které míří vedle skutečné příčiny.</P>
+      <P>Cenu, dopravu i prohlídku domluvíme individuálně předem. Nejprve posoudíme příčinu vlhkosti a vhodný rozsah prací.</P>
 
       <H2>Naše metody</H2>
       <ServiceLinks items={SERVICES} />

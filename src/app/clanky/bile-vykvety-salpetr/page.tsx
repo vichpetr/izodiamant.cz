@@ -55,7 +55,7 @@ export default function Page() {
 
       <H2>Jak poznat rozsah a začít</H2>
       <P>Rozsah zasolení a vlhkosti není z povrchu vždy patrný, proto se před sanací zdivo posoudí přímo na místě. Podle typu zdiva se volí vhodná metoda přerušení vlhkosti a rozsah výměny omítek.</P>
-      <P>Nezávazná prohlídka a kalkulace jsou zdarma. Orientační cenu podle metody a rozsahu si můžete spočítat v naší online kalkulačce.</P>
+      <P>Cenu, dopravu i prohlídku domluvíme individuálně předem. Orientační cenu podle metody a rozsahu si můžete spočítat v naší online kalkulačce.</P>
 
       <H2>Naše metody</H2>
       <ServiceLinks items={SERVICES} />

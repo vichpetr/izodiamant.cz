@@ -72,7 +72,7 @@ export default function ChemicalInjectionPage() {
     },
     {
       q: "Děláte chemickou injektáž i mimo východní Čechy?",
-      a: "Ano, sanaci vlhkého zdiva včetně injektáže děláme po celé České republice – realizace máme od Prahy a Kladna přes Most až po Vysočinu a Pardubicko. Cestovné počítáme podle vzdálenosti a řekneme ho dopředu v nabídce.",
+      a: "Ano, sanaci vlhkého zdiva včetně injektáže děláme po celé České republice – realizace máme od Prahy a Kladna přes Most až po Vysočinu a Pardubicko. Cenu, dopravu i prohlídku domluvíme individuálně předem.",
     },
   ];
 
@@ -117,9 +117,14 @@ export default function ChemicalInjectionPage() {
               <p className="text-xl text-neutral-dark/70 font-medium leading-relaxed mb-10">
                 Chemická injektáž je skvělou alternativou pro sanaci všude tam, kde z technických či prostorových důvodů nelze zdivo mechanicky podřezat. Do zdiva aplikujeme speciální injektážní krém, který uvnitř pórů vytvoří vodoodpudivou bariéru a spolehlivě ochrání stěnu před stoupající vlhkostí.
               </p>
+              <p className="text-lg text-neutral-dark/80 font-medium leading-relaxed mb-8">
+                Chemickou injektáž nabízíme i jako samostatnou zakázku po celé ČR. Rozsah a postup stanovíme podle stavu a materiálu zdiva. Cenu, dopravu i prohlídku domluvíme individuálně.
+                Předběžný odhad sanace zjistíte v kalkulačce, pro konkrétní zakázku si můžete
+                <Link href="/#contact" className="underline font-bold"> vyžádat cenovou nabídku</Link>.
+              </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
-                  Nezávazná kalkulace zdarma
+                  Orientační kalkulace
                 </Link>
               </div>
             </div>

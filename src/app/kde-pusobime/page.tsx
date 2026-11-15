@@ -58,7 +58,7 @@ export default function AreasPage() {
               Sídlíme v Nových Hradech ve východních Čechách a na sanaci vlhkého zdiva vyjíždíme po celé
               České republice. Nejvíc zakázek děláme právě ve východních
               Čechách – prostě proto, že to máme nejblíž – a pravidelně jezdíme i do Prahy, Brna a okolí.
-              Prohlídka objektu a zpracování nezávazné cenové nabídky jsou zdarma.
+              Cenu, dopravu i prohlídku domluvíme individuálně předem. Předběžnou cenu si spočítáte v kalkulačce nebo nás požádejte o cenovou nabídku.
             </p>
             <p>
               Na téhle stránce nenajdete šablonu s názvem každého města v republice. Najdete tu kraje, kam
@@ -150,8 +150,8 @@ export default function AreasPage() {
                 Nevíte, jestli k vám dojedeme?
               </h2>
               <p className="text-white/70 font-medium leading-relaxed mb-8 max-w-2xl">
-                Napište nám adresu a typ zdiva. Ozveme se s termínem prohlídky a orientační cenou – obojí
-                nezávazně a zdarma. Metodu vybíráme podle materiálu:{" "}
+                Napište nám adresu, materiál a rozsah prací. Cenu, dopravu i prohlídku
+                domluvíme individuálně předem. Metodu vybíráme podle materiálu:{" "}
                 <Link href="/sluzby/diamantove-lano" className="text-primary font-bold hover:underline">
                   diamantové lano
                 </Link>{" "}

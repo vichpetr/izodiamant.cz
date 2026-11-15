@@ -98,8 +98,7 @@ export default function MasonryPage() {
               <h2 className="text-xl font-black text-neutral-dark uppercase mb-2">Cena</h2>
               <p className="text-neutral-dark/70 font-medium leading-relaxed">
                 {data.priceRange}. Rozsah a náročnost prací se případ od případu liší, proto cenu stanovíme
-                individuálně po upřesnění zadání, případně po prohlídce. Podmínky prohlídky domluvíme předem;
-                prohlídka zdarma se vztahuje na sanaci vlhkého zdiva. Pošlete nezávaznou poptávku a ozveme se.
+                individuálně po upřesnění zadání, případně po prohlídce. Cenu, dopravu i podmínky prohlídky domluvíme předem. Pošlete nezávaznou poptávku a ozveme se.
               </p>
             </div>
             <div className="bg-neutral-dark text-white p-8 rounded-3xl relative overflow-hidden">

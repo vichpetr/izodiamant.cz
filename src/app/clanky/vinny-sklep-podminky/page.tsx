@@ -59,7 +59,7 @@ export default function Page() {
         <li className="flex gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" /><span>Větrejte krátce a citlivě – tak, abyste nerozhodili stabilní prostředí sklepa.</span></li>
         <li className="flex gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" /><span>Udržujte tmu a klid, sklep neproměňujte ve skladiště pachově výrazných věcí.</span></li>
         <li className="flex gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" /><span>Kontrolujte zdivo: vlhký pás, výkvěty solí nebo plíseň jsou signál k řešení příčiny.</span></li>
-        <li className="flex gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" /><span>Při zakládání nebo obnově sklepa si nechte stav zdiva posoudit; prohlídka a kalkulace jsou zdarma.</span></li>
+        <li className="flex gap-3"><Icons.CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" /><span>Při zakládání nebo obnově sklepa si nechte stav zdiva posoudit; cenu, dopravu i prohlídku domluvíme individuálně předem.</span></li>
       </ul>
 
       <H2>Naše metody</H2>

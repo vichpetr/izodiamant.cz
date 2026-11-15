@@ -83,9 +83,14 @@ export default function ChainSawPage() {
                 zeď dlouhá 10 m a silná 45 cm má 4,5 m² řezné plochy.
                 Konečnou cenu určíme po prohlídce podle materiálu a přístupnosti zdiva. Nejsme plátci DPH.
               </p>
+              <p className="text-lg text-neutral-dark/80 font-medium leading-relaxed mb-8">
+                Řezání pilou nabízíme i samostatně po celé ČR. Vhodný postup a rozsah prací posoudíme podle materiálu a přístupnosti konstrukce. Cenu, dopravu i prohlídku domluvíme individuálně.
+                Předběžný odhad sanace zjistíte v kalkulačce, pro konkrétní zakázku si můžete
+                <Link href="/#contact" className="underline font-bold"> vyžádat cenovou nabídku</Link>.
+              </p>
               <div className="flex flex-wrap gap-4">
                 <Link href="/#calculator" className="btn-primary py-4 px-8 uppercase tracking-widest shadow-xl shadow-primary/20">
-                  Nezávazná kalkulace zdarma
+                  Orientační kalkulace
                 </Link>
               </div>
             </div>

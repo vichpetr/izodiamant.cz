@@ -348,7 +348,7 @@ export default function PricingCalculator() {
                           <div className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-3 italic leading-none">Zednické a obkladačské práce</div>
                           <div className="text-4xl md:text-5xl font-black text-white italic tracking-tighter leading-none mb-4">Cena dohodou</div>
                           <div className="inline-block px-3 py-1 bg-white/5 rounded-full text-[9px] text-white/60 font-black uppercase tracking-widest leading-none">Nezávazná poptávka</div>
-                          <p className="mt-4 text-[9px] text-white/70 font-bold leading-relaxed">Rozsah i cenu domluvíme individuálně. Pokračujte k poptávce a popište, o jaké práce jde a kde (působíme do cca 50 km od Nových Hradů).</p>
+                          <p className="mt-4 text-[9px] text-white/70 font-bold leading-relaxed">Rozsah, cenu, dopravu i prohlídku domluvíme individuálně. Pokračujte k poptávce a popište, o jaké práce jde a kde (působíme do cca 50 km od Nových Hradů).</p>
                         </div>
                         ) : (
                         <div className="bg-primary/10 rounded-2xl p-8 border-2 border-primary/20 text-center relative overflow-hidden h-fit">
@@ -368,7 +368,7 @@ export default function PricingCalculator() {
                             Nejsme plátci DPH | {selectedService?.label || (selectedMaterial ? "Všechny dostupné metody" : "Všechny varianty")}
                           </div>
                           <p className="mt-4 text-[9px] text-white/70 font-bold leading-relaxed">
-                            Orientační odhad pro {length} m zdi o tloušťce {thickness} cm, tedy {areaLabel} m² řezné plochy. Ceny vycházejí ze sazby za m² řezné plochy; u silnějšího zdiva se cena úměrně navyšuje. Závaznou nabídku zpracujeme po prohlídce.
+                            Orientační odhad pro {length} m zdi o tloušťce {thickness} cm, tedy {areaLabel} m² řezné plochy. Ceny vycházejí ze sazby za m² řezné plochy; u silnějšího zdiva se cena úměrně navyšuje. Cenu zakázky, dopravu i prohlídku domluvíme individuálně. Pro samostatné řezy a nestandardní konstrukce si nechte vypracovat cenovou nabídku.
                           </p>
                         </div>
                         )}
