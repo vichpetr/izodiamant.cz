@@ -5,7 +5,7 @@ export default function AboutSection() {
   const points = [
     {
       title: "Odbornost a zkušenosti",
-      text: "Specializujeme se výhradně na sanace a izolace zdiva. Naše letitá praxe v oboru nám umožňuje navrhovat řešení, která skutečně fungují a vyřeší problém s vlhkostí jednou provždy."
+      text: "Specializujeme se na sanace a izolace zdiva. Nabízíme také samostatné diamantové řezání, řezání pilou a chemickou injektáž. Postup volíme podle konkrétní zakázky a zkušeností z praxe."
     },
     {
       title: "Nejmodernější vybavení",
