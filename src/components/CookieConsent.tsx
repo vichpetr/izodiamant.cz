@@ -40,7 +40,7 @@ export default function CookieConsent() {
         <div className="space-y-2 text-center md:text-left">
           <h4 className="text-white font-black uppercase tracking-widest text-xs italic">Soukromí a cookies</h4>
           <p className="text-sm text-white/60 font-medium leading-relaxed max-w-xl">
-            Tento web používá soubory cookies pro analýzu návštěvnosti. Pomozte nám vylepšovat naše služby udělením souhlasu.
+            Tento web používá soubory cookies pro analýzu návštěvnosti a měření účinnosti reklamy. Pomozte nám vylepšovat naše služby udělením souhlasu.
           </p>
         </div>
         <div className="flex gap-3 shrink-0">

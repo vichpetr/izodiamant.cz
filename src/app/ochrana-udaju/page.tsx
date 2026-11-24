@@ -43,7 +43,7 @@ export default function PrivacyPolicy() {
                   Realizace zakázky: V případě uzavření dohody o provedení práce zpracováváme také fakturační údaje (adresa bydliště, IČO) a adresu místa realizace sanace. Tyto údaje uchováváme pro účely řádného plnění smluvních závazků a následné fakturace dle platných zákonů ČR. Právním základem je plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR) a plnění zákonných povinností, zejména účetních a daňových (čl. 6 odst. 1 písm. c) GDPR).
                 </li>
                 <li>
-                  Analýza návštěvnosti: Na našem webu využíváme nástroje pro analýzu chování uživatelů (např. Google Analytics). Měření se spustí až poté, co v cookie liště udělíte souhlas; bez souhlasu se Google Analytics vůbec nenačte a do Googlu se neodesílají žádné údaje. Statistiky pomáhají nám lépe pochopit, o které technologie sanace je největší zájem, abychom mohli obsah webu neustále vylepšovat. Právním základem je váš dobrovolný souhlas (čl. 6 odst. 1 písm. a) GDPR), který můžete kdykoliv odvolat.
+                  Analýza návštěvnosti: Na našem webu využíváme nástroje pro analýzu chování uživatelů (např. Google Analytics). Měření se spustí až poté, co v cookie liště udělíte souhlas; bez souhlasu se Google Analytics vůbec nenačte a do Googlu se neodesílají žádné údaje. Statistiky pomáhají nám lépe pochopit, o které technologie sanace je největší zájem, abychom mohli obsah webu neustále vylepšovat. Se stejným souhlasem měříme také účinnost reklamních kampaní (Google Ads); Google k tomu může použít reklamní cookies a identifikátory. Právním základem je váš dobrovolný souhlas (čl. 6 odst. 1 písm. a) GDPR), který můžete kdykoliv odvolat.
                 </li>
               </ul>
             </section>
